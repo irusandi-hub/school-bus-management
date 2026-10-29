@@ -178,3 +178,14 @@ Gerbang teknis untuk navigasi tetap penting: bukti cakupan routing yang sesuai u
 Untuk laporan orang tua, prioritaskan konsistensi data sumber, status yang tidak menyesatkan ketika GPS usang/offline, batas akses antarwali/antarsiswa, serta riwayat dan koreksi yang dapat diaudit.
 
 Status kamera tetap **BELUM TERVERIFIKASI** secara teknis, tetapi bukan penghambat untuk menyusun dan memvalidasi alur inti navigasi serta laporan.
+
+
+## Spesifikasi alur inti — 2026-10-29
+
+- [x] Dibuat `docs/CORE_WORKFLOWS_NAVIGATION_AND_PARENT_REPORTS.md` untuk merinci alur sebelum perjalanan, perjalanan aktif, status jemput/turun, kualitas data GPS, pengalaman wali, riwayat/laporan, pengecualian, dan kriteria penerimaan.
+- [x] Kriteria QA menegaskan bahwa kamera belum dikonfigurasi tidak menghalangi uji alur inti.
+- [ ] Routing bus besar dan sumber GPS belum diverifikasi pada perangkat/lapangan di Dammam dan sekitarnya.
+- [ ] Definisi status final, batas kesegaran GPS, kebutuhan offline, dan format laporan masih perlu disetujui.
+- [ ] Belum ada implementasi atau uji operasional fitur.
+
+Gunakan dokumen alur inti sebagai acuan untuk memecah pekerjaan teknis berikutnya. Jangan mulai implementasi yang bergantung pada asumsi terbuka tanpa mencatat mitigasi atau keputusan pemilik produk.
