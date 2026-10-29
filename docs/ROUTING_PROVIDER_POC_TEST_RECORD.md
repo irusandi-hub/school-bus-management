@@ -3,13 +3,17 @@
 **Status:** Blocked pending vendor access and operator-approved sample data.  
 **Purpose:** Capture comparable evidence for HudHud Maps and HERE Routing without selecting a provider by marketing claims alone.
 
+## Vehicle-routing assumptions (refined)
+
+Do not default to a freight-truck profile for school buses. Access rules may resemble passenger-vehicle rules, but a school bus is wider/longer than a small car and needs adequate road width and turning space. Prioritize usable road width, safe passing, turn/swept-path feasibility, and safe pickup/drop-off access. Apply height/weight restrictions only when relevant to the actual fleet. Confirm real bus dimensions with the operator; do not use generic dimensions as fleet facts. Saudi Highway Code 303 gives design examples of a conventional school bus at 2.5 m wide and 10.9 m long versus a passenger car at 2.0 m wide and 5.1 m long; these are reference design vehicles, not the pilot bus specification: https://shc.rga.gov.sa/content/dam/roadcodes/assets/road-code-library/303%20EN.pdf
+
 ## Current evidence-based position (2026-10-29)
 
 | Gate | HudHud Maps | HERE Routing |
 |---|---|---|
 | Saudi-specific map/routing offering | Public documentation says yes; not field-validated | Global Routing API; Dammam-specific restriction accuracy not yet validated |
 | Published multi-stop limit | Directions API: up to 25 waypoints | Must verify exact endpoint, plan, and waypoint limits for the intended workflow |
-| Bus-specific restrictions | Not established by reviewed public docs | Truck routing and vehicle dimensions/weight are documented; school-bus suitability still unproven |
+| School-bus fit / road-width handling | Not established by reviewed public docs | Truck routing and vehicle dimensions/weight are documented; school-bus suitability still unproven |
 | Traffic-aware ETA | Advertised | Supported by documented routing options; availability/terms to verify |
 | Fleet tracking / route calculation commercial license | Written confirmation required | **Important blocker:** HERE Limited and Base Plans exclude Asset Management, including asset tracking/display and route calculation. Obtain a written commercial offer/confirmation for the exact use case before spending engineering effort. |
 | Decision | Test candidate only | Test candidate only, contingent on correct commercial contract |
