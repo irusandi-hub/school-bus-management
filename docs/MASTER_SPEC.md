@@ -162,3 +162,10 @@ Sebelum menilai produk inti siap diuji, prioritaskan pembuktian:
 - laporan mudah dipahami, dapat ditelusuri ke data operasional, dan koreksinya diaudit.
 
 Kamera live dapat direncanakan setelah alur inti stabil. Kontrak antarmuka kamera tetap tersedia sebagai dokumentasi pendukung, bukan indikator bahwa kamera adalah prioritas pertama.
+
+
+## 19. Spesifikasi alur inti navigasi dan laporan orang tua
+
+Alur operasional dan kriteria penerimaan terperinci ada di `docs/CORE_WORKFLOWS_NAVIGATION_AND_PARENT_REPORTS.md`. Dokumen ini menjadi rujukan kerja untuk alur sebelum perjalanan, navigasi dan status selama perjalanan, lokasi bus beserta kesegaran data, tampilan wali, riwayat, laporan, pengecualian, dan QA.
+
+Dokumen alur inti memprioritaskan navigasi dan laporan orang tua. Kamera live adalah fitur tambahan dan tidak menjadi gerbang penyelesaian atau pengujian alur inti. Routing bus besar dan sumber GPS tetap harus dibuktikan secara teknis; dokumen kebutuhan tidak berarti provider sudah dipilih atau dinyatakan lulus.
