@@ -128,3 +128,12 @@ Ketentuan kontrak tidak otomatis menghapus kewajiban hukum yang mungkin melekat 
 Pihak sekolah/operator bertanggung jawab atas kegiatan yang dijalankan dan keputusan operasional yang menjadi kewenangannya, termasuk memastikan izin serta penugasan yang sah. Penyedia aplikasi menyediakan fungsi perangkat lunak dan kontrol teknis sesuai lingkup produk, serta memenuhi kewajiban yang berlaku bagi penyedia aplikasi. Pembagian tanggung jawab yang tepat harus diselaraskan dengan hukum, kontrak, dan peran aktual setiap pihak; tidak boleh ditentukan sepihak hanya dengan kalimat umum di T&C.
 
 Lihat juga `docs/OPERATING_MODEL_RESPONSIBILITY_MATRIX.md` dan `docs/DECISIONS_LOG.md`.
+
+
+## 17. Kontrak integrasi live stream kamera
+
+Persyaratan umum integrasi kamera, terlepas dari vendor atau metode koneksi, dicatat dalam `docs/GENERIC_CAMERA_STREAMING_INTERFACE.md`. Dokumen tersebut adalah draf kontrak kemampuan dan uji penerimaan, bukan jaminan kompatibilitas atau keputusan memilih vendor/protokol.
+
+Sumber potensial meliputi perangkat/DVR langsung atau aplikasi/platform AV yang sudah terpasang, hanya jika metode integrasi resmi dan terotorisasi tersedia. Backend harus mengendalikan otorisasi, sesi stream, kedaluwarsa, dan pencabutan akses. URL publik permanen dan penyimpanan kredensial sumber di klien tidak diterima sebagai pola aman.
+
+Sebelum implementasi, inventaris perangkat/platform aktual dan buktikan autentikasi, kemampuan pencabutan, dukungan klien, batas stream bersamaan, biaya, serta lokasi pemrosesan data. Target sekitar 100 bus bukan asumsi 100 stream simultan.
