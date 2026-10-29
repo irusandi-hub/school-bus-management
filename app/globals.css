@@ -91,3 +91,14 @@ button{cursor:pointer}
 .workspace-empty p{max-width:520px;font-size:11px;line-height:1.7;color:var(--muted);margin:8px 0 10px}
 .workspace-empty small{font-size:10px;color:#91a09a}
 @media(max-width:700px){.admin-workspace-head{flex-direction:column;align-items:stretch}.workspace-action{align-self:flex-start}.workspace-toolbar{padding:12px 14px}.workspace-empty{min-height:190px;padding:24px 16px}}
+
+
+/* Driver student list and parent trip history: preview-only tables */
+.operational-workspace-head{align-items:flex-start}
+.operational-workspace-head .panel-subtitle{max-width:680px;line-height:1.65}
+.operational-workspace .workspace-table{min-width:540px}
+.operational-workspace .workspace-empty{min-height:245px}
+@media(max-width:700px){
+  .operational-workspace-head{flex-direction:column;align-items:stretch}
+  .operational-workspace .workspace-empty{min-height:205px;padding:24px 16px}
+}
