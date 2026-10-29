@@ -1,6 +1,6 @@
 # Routing Provider Evaluation — School Bus Management
 
-**Status:** Evaluation plan; no provider selected.  
+**Status:** HERE-first evaluation direction; no provider approved.  
 **Scope:** Phase 1 pilot in Dammam and surrounding areas, approximately 100 buses.  
 **Last reviewed:** 2026-10-29.
 
@@ -15,6 +15,20 @@ Saudi Highway Code 303 lists a conventional school-bus design vehicle at approxi
 Choose a managed routing API that can calculate and refresh routes using current road/traffic data while keeping the driver app lightweight and compatible with a practical range of Android phones. Do not build an in-house road graph or routing engine.
 
 The routing provider is not the source of truth for student participation, trip status, approved stop order, or driver assignment. Those remain in this application.
+
+## Current direction: HERE-first proof of concept (2026-10-29)
+
+The project direction is now to evaluate **HERE first**, because current official documentation describes real-time traffic flow and incident data, including road closures and construction, and Routing API v8 supports multiple transport modes including buses. This is a priority for testing, **not a final vendor approval**.
+
+Official references:
+- HERE Routing API v8 modes and capabilities: https://docs.here.com/routing/reference/routing-v8-api-overview
+- HERE Real-Time Traffic update cadence: https://docs.here.com/traffic-api/docs/real-time-traffic-here-traffic-api-v7-concepts
+- HERE Base Plan excluded Asset Management use cases: https://www.here.com/get-started/pricing/base-plan-restrictions
+- HERE product coverage information: https://docs.here.com/coverage/docs/here-coverage-information
+
+**Hard blockers before a real PoC:** obtain written commercial permission and suitable pricing for fleet tracking/map display/route calculation; confirm product coverage for Dammam; obtain credentials; collect operator-approved anonymized test stops and actual bus dimensions; establish human-reviewed baseline routes. Do not use production child/home coordinates or commit API keys.
+
+Traffic flow is documented as updated every minute and incident data every two minutes, but that does not guarantee that every Dammam incident or closure is detected immediately. Validate freshness and completeness with local scenarios. Routing must never silently change the approved stop order or active-trip route version.
 
 ## Evidence reviewed
 
@@ -43,7 +57,7 @@ Official sources:
 
 ## Initial recommendation
 
-Run a controlled proof of concept with **HudHud Maps and HERE Routing in parallel**. Do not declare a winner based on marketing pages alone.
+Run a controlled proof of concept with **HERE first**. Use HudHud only as a fallback comparator if HERE fails a mandatory gate, lacks Dammam coverage, or cannot offer acceptable commercial terms. Do not declare HERE the winner based on documentation alone.
 
 - Use server-side routing API calls; do not expose provider secrets in the mobile app.
 - Keep the driver interface lean: approved stop list/order, route line, next stop, trip status, and GPS timestamp.
@@ -113,10 +127,10 @@ A provider that fails a mandatory gate is not selected, regardless of map appear
 - [x] Candidate research started from official provider documentation.
 - [x] Important known limits and commercial-plan caveats recorded.
 - [ ] Vendor written answers received.
-- [ ] Representative Dammam routes tested with both APIs.
+- [ ] Representative Dammam routes tested with HERE; test HudHud only if needed as fallback.
 - [ ] Low-spec Android performance measured.
 - [ ] Cost and SLA compared.
 - [ ] Operator safety review completed.
 - [ ] Final provider decision approved.
 
-**No provider is approved yet.** Public documentation is enough to define a test, but not enough to certify school-bus routing in Dammam.
+**HERE is the priority PoC candidate, not an approved production provider.** Public documentation is enough to define a test, but not enough to certify school-bus routing in Dammam.
