@@ -96,7 +96,11 @@ Sumber riset dan batasan bukti dicatat di `docs/TECHNICAL_REVIEW_FINDINGS.md`. I
 
 ## Gerbang lanjutan: operasi Arab Saudi
 
-- [ ] Konfirmasi apakah sistem menjadi sistem internal sekolah, operator transportasi berizin, atau layanan tambahan; jangan mengasumsikan integrasi dengan Noor.
+- [x] Ruang lingkup produk diklarifikasi: penyedia aplikasi untuk sekolah, operator bus sekolah/pengemudi, dan orang tua/wali; sekolah dan operator dapat memakai aplikasi bersama atau masing-masing.
+- [ ] Susun T&C yang mewajibkan pengguna/organisasi memiliki izin, kewenangan, dan hak yang diperlukan di wilayah operasinya; tinjau oleh penasihat hukum. T&C tidak otomatis menghapus kewajiban hukum penyedia aplikasi.
+- [ ] Tentukan apakah onboarding hanya meminta pernyataan kewenangan atau juga meminta nomor/dokumen izin, serta proses perubahan/berakhirnya izin.
+- [ ] Tetapkan batas akses sekolah/operator/pengemudi/wali dan pencabutan akses ketika penugasan atau kontrak berakhir.
+- [ ] Jangan mengasumsikan integrasi dengan Noor.
 - [ ] Konfirmasi persyaratan TGA/MoE terbaru untuk jenis operator, kendaraan, pengemudi, AVL, dan kamera. Gunakan sumber lama hanya sebagai petunjuk awal, bukan spesifikasi final.
 - [ ] Tinjau keputusan TGA yang diterbitkan pada April 2026 terkait jadwal persyaratan uji kompetensi profesional pengemudi dan tentukan apakah relevan dengan model operasi.
 - [ ] Buat inventaris aliran data PDPL sebelum memilih hosting atau vendor: tujuan, pengendali/pemroses, lokasi data, akses, retensi, penghapusan, dan transfer lintas negara.
@@ -129,3 +133,16 @@ Sumber pendukung dan batasan bukti dicatat di docs/TECHNICAL_REVIEW_FINDINGS.md.
 - [ ] Verifikasi tanggung jawab, pemisahan data multi-sekolah, pengelolaan akses, dan proses berakhirnya kontrak sebelum desain izin disetujui.
 
 Status: dokumen pendukung dibuat; keputusan operasional belum final; tidak ada provider dipilih dan tidak ada coding fitur bisnis.
+
+
+## Pembaruan ruang lingkup penyedia aplikasi — 2026-10-29
+
+- [x] Pemilik produk menegaskan bahwa bisnis menyediakan aplikasi, bukan menjalankan layanan transportasi sekolah.
+- [x] Pengguna meliputi sekolah, perusahaan/operator bus sekolah beserta pengemudinya, dan orang tua/wali.
+- [x] Sekolah dan operator dapat memakai aplikasi secara bersama-sama atau masing-masing.
+- [x] Prinsip produk: organisasi/pengguna wajib memiliki izin, kewenangan, dan hak yang diperlukan untuk kegiatan serta data yang mereka kelola; prinsip ini dicantumkan dalam T&C.
+- [ ] T&C dan pemberitahuan privasi harus ditinjau oleh penasihat hukum yang kompeten. Jangan menyatakan bahwa T&C menghapus semua kewajiban penyedia aplikasi.
+- [ ] Prosedur onboarding dan bukti kewenangan yang diminta masih belum diputuskan.
+- [ ] Kota pilot, skala, kandidat kamera/DVR, dan sumber GPS tetap belum diputuskan.
+
+Rincian dicatat dalam `docs/MASTER_SPEC.md`, `docs/OPERATING_MODEL_RESPONSIBILITY_MATRIX.md`, dan `docs/DECISIONS_LOG.md`.
