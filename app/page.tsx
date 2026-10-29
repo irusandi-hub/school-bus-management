@@ -76,7 +76,7 @@ export default function Home() {
       <main className="main">
         <header className="topbar">
           <div><div className="eyebrow">Dammam · Pilot</div><h1 className="page-title">{section}</h1></div>
-          <div className="top-actions"><span className="demo-badge">MODE PRATINJAU</span><div className="avatar">{role === "Admin Pusat" ? "AP" : role === "Pengemudi" ? "PG" : "OW"}</div></div>
+          <div className="top-actions"><a className="login-link" href="/login">Masuk</a><span className="demo-badge">MODE PRATINJAU</span><div className="avatar">{role === "Admin Pusat" ? "AP" : role === "Pengemudi" ? "PG" : "OW"}</div></div>
         </header>
 
         <section className="welcome">
