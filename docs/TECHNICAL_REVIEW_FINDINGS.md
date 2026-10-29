@@ -9,7 +9,7 @@
 
 Repository berhasil diakses dan dokumen fondasi tersedia. Master specification mencakup tiga peran, relasi wali, perjalanan pagi/sore, versi rute, validasi GPS, akses kamera live, riwayat, ekspor, audit, serta pemeriksaan kabin sebelum sesi pengemudi ditutup.
 
-Namun, spesifikasi belum cukup untuk memilih arsitektur final atau memulai coding fitur bisnis. Jawaban awal pemilik proyek kini menetapkan Arab Saudi sebagai wilayah operasi, proyek baru dari nol, dan kebutuhan ketiga peran di web serta mobile. Skala sistem, perangkat kamera/DVR, dan sumber GPS tetap belum diputuskan. Dukungan routing bus besar di wilayah operasi juga belum terbukti.
+Namun, spesifikasi belum cukup untuk memilih arsitektur final atau memulai coding fitur bisnis. Jawaban awal pemilik proyek menetapkan Arab Saudi sebagai wilayah operasi, proyek baru dari nol, dan kebutuhan ketiga peran di web serta mobile. Model operasional mencakup sekolah dan perusahaan transportasi. Kota pilot, skala sistem, perangkat kamera/DVR, dan sumber GPS tetap belum diputuskan. Dukungan routing bus besar di wilayah operasi juga belum terbukti.
 
 ## 2. Status berdasarkan bukti yang tersedia
 
@@ -19,189 +19,55 @@ Namun, spesifikasi belum cukup untuk memilih arsitektur final atau memulai codin
 | Perjalanan dan riwayat | Kebutuhan awal terdokumentasi | Pagi/sore terpisah; status belum dikonfirmasi dikecualikan dari hitungan final. |
 | Versi dan urutan rute | Kebutuhan awal terdokumentasi | Urutan stop yang disetujui harus stabil; rute aktif tidak boleh berubah diam-diam. |
 | Validasi GPS | BELUM TERVERIFIKASI | Radius awal 100 m disebutkan, tetapi sumber GPS, akurasi lapangan, dan interval pembaruan belum ditentukan. |
-| Routing bus besar | TERBLOKIR untuk pemilihan provider | Wilayah operasi dan penyedia belum diputuskan; kemampuan provider harus dibuktikan di wilayah tersebut. |
+| Routing bus besar | TERBLOKIR untuk pemilihan provider | Kota pilot belum diputuskan; kemampuan provider harus dibuktikan di wilayah tersebut. |
 | Kamera live | TERBLOKIR untuk desain integrasi | Model perangkat, protokol, autentikasi, batas streaming bersamaan, dan mekanisme pencabutan belum diketahui. |
-| Platform dan autentikasi | KEBUTUHAN PLATFORM DIKETAHUI; DETAIL BELUM DIPUTUSKAN | Admin, pengemudi, dan wali masing-masing membutuhkan web dan mobile; OS mobile, cakupan fitur antarplatform, metode login, pemulihan akun, dan kebutuhan offline belum dirinci. |
-| Kepatuhan, retensi, dan hosting | WILAYAH DITETAPKAN; ANALISIS HUKUM BELUM SELESAI | Wilayah operasi adalah Arab Saudi; aturan yang berlaku untuk layanan, data anak, lokasi, kamera, hosting, retensi, dan transfer data masih harus ditinjau secara khusus. |
+| Platform dan autentikasi | Kebutuhan platform diketahui; detail belum diputuskan | Admin, pengemudi, dan wali membutuhkan web serta mobile; OS, cakupan fitur, login, pemulihan akun, dan kebutuhan offline belum dirinci. |
+| Kepatuhan, retensi, dan hosting | BELUM SELESAI | Wilayah operasi Arab Saudi; aturan yang berlaku untuk layanan, data anak, lokasi, kamera, hosting, retensi, dan transfer data perlu ditinjau khusus. |
 | QA | Kriteria awal tersedia, belum dijalankan | Repository belum memiliki aplikasi atau tes integrasi; kriteria di dokumen belum merupakan hasil tes. |
 
-## 3. Jawaban awal pemilik proyek dan dampaknya
+## 3. Keputusan dan pertanyaan yang masih terbuka
 
-| Pertanyaan | Jawaban | Dampak pada tinjauan |
-|---|---|---|
-| Wilayah operasi pertama | Arab Saudi | Verifikasi provider, cakupan peta/routing, hukum, privasi, hosting, dan integrasi harus secara eksplisit mencakup Arab Saudi dan kota pilot yang nantinya dipilih. Kota pilot belum disebutkan. |
-| Kondisi awal | Proyek baru dari nol | Tidak ada sistem lama yang dinyatakan perlu dipertahankan. Ini belum berarti framework, database, atau arsitektur tertentu sudah dipilih. |
-| Platform Admin Pusat | Web dan mobile | Perlu ditentukan apakah kedua platform wajib memiliki seluruh kemampuan admin atau mobile hanya untuk fungsi tertentu. |
-| Platform Pengemudi | Web dan mobile | Perlu diputuskan apakah pengemudi benar-benar perlu web selain aplikasi mobile, serta bagaimana GPS dan kamera berperilaku di tiap platform. |
-| Platform Wali | Web dan mobile | Perlu ditentukan dukungan Android/iOS dan apakah web harus setara dengan aplikasi mobile untuk peta langsung serta kamera. |
-| Skala awal | BELUM DIPUTUSKAN | Belum dapat membuat perkiraan kapasitas, biaya, target kinerja, atau jumlah perjalanan/stop untuk uji beban. |
-| Kamera/DVR | BELUM DIPUTUSKAN | Integrasi kamera tidak dapat dirancang atau dipilih sebelum perangkat kandidat dan akses teknisnya diketahui. |
-| Sumber GPS | BELUM DIPUTUSKAN | Jangan menetapkan ponsel pengemudi atau tracker bus sebagai sumber final. Bandingkan keandalan, interval, akses perangkat, biaya, dan perilaku saat offline. |
+| Pertanyaan | Status |
+|---|---|
+| Wilayah operasi | Arab Saudi |
+| Model operasional | Sekolah dan perusahaan transportasi |
+| Kota pilot | BELUM DIPUTUSKAN |
+| Skala awal | BELUM DIPUTUSKAN |
+| Kamera/DVR | BELUM DIPUTUSKAN |
+| Sumber GPS | BELUM DIPUTUSKAN |
+| Provider routing/peta | BELUM DIPILIH |
+| Platform/framework/database | BELUM DIPILIH |
 
-### 3.1 Catatan awal regulasi dan operasional Arab Saudi
+Model operasi ganda membutuhkan pemetaan tanggung jawab untuk sekolah yang mengoperasikan bus sendiri dan sekolah yang memakai perusahaan transportasi. Jangan mengasumsikan semua sekolah memakai kedua model sekaligus, satu operator melayani banyak sekolah, atau satu pihak otomatis memiliki akses ke semua data. Tanggung jawab lisensi, pengemudi, rute, GPS/AVL, kamera, data pribadi, dan pencabutan akses perlu dikonfirmasi dengan pihak terkait.
 
-Riset awal menemukan sumber publik pemerintah/otoritas yang relevan, tetapi ini bukan pendapat hukum dan belum merupakan audit kepatuhan lengkap:
-- Sistem Transportasi Darat di Jalan Arab Saudi yang diterbitkan melalui platform National Center for Archives and Records memuat perizinan dan kewajiban kegiatan transportasi darat: https://ncar.gov.sa/document-details/eyJpdiI6IjJyYWpBUmZOeVVTb2JMYWN4S2lubUE9PSIsInZhbHVlIjoiLzZGdk8za3VzNHR5OCtNVnJzQjRjZz09IiwibWFjIjoiMzBlMTFmNDZiNjZjZTY3MDZhYzY4MjlkMGY0NGJiOWJiYzkwZDRiMzA1YmQwNzIwMjBiOTgzZTNmYThlZTg3OSIsInRhZyI6IiJ9
-- Pengumuman Saudi Press Agency mengenai perlengkapan teknis dan keselamatan bus, termasuk sistem pelacakan elektronik dan kamera interior: https://www.spa.gov.sa/w1820872
-- Portal layanan pemerintah Saudi menjelaskan layanan transportasi sekolah melalui sistem Noor: https://my.gov.sa/en/services/18428
+## 4. Catatan riset awal
 
-**Tindak lanjut:** identifikasi jenis operator yang akan menggunakan aplikasi (misalnya sekolah, operator transportasi berizin, atau keduanya), kota pilot, serta pihak yang bertanggung jawab atas perizinan. Verifikasi persyaratan terkini langsung dengan Transport General Authority (TGA) dan Ministry of Education (MoE), termasuk apakah perangkat AVL/tracker dan kamera yang diwajibkan secara operasional dapat diintegrasikan. Jangan menyimpulkan bahwa kewajiban regulasi tersebut otomatis berarti aplikasi harus memakai provider tertentu.
+- Dokumentasi Google Large Vehicle Routing menyatakan ketersediaan geografis terbatas; jangan menganggap fiturnya tersedia di Arab Saudi tanpa konfirmasi tertulis dan tes. Sumber: https://developers.google.com/maps/documentation/routes/lvr
+- Cakupan routing kendaraan besar dari penyedia lain juga belum dibuktikan untuk kota pilot yang belum dipilih. Dokumentasi produk tidak menggantikan tes jalan nyata, pemeriksaan batas kendaraan, dan konfirmasi kontrak.
+- Pemberitahuan Asharqia Chamber tanggal 9 September 2026 merujuk pada peraturan pelaksanaan aktivitas transportasi pendidikan TGA yang diterbitkan pada 2025. Penerapan pada operator yang dipilih harus dikonfirmasi melalui regulasi resmi dan/atau penasihat yang kompeten. Sumber: https://www.chamber.org.sa/en/information-center/memos/memo-4997/
+- Layanan transportasi sekolah melalui Noor membuktikan adanya layanan digital, bukan ketersediaan API publik atau izin integrasi. Sumber: https://www.moe.gov.sa/en/knowledgecenter/eservices/Pages/studentransport.aspx
+- Panduan SDAIA membahas PDPL dan data pribadi seperti alamat, nomor kontak, foto/video serta aturan transfer data ke luar Kerajaan. Tinjauan ini bukan pendapat hukum dan belum menyatakan desain patuh. Sumber: https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPLCP
 
-## 4. Temuan penting dari riset routing awal
+## 5. Artefak pendukung yang tersedia
 
-### 4.1 Dukungan teknis vendor tidak otomatis berarti tersedia di wilayah operasi
+- `docs/OPERATING_MODEL_RESPONSIBILITY_MATRIX.md` — draf matriks tanggung jawab untuk sekolah dengan bus sendiri versus perusahaan transportasi. Seluruh penugasan yang belum dikonfirmasi tetap TBD.
+- `docs/VENDOR_TECHNICAL_EVIDENCE_CHECKLIST.md` — daftar bukti yang harus diminta dari kandidat routing, GPS/AVL, kamera/DVR, hosting, keamanan, dan integrasi. Termasuk kriteria tes pilot dan bukti yang perlu disimpan.
 
-Dokumentasi resmi Google menyebut Routes API Large Vehicle Routing dapat menggunakan dimensi kendaraan dan informasi berat untuk mempertimbangkan pembatasan jalan. Namun, dokumentasi yang diperiksa juga menyatakan fitur ini tersedia secara geografis terbatas dan memerlukan provisioning/akses tertentu. Halaman overview menyebut ketersediaan umum di 48 negara bagian AS dan Jepang eksperimental; dokumentasi yang sama memperingatkan hasil rute dapat berupa best effort yang masih melanggar pembatasan.
+Checklist vendor adalah alat pengumpulan bukti, bukan keputusan vendor atau bukti bahwa kemampuan sudah tersedia. Status routing tetap terblokir sampai cakupan kota Saudi, batas kendaraan besar, dan perilaku kegagalan diuji.
 
-Sumber:
-- Google Routes API — Large vehicle routing overview: https://developers.google.com/maps/documentation/routes/lvr
-- Google Routes API — Generate large vehicle routes & ETAs: https://developers.google.com/maps/documentation/routes/lvr-routes-etas
+## 6. Gerbang sebelum arsitektur dan coding
 
-**Kesimpulan:** jangan memilih Google sebagai provider final sebelum wilayah operasi dikonfirmasi dan akses/dukungan untuk wilayah itu diverifikasi. Dokumentasi yang diperiksa tidak mendukung asumsi bahwa fitur Large Vehicle Routing Google tersedia di semua negara.
+1. Tetapkan kota pilot dan kisaran skala awal.
+2. Klarifikasi apakah layanan digunakan oleh sekolah dengan bus sendiri, perusahaan transportasi, atau keduanya per penugasan; tentukan pihak yang bertanggung jawab.
+3. Tentukan kandidat kamera/DVR dan sumber GPS/AVL berdasarkan perangkat serta dokumentasi nyata.
+4. Dapatkan konfirmasi tertulis cakupan routing kendaraan besar di kota pilot dan lakukan tes dengan skenario representatif.
+5. Tinjau kewajiban perizinan, perlindungan data, lokasi pemrosesan, retensi, dan transfer data dengan pihak yang kompeten.
+6. Lengkapi matriks akses organisasi/sekolah/perusahaan dan kriteria penerimaan.
+7. Catat keputusan di `docs/DECISIONS_LOG.md`; pertahankan status BELUM DIPUTUSKAN/BELUM TERVERIFIKASI jika bukti belum cukup.
 
-### 4.2 Alternatif vendor juga memerlukan verifikasi wilayah dan kontrak
+## 7. Batas pemeriksaan
 
-Dokumentasi resmi HERE menjelaskan truck routing dengan parameter kendaraan dan pembatasan legal/fisik: https://docs.here.com/routing/docs/routing-v8-truck-routing
-
-Dokumentasi resmi 2GIS menyatakan ketersediaan Truck Directions bergantung pada opsi deployment dan cakupan wilayah: https://docs.2gis.com/en/api/navigation/truck-directions/overview
-
-Sumber-sumber ini menunjukkan bahwa ada API yang mendeskripsikan dukungan routing kendaraan besar, tetapi **belum membuktikan** cakupan peta, kualitas pembatasan jalan, akses komersial, harga, atau kelayakannya untuk lokasi proyek. Belum ada provider yang dipilih.
-
-### 4.3 Uji kelayakan routing yang diperlukan
-
-Setelah wilayah dan profil kendaraan ditentukan, buat set pengujian sintetis tanpa data pribadi anak:
-- rute dengan 20, 30, dan 40+ stop;
-- tinggi, lebar, panjang, berat, dan batas kendaraan yang relevan;
-- jalan satu arah, larangan belok/U-turn, pembatasan kendaraan, dan penutupan jalan;
-- rute yang tidak memiliki jalur aman yang valid;
-- stop yang dilewati tanpa mengubah urutan stop yang disetujui;
-- perubahan koordinat/data yang menghasilkan versi rute baru untuk perjalanan berikutnya;
-- status/peringatan provider ketika kendala tidak dapat dipenuhi.
-
-Jangan menggunakan hasil kalkulasi sebagai jaminan hukum atau keselamatan tanpa proses tinjauan rute dan validasi lapangan.
-
-## 5. Gerbang yang masih menghalangi keputusan teknis
-
-### P0 — Harus dijawab sebelum memilih platform atau vendor
-1. **Kota/daerah pilot di Arab Saudi dan model operator:** sekolah, operator transportasi berizin, atau keduanya.
-2. **Skala operasi:** perkiraan jumlah sekolah, siswa, bus, pengemudi, perjalanan harian, dan jumlah stop maksimum.
-3. **Batas platform:** apakah semua fungsi Admin, Pengemudi, dan Wali harus tersedia setara di web dan mobile; OS mobile yang wajib didukung.
-4. **Perangkat kamera/DVR:** kandidat merek/model, protokol, autentikasi, concurrent streams, dan mekanisme pencabutan akses.
-5. **Sumber GPS:** bandingkan ponsel pengemudi, tracker bus/AVL, dan kombinasi keduanya berdasarkan bukti lapangan.
-6. **Kepatuhan dan data:** penanggung jawab legal, hosting/data residency, retensi data anak/lokasi/video, serta ketentuan akses lintas negara.
-
-### P1 — Harus dituntaskan sebelum rancangan teknis disetujui
-7. Metode login, pemulihan akun, verifikasi nomor, serta cara admin menyetujui hubungan wali–siswa.
-8. Kebijakan retensi data, audit, ekspor, backup/restore, dan durasi penyimpanan lokasi.
-9. Aturan perjalanan batal, status siswa yang belum jelas, pergantian bus/pengemudi, dan pengecualian darurat.
-10. Target kualitas layanan, penanganan offline, monitoring, serta proses rilis/rollback.
-
-## 6. Rekomendasi tahap selanjutnya
-
-1. Jawab enam pertanyaan P0 di atas.
-2. Berdasarkan wilayah operasi, buat matriks vendor untuk routing bus besar, peta jalan, cakupan wilayah, batas jumlah waypoint, traffic/ETA, harga, lisensi, dan akses API.
-3. Berdasarkan perangkat nyata atau kandidat perangkat yang bisa diuji, validasi kamera live, autentikasi dan pencabutan akses.
-4. Susun rancangan konseptual data dan matriks izin untuk Admin Pusat, Pengemudi, dan Orang Tua/Wali.
-5. Minta persetujuan atas ruang lingkup tahap pertama dan kriteria penerimaan.
-6. Baru setelah gerbang tersebut lulus, susun arsitektur final dan mulai implementasi bertahap.
-
-## 7. Batas pemeriksaan ini
-
-- Tidak ada aplikasi atau tes integrasi yang dijalankan karena repository saat ini berisi dokumentasi fondasi, bukan aplikasi.
-- Tidak ada database, kebijakan RLS, penyimpanan berkas, GPS, kamera, atau akses vendor yang diverifikasi.
-- Informasi vendor di atas berasal dari dokumentasi publik dan tidak menggantikan uji langsung, verifikasi ketersediaan wilayah, peninjauan lisensi, atau konfirmasi komersial.
-- Tidak ada keputusan platform, provider, database, atau framework yang dibuat dalam laporan ini.
-
-
-## Pembaruan riset Saudi — 2026-10-29
-
-- Google Large Vehicle Routing tidak dapat diasumsikan tersedia di Arab Saudi: dokumentasi resmi saat ini membatasi ketersediaan yang dinyatakan pada 48 negara bagian AS yang bersebelahan dan Jepang eksperimental. Sumber: https://developers.google.com/maps/documentation/routes/lvr
-- Cakupan pembatasan truk HERE di Arab Saudi belum terbukti dari daftar cakupan publik yang diperiksa. Konfirmasi langsung ke vendor dan uji lapangan tetap diperlukan. Sumber: https://docs.here.com/routing/docs/routing-v8-truck-routing-coverage
-- Transportasi pendidikan di Saudi memiliki persyaratan perizinan dan perlengkapan yang harus ditinjau dengan TGA/MoE. Sumber awal: https://www.chamber.org.sa/en/information-center/memos/memo-4997/
-- PDPL dan aturan data anak, lokasi, serta foto/video perlu ditinjau oleh pihak yang kompeten. Sumber: https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL/
-- Status routing tetap TERBLOKIR; tidak ada provider yang dipilih. Kota pilot, model operator, skala, kamera/DVR, dan sumber GPS masih perlu ditentukan.
-
-
-## Pembaruan pemeriksaan operasional dan regulasi — 2026-10-29
-
-### 1. Ketentuan transportasi pendidikan perlu dibaca dalam versi terbaru
-
-Pemberitahuan Asharqia Chamber tanggal 9 September 2026 merujuk pada peraturan pelaksanaan aktivitas transportasi pendidikan TGA yang diterbitkan pada 2025, termasuk kewajiban perizinan institusi pendidikan swasta, kendaraan, pengemudi, dan perlengkapan teknis atau penggunaan operator berizin: https://www.chamber.org.sa/en/information-center/memos/memo-4997/
-
-Selain itu, keputusan yang dipublikasikan di Umm Al-Qura pada 10 April 2026 mengubah jadwal penerapan persyaratan uji kompetensi profesional untuk kartu pengemudi profesional dalam konteks transportasi bus. Dampak tepatnya pada operator dan pengemudi yang akan memakai sistem ini harus diperiksa dari teks keputusan dan aturan pelaksana terkini; jangan mengubahnya menjadi asumsi implementasi aplikasi: https://www.uqn.gov.sa/decisions-and-regulations/authorities/4000704
-
-Pengumuman TGA yang diterbitkan Saudi Press Agency pada 1 Desember 2022 juga menyebut perlengkapan bus seperti sistem pelacakan elektronik (AVL) dan kamera interior: https://www.spa.gov.sa/w1820872. Karena sumber tersebut berasal dari 2022, persyaratan teknis dan tanggal berlakunya wajib dikonfirmasi kembali kepada TGA sebelum dipakai sebagai spesifikasi pembelian.
-
-### 2. Layanan transportasi sekolah Kementerian Pendidikan sudah memiliki alur digital
-
-Halaman layanan resmi Ministry of Education menerangkan bahwa wali memakai akun Noor, relasi siswa–wali harus tersedia, lokasi ditentukan pada peta, dan proses pendaftaran/approval mengikuti alur layanan: https://www.moe.gov.sa/en/knowledgecenter/eservices/Pages/studentransport.aspx
-
-**Implikasi:** sistem baru tidak boleh mengasumsikan akan menggantikan atau terintegrasi dengan Noor. Tentukan dulu apakah aplikasi ini merupakan sistem operasional internal sekolah/operator, layanan tambahan untuk wali, atau calon integrasi. Akses API, izin integrasi, pertukaran identitas, dan hak memakai data tidak terbukti hanya dari adanya layanan web tersebut.
-
-### 3. PDPL berlaku sebagai gerbang desain, bukan checklist akhir yang bisa diasumsikan selesai
-
-Panduan resmi SDAIA menjelaskan cakupan PDPL untuk pemrosesan data pribadi di Arab Saudi, termasuk data yang dapat mengidentifikasi seseorang seperti alamat, nomor kontak, foto, dan video; panduan tersebut juga merujuk peraturan pelaksanaan dan aturan transfer data ke luar Kerajaan: https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPLCP
-
-Sebelum memilih hosting atau vendor kamera/GPS, buat inventaris aliran data: jenis data, tujuan, pihak yang mengendalikan/memproses, lokasi pemrosesan/penyimpanan, siapa yang dapat mengakses, periode retensi, dan kondisi penghapusan. Tinjauan ini belum menetapkan kewajiban hukum tertentu atau menyatakan desain patuh; itu perlu validasi pihak privasi/hukum yang kompeten.
-
-### Tindakan berikutnya yang dapat dilakukan tanpa coding
-
-1. Buat daftar calon operator/pemilik sistem dan minta mereka mengonfirmasi tanggung jawab perizinan serta integrasi yang diizinkan.
-2. Minta TGA/MoE atau penasihat yang kompeten mengonfirmasi persyaratan terbaru untuk jenis operasi yang dipilih.
-3. Minta vendor routing menjawab secara tertulis apakah mereka menyediakan data pembatasan kendaraan besar untuk kota pilot di Saudi, bukan sekadar peta jalan atau navigasi umum.
-4. Minta kandidat DVR/tracker memberikan dokumentasi API/protokol, autentikasi, batas sesi simultan, lokasi pemrosesan data, dan cara mencabut akses.
-5. Tetapkan kota pilot dan kisaran skala untuk membangun skenario uji sintetis. Data siswa nyata tidak diperlukan untuk tahap kelayakan awal.
-
-Status tetap: **belum ada provider, platform teknis, database, atau integrasi yang dipilih; belum ada fitur bisnis yang dibuat.**
-
-
-## Pembaruan keputusan operasional — 2026-10-29
-
-### Jawaban pemilik proyek
-- **Model operasional:** sekolah dan perusahaan transportasi.
-- **Kota pilot:** BELUM DIPUTUSKAN.
-- **Wilayah:** Arab Saudi.
-- **Status:** tinjauan dokumentasi/riset saja; tidak ada coding fitur bisnis dan tidak ada provider dipilih.
-
-### Implikasi model dua jalur
-Aplikasi perlu dianalisis untuk dua pola operasi yang mungkin berjalan berdampingan:
-1. **Sekolah mengoperasikan bus sendiri.**
-2. **Sekolah menggunakan perusahaan transportasi.**
-
-Ini belum berarti semua sekolah akan memakai kedua pola sekaligus. Sebelum desain arsitektur, petakan aktor dan tanggung jawab untuk tiap pola: siapa pemilik/penanggung jawab bus, pihak yang mempekerjakan atau menugaskan pengemudi, pihak yang memegang lisensi, siapa mengelola siswa dan wali, siapa menyetujui rute, siapa memantau perjalanan, siapa mengelola DVR/AVL, dan siapa yang menjadi pengendali/pemroses data pribadi. Jangan memberi perusahaan akses ke semua data sekolah atau menganggap satu perusahaan menangani banyak sekolah tanpa keputusan dan model izin yang jelas.
-
-### Pertanyaan teknis yang kini lebih spesifik
-- Apakah satu sekolah dapat berganti antara bus sendiri dan perusahaan transportasi per rute, bus, atau periode?
-- Apakah perusahaan dapat melayani beberapa sekolah, dan bagaimana pemisahan tenant/data serta akses stafnya?
-- Siapa yang mengundang/menonaktifkan pengemudi dan bertanggung jawab atas pemeriksaan dokumen/lisensi?
-- Siapa yang menyetujui perubahan rute, penggantian bus/pengemudi, dan pengecualian GPS?
-- Siapa yang memiliki perangkat kamera/AVL dan berwenang memberi atau mencabut akses?
-- Kontrak, izin, dan tanggung jawab atas insiden/retensi data apa yang harus direpresentasikan atau sekadar dirujuk oleh sistem?
-
-Pertanyaan tersebut belum dijawab dan tidak boleh dijadikan asumsi implementasi.
-
-### Verifikasi sumber Saudi yang diperbarui
-1. **Transportasi pendidikan / TGA:** pemberitahuan Asharqia Chamber bertanggal 9 September 2026 merujuk pada peraturan pelaksanaan aktivitas transportasi pendidikan TGA yang diterbitkan pada 2025. Pemberitahuan itu menyebut sekolah swasta harus memperoleh izin yang diwajibkan untuk institusi, kendaraan, dan pengemudi atau membuat kontrak dengan penyedia aktivitas transportasi pendidikan berizin, serta memenuhi perlengkapan teknis. Ini relevan langsung bagi dua model operasi, tetapi teks pemberitahuan sekunder bukan pengganti pemeriksaan regulasi resmi dan penerapannya pada kasus tertentu. Sumber: https://www.chamber.org.sa/en/information-center/memos/memo-4997/
-2. **Keputusan kompetensi pengemudi:** keputusan Umm Al-Qura tanggal 10 April 2026 mengubah waktu berlakunya kewajiban tes kompetensi profesional untuk kartu pengemudi profesional dalam konteks transportasi bus, terkait peluncuran program kualifikasi profesional. Penerapan tepatnya perlu dikonfirmasi untuk kelas operator/pengemudi yang relevan. Sumber: https://www.uqn.gov.sa/decisions-and-regulations/authorities/4000704
-3. **Alur transportasi sekolah digital:** portal layanan pemerintah Saudi menerangkan layanan pendaftaran transportasi sekolah melalui sistem Noor. Halaman tersebut membuktikan adanya layanan digital, bukan adanya API publik, hak integrasi, atau izin mengambil data. Sumber: https://my.gov.sa/en/services/18428
-4. **Privasi dan transfer data:** panduan resmi SDAIA menjelaskan PDPL mencakup pemrosesan data pribadi, termasuk alamat, nomor kontak, foto, dan video; aturan transfer ke luar Kerajaan juga perlu diperiksa sebelum memilih hosting, DVR, GPS, atau vendor cloud. Sumber: https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPLCP
-
-### Dampak terhadap keputusan teknis
-- **Belum memilih kota pilot** berarti belum bisa menguji cakupan peta/routing, kualitas pembatasan jalan, GPS di lapangan, atau konektivitas kamera untuk wilayah yang benar-benar dituju.
-- **Model operasi ganda** membuat pemisahan akses antar sekolah/perusahaan dan kepemilikan tanggung jawab menjadi gerbang desain utama, bukan detail yang boleh ditunda setelah coding.
-- Routing bus besar tetap **TERBLOKIR untuk pemilihan provider** sampai cakupan kota Saudi dibuktikan secara tertulis dan diuji.
-- Kamera/DVR dan GPS tetap belum dipilih atau diverifikasi.
-- Tidak ada klaim bahwa sistem sudah patuh regulasi; tinjauan hukum/privasi yang kompeten tetap diperlukan.
-
-### Langkah berikutnya tanpa coding
-1. Buat matriks tanggung jawab (RACI sederhana) untuk sekolah dengan bus sendiri versus sekolah yang memakai operator berizin.
-2. Minta konfirmasi TGA/MoE atau penasihat setempat mengenai izin yang berlaku pada kedua pola.
-3. Minta vendor routing, DVR, dan AVL menjawab persyaratan teknis setelah kota pilot ditetapkan.
-4. Tentukan kisaran skala awal dan siapa yang bertanggung jawab atas data pribadi pada tiap pola.
-
-
-## Artefak lanjutan: matriks tanggung jawab operasional
-
-Dibuat dokumen `docs/OPERATING_MODEL_RESPONSIBILITY_MATRIX.md` sebagai draf RACI untuk membandingkan sekolah yang mengoperasikan bus sendiri dengan sekolah yang memakai perusahaan transportasi. Semua tanggung jawab masih ditandai TBD untuk menghindari asumsi hukum/operasional. Dokumen ini menyoroti keputusan multi-sekolah, isolasi akses, siapa mengelola pengemudi/rute/GPS/kamera, pemrosesan data, dan pencabutan akses ketika kontrak atau penugasan berakhir.
-
-Kota pilot tetap BELUM DIPUTUSKAN. Sumber publik TGA/MoE/SDAIA yang dirujuk mendukung perlunya verifikasi lebih lanjut, tetapi tidak menetapkan bahwa sistem ini sudah patuh, tidak membuktikan API Noor, dan tidak membenarkan pemilihan provider. Tidak ada coding fitur bisnis.
+- Repository yang diperiksa merupakan fondasi dokumentasi; tidak ada aplikasi atau tes integrasi yang dijalankan.
+- Database, RLS, penyimpanan berkas, GPS, kamera, akses vendor, dan integrasi Noor belum diverifikasi.
+- Tidak ada provider, framework, database, atau arsitektur final yang dipilih.
+- Tidak ada fitur bisnis atau integrasi yang diimplementasikan.
