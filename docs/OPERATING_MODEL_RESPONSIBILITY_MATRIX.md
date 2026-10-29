@@ -1,96 +1,108 @@
 # Matriks Tanggung Jawab Model Operasional
 
-**Status:** DRAF UNTUK DIKONFIRMASI — bukan penetapan kewajiban hukum atau desain izin final  
-**Wilayah:** Arab Saudi  
-**Model yang harus didukung:** sekolah mengoperasikan bus sendiri dan sekolah menggunakan perusahaan transportasi  
+**Status:** Draf yang diperbarui berdasarkan klarifikasi pemilik produk  
+**Wilayah:** Arab Saudi (wilayah lain dapat mengikuti aturan lokal yang berlaku)  
+**Model yang harus didukung:** sekolah mengoperasikan bus sendiri dan/atau memakai perusahaan transportasi  
 **Kota pilot:** BELUM DIPUTUSKAN  
 **Batas:** dokumentasi dan analisis saja; tidak ada coding fitur bisnis atau pemilihan provider.
 
-## 1. Tujuan
+## 1. Klarifikasi ruang lingkup yang disetujui
 
-Dokumen ini mengidentifikasi keputusan operasional dan batas akses yang harus dikonfirmasi sebelum arsitektur aplikasi disetujui. Dua model tidak diasumsikan berjalan bersamaan di setiap sekolah.
+Pemilik produk mengonfirmasi bahwa proyek ini adalah **penyedia aplikasi**, bukan operator layanan transportasi sekolah. Pengguna aplikasi adalah:
+- **Sekolah**;
+- **Perusahaan/operator bus sekolah beserta pengemudinya**;
+- **Orang tua/wali siswa**.
 
-- **Model A — Bus sekolah sendiri:** sekolah mengoperasikan atau mengatur busnya sendiri. Status kepemilikan dan lisensi tetap harus diverifikasi.
-- **Model B — Perusahaan transportasi:** sekolah menggunakan perusahaan transportasi yang memiliki izin relevan. Kontrak dan ruang lingkup layanan perlu diperiksa.
-- **Model campuran:** apakah satu sekolah dapat memakai Model A dan B pada waktu yang sama, per rute, bus, atau periode masih BELUM DIPUTUSKAN.
+Sekolah dan operator dapat menggunakan aplikasi secara bersama-sama atau masing-masing, sesuai model operasional mereka. Otoritas, izin, dan kewenangan menjalankan kegiatan transportasi melekat pada pihak yang menjalankan kegiatan tersebut, bukan otomatis pada penyedia aplikasi.
 
-## 2. Matriks aktor dan tanggung jawab — belum diisi sebagai keputusan
+Aplikasi perlu menjelaskan kewajiban pengguna/organisasi dalam **Syarat dan Ketentuan (Terms & Conditions)**: pihak yang mendaftar dan menggunakan aplikasi menyatakan bahwa mereka memiliki izin, kewenangan, dan hak yang diperlukan untuk kegiatan serta data yang mereka kelola, dan wajib mematuhi aturan yang berlaku di wilayah operasinya. Status izin dapat perlu diperbarui jika berubah.
 
-Legenda RACI: **R** = mengerjakan; **A** = penanggung jawab akhir; **C** = dimintai pertimbangan; **I** = diberi informasi. Seluruh sel bertanda **TBD** harus disepakati dengan pemilik produk dan pihak operasi; jangan menyimpulkan tanggung jawab hukum hanya dari matriks ini.
+**Batas penting:** klausul kontrak adalah bagian dari tata kelola produk, tetapi tidak otomatis menghapus kewajiban hukum penyedia aplikasi sendiri. Rumusan final T&C, privasi, pembagian peran pemrosesan data, dan kewajiban yang tidak dapat dialihkan perlu ditinjau oleh penasihat hukum yang memahami wilayah operasi. Dokumen ini bukan pendapat hukum dan tidak menyimpulkan bahwa satu klausul sudah cukup untuk memenuhi seluruh hukum yang berlaku.
 
-| Aktivitas / keputusan | Sekolah | Perusahaan transportasi | Pengemudi | Admin platform | Wali | TGA/MoE / penasihat berwenang |
-|---|---|---|---|---|---|---|
-| Memastikan izin sekolah/aktivitas yang diperlukan | TBD | TBD | — | — | — | C / verifikasi |
-| Memastikan izin dan dokumen bus | TBD | TBD | TBD | — | — | C / verifikasi |
-| Memastikan kelayakan/dokumen pengemudi | TBD | TBD | TBD | — | — | C / verifikasi |
-| Memasukkan dan memperbarui data siswa | TBD | TBD | — | TBD | C | — |
-| Memverifikasi hubungan wali–siswa | TBD | TBD | — | TBD | C | — |
-| Menugaskan bus dan pengemudi | TBD | TBD | I | TBD | — | — |
-| Menyusun, meninjau, dan menyetujui rute | TBD | TBD | C | TBD | I bila relevan | — |
-| Menyediakan dan memelihara GPS/AVL | TBD | TBD | I | TBD | — | C / verifikasi |
-| Menyediakan dan memelihara kamera/DVR | TBD | TBD | I | TBD | — | C / verifikasi |
-| Menangani perjalanan, status siswa, dan insiden | TBD | TBD | TBD | TBD | I sesuai izin | C bila diwajibkan |
-| Memberi/mencabut akses kamera per anak | TBD | TBD | TBD | TBD | I sesuai kebijakan | C / verifikasi |
-| Menanggapi permintaan akses/koreksi data pribadi | TBD | TBD | — | TBD | C / subjek data | C / penasihat privasi |
-| Menetapkan retensi dan penghapusan data | TBD | TBD | — | TBD | I sesuai ketentuan | C / penasihat privasi |
-| Menangani insiden keamanan atau kebocoran data | TBD | TBD | I | TBD | I bila relevan | C / otoritas terkait |
-| Mengekspor laporan operasional | TBD | TBD | — | TBD | Hanya data anak yang diizinkan | — |
+## 2. Model penggunaan yang perlu didukung
 
-**Catatan:** tanda “TBD” bukan berarti tanggung jawab dibagi rata. Penetapan akhir harus mengikuti kontrak, struktur organisasi, aturan yang berlaku, dan prinsip akses minimum.
+- **Model A — Sekolah menggunakan aplikasi secara mandiri:** sekolah mengelola kegiatan dan data yang menjadi kewenangannya. Status lisensi/kewenangan sekolah atau pihak terkait harus sesuai dengan kegiatan nyata.
+- **Model B — Operator transportasi menggunakan aplikasi:** operator mengelola tugas yang menjadi tanggung jawabnya dan mengakses data yang diperlukan untuk penugasan yang sah.
+- **Model C — Sekolah dan operator menggunakan aplikasi bersama:** akses kedua pihak dihubungkan melalui organisasi, kontrak/penugasan, dan cakupan kerja yang jelas. Jangan memberikan akses lintas sekolah hanya karena operator yang sama melayani lebih dari satu pihak.
 
-## 3. Keputusan model multi-sekolah dan pemisahan data
+Ketiga model di atas adalah pola penggunaan aplikasi, bukan pernyataan bahwa semua bentuk operasi diizinkan oleh peraturan. Pihak pengguna bertanggung jawab memastikan model operasinya sah.
 
-Jawab sebelum desain tenant, database, dan otorisasi ditetapkan:
+## 3. Batas tanggung jawab secara konseptual
 
-- [ ] Apakah satu perusahaan transportasi dapat melayani beberapa sekolah?
-- [ ] Jika ya, apakah staf perusahaan hanya melihat sekolah, bus, perjalanan, dan siswa yang secara eksplisit ditugaskan kepadanya?
-- [ ] Siapa yang dapat mengundang, menonaktifkan, atau mengganti staf perusahaan?
-- [ ] Apakah sekolah dapat melihat perjalanan operator tanpa memperoleh akses ke data sekolah lain yang dilayani operator tersebut?
-- [ ] Siapa yang menjadi pengendali data dan siapa yang bertindak sebagai pemroses untuk setiap jenis data? Konfirmasi dengan penasihat yang kompeten.
-- [ ] Apakah satu sekolah boleh memakai bus sendiri sekaligus kontraktor, dan bagaimana penugasan per bus/rute/periode direpresentasikan?
-- [ ] Bagaimana penggantian operator, pemutusan kontrak, atau pengalihan rute mengakhiri akses lama tanpa menghapus riwayat yang wajib disimpan?
-- [ ] Apakah perusahaan diperbolehkan mengelola data wali/siswa secara langsung, atau hanya menerima data minimum yang dibutuhkan untuk tugas yang ditetapkan?
+| Area | Tanggung jawab pengguna/organisasi | Peran penyedia aplikasi |
+|---|---|---|
+| Izin dan kewenangan operasional | Sekolah/operator memastikan izin dan kewenangan yang diperlukan untuk kegiatan, bus, pengemudi, dan operasi mereka | Menyediakan T&C yang jelas dan mekanisme akun/organisasi; tidak menyatakan bahwa penggunaan aplikasi menggantikan izin |
+| Kebenaran data yang dimasukkan | Organisasi pengguna memastikan data yang dimasukkan akurat dan berhak diproses | Menyediakan kontrol akses, audit perubahan, dan mekanisme koreksi yang sesuai |
+| Penugasan pengemudi/bus dan operasional perjalanan | Pihak yang menjalankan operasi menetapkan dan mengawasi penugasan | Menyediakan fitur sesuai ruang lingkup yang disepakati; tidak mengambil alih keputusan operasional pengguna |
+| Persetujuan rute dan keselamatan lapangan | Pihak operasional yang berwenang meninjau dan menyetujui rute serta tindakan lapangan | Menyajikan rute/peringatan dengan batasan yang jelas; tidak menjanjikan bahwa hasil algoritme menjamin keselamatan atau kepatuhan |
+| GPS/AVL dan kamera/DVR | Pihak yang mengadakan/mengoperasikan perangkat memastikan penggunaan dan aksesnya memiliki dasar serta kewenangan | Menyediakan kontrol teknis aplikasi sesuai kemampuan integrasi yang terbukti; tidak mengklaim akses perangkat yang belum diverifikasi |
+| Data siswa, wali, lokasi, dan video | Peran dan dasar pemrosesan ditetapkan berdasarkan hubungan nyata, kontrak, dan hukum yang berlaku | Menyediakan perlindungan teknis dan informasi privasi sesuai peran hukumnya; peran legal final perlu ditinjau |
+| Akun dan staf | Organisasi mengelola pengguna yang diberi wewenang dan meminta pencabutan akses saat hak berakhir | Menyediakan manajemen akun, pembatasan akses, dan pencatatan aktivitas sesuai desain |
+| Kepatuhan hukum | Setiap pihak memenuhi kewajiban yang berlaku untuk perannya; kewajiban tidak boleh diasumsikan dapat dialihkan sepenuhnya melalui T&C | Memenuhi kewajiban yang berlaku pada penyedia aplikasi dan meninjau T&C/privasi dengan penasihat yang kompeten |
 
-### Prinsip akses sementara untuk desain
+Tabel ini adalah pembagian konseptual untuk desain produk, bukan penetapan hukum final atau pengganti kontrak.
 
-Ini adalah prinsip keamanan yang disarankan, bukan pengganti keputusan bisnis atau legal:
+## 4. Persyaratan produk untuk T&C dan onboarding organisasi
 
-1. Hak akses dibatasi berdasarkan sekolah, penugasan, perjalanan, dan tujuan kerja.
-2. Hubungan kerja/kontrak berakhir atau penugasan dicabut → akses terkait ditinjau dan dicabut; riwayat audit tidak dihapus secara diam-diam.
-3. Pengemudi hanya melihat data minimum yang dibutuhkan untuk perjalanan yang sedang ditugaskan.
-4. Akses wali terhadap siswa harus berdasarkan hubungan yang telah diverifikasi dan disetujui, bukan hanya nomor telepon.
-5. Akses kamera live harus diperiksa di server saat digunakan dan dibatasi pada periode serta anak yang diizinkan.
-6. Admin platform tidak otomatis menjadi pihak yang berhak melihat seluruh data anak atau video; kebutuhan dukungan harus memiliki alasan, izin, dan audit.
+- [ ] T&C menjelaskan bahwa aplikasi adalah alat bantu perangkat lunak, bukan lisensi/izin untuk menjalankan transportasi.
+- [ ] Pengguna/organisasi menyatakan memiliki izin, kewenangan, dan hak yang diperlukan untuk kegiatan yang dijalankan serta data yang dimasukkan/diakses.
+- [ ] Pengguna/organisasi menyatakan akan mematuhi aturan yang berlaku di wilayah operasinya dan menjaga izin tetap berlaku.
+- [ ] Pengguna/organisasi wajib memperbarui informasi yang relevan dan memberi tahu jika izin, kewenangan, kontrak, atau dasar akses berubah/berakhir.
+- [ ] T&C melarang penggunaan aplikasi untuk kegiatan yang tidak berizin atau akses/pemrosesan data tanpa kewenangan.
+- [ ] Onboarding membedakan jenis akun/organisasi: sekolah, operator transportasi, pengemudi, dan wali; akun organisasi tidak otomatis memperoleh akses ke organisasi lain.
+- [ ] Ketentuan kamera, lokasi, data siswa/wali, tujuan pemrosesan, akses, retensi, dan pengaduan dijelaskan dalam dokumen yang sesuai (T&C dan/atau pemberitahuan privasi/kontrak).
+- [ ] Konsekuensi pelanggaran, penangguhan/pencabutan akses, dan penanganan data setelah akun/kontrak berakhir ditinjau secara hukum dan dinyatakan jelas.
+- [ ] T&C dan pemberitahuan privasi ditinjau untuk wilayah peluncuran dan diperbarui ketika wilayah atau layanan berubah.
 
-## 4. Pertanyaan konfirmasi operasional
+**Catatan:** jangan menulis bahwa pengguna menanggung “semua tanggung jawab” atau bahwa penyedia aplikasi “tidak bertanggung jawab dalam keadaan apa pun” tanpa tinjauan hukum. Jangan menjanjikan verifikasi izin otomatis kecuali proses dan bukti verifikasinya benar-benar tersedia.
+
+## 5. Matriks aktor dan tanggung jawab operasional
+
+| Aktivitas | Sekolah | Operator transportasi | Pengemudi | Penyedia aplikasi | Wali |
+|---|---|---|---|---|---|
+| Memastikan kewenangan/izin kegiatan yang dijalankan | Sesuai model | Sesuai model | Memenuhi syarat yang berlaku untuk perannya | Menjelaskan batas penggunaan aplikasi; memenuhi kewajiban hukumnya sendiri | Menggunakan fitur sesuai kewenangan |
+| Menetapkan pengemudi, bus, dan perjalanan | Jika menjadi pihak operasional | Jika menjadi pihak operasional | Mengikuti penugasan sah | Menyediakan fungsi sesuai lingkup | — |
+| Memasukkan/memperbarui data siswa dan wali | Sesuai kewenangan/kontrak | Hanya jika berwenang dan diperlukan | Tidak mengelola master data | Menjaga kontrol teknis dan audit | Memberi informasi yang benar dan mengajukan koreksi |
+| Menyetujui relasi wali–siswa | Pihak yang ditunjuk sesuai proses | Jika diberi kewenangan yang sah | — | Menyediakan mekanisme akses yang aman | Memberi informasi pendukung sesuai proses |
+| Meninjau/menyetujui rute | Jika bertanggung jawab | Jika bertanggung jawab | Mengikuti rute yang disetujui | Menyediakan data/fungsi rute dengan batasan yang jelas | — |
+| Mengelola GPS/AVL dan kamera/DVR | Sesuai kepemilikan/kontrak | Sesuai kepemilikan/kontrak | Menggunakan perangkat sesuai tugas | Menegakkan izin aplikasi untuk integrasi yang didukung | Akses sesuai hak yang sah |
+| Menanggapi insiden operasional | Sesuai peran | Sesuai peran | Melaporkan sesuai prosedur | Menangani insiden platform sesuai kewajiban dan kontrak | Melapor melalui kanal yang tersedia |
+| Menangani data pribadi | Berdasarkan peran nyata dan hukum | Berdasarkan peran nyata dan hukum | Mengakses hanya yang dibutuhkan | Berdasarkan peran legal aktual; bukan ditentukan sepihak dalam dokumen ini | Mengakses data anak yang berhak dilihat |
+
+Matriks ini sengaja tidak menetapkan RACI legal final. Hubungan kontraktual dan ketentuan yang berlaku harus menentukan siapa melakukan apa dalam tiap penggunaan.
+
+## 6. Pemisahan akses antarorganisasi
+
+- Satu operator mungkin melayani lebih dari satu sekolah, tetapi akses ke data masing-masing sekolah harus ditetapkan eksplisit dan dibatasi.
+- Sekolah yang memakai operator tidak otomatis memperoleh akses ke seluruh data milik operator atau sekolah lain.
+- Pengemudi hanya melihat penugasan dan data minimum yang diperlukan.
+- Wali hanya melihat siswa yang relasinya telah diverifikasi/disetujui.
+- Berakhirnya penugasan, hubungan kerja, kontrak, atau hak wali memicu peninjauan/pencabutan akses terkait; jejak audit tidak dihapus diam-diam.
+- Hak admin platform dibatasi sesuai kebutuhan dan tidak otomatis berarti hak melihat semua data anak atau video.
+
+## 7. Pertanyaan yang masih terbuka
 
 | ID | Pertanyaan | Status |
 |---|---|---|
-| OM-01 | Model campuran boleh berjalan per sekolah/rute/bus/periode? | BELUM DIPUTUSKAN |
-| OM-02 | Satu perusahaan boleh melayani beberapa sekolah? | BELUM DIPUTUSKAN |
-| OM-03 | Pihak mana yang menandatangani kontrak dan bertanggung jawab atas izin untuk setiap model? | PERLU VERIFIKASI |
-| OM-04 | Siapa yang bertanggung jawab atas data siswa/wali dan video/GPS menurut kontrak dan hukum? | PERLU VERIFIKASI |
-| OM-05 | Siapa yang menetapkan/menyetujui rute dan menerima peringatan rute tidak aman? | BELUM DIPUTUSKAN |
-| OM-06 | Siapa yang mengelola perangkat, kredensial, pemeliharaan, dan respons saat GPS/DVR offline? | BELUM DIPUTUSKAN |
-| OM-07 | Siapa yang dapat mengundang staf perusahaan dan mengatur ruang lingkup aksesnya? | BELUM DIPUTUSKAN |
-| OM-08 | Proses apa yang berlaku saat kontrak berakhir, operator berganti, atau terjadi insiden? | BELUM DIPUTUSKAN |
-| OM-09 | Apakah integrasi dengan Noor diinginkan dan diizinkan? API/izin integrasi belum terbukti. | BELUM DIPUTUSKAN |
-| OM-10 | Kota pilot dan skala awal (sekolah, siswa, bus, pengemudi, perjalanan, stop maksimum)? | BELUM DIPUTUSKAN |
+| OM-01 | Kota pilot dan skala awal? | BELUM DIPUTUSKAN |
+| OM-02 | Proses onboarding dan bukti/konfirmasi kewenangan organisasi seperti apa yang realistis untuk versi awal? | PERLU DISESUAIKAN DENGAN T&C DAN TINJAUAN HUKUM |
+| OM-03 | Apakah organisasi wajib memasukkan nomor/jenis izin atau hanya menyatakan kewenangan pada onboarding? | BELUM DIPUTUSKAN |
+| OM-04 | Siapa di pihak sekolah/operator yang dapat mengundang dan menonaktifkan pengemudi/staf? | BELUM DIPUTUSKAN |
+| OM-05 | Jika operator melayani banyak sekolah, siapa yang menyetujui setiap akses/penugasan? | BELUM DIPUTUSKAN |
+| OM-06 | Apakah aplikasi akan memeriksa dokumen izin secara manual/otomatis pada versi awal, atau hanya mewajibkan pernyataan pengguna? | BELUM DIPUTUSKAN |
+| OM-07 | Siapa yang mengelola perangkat, kredensial, pemeliharaan, dan respons saat GPS/DVR offline? | BELUM DIPUTUSKAN |
+| OM-08 | Apakah integrasi Noor diinginkan dan diizinkan? API/izin integrasi belum terbukti. | BELUM DIPUTUSKAN |
 
-## 5. Bukti publik yang ditinjau
+## 8. Sumber dan batasan
 
-- Asharqia Chamber, 9 September 2026, menyampaikan surat TGA yang merujuk pada peraturan pelaksanaan aktivitas transportasi pendidikan dan menyebut sekolah swasta harus memenuhi perizinan terkait atau menggunakan penyedia transportasi pendidikan berizin. Sumber ini adalah pemberitahuan sekunder; konfirmasi aturan dan penerapan pada model tertentu tetap dibutuhkan: https://www.chamber.org.sa/en/information-center/memos/memo-4997/
-- Keputusan TGA yang diterbitkan di Umm Al-Qura pada 10 April 2026 mengubah jadwal kewajiban tes kompetensi profesional untuk kartu pengemudi bus. Relevansi tepatnya terhadap kelas operator/pengemudi perlu diverifikasi: https://www.uqn.gov.sa/decisions-and-regulations/authorities/4000704
-- Layanan transportasi sekolah Kementerian Pendidikan tersedia melalui alur digital Noor. Keberadaan halaman layanan bukan bukti adanya API publik atau izin integrasi: https://www.moe.gov.sa/en/knowledgecenter/eservices/Pages/studentransport.aspx
-- Panduan SDAIA tentang PDPL menjelaskan data pribadi dan kerangka regulasi, termasuk transfer data ke luar Kerajaan. Panduan tidak menggantikan penilaian hukum spesifik: https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPLCP
+Sumber awal tentang peraturan transportasi pendidikan TGA, layanan Noor, dan PDPL tercatat dalam `docs/TECHNICAL_REVIEW_FINDINGS.md`. Sumber tersebut menjadi petunjuk untuk tinjauan lanjutan, bukan kesimpulan bahwa suatu pihak telah patuh atau bahwa aplikasi wajib terintegrasi dengan sistem pemerintah.
 
-## 6. Kriteria keluar dari tinjauan operasional
+## 9. Kriteria keluar dari tinjauan operasional
 
-Tinjauan model operasi hanya dapat ditandai **LULUS** setelah:
-- pihak sekolah dan perusahaan (jika terlibat) mengonfirmasi matriks tanggung jawab;
-- struktur akses multi-sekolah dan pemutusan akses disetujui;
-- persyaratan izin terbaru dikonfirmasi oleh pihak berwenang/penasihat yang kompeten;
-- peran pengendali/pemroses dan aliran data ditinjau;
-- kota pilot dan skala awal cukup jelas untuk merencanakan uji teknis.
+- ruang lingkup penyedia aplikasi versus pengguna organisasi terdokumentasi;
+- model akses organisasi/sekolah/operator disetujui;
+- T&C dan pemberitahuan privasi disusun untuk ditinjau penasihat yang kompeten;
+- proses onboarding dan penanganan perubahan/berakhirnya kewenangan diputuskan;
+- kota pilot dan skala cukup jelas untuk merencanakan uji teknis.
 
-Hingga itu terpenuhi: **jangan memilih provider, jangan mengklaim patuh regulasi, dan jangan mulai coding fitur bisnis.**
+**Status akhir:** model produk sebagai penyedia aplikasi telah diklarifikasi. T&C, pembagian akses, dan kewajiban masing-masing pihak masih memerlukan perumusan dan tinjauan yang sesuai. Belum ada provider, arsitektur, atau fitur bisnis yang dipilih/diimplementasikan.
