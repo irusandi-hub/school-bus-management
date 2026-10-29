@@ -4,8 +4,10 @@
 **Project:** School Bus Management  
 **Region:** Saudi Arabia  
 **Operating models:** Schools and transport companies  
-**Pilot city:** BELUM DIPUTUSKAN  
+**Pilot city:** Dammam dan sekitarnya (DISETUJUI)  
 **Vendor selection:** BELUM DIPUTUSKAN  
+**Initial service scale:** sekitar 100 bus
+**Camera/DVR baseline:** perangkat kamera dan DVR sudah terpasang mandiri pada bus; aplikasi hanya menyambungkan live stream, bukan memasang/mengadakan perangkat.
 **Implementation:** No business features or vendor integrations are authorized by this document.
 
 ## Purpose
@@ -41,7 +43,7 @@ Create one copy of this section per candidate.
 
 ## 2. Road routing and route management
 
-**Do not choose a routing provider until Saudi coverage and large-bus constraints are proven in the eventual pilot city.**
+**Do not choose a routing provider until Saudi coverage and large-bus constraints are proven in Dammam dan sekitarnya.** Test scenarios must reflect an initial service target of around 100 buses, without assuming all buses run or stream concurrently.
 
 Ask the provider to answer each item explicitly:
 
@@ -176,20 +178,20 @@ For each capability, record:
 
 | Capability | Status | Evidence | Known limits | Owner / next action |
 |---|---|---|---|---|
-| Saudi routing coverage and large-bus restrictions | BELUM TERVERIFIKASI | — | Pilot city undecided | Obtain vendor written response and run local tests |
+| Saudi routing coverage and large-bus restrictions | BELUM TERVERIFIKASI | — | Dammam and surrounding areas approved as pilot; local coverage still untested | Obtain vendor written response and run local tests |
 | GPS/AVL source and update quality | BELUM TERVERIFIKASI | — | Hardware/source undecided | Define source options and test requirements |
-| Camera/DVR API and revocation | BELUM TERVERIFIKASI | — | Device/model undecided | Obtain device candidates and model-specific evidence |
+| Camera/DVR API and revocation | BELUM TERVERIFIKASI | — | Existing installed device inventory/model mix not yet supplied | Inventory representative installed devices; obtain model-specific stream/auth/revocation evidence |
 | Hosting region and data transfers | BELUM TERVERIFIKASI | — | Deployment undecided | Obtain data-flow and subprocessor details |
 | Identity / organization isolation | BELUM TERVERIFIKASI | — | Architecture not selected | Define access model and validate proposed services |
 | Noor integration | BELUM TERVERIFIKASI | — | Authorization/API unknown | Request official confirmation |
 | Licensing and operational responsibilities | BELUM TERVERIFIKASI | — | Operating entity/model details unresolved | Confirm with responsible authority and qualified counsel |
-| Commercial and support fit | BELUM TERVERIFIKASI | — | Scale and pilot city undecided | Request comparable written quotes |
+| Commercial and support fit | BELUM TERVERIFIKASI | — | Target around 100 buses; concurrent usage and detailed service profile undecided | Request comparable written quotes for this scale |
 
 ## 11. Gate before selecting a provider
 
 Do not select or integrate a provider until:
 
-1. Pilot city and representative operating scenarios are agreed.
+1. Pilot city and representative operating scenarios are agreed: Dammam and surrounding areas.
 2. The proposed school/company operating model and data responsibilities are documented.
 3. Mandatory versus desirable capabilities are separated.
 4. Routing, GPS, and camera candidates provide model/region-specific written evidence.
