@@ -60,11 +60,11 @@ Sekolah; Siswa; Orang tua/wali; Relasi siswa–wali; Titik jemput; Bus (kapasita
 - Wali harus melihat status kedaluwarsa/tidak tersedia saat data lokasi usang atau perangkat offline.
 
 ## 9. Kamera live
-- Kamera dan DVR sudah terpasang secara mandiri pada bus. Aplikasi hanya menghubungkan/menampilkan live stream dari perangkat yang ada; pengadaan, pemasangan, atau pengelolaan fisik perangkat bukan lingkup aplikasi awal. Tidak termasuk playback atau unduh rekaman.
+- Kamera dan DVR sudah terpasang secara mandiri pada bus. Aplikasi hanya menyediakan akses ke live stream; pengadaan, pemasangan, atau pengelolaan fisik perangkat bukan lingkup aplikasi awal. Jalur integrasi dibuat generik dan belum mengunci merek/protokol: stream dapat berasal langsung dari perangkat/DVR atau diteruskan melalui aplikasi/platform AV yang sudah terpasang, selama tersedia integrasi resmi/terotorisasi dan kontrol akses memadai. Tidak termasuk playback atau unduh rekaman.
 - Pengemudi dapat mengakses kamera selama sesi kerja aktif.
 - Wali hanya dapat mengakses stream selama anak tertentu telah dikonfirmasi berada di bus dan izin masih berlaku. Akses berakhir saat anak turun atau izin dicabut, meskipun bus masih membawa siswa lain.
 - Server harus mengautentikasi dan mengotorisasi setiap akses. Tautan lama tidak boleh melewati autentikasi. Hentikan/cabut stream jika didukung dan tampilkan status offline.
-- Merek/model dan firmware kamera/DVR yang sudah terpasang, protokol/API yang tersedia, metode autentikasi, kemampuan relay/proxy stream, kapasitas akses bersamaan, biaya/batas vendor, serta mekanisme pencabutan masih harus diverifikasi per perangkat. Jangan menganggap semua perangkat kompatibel.
+- Inventaris perangkat kamera/DVR dan aplikasi/platform AV yang sudah terpasang, cara stream diekspos, API/protokol yang tersedia, autentikasi, hak integrasi, kapasitas akses bersamaan, biaya/batas, serta mekanisme pencabutan masih harus diverifikasi. Jangan menganggap perangkat atau aplikasi AV kompatibel sebelum dibuktikan.
 
 ## 10. Sesi kerja dan pemeriksaan kabin
 Sesi kerja pengemudi berbeda dari sesi perjalanan anak. Sebelum menutup tugas, pengemudi harus memeriksa kabin secara fisik. Jika ada siswa yang masih tercatat di bus atau statusnya belum jelas, sistem memperingatkan dan menahan penutupan normal sesuai kebijakan. Catat pelaksana, waktu, dan hasil pemeriksaan.
