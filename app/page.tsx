@@ -3,175 +3,149 @@
 import { useMemo, useState } from "react";
 
 type Role = "Admin Pusat" | "Pengemudi" | "Orang Tua/Wali";
-type Section = "Ringkasan" | "Perjalanan" | "Rute & Titik Jemput" | "Data Siswa" | "Bus & Pengemudi" | "Laporan";
+type Section = string;
 
-const navigation: { label: Section; icon: string }[] = [
-  { label: "Ringkasan", icon: "▦" },
-  { label: "Perjalanan", icon: "↗" },
-  { label: "Rute & Titik Jemput", icon: "⌖" },
-  { label: "Data Siswa", icon: "♧" },
-  { label: "Bus & Pengemudi", icon: "▰" },
-  { label: "Laporan", icon: "▤" },
-];
+const menus: Record<Role, { label: string; icon: string }[]> = {
+  "Admin Pusat": [
+    { label: "Ringkasan", icon: "▦" },
+    { label: "Sekolah & Operator", icon: "⌂" },
+    { label: "Data Siswa & Wali", icon: "♧" },
+    { label: "Bus & Pengemudi", icon: "▰" },
+    { label: "Rute & Titik Jemput", icon: "⌖" },
+    { label: "Penugasan", icon: "↗" },
+    { label: "Laporan & Audit", icon: "▤" },
+  ],
+  "Pengemudi": [
+    { label: "Tugas Saya", icon: "▦" },
+    { label: "Perjalanan", icon: "↗" },
+    { label: "Daftar Siswa", icon: "♧" },
+    { label: "Kendala & Pemeriksaan", icon: "✓" },
+  ],
+  "Orang Tua/Wali": [
+    { label: "Anak Saya", icon: "⌂" },
+    { label: "Perjalanan", icon: "↗" },
+    { label: "Riwayat & Laporan", icon: "▤" },
+    { label: "Akun", icon: "○" },
+  ],
+};
+
+const roleIntro: Record<Role, { greeting: string; description: string }> = {
+  "Admin Pusat": {
+    greeting: "Kendalikan operasi transportasi",
+    description: "Kelola data, penugasan, rute, dan laporan sesuai kewenangan organisasi.",
+  },
+  "Pengemudi": {
+    greeting: "Siap menjalankan tugas?",
+    description: "Periksa penugasan dan rute yang disetujui sebelum memulai perjalanan.",
+  },
+  "Orang Tua/Wali": {
+    greeting: "Informasi perjalanan anak",
+    description: "Pantau status perjalanan dan lihat riwayat anak yang terhubung ke akun Anda.",
+  },
+};
+
+function Status({ children, kind = "wait" }: { children: React.ReactNode; kind?: "wait" | "live" | "done" }) {
+  return <span className={`status ${kind}`}>{children}</span>;
+}
+
+function Metric({ label, value, note, icon }: { label: string; value: string; note: string; icon: string }) {
+  return <article className="stat-card"><div className="stat-top"><span>{label}</span><span className="stat-icon">{icon}</span></div><div className="stat-value">{value}</div><div className="stat-note">{note}</div></article>;
+}
+
+function EmptyPanel({ title, detail }: { title: string; detail: string }) {
+  return <section className="panel"><div className="panel-head"><div><h3 className="panel-title">{title}</h3><div className="panel-subtitle">Ruang kerja siap dihubungkan</div></div><Status>Belum terhubung</Status></div><div className="empty-state"><div className="empty-illustration">⌁</div><strong className="empty-title">Belum ada data operasional</strong><p>{detail}</p><span className="muted-hint">Data akan muncul setelah akun, hak akses, dan sumber data disiapkan.</span></div></section>;
+}
 
 export default function Home() {
   const [role, setRole] = useState<Role>("Admin Pusat");
   const [section, setSection] = useState<Section>("Ringkasan");
-  const [notice, setNotice] = useState("Ini adalah pratinjau interaktif. Data, peta, posisi bus, dan status perjalanan masih berupa contoh.");
+  const [notice, setNotice] = useState("Pratinjau interface. Data, lokasi, dan status perjalanan belum berasal dari operasi nyata.");
 
-  const roleContent = useMemo(() => {
-    if (role === "Pengemudi") return {
-      greeting: "Siap untuk perjalanan hari ini?",
-      description: "Periksa penugasan dan rute sebelum mulai bertugas.",
-      first: "Penugasan saya", second: "Stop perjalanan", third: "Konfirmasi siswa", fourth: "Laporan masalah",
-      values: ["1", "12", "0", "0"],
-      notes: ["Rute pagi · Bus 08", "Urutan tersimpan", "Menunggu perjalanan", "Belum ada laporan"],
-    };
-    if (role === "Orang Tua/Wali") return {
-      greeting: "Pantau perjalanan anak",
-      description: "Lihat status perjalanan dan informasi yang tersedia untuk keluarga.",
-      first: "Anak terhubung", second: "Perjalanan hari ini", third: "Status terakhir", fourth: "Riwayat tersedia",
-      values: ["1", "Pagi", "Belum mulai", "—"],
-      notes: ["Relasi contoh", "Dari penugasan", "Lokasi belum tersedia", "Data contoh saja"],
-    };
-    return {
-      greeting: "Selamat datang kembali",
-      description: "Pantau operasi bus sekolah dari satu tempat.",
-      first: "Bus terdaftar", second: "Perjalanan hari ini", third: "Dalam perjalanan", fourth: "Perlu perhatian",
-      values: ["24", "18", "12", "2"],
-      notes: ["Data contoh", "Pagi dan sore", "Status simulasi", "Periksa data simulasi"],
-    };
-  }, [role]);
+  const navigation = menus[role];
+  const intro = roleIntro[role];
 
-  function chooseSection(label: Section) {
-    setSection(label);
-    setNotice(label === "Ringkasan"
-      ? "Ini adalah pratinjau interaktif. Data, peta, posisi bus, dan status perjalanan masih berupa contoh."
-      : label + " belum terhubung ke database. Tampilan ini menyiapkan struktur navigasi aplikasi.");
+  function changeRole(nextRole: Role) {
+    setRole(nextRole);
+    setSection(menus[nextRole][0].label);
+    setNotice("Mode pratinjau peran berubah. Pemilih ini hanya untuk meninjau tampilan, bukan menentukan hak akses akun.");
   }
 
+  function selectSection(label: string) {
+    setSection(label);
+    setNotice(label + " masih berupa rancangan interface dan belum terhubung ke data operasional.");
+  }
+
+  const avatar = role === "Admin Pusat" ? "AP" : role === "Pengemudi" ? "PG" : "OW";
+
   return (
-    <div className="app-shell">
+    <div className={`app-shell role-${role === "Admin Pusat" ? "admin" : role === "Pengemudi" ? "driver" : "parent"}`}>
       <aside className="sidebar">
-        <div className="brand">
+        <a className="brand" href="/" aria-label="School Bus beranda">
           <div className="brand-mark">S</div>
           <div><div className="brand-name">School Bus</div><div className="brand-sub">Manajemen transportasi</div></div>
-        </div>
-        <div>
-          <div className="workspace-label">Menu utama</div>
-          <nav className="nav-list" aria-label="Menu utama">
-            {navigation.map((item) => (
-              <button key={item.label} className={`nav-item ${section === item.label ? "active" : ""}`} onClick={() => chooseSection(item.label)}>
-                <span className="nav-icon">{item.icon}</span>{item.label}
-              </button>
-            ))}
+        </a>
+        <div className="nav-group">
+          <div className="workspace-label">Ruang kerja</div>
+          <nav className="nav-list" aria-label={`Menu ${role}`}>
+            {navigation.map((item) => <button key={item.label} className={`nav-item ${section === item.label ? "active" : ""}`} onClick={() => selectSection(item.label)}><span className="nav-icon">{item.icon}</span><span>{item.label}</span>{section === item.label && <span className="nav-active-dot" />}</button>)}
           </nav>
         </div>
-        <div className="sidebar-bottom">
-          <strong>Operasi yang aman</strong>
-          Rute yang disetujui tidak berubah diam-diam saat perjalanan aktif.
-        </div>
+        <div className="sidebar-bottom"><span className="security-icon">✓</span><strong>Akses sesuai peran</strong><p>Data operasional harus dibatasi oleh izin akun, organisasi, dan penugasan.</p></div>
       </aside>
 
       <main className="main">
         <header className="topbar">
-          <div><div className="eyebrow">Dammam · Pilot</div><h1 className="page-title">{section}</h1></div>
-          <div className="top-actions"><a className="login-link" href="/login">Masuk</a><span className="demo-badge">MODE PRATINJAU</span><div className="avatar">{role === "Admin Pusat" ? "AP" : role === "Pengemudi" ? "PG" : "OW"}</div></div>
+          <div className="topbar-title"><div className="eyebrow">DAMMAM · PILOT</div><h1 className="page-title">{section}</h1></div>
+          <div className="top-actions"><span className="demo-badge"><span className="demo-dot" /> PRATINJAU</span><a className="login-link" href="/login">Masuk</a><div className="avatar" aria-label={role}>{avatar}</div></div>
         </header>
 
         <section className="welcome">
-          <div><h2>{roleContent.greeting}</h2><p>{roleContent.description}</p></div>
-          <label>
-            <span className="eyebrow" style={{display:"block",marginBottom:6}}>Lihat sebagai</span>
-            <select className="role-select" value={role} onChange={(event) => setRole(event.target.value as Role)} aria-label="Pilih tampilan peran">
-              <option>Admin Pusat</option><option>Pengemudi</option><option>Orang Tua/Wali</option>
-            </select>
-          </label>
+          <div className="welcome-copy"><div className="welcome-kicker">RUANG KERJA {role.toUpperCase()}</div><h2>{section === navigation[0].label ? intro.greeting : section}</h2><p>{section === navigation[0].label ? intro.description : `Menu ${section} untuk peran ${role}.`}</p></div>
+          <label className="role-preview"><span className="eyebrow">Pratinjau sebagai</span><select className="role-select" value={role} onChange={(event) => changeRole(event.target.value as Role)} aria-label="Pilih interface untuk pratinjau"><option>Admin Pusat</option><option>Pengemudi</option><option>Orang Tua/Wali</option></select></label>
         </section>
 
-        {section === "Perjalanan" && role === "Pengemudi" ? (
-          <section className="panel">
-            <div className="panel-head">
-              <div><h3 className="panel-title">Navigasi pengemudi</h3><div className="panel-subtitle">Menu Perjalanan · Petunjuk arah ke titik berikutnya</div></div>
-              <span className="status wait">Menunggu rute</span>
-            </div>
-            <div className="driver-directions">
-              <div className="directions-icon">↗</div>
-              <h3>Petunjuk arah ada di sini</h3>
-              <p>Setelah admin menetapkan rute dan koordinat setiap titik jemput, pengemudi dapat membuka Google Maps untuk navigasi ke pemberhentian berikutnya.</p>
-              <div className="directions-steps">
-                <div><span>1</span><div><strong>Buka penugasan</strong><small>Perjalanan yang diberikan admin akan muncul di bagian ini.</small></div></div>
-                <div><span>2</span><div><strong>Pilih titik berikutnya</strong><small>Urutan berhenti mengikuti rute yang sudah disetujui.</small></div></div>
-                <div><span>3</span><div><strong>Mulai navigasi</strong><small>Tombol Google Maps aktif setelah tujuan dan koordinat tersedia.</small></div></div>
-              </div>
-              <div className="directions-note">Navigasi belum aktif karena aplikasi masih memakai data contoh. Kami tidak menampilkan arah palsu atau tujuan yang belum dikonfirmasi.</div>
-            </div>
+        {role === "Admin Pusat" && section === "Ringkasan" && <>
+          <section className="stats" aria-label="Ringkasan admin">
+            <Metric label="Sekolah & operator" value="—" note="Menunggu data terdaftar" icon="⌂" />
+            <Metric label="Bus terdaftar" value="—" note="Belum ada data nyata" icon="▰" />
+            <Metric label="Perjalanan hari ini" value="—" note="Pagi dan sore" icon="↗" />
+            <Metric label="Perlu ditinjau" value="—" note="Tidak ada angka simulasi" icon="!" />
           </section>
-        ) : section === "Ringkasan" ? (
-          <>
-            <section className="stats" aria-label="Ringkasan operasional">
-              {[roleContent.first, roleContent.second, roleContent.third, roleContent.fourth].map((label, index) => (
-                <article className="stat-card" key={label}>
-                  <div className="stat-top"><span>{label}</span><span className="stat-icon">{["▰","↗","⌖","✓"][index]}</span></div>
-                  <div className="stat-value">{roleContent.values[index]}</div>
-                  <div className={`stat-note ${index === 2 && role === "Admin Pusat" ? "good" : ""}`}>{roleContent.notes[index]}</div>
-                </article>
-              ))}
-            </section>
-
-            <section className="content-grid">
-              <article className="panel">
-                <div className="panel-head">
-                  <div><h3 className="panel-title">Peta operasi</h3><div className="panel-subtitle">Ilustrasi area pilot · bukan peta navigasi langsung</div></div>
-                  <button className="text-button" onClick={() => setNotice("Peta langsung belum dihubungkan. Tahap integrasi berikutnya akan memasang penyedia peta dan routing.")}>Detail peta ↗</button>
-                </div>
-                <div className="map-canvas" role="img" aria-label="Ilustrasi peta dengan jalur dan penanda bus simulasi">
-                  <div className="road r1"/><div className="road r2"/><div className="road r3"/><div className="road r4"/><div className="road r5"/><div className="road r6"/>
-                  <span className="map-label" style={{left:"9%",top:"29%"}}>AL FAYSALIYAH</span>
-                  <span className="map-label" style={{left:"62%",top:"16%"}}>AL MAZruiyah</span>
-                  <span className="map-label" style={{left:"57%",top:"81%"}}>DAMMAM</span>
-                  <span className="map-caption">Rute simulasi · Pagi</span>
-                  <div className="map-pin" style={{left:"22%",top:"57%"}}><span>1</span></div>
-                  <div className="map-pin" style={{left:"49%",top:"38%"}}><span>2</span></div>
-                  <div className="map-pin" style={{left:"74%",top:"59%"}}><span>S</span></div>
-                  <div className="bus-pin" style={{left:"39%",top:"63%"}}>▰ Bus 08</div>
-                </div>
-                <div className="map-legend"><span><i className="legend-dot bus"/>Posisi bus simulasi</span><span><i className="legend-dot"/>Titik pemberhentian contoh</span></div>
-              </article>
-
-              <article className="panel">
-                <div className="panel-head"><div><h3 className="panel-title">{role === "Pengemudi" ? "Urutan pemberhentian" : role === "Orang Tua/Wali" ? "Status perjalanan" : "Perjalanan hari ini"}</h3><div className="panel-subtitle">Contoh alur perjalanan</div></div><button className="text-button" onClick={() => chooseSection("Perjalanan")}>Lihat semua</button></div>
-                <div className="route-list">
-                  <div className="route-row"><div className="route-symbol">▰</div><div><div className="route-name">Bus 08 · Rute Pagi</div><div className="route-meta">12 titik · Sekolah Al Noor</div></div><span className="status live">Simulasi</span></div>
-                  <div className="route-row"><div className="route-symbol">⌖</div><div><div className="route-name">Titik jemput A</div><div className="route-meta">Urutan 01 · contoh</div></div><span className="status wait">Menunggu</span></div>
-                  <div className="route-row"><div className="route-symbol">⌖</div><div><div className="route-name">Titik jemput B</div><div className="route-meta">Urutan 02 · contoh</div></div><span className="status wait">Menunggu</span></div>
-                  <div className="route-row"><div className="route-symbol">⚑</div><div><div className="route-name">Sekolah tujuan</div><div className="route-meta">Tujuan akhir · contoh</div></div><span className="status done">Tujuan</span></div>
-                </div>
-              </article>
-            </section>
-
-            <section className="quick-actions" aria-label="Aksi cepat">
-              <button className="quick-action" onClick={() => {chooseSection("Perjalanan");setNotice("Daftar perjalanan masih menggunakan data contoh dan belum tersimpan ke database.")}}><span>↗</span><strong>Kelola perjalanan</strong><small>Jadwal dan status bus</small></button>
-              <button className="quick-action" onClick={() => {chooseSection("Rute & Titik Jemput");setNotice("Editor rute belum terhubung. Urutan stop akan dikunci setelah rute disetujui admin.")}}><span>⌖</span><strong>Atur rute</strong><small>Rute dan titik jemput</small></button>
-              <button className="quick-action" onClick={() => {chooseSection("Laporan");setNotice("Laporan akan diisi dari riwayat perjalanan setelah backend tersedia.")}}><span>▤</span><strong>Buka laporan</strong><small>Riwayat operasional</small></button>
-            </section>
-          </>
-        ) : (
-          <section className="panel">
-            <div className="panel-head"><div><h3 className="panel-title">{section}</h3><div className="panel-subtitle">Ruang kerja awal untuk peran {role}</div></div><span className="status wait">Belum terhubung</span></div>
-            <div className="empty-state">
-              <div style={{fontSize:30,marginBottom:12}}>{navigation.find(item => item.label === section)?.icon}</div>
-              <strong style={{display:"block",color:"var(--ink)",marginBottom:8}}>Fondasi tampilan sudah tersedia</strong>
-              Bagian ini akan diisi dengan data nyata setelah database, login, dan aturan akses server disiapkan. Belum ada data yang disimpan atau dikirim.
-            </div>
+          <section className="content-grid admin-grid">
+            <article className="panel"><div className="panel-head"><div><h3 className="panel-title">Ikhtisar operasional</h3><div className="panel-subtitle">Ringkasan akan mengikuti data yang dapat diakses admin</div></div><Status>Menunggu data</Status></div><div className="admin-overview"><div className="overview-icon">▦</div><h3>Operasi akan tampil di sini</h3><p>Setelah sekolah/operator, armada, rute, dan penugasan tersedia, halaman ini merangkum keadaan operasional tanpa mencampur data antarorganisasi.</p></div></article>
+            <article className="panel"><div className="panel-head"><div><h3 className="panel-title">Tindakan administrasi</h3><div className="panel-subtitle">Pintasan pengelolaan</div></div></div><div className="quick-list">
+              {["Sekolah & Operator", "Data Siswa & Wali", "Bus & Pengemudi", "Rute & Titik Jemput"].map((label, i) => <button className="quick-row" key={label} onClick={() => selectSection(label)}><span className="quick-icon">{["⌂","♧","▰","⌖"][i]}</span><span><strong>{label}</strong><small>Kelola data dan periksa kelengkapan</small></span><span className="quick-arrow">›</span></button>)}
+            </div></article>
           </section>
-        )}
+          <div className="notice"><strong>Belum terhubung ke data operasional.</strong> Angka dan status nyata baru ditampilkan setelah sumber data dan kebijakan akses siap.</div>
+        </>}
 
-        <div className="notice" role="status">{notice} <strong>Jangan gunakan pratinjau ini untuk keputusan operasional nyata.</strong></div>
+        {role === "Admin Pusat" && section !== "Ringkasan" && <EmptyPanel title={section} detail={section === "Rute & Titik Jemput" ? "Rute harus dapat ditinjau dan disetujui sebelum ditugaskan. Urutan stop pada perjalanan aktif tidak boleh berubah diam-diam." : section === "Laporan & Audit" ? "Laporan dan koreksi harus dapat ditelusuri ke catatan sumber serta dibatasi berdasarkan peran dan organisasi." : "Bagian ini akan menyediakan pengelolaan data sesuai kewenangan admin dan lingkup organisasi yang ditetapkan."} />}
+
+        {role === "Pengemudi" && section === "Tugas Saya" && <>
+          <section className="driver-hero"><div className="driver-hero-top"><div><span className="eyebrow light">TUGAS HARI INI</span><h2>Belum ada penugasan</h2><p>Penugasan bus dan rute akan tampil setelah diberikan oleh admin.</p></div><div className="driver-big-icon">↗</div></div><div className="driver-hero-bottom"><div><span>Bus</span><strong>Belum ditetapkan</strong></div><div><span>Jadwal</span><strong>Belum tersedia</strong></div><Status>Menunggu penugasan</Status></div></section>
+          <section className="driver-action-grid"><button className="driver-action" onClick={() => selectSection("Perjalanan")}><span className="driver-action-icon">↗</span><strong>Buka perjalanan</strong><small>Lihat rute dan stop yang disetujui</small></button><button className="driver-action" onClick={() => selectSection("Daftar Siswa")}><span className="driver-action-icon">♧</span><strong>Daftar siswa</strong><small>Periksa siswa pada penugasan</small></button><button className="driver-action" onClick={() => selectSection("Kendala & Pemeriksaan")}><span className="driver-action-icon">✓</span><strong>Kendala & pemeriksaan</strong><small>Laporkan masalah dan periksa kabin</small></button></section>
+          <div className="notice"><strong>Mode pratinjau.</strong> Tombol belum memulai perjalanan atau mengirim data.</div>
+        </>}
+
+        {role === "Pengemudi" && section === "Perjalanan" && <section className="panel"><div className="panel-head"><div><h3 className="panel-title">Navigasi perjalanan</h3><div className="panel-subtitle">Petunjuk arah ke titik berikutnya</div></div><Status>Menunggu rute</Status></div><div className="driver-empty"><div className="driver-empty-icon">⌖</div><h3>Rute belum tersedia</h3><p>Rute yang disetujui admin akan muncul di sini. Tujuan dan urutan pemberhentian harus berasal dari penugasan yang valid.</p><div className="directions-steps"><div><span>1</span><div><strong>Periksa penugasan</strong><small>Pastikan bus, jadwal, dan rute sesuai tugas Anda.</small></div></div><div><span>2</span><div><strong>Ikuti urutan stop</strong><small>Urutan pemberhentian tetap sesuai rute yang disetujui.</small></div></div><div><span>3</span><div><strong>Buka petunjuk arah</strong><small>Navigasi akan aktif setelah koordinat tujuan tersedia.</small></div></div></div></div></section>}
+        {role === "Pengemudi" && section === "Daftar Siswa" && <EmptyPanel title="Daftar siswa pada tugas" detail="Hanya siswa yang terkait dengan penugasan aktif akan ditampilkan. Status naik/turun dicatat per siswa dan per perjalanan." />}
+        {role === "Pengemudi" && section === "Kendala & Pemeriksaan" && <section className="driver-action-panel"><div className="panel-head"><div><h3 className="panel-title">Keselamatan perjalanan</h3><div className="panel-subtitle">Alur sebelum dan sesudah bertugas</div></div><Status>Belum aktif</Status></div><div className="safety-items"><div><span>01</span><section><strong>Laporkan kendala</strong><p>Catat masalah bus, rute, GPS, atau data siswa untuk ditinjau admin.</p></section></div><div><span>02</span><section><strong>Periksa kabin</strong><p>Pemeriksaan fisik wajib sebelum menutup sesi kerja.</p></section></div><div><span>03</span><section><strong>Selesaikan perjalanan</strong><p>Penutupan mengikuti status siswa dan aturan operasional yang disetujui.</p></section></div></div></section>}
+
+        {role === "Orang Tua/Wali" && section === "Anak Saya" && <>
+          <section className="parent-welcome-card"><div className="parent-icon">♡</div><div><span className="eyebrow">KELUARGA</span><h2>Belum ada anak terhubung</h2><p>Anak akan muncul setelah hubungan wali diverifikasi dan disetujui.</p></div><Status>Belum terhubung</Status></section>
+          <section className="parent-status-grid"><article className="parent-status-card"><span className="parent-card-icon">↗</span><span className="eyebrow">PERJALANAN PAGI</span><strong>Belum tersedia</strong><p>Status akan ditampilkan setelah penugasan tersedia.</p></article><article className="parent-status-card"><span className="parent-card-icon">⌖</span><span className="eyebrow">LOKASI BUS</span><strong>Belum tersedia</strong><p>Tidak ada lokasi yang ditampilkan tanpa data terbaru.</p></article></section>
+          <div className="notice"><strong>Privasi keluarga.</strong> Wali hanya boleh melihat anak yang memiliki relasi aktif dan disetujui. Posisi bus nantinya selalu disertai waktu pembaruan.</div>
+        </>}
+        {role === "Orang Tua/Wali" && section === "Perjalanan" && <section className="panel"><div className="panel-head"><div><h3 className="panel-title">Status perjalanan anak</h3><div className="panel-subtitle">Pagi dan sore ditampilkan secara terpisah</div></div><Status>Belum tersedia</Status></div><div className="parent-timeline"><div className="timeline-line"/>{[{n:"01",title:"Menunggu perjalanan",desc:"Jadwal akan tampil setelah anak terhubung ke penugasan."},{n:"02",title:"Status naik/turun",desc:"Hanya konfirmasi yang tercatat yang akan ditampilkan."},{n:"03",title:"Lokasi bus terakhir",desc:"Lokasi akan menyertakan waktu pembaruan dan status kesegaran."}].map(x=><div className="timeline-item" key={x.n}><span>{x.n}</span><div><strong>{x.title}</strong><p>{x.desc}</p></div></div>)}</div></section>}
+        {role === "Orang Tua/Wali" && section === "Riwayat & Laporan" && <EmptyPanel title="Riwayat perjalanan anak" detail="Riwayat akan memisahkan perjalanan pagi dan sore, membedakan status terkonfirmasi dari status yang belum diketahui, dan hanya menampilkan data anak yang berhak diakses." />}
+        {role === "Orang Tua/Wali" && section === "Akun" && <EmptyPanel title="Profil dan akses akun" detail="Informasi akun dan pengelolaan sesi akan ditampilkan di sini. Peran dan hubungan wali tidak dapat diubah sendiri dari halaman profil." />}
+
+        <footer className="page-footer"><span>School Bus Management</span><span>Interface pratinjau · bukan sistem operasional</span></footer>
       </main>
 
       <nav className="mobile-nav" aria-label="Navigasi seluler">
-        {navigation.slice(0,4).map((item) => <button key={item.label} className={section === item.label ? "active" : ""} onClick={() => chooseSection(item.label)}><span>{item.icon}</span>{item.label === "Rute & Titik Jemput" ? "Rute" : item.label === "Ringkasan" ? "Beranda" : item.label}</button>)}
+        {navigation.slice(0, 4).map((item) => <button key={item.label} className={section === item.label ? "active" : ""} onClick={() => selectSection(item.label)}><span>{item.icon}</span>{item.label}</button>)}
       </nav>
     </div>
   );
