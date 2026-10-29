@@ -1,6 +1,6 @@
 # Kebijakan Pemilihan Layanan Routing
 
-**Status:** Arah produk disetujui; penyedia belum dipilih dan belum lulus pengujian.  
+**Status:** Arah evaluasi HERE-first; vendor belum disetujui untuk produksi.  
 **Wilayah pilot:** Dammam dan sekitarnya, Arab Saudi.  
 **Prioritas:** routing yang terkelola penyedia, data jalan terkini, cakupan Saudi, serta aplikasi pengemudi yang ringan.
 
@@ -12,6 +12,12 @@
 - Utamakan perhitungan rute melalui API server dan tampilkan hasil rute pada antarmuka peta yang ringan. Navigasi langkah demi langkah dapat dibuka melalui aplikasi eksternal bila dibutuhkan, setelah kesesuaian alur operasional dipastikan.
 - GPS HP pengemudi adalah sumber lokasi utama fase awal. GPS/tracker bawaan bus tetap fitur opsional fase berikutnya.
 - Tidak ada vendor yang dipilih final sampai bukti cakupan, batas kendaraan, biaya, persyaratan penggunaan data, dan hasil uji tersedia.
+
+## 2. Prioritas evaluasi
+
+**HERE Routing menjadi kandidat utama untuk PoC** karena dokumentasi resminya menjelaskan Routing API dengan mode bus serta data lalu lintas/insiden terkini. Ini hanya prioritas pengujian, bukan keputusan final. Sebelum PoC, wajib ada izin komersial tertulis untuk pelacakan armada, penampilan posisi kendaraan, dan perhitungan rute; paket Base Plan mengecualikan kategori Asset Management. Cakupan produk untuk Dammam juga harus dikonfirmasi. Referensi: https://docs.here.com/routing/reference/routing-v8-api-overview, https://docs.here.com/traffic-api/docs/real-time-traffic-here-traffic-api-v7-concepts, https://www.here.com/get-started/pricing/base-plan-restrictions, https://docs.here.com/coverage/docs/here-coverage-information.
+
+HudHud Maps dipertahankan sebagai **opsi cadangan**, bukan pengujian paralel awal. Pertimbangkan hanya jika HERE tidak lulus cakupan, lisensi, biaya, atau uji rute wajib.
 
 ## 2. Kandidat untuk diverifikasi
 
@@ -27,7 +33,7 @@ Alasan diperiksa: HERE Routing API mendokumentasikan routing kendaraan berat dan
 
 Bukti yang wajib diminta: cakupan resmi Saudi untuk routing dan atribut kendaraan berat, kesesuaian profil bus sekolah, batas stop/waypoint dan optimasi, pembaruan lalu lintas, SLA, harga, batas pemakaian, serta hasil uji rute di Dammam.
 
-Kandidat ini adalah daftar untuk evaluasi, bukan rekomendasi final atau pernyataan kompatibilitas.
+HERE adalah prioritas PoC; HudHud adalah cadangan. Keduanya belum disetujui untuk produksi dan tidak ada klaim kompatibilitas bus sekolah sebelum pengujian.
 
 ## 3. Persyaratan teknis wajib
 
@@ -63,9 +69,10 @@ Kandidat ini adalah daftar untuk evaluasi, bukan rekomendasi final atau pernyata
 - [x] Gunakan layanan routing terkelola yang sudah ada; tidak membangun mesin routing sendiri.
 - [x] Prioritaskan data jalan terkini dan pengalaman aplikasi pengemudi yang ringan.
 - [x] GPS HP pengemudi tetap sumber utama fase awal; GPS bus opsional di masa depan.
-- [ ] Verifikasi HudHud Maps untuk kebutuhan lokal dan batas bus sekolah.
-- [ ] Verifikasi HERE Routing dan cakupan atribut kendaraan di Dammam.
+- [ ] Dapatkan konfirmasi tertulis lisensi komersial, paket, harga, SLA, dan cakupan HERE di Dammam.
+- [ ] Uji HERE Routing pada rute Dammam dengan dimensi bus aktual.
+- [ ] Evaluasi HudHud sebagai cadangan hanya jika HERE gagal pada gerbang wajib.
 - [ ] Uji skenario 20/30/40+ stop, kualitas rute, performa HP, biaya, dan persyaratan penggunaan data.
 - [ ] Pilih vendor setelah bukti lengkap dan hasil dibandingkan.
 
-**Kesimpulan:** Gunakan API routing yang dikelola penyedia dan peta ringan di aplikasi. HudHud Maps dan HERE adalah kandidat evaluasi, bukan vendor final. Kompatibilitas bus sekolah di Dammam dan kinerja pada HP kelas rendah masih harus dibuktikan.
+**Kesimpulan:** HERE adalah kandidat utama untuk PoC, bukan vendor final. Dapatkan izin komersial tertulis dan uji data lalu lintas, cakupan Dammam, dan kelayakan jalur bus sebelum integrasi. HudHud tetap opsi cadangan.
