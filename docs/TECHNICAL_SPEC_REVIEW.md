@@ -120,3 +120,12 @@ Sumber pendukung dan batasan bukti dicatat di docs/TECHNICAL_REVIEW_FINDINGS.md.
 **Bukti publik yang diperiksa:** pemberitahuan Asharqia Chamber 9 September 2026 tentang regulasi transportasi pendidikan TGA (https://www.chamber.org.sa/en/information-center/memos/memo-4997/); keputusan Umm Al-Qura 10 April 2026 mengenai jadwal tes kompetensi profesional pengemudi bus (https://www.uqn.gov.sa/decisions-and-regulations/authorities/4000704); portal layanan transportasi sekolah melalui Noor (https://my.gov.sa/en/services/18428); panduan PDPL SDAIA (https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPLCP). Sumber-sumber ini tidak membuktikan API Noor, kepatuhan sistem, atau kelayakan provider tertentu.
 
 **Gerbang coding tetap berlaku:** belum ada coding fitur bisnis, provider belum dipilih, dan tinjauan teknis belum dinyatakan lulus.
+
+
+## Artefak operasional tambahan
+
+- [ ] Tinjau dan isi `docs/OPERATING_MODEL_RESPONSIBILITY_MATRIX.md` bersama pemilik produk, perwakilan sekolah, dan calon operator transportasi.
+- [ ] Jangan mengubah nilai TBD menjadi keputusan tanpa konfirmasi tertulis atau bukti yang relevan.
+- [ ] Verifikasi tanggung jawab, pemisahan data multi-sekolah, pengelolaan akses, dan proses berakhirnya kontrak sebelum desain izin disetujui.
+
+Status: dokumen pendukung dibuat; keputusan operasional belum final; tidak ada provider dipilih dan tidak ada coding fitur bisnis.
