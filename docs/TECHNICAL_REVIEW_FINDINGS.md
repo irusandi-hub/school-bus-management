@@ -120,3 +120,36 @@ Jangan menggunakan hasil kalkulasi sebagai jaminan hukum atau keselamatan tanpa 
 - Transportasi pendidikan di Saudi memiliki persyaratan perizinan dan perlengkapan yang harus ditinjau dengan TGA/MoE. Sumber awal: https://www.chamber.org.sa/en/information-center/memos/memo-4997/
 - PDPL dan aturan data anak, lokasi, serta foto/video perlu ditinjau oleh pihak yang kompeten. Sumber: https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL/
 - Status routing tetap TERBLOKIR; tidak ada provider yang dipilih. Kota pilot, model operator, skala, kamera/DVR, dan sumber GPS masih perlu ditentukan.
+
+
+## Pembaruan pemeriksaan operasional dan regulasi — 2026-10-29
+
+### 1. Ketentuan transportasi pendidikan perlu dibaca dalam versi terbaru
+
+Pemberitahuan Asharqia Chamber tanggal 9 September 2026 merujuk pada peraturan pelaksanaan aktivitas transportasi pendidikan TGA yang diterbitkan pada 2025, termasuk kewajiban perizinan institusi pendidikan swasta, kendaraan, pengemudi, dan perlengkapan teknis atau penggunaan operator berizin: https://www.chamber.org.sa/en/information-center/memos/memo-4997/
+
+Selain itu, keputusan yang dipublikasikan di Umm Al-Qura pada 10 April 2026 mengubah jadwal penerapan persyaratan uji kompetensi profesional untuk kartu pengemudi profesional dalam konteks transportasi bus. Dampak tepatnya pada operator dan pengemudi yang akan memakai sistem ini harus diperiksa dari teks keputusan dan aturan pelaksana terkini; jangan mengubahnya menjadi asumsi implementasi aplikasi: https://www.uqn.gov.sa/decisions-and-regulations/authorities/4000704
+
+Pengumuman TGA yang diterbitkan Saudi Press Agency pada 1 Desember 2022 juga menyebut perlengkapan bus seperti sistem pelacakan elektronik (AVL) dan kamera interior: https://www.spa.gov.sa/w1820872. Karena sumber tersebut berasal dari 2022, persyaratan teknis dan tanggal berlakunya wajib dikonfirmasi kembali kepada TGA sebelum dipakai sebagai spesifikasi pembelian.
+
+### 2. Layanan transportasi sekolah Kementerian Pendidikan sudah memiliki alur digital
+
+Halaman layanan resmi Ministry of Education menerangkan bahwa wali memakai akun Noor, relasi siswa–wali harus tersedia, lokasi ditentukan pada peta, dan proses pendaftaran/approval mengikuti alur layanan: https://www.moe.gov.sa/en/knowledgecenter/eservices/Pages/studentransport.aspx
+
+**Implikasi:** sistem baru tidak boleh mengasumsikan akan menggantikan atau terintegrasi dengan Noor. Tentukan dulu apakah aplikasi ini merupakan sistem operasional internal sekolah/operator, layanan tambahan untuk wali, atau calon integrasi. Akses API, izin integrasi, pertukaran identitas, dan hak memakai data tidak terbukti hanya dari adanya layanan web tersebut.
+
+### 3. PDPL berlaku sebagai gerbang desain, bukan checklist akhir yang bisa diasumsikan selesai
+
+Panduan resmi SDAIA menjelaskan cakupan PDPL untuk pemrosesan data pribadi di Arab Saudi, termasuk data yang dapat mengidentifikasi seseorang seperti alamat, nomor kontak, foto, dan video; panduan tersebut juga merujuk peraturan pelaksanaan dan aturan transfer data ke luar Kerajaan: https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPLCP
+
+Sebelum memilih hosting atau vendor kamera/GPS, buat inventaris aliran data: jenis data, tujuan, pihak yang mengendalikan/memproses, lokasi pemrosesan/penyimpanan, siapa yang dapat mengakses, periode retensi, dan kondisi penghapusan. Tinjauan ini belum menetapkan kewajiban hukum tertentu atau menyatakan desain patuh; itu perlu validasi pihak privasi/hukum yang kompeten.
+
+### Tindakan berikutnya yang dapat dilakukan tanpa coding
+
+1. Buat daftar calon operator/pemilik sistem dan minta mereka mengonfirmasi tanggung jawab perizinan serta integrasi yang diizinkan.
+2. Minta TGA/MoE atau penasihat yang kompeten mengonfirmasi persyaratan terbaru untuk jenis operasi yang dipilih.
+3. Minta vendor routing menjawab secara tertulis apakah mereka menyediakan data pembatasan kendaraan besar untuk kota pilot di Saudi, bukan sekadar peta jalan atau navigasi umum.
+4. Minta kandidat DVR/tracker memberikan dokumentasi API/protokol, autentikasi, batas sesi simultan, lokasi pemrosesan data, dan cara mencabut akses.
+5. Tetapkan kota pilot dan kisaran skala untuk membangun skenario uji sintetis. Data siswa nyata tidak diperlukan untuk tahap kelayakan awal.
+
+Status tetap: **belum ada provider, platform teknis, database, atau integrasi yang dipilih; belum ada fitur bisnis yang dibuat.**
