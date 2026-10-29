@@ -94,3 +94,11 @@ Catat keputusan yang disetujui pemilik produk. Jangan mencatat rekomendasi yang 
 ## Hal yang belum diputuskan
 
 Lihat `TECHNICAL_SPEC_REVIEW.md`, bagian 19 pada `MASTER_SPEC.md`, serta `OPERATING_MODEL_RESPONSIBILITY_MATRIX.md`. Jangan mengubah pertanyaan terbuka menjadi keputusan tanpa persetujuan.
+
+
+### DEC-015 — Antarmuka generik integrasi live stream
+- **Tanggal:** 2026-10-29
+- **Status:** DISETUJUI SEBAGAI ARAH DOKUMENTASI; KONTRAK TEKNIS DAN KOMPATIBILITAS BELUM TERVERIFIKASI
+- **Keputusan:** Dokumentasikan kemampuan minimum integrasi live stream secara netral terhadap vendor, dengan sumber potensial berupa perangkat/DVR langsung atau aplikasi/platform AV yang telah terpasang. Antarmuka harus mencakup autentikasi server-side, sesi terbatas, pemeriksaan izin, pencabutan akses, status sumber, batas konkurensi, audit, serta bukti kompatibilitas.
+- **Alasan:** Pemilik produk meminta spesifikasi integrasi umum sebelum menentukan metode atau vendor.
+- **Dampak pada dokumen/tes:** Gunakan `docs/GENERIC_CAMERA_STREAMING_INTERFACE.md` sebagai daftar kebutuhan dan bukti evaluasi. Protokol, vendor, arsitektur relay, target konkurensi, dan batas waktu pencabutan tetap BELUM DIPUTUSKAN sampai perangkat/platform aktual diuji. Dokumen ini bukan persetujuan implementasi produksi.
