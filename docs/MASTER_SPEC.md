@@ -89,7 +89,7 @@ Data anak, kontak wali, dan lokasi harus dibatasi berdasarkan kebutuhan. Terapka
 ## 13. Hal yang belum diputuskan atau harus diverifikasi
 - Apakah ada aplikasi/database lama yang harus dipertahankan.
 - Platform final (admin web, aplikasi pengemudi, portal wali), metode login, pemulihan akun, dan kebutuhan offline.
-- Negara/wilayah operasi dan kewajiban hukum terkait anak, lokasi, kamera, dan transportasi.
+- Wilayah operasi awal: Arab Saudi. Kota pilot dan kewajiban hukum spesifik terkait anak, lokasi, kamera, serta transportasi tetap perlu ditinjau.
 - Skala sekolah/siswa/bus/pengemudi serta pola penugasan.
 - Prosedur pembuktian relasi wali dan definisi final semua status.
 - Model kamera/DVR, protokol streaming, GPS dan interval pembaruan.
@@ -104,3 +104,27 @@ Sebelum coding fitur bisnis: jawab atau mitigasi pertanyaan kritis keselamatan/p
 Agen harus mengaudit repository, database, dan integrasi sebelum menyimpulkan; bekerja sesuai lingkup; tidak mengarang fakta/hasil tes; menandai hal yang belum diketahui; tidak melakukan tindakan destruktif, migrasi produksi, merge atau deployment tanpa izin; dan melaporkan file yang berubah, perintah tes serta hasil aktual, keterbatasan, risiko, dan tindak lanjut.
 
 Status yang digunakan: `BELUM DIPUTUSKAN`, `BELUM TERVERIFIKASI`, `BELUM DIKERJAKAN`, `SEDANG DIKERJAKAN`, `SELESAI DAN LULUS TES`, `TERIMPLEMENTASI TETAPI BELUM TERVERIFIKASI`, `TERBLOKIR`.
+
+
+## 16. Model produk: penyedia aplikasi
+
+Produk ini adalah **aplikasi untuk mendukung operasional**, bukan penyedia layanan transportasi sekolah. Pengguna utamanya:
+- Sekolah;
+- Perusahaan/operator bus sekolah dan pengemudinya;
+- Orang tua/wali siswa.
+
+Sekolah dan operator dapat memakai aplikasi bersama-sama atau secara terpisah sesuai model operasional yang sah. Aplikasi harus mendukung pembatasan akses sesuai organisasi, hubungan kerja, penugasan, dan tujuan penggunaan; keanggotaan pada satu organisasi tidak otomatis memberikan akses ke organisasi lain.
+
+### Kewenangan dan izin pengguna
+
+Pihak yang menggunakan aplikasi untuk menjalankan kegiatan operasional wajib memiliki izin, kewenangan, dan hak yang diperlukan serta mematuhi peraturan yang berlaku di wilayah operasinya. Prinsip ini harus dinyatakan dengan jelas dalam Terms & Conditions. Organisasi pengguna juga bertanggung jawab untuk memastikan bahwa data yang dimasukkan atau dibagikan memang boleh diproses untuk tujuan tersebut.
+
+T&C harus menjelaskan bahwa aplikasi tidak menggantikan izin atau kewenangan operasional. Organisasi perlu memberi tahu jika kewenangan, izin, kontrak, atau hak akses yang relevan berubah atau berakhir. Prosedur onboarding, bukti izin yang diminta (jika ada), penangguhan, dan pencabutan akses masih BELUM DIPUTUSKAN.
+
+Ketentuan kontrak tidak otomatis menghapus kewajiban hukum yang mungkin melekat pada penyedia aplikasi. T&C dan pemberitahuan privasi harus ditinjau oleh penasihat hukum yang kompeten untuk wilayah peluncuran; spesifikasi ini bukan pendapat hukum.
+
+### Batas tanggung jawab
+
+Pihak sekolah/operator bertanggung jawab atas kegiatan yang dijalankan dan keputusan operasional yang menjadi kewenangannya, termasuk memastikan izin serta penugasan yang sah. Penyedia aplikasi menyediakan fungsi perangkat lunak dan kontrol teknis sesuai lingkup produk, serta memenuhi kewajiban yang berlaku bagi penyedia aplikasi. Pembagian tanggung jawab yang tepat harus diselaraskan dengan hukum, kontrak, dan peran aktual setiap pihak; tidak boleh ditentukan sepihak hanya dengan kalimat umum di T&C.
+
+Lihat juga `docs/OPERATING_MODEL_RESPONSIBILITY_MATRIX.md` dan `docs/DECISIONS_LOG.md`.
