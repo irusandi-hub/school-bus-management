@@ -56,6 +56,76 @@ function EmptyPanel({ title, detail }: { title: string; detail: string }) {
   return <section className="panel"><div className="panel-head"><div><h3 className="panel-title">{title}</h3><div className="panel-subtitle">Ruang kerja siap dihubungkan</div></div><Status>Belum terhubung</Status></div><div className="empty-state"><div className="empty-illustration">⌁</div><strong className="empty-title">Belum ada data operasional</strong><p>{detail}</p><span className="muted-hint">Data akan muncul setelah akun, hak akses, dan sumber data disiapkan.</span></div></section>;
 }
 
+type AdminSection = "Sekolah & Operator" | "Data Siswa & Wali" | "Bus & Pengemudi" | "Rute & Titik Jemput" | "Penugasan" | "Laporan & Audit";
+
+const adminSectionDetails: Record<AdminSection, { description: string; columns: string[]; emptyTitle: string; emptyDetail: string; action: string }> = {
+  "Sekolah & Operator": {
+    description: "Daftar organisasi yang menggunakan aplikasi dan informasi dasar operasionalnya.",
+    columns: ["Nama organisasi", "Jenis", "Kontak utama", "Status"],
+    emptyTitle: "Belum ada sekolah atau operator",
+    emptyDetail: "Data organisasi akan ditampilkan di sini setelah sumber data disiapkan.",
+    action: "Tambah organisasi",
+  },
+  "Data Siswa & Wali": {
+    description: "Data siswa, relasi wali, dan status verifikasi hubungan keluarga.",
+    columns: ["Nama siswa", "Sekolah", "Relasi wali", "Status relasi"],
+    emptyTitle: "Belum ada data siswa",
+    emptyDetail: "Data siswa dan wali tidak ditampilkan sampai tersedia sumber data yang benar.",
+    action: "Tambah siswa",
+  },
+  "Bus & Pengemudi": {
+    description: "Informasi armada dan pengemudi untuk kebutuhan penugasan.",
+    columns: ["Identitas bus", "Kapasitas", "Pengemudi", "Status"],
+    emptyTitle: "Belum ada bus atau pengemudi",
+    emptyDetail: "Armada dan pengemudi akan muncul setelah data terdaftar.",
+    action: "Tambah armada",
+  },
+  "Rute & Titik Jemput": {
+    description: "Rute, urutan titik jemput, dan status pemeriksaan/persetujuan rute.",
+    columns: ["Nama rute", "Perjalanan", "Jumlah stop", "Status persetujuan"],
+    emptyTitle: "Belum ada rute",
+    emptyDetail: "Rute yang disiapkan harus ditinjau dan disetujui sebelum dipakai. Urutan stop rute aktif tidak boleh berubah diam-diam.",
+    action: "Buat rute",
+  },
+  "Penugasan": {
+    description: "Pencocokan pengemudi, bus, rute, dan jadwal perjalanan.",
+    columns: ["Jadwal", "Pengemudi", "Bus", "Rute", "Status"],
+    emptyTitle: "Belum ada penugasan",
+    emptyDetail: "Penugasan akan tampil setelah data pengemudi, bus, rute, dan jadwal tersedia.",
+    action: "Buat penugasan",
+  },
+  "Laporan & Audit": {
+    description: "Riwayat operasional, laporan, dan catatan perubahan yang dapat ditelusuri.",
+    columns: ["Waktu", "Kategori", "Referensi", "Pelaksana", "Ringkasan"],
+    emptyTitle: "Belum ada laporan atau catatan audit",
+    emptyDetail: "Laporan dan koreksi nantinya harus merujuk catatan sumber serta menyimpan alasan dan jejak perubahan.",
+    action: "Buat laporan",
+  },
+};
+
+function AdminWorkspace({ section }: { section: string }) {
+  const config = adminSectionDetails[section as AdminSection];
+  if (!config) return <EmptyPanel title={section} detail="Ruang kerja ini belum disusun." />;
+  return (
+    <section className="panel admin-workspace">
+      <div className="panel-head admin-workspace-head">
+        <div><h3 className="panel-title">{section}</h3><div className="panel-subtitle">{config.description}</div></div>
+        <button className="workspace-action" type="button" disabled title="Belum aktif pada tahap pratinjau">{config.action}</button>
+      </div>
+      <div className="workspace-toolbar">
+        <label className="workspace-search"><span aria-hidden="true">⌕</span><input type="search" placeholder={"Cari " + section.toLowerCase() + "…"} disabled aria-label={"Cari " + section} /></label>
+        <span className="workspace-count">Belum ada data</span>
+      </div>
+      <div className="workspace-table-wrap">
+        <table className="workspace-table">
+          <thead><tr>{config.columns.map((column) => <th key={column} scope="col">{column}</th>)}</tr></thead>
+          <tbody><tr><td colSpan={config.columns.length}><div className="workspace-empty"><span className="workspace-empty-icon" aria-hidden="true">▤</span><strong>{config.emptyTitle}</strong><p>{config.emptyDetail}</p><small>Pratinjau interface · belum terhubung ke database</small></div></td></tr></tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
+
 export default function Home() {
   const [role, setRole] = useState<Role>("Admin Pusat");
   const [section, setSection] = useState<Section>("Ringkasan");
@@ -120,7 +190,7 @@ export default function Home() {
           <div className="notice"><strong>Belum terhubung ke data operasional.</strong> Angka dan status nyata baru ditampilkan setelah sumber data dan kebijakan akses siap.</div>
         </>}
 
-        {role === "Admin Pusat" && section !== "Ringkasan" && <EmptyPanel title={section} detail={section === "Rute & Titik Jemput" ? "Rute harus dapat ditinjau dan disetujui sebelum ditugaskan. Urutan stop pada perjalanan aktif tidak boleh berubah diam-diam." : section === "Laporan & Audit" ? "Laporan dan koreksi harus dapat ditelusuri ke catatan sumber serta dibatasi berdasarkan peran dan organisasi." : "Bagian ini akan menyediakan pengelolaan data sesuai kewenangan admin dan lingkup organisasi yang ditetapkan."} />}
+        {role === "Admin Pusat" && section !== "Ringkasan" && <AdminWorkspace section={section} />}
 
         {role === "Pengemudi" && section === "Tugas Saya" && <>
           <section className="driver-hero"><div className="driver-hero-top"><div><span className="eyebrow light">TUGAS HARI INI</span><h2>Belum ada penugasan</h2><p>Penugasan bus dan rute akan tampil setelah diberikan oleh admin.</p></div><div className="driver-big-icon">↗</div></div><div className="driver-hero-bottom"><div><span>Bus</span><strong>Belum ditetapkan</strong></div><div><span>Jadwal</span><strong>Belum tersedia</strong></div><Status>Menunggu penugasan</Status></div></section>
