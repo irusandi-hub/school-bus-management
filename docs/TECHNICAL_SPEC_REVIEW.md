@@ -189,3 +189,16 @@ Status kamera tetap **BELUM TERVERIFIKASI** secara teknis, tetapi bukan penghamb
 - [ ] Belum ada implementasi atau uji operasional fitur.
 
 Gunakan dokumen alur inti sebagai acuan untuk memecah pekerjaan teknis berikutnya. Jangan mulai implementasi yang bergantung pada asumsi terbuka tanpa mencatat mitigasi atau keputusan pemilik produk.
+
+
+## Pembaruan kebutuhan akun wali dan pesan penolakan — 2026-10-30
+
+- [x] Relasi ditetapkan: satu siswa hanya memiliki satu akun orang tua/wali; satu akun wali dapat terhubung dengan beberapa siswa. Tidak ada kategori khusus “akun keluarga”.
+- [x] Email wali harus dipra-daftarkan Admin Pusat dan disimpan di database; signup memakai email terdaftar, verifikasi email, lalu pembuatan kata sandi. Login memakai email dan kata sandi, bukan Admissions Number.
+- [x] Signup dan sign-in mensyaratkan setidaknya satu siswa terkait dengan status layanan aktif. Jika ada siswa aktif lain, akun tetap berfungsi hanya untuk siswa aktif; jika semuanya nonaktif, akses layanan ditolak.
+- [x] Status layanan siswa dipisahkan dari kehadiran/perjalanan dan status GPS; riwayat tidak dihapus otomatis ketika status berubah.
+- [x] Setiap penolakan atau kegagalan harus memberi pesan jelas, ringkas, akurat, dan langkah berikutnya bila memungkinkan. Pesan tidak boleh membocorkan data pribadi atau keberadaan akun.
+- [ ] Rancang matriks status layanan, perubahan status, alasan, tanggal berlaku, dan dampak akses; pastikan perilaku backend/database konsisten.
+- [ ] Rancang dan tinjau alur email terdaftar, verifikasi, token kedaluwarsa/sekali pakai, pemulihan akun, rate limiting, serta pesan anti-enumerasi.
+- [ ] Tambahkan matriks QA untuk semua jalur penolakan/kegagalan, termasuk tombol nonaktif, validasi, jaringan/server, izin, siswa nonaktif, GPS/video tidak tersedia.
+- [ ] Tinjauan teknis dan desain hak akses belum disetujui; tidak ada implementasi bisnis atau perubahan database yang diizinkan oleh pembaruan dokumentasi ini.
