@@ -7,7 +7,7 @@
 **Pilot city:** Dammam dan sekitarnya (DISETUJUI)  
 **Vendor selection:** BELUM DIPUTUSKAN  
 **Initial service scale:** sekitar 100 bus
-**Camera/DVR baseline:** perangkat kamera dan DVR sudah terpasang mandiri pada bus; aplikasi hanya menyambungkan live stream, bukan memasang/mengadakan perangkat.
+**Camera/AV baseline:** kamera/DVR sudah terpasang mandiri pada bus. Aplikasi menyediakan akses live stream melalui spesifikasi integrasi generik; sumber dapat berupa perangkat/DVR langsung atau aplikasi/platform AV yang sudah terpasang, jika ada metode integrasi resmi dan terotorisasi.
 **Implementation:** No business features or vendor integrations are authorized by this document.
 
 ## Purpose
@@ -83,11 +83,11 @@ Ask the provider to answer each item explicitly:
 - [ ] Does the device expose an official documented API/SDK or supported streaming protocol? Identify authentication requirements.
 - [ ] Can each stream be authorized by the application server for a specific user, bus, trip, and child-access session?
 - [ ] Can access be revoked promptly when a child is dropped off, guardian permission is revoked, a trip ends, or a device is reassigned?
-- [ ] Do existing stream URLs/tokens remain usable after revocation? State token lifetime, refresh, and revocation mechanics.
+- [ ] Do existing stream URLs/tokens remain usable after revocation? State token lifetime, refresh, and revocation mechanics for both direct-device and AV-platform options.
 - [ ] Can the provider enforce concurrent-viewer limits and report active sessions?
 - [ ] What happens when the camera, DVR, stream relay, or network is offline?
 - [ ] Does the proposed product include recording/playback/download? If yes, can these be disabled for this project?
-- [ ] Where are video streams relayed and processed? Do streams or metadata leave Saudi Arabia?
+- [ ] Where are video streams relayed and processed in each proposed architecture? Do streams or metadata leave Saudi Arabia?
 - [ ] What bandwidth, mobile-data consumption, latency, and per-stream costs should be expected?
 - [ ] What security controls, audit logs, firmware updates, vulnerability handling, and support SLAs are provided?
 - [ ] Who is legally permitted to view, administer, and maintain the video system under the proposed operating model?
@@ -180,7 +180,7 @@ For each capability, record:
 |---|---|---|---|---|
 | Saudi routing coverage and large-bus restrictions | BELUM TERVERIFIKASI | — | Dammam and surrounding areas approved as pilot; local coverage still untested | Obtain vendor written response and run local tests |
 | GPS/AVL source and update quality | BELUM TERVERIFIKASI | — | Hardware/source undecided | Define source options and test requirements |
-| Camera/DVR API and revocation | BELUM TERVERIFIKASI | — | Existing installed device inventory/model mix not yet supplied | Inventory representative installed devices; obtain model-specific stream/auth/revocation evidence |
+| Camera/AV stream integration and revocation | BELUM TERVERIFIKASI | — | Existing device and AV app/platform inventory not yet supplied; direct versus mediated stream not decided | Inventory existing stack; compare official authorized direct-device and AV-platform handoff options; test authorization and revocation |
 | Hosting region and data transfers | BELUM TERVERIFIKASI | — | Deployment undecided | Obtain data-flow and subprocessor details |
 | Identity / organization isolation | BELUM TERVERIFIKASI | — | Architecture not selected | Define access model and validate proposed services |
 | Noor integration | BELUM TERVERIFIKASI | — | Authorization/API unknown | Request official confirmation |
@@ -194,7 +194,7 @@ Do not select or integrate a provider until:
 1. Pilot city and representative operating scenarios are agreed: Dammam and surrounding areas.
 2. The proposed school/company operating model and data responsibilities are documented.
 3. Mandatory versus desirable capabilities are separated.
-4. Routing, GPS, and camera candidates provide model/region-specific written evidence.
+4. Routing and GPS candidates provide model/region-specific written evidence; camera integration is assessed against a vendor-neutral requirement that allows either direct device/DVR access or an authorized stream from an existing AV app/platform.
 5. Privacy, hosting, data-transfer, security, licensing, and contract questions are reviewed by qualified parties.
 6. Critical pilot tests pass or have an explicitly accepted, documented limitation.
 7. Pricing, quotas, support, exit, and data-portability terms are understood.
