@@ -77,6 +77,13 @@ Catat keputusan yang disetujui pemilik produk. Jangan mencatat rekomendasi yang 
 - **Alasan:** Pemilik produk menyatakan izin dan kewenangan operasional melekat pada masing-masing pihak; aplikasi disediakan sebagai perangkat lunak.
 - **Dampak pada dokumen/tes:** Susun T&C dan onboarding yang menyatakan tanggung jawab pengguna/organisasi dengan jelas; tinjau rumusan oleh penasihat hukum yang kompeten. T&C tidak otomatis menghapus kewajiban hukum penyedia aplikasi dan tidak menggantikan kebijakan privasi, keamanan, atau kewajiban lain yang berlaku. Belum diputuskan apakah onboarding memerlukan nomor/dokumen izin atau hanya pernyataan pengguna.
 
+### DEC-013 — Kota pilot, skala awal, dan sumber kamera
+- **Tanggal:** 2026-10-29
+- **Status:** DISETUJUI UNTUK ASUMSI PERENCANAAN AWAL
+- **Keputusan:** Kota pilot adalah Dammam dan sekitarnya. Target skala pelayanan awal sekitar 100 bus. Kamera dan DVR sudah terpasang secara mandiri pada bus; aplikasi hanya menghubungkan live stream dari perangkat tersebut, bukan mengadakan atau memasang perangkat.
+- **Alasan:** Dikonfirmasi langsung oleh pemilik produk.
+- **Dampak pada dokumen/tes:** Uji cakupan routing dan GPS di area pilot; inventaris perangkat kamera/DVR aktual; verifikasi protokol, autentikasi, kompatibilitas, pencabutan akses, kapasitas stream bersamaan, bandwidth, dan biaya. Target 100 bus tidak berarti 100 stream bersamaan; kebutuhan konkurensi masih harus diukur.
+
 ## Hal yang belum diputuskan
 
 Lihat `TECHNICAL_SPEC_REVIEW.md`, bagian 19 pada `MASTER_SPEC.md`, serta `OPERATING_MODEL_RESPONSIBILITY_MATRIX.md`. Jangan mengubah pertanyaan terbuka menjadi keputusan tanpa persetujuan.
