@@ -38,7 +38,8 @@
 - [ ] Radius awal 100 meter diuji bersama akurasi GPS dan kondisi lokasi nyata.
 - [ ] Mekanisme pengecualian yang berwenang dan auditnya ditetapkan.
 
-## F. Kamera live
+## F. Fitur tambahan: kamera live
+Kamera adalah fitur tambahan, bukan gerbang untuk menyelesaikan navigasi dan laporan orang tua. Validasi integrasinya dapat dijadwalkan setelah prioritas inti atau sebagai jalur terpisah tanpa menghambatnya.
 - [x] Arah integrasi kamera: spesifikasi generik, tidak terkunci merek/protokol. Sumber dapat berupa perangkat/DVR langsung atau live stream yang disediakan aplikasi/platform AV yang sudah terpasang, jika integrasi resmi dan terotorisasi tersedia. Inventaris perangkat/aplikasi, protokol, autentikasi, kapasitas, dan pencabutan akses masih BELUM TERVERIFIKASI.
 - [ ] Kapasitas streaming bersamaan dan dukungan perangkat mobile diuji.
 - [ ] Cara menghentikan sesi streaming saat hak akses berakhir diuji.
@@ -160,3 +161,20 @@ Rincian dicatat dalam `docs/MASTER_SPEC.md`, `docs/OPERATING_MODEL_RESPONSIBILIT
 - [ ] Belum ada vendor, protokol, atau arsitektur relay yang dipilih.
 
 Lihat `docs/GENERIC_CAMERA_STREAMING_INTERFACE.md`. Status pekerjaan ini adalah **dokumentasi selesai untuk ditinjau; validasi teknis belum dilakukan**. Jangan mulai implementasi produksi hanya berdasarkan draf ini.
+
+
+## Prioritas pelaksanaan yang diklarifikasi — 2026-10-29
+
+**Fokus utama aplikasi: navigasi operasional bus dan informasi/laporan orang tua. Kamera live adalah fitur tambahan yang dapat dikonfigurasi kemudian dan tidak boleh menjadi prasyarat pengembangan atau pengujian alur inti.**
+
+Urutan kerja yang disarankan:
+1. **Navigasi dan perjalanan:** model perjalanan, penugasan, rute/versi rute, urutan stop, validasi GPS, status jemput/turun, penanganan data lokasi usang/offline, dan perilaku saat rute tidak aman.
+2. **Informasi dan laporan wali:** status anak, lokasi bus beserta waktu pembaruan, riwayat keikutsertaan, laporan yang mudah dipahami, pembatasan akses per relasi wali, dan ekspor terbatas.
+3. **Administrasi, akses, dan audit:** master data, isolasi organisasi, persetujuan relasi wali, koreksi dan audit.
+4. **Kamera live:** fitur tambahan; evaluasi integrasi dan pencabutan akses tidak boleh mendahului atau menghambat validasi prioritas inti.
+
+Gerbang teknis untuk navigasi tetap penting: bukti cakupan routing yang sesuai untuk bus di Dammam dan sekitarnya, profil kendaraan yang dibutuhkan, kualitas data jalan, kestabilan urutan stop, dan pengujian GPS. Jangan menyatakan routing bus besar lulus sebelum dibuktikan.
+
+Untuk laporan orang tua, prioritaskan konsistensi data sumber, status yang tidak menyesatkan ketika GPS usang/offline, batas akses antarwali/antarsiswa, serta riwayat dan koreksi yang dapat diaudit.
+
+Status kamera tetap **BELUM TERVERIFIKASI** secara teknis, tetapi bukan penghambat untuk menyusun dan memvalidasi alur inti navigasi serta laporan.
