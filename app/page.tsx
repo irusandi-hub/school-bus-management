@@ -163,6 +163,45 @@ function OperationalWorkspace({ section }: { section: OperationalSection }) {
   );
 }
 
+function DriverTripWorkspace() {
+  const routeFacts = [
+    { label: "Penugasan", value: "Belum tersedia" },
+    { label: "Rute disetujui", value: "Belum tersedia" },
+    { label: "Pembaruan lokasi", value: "Belum tersedia" },
+  ];
+  const stages = [
+    { number: "01", title: "Periksa penugasan", detail: "Cocokkan jadwal, bus, dan perjalanan pagi atau sore sebelum berangkat." },
+    { number: "02", title: "Ikuti urutan titik", detail: "Daftar stop mengikuti versi rute yang disetujui admin. Urutan tidak berubah saat perjalanan aktif." },
+    { number: "03", title: "Lanjut ke titik berikutnya", detail: "Petunjuk arah baru tersedia setelah rute dan koordinat tujuan yang valid dimuat." },
+  ];
+
+  return (
+    <div className="driver-trip-workspace">
+      <section className="panel trip-route-panel">
+        <div className="panel-head">
+          <div><h3 className="panel-title">Navigasi perjalanan</h3><div className="panel-subtitle">Rute dan tujuan harus bersumber dari penugasan yang disetujui</div></div>
+          <Status>Menunggu rute</Status>
+        </div>
+        <div className="trip-route-summary">
+          {routeFacts.map((fact) => <div className="trip-route-fact" key={fact.label}><span>{fact.label}</span><strong>{fact.value}</strong></div>)}
+        </div>
+        <div className="trip-route-empty">
+          <div className="trip-route-empty-icon" aria-hidden="true">⌖</div>
+          <div><h3>Belum ada rute untuk ditampilkan</h3><p>Setelah penugasan valid dan rute disetujui tersedia, tujuan berikutnya serta urutan stop akan ditampilkan di bagian ini.</p></div>
+          <button className="workspace-action" type="button" disabled title="Aktif setelah rute dan koordinat tervalidasi">Buka petunjuk arah</button>
+        </div>
+        <div className="trip-route-note"><strong>Keselamatan:</strong> navigasi belum aktif. Jangan gunakan layar pratinjau ini sebagai petunjuk perjalanan nyata.</div>
+      </section>
+      <section className="panel trip-sequence-panel">
+        <div className="panel-head"><div><h3 className="panel-title">Alur perjalanan</h3><div className="panel-subtitle">Urutan kerja pengemudi</div></div><span className="workspace-count">3 tahap</span></div>
+        <div className="trip-sequence-list">
+          {stages.map((stage) => <div className="trip-sequence-item" key={stage.number}><span className="trip-sequence-number">{stage.number}</span><div><strong>{stage.title}</strong><p>{stage.detail}</p></div><span className="trip-sequence-state">Belum aktif</span></div>)}
+        </div>
+      </section>
+    </div>
+  );
+}
+
 export default function Home() {
   const [role, setRole] = useState<Role>("Admin Pusat");
   const [section, setSection] = useState<Section>("Ringkasan");
@@ -235,7 +274,7 @@ export default function Home() {
           <div className="notice"><strong>Mode pratinjau.</strong> Tombol belum memulai perjalanan atau mengirim data.</div>
         </>}
 
-        {role === "Pengemudi" && section === "Perjalanan" && <section className="panel"><div className="panel-head"><div><h3 className="panel-title">Navigasi perjalanan</h3><div className="panel-subtitle">Petunjuk arah ke titik berikutnya</div></div><Status>Menunggu rute</Status></div><div className="driver-empty"><div className="driver-empty-icon">⌖</div><h3>Rute belum tersedia</h3><p>Rute yang disetujui admin akan muncul di sini. Tujuan dan urutan pemberhentian harus berasal dari penugasan yang valid.</p><div className="directions-steps"><div><span>1</span><div><strong>Periksa penugasan</strong><small>Pastikan bus, jadwal, dan rute sesuai tugas Anda.</small></div></div><div><span>2</span><div><strong>Ikuti urutan stop</strong><small>Urutan pemberhentian tetap sesuai rute yang disetujui.</small></div></div><div><span>3</span><div><strong>Buka petunjuk arah</strong><small>Navigasi akan aktif setelah koordinat tujuan tersedia.</small></div></div></div></div></section>}
+        {role === "Pengemudi" && section === "Perjalanan" && <DriverTripWorkspace />}
         {role === "Pengemudi" && section === "Daftar Siswa" && <OperationalWorkspace section="Daftar Siswa" />}
         {role === "Pengemudi" && section === "Kendala & Pemeriksaan" && <section className="driver-action-panel"><div className="panel-head"><div><h3 className="panel-title">Keselamatan perjalanan</h3><div className="panel-subtitle">Alur sebelum dan sesudah bertugas</div></div><Status>Belum aktif</Status></div><div className="safety-items"><div><span>01</span><section><strong>Laporkan kendala</strong><p>Catat masalah bus, rute, GPS, atau data siswa untuk ditinjau admin.</p></section></div><div><span>02</span><section><strong>Periksa kabin</strong><p>Pemeriksaan fisik wajib sebelum menutup sesi kerja.</p></section></div><div><span>03</span><section><strong>Selesaikan perjalanan</strong><p>Penutupan mengikuti status siswa dan aturan operasional yang disetujui.</p></section></div></div></section>}
 
