@@ -4,6 +4,12 @@
 **Scope:** Phase 1 pilot in Dammam and surrounding areas, approximately 100 buses.  
 **Last reviewed:** 2026-10-29.
 
+## Vehicle-routing assumptions (refined)
+
+Do not treat a school bus as a freight truck by default. For ordinary access rules, the relevant profile may be closer to a passenger vehicle, but the bus is physically wider/longer and needs more turning space than a small car. The primary routing checks for this pilot are **usable road width, ability to pass safely, turn/swept-path feasibility, and safe pickup/drop-off access**. Apply height/weight/vehicle restrictions only when they actually apply to the specific bus and road; do not impose truck restrictions merely because the vehicle is called a bus. Confirm actual vehicle dimensions with the operator and use the closest supported provider profile. A route API's car profile is not automatically proof that a road is wide or safe enough for the bus.
+
+Saudi Highway Code 303 lists a conventional school-bus design vehicle at approximately 2.5 m wide and 10.9 m long, compared with a passenger car design vehicle at 2.0 m wide and 5.1 m long. These are design examples, not assumed dimensions for the pilot fleet. Source: https://shc.rga.gov.sa/content/dam/roadcodes/assets/road-code-library/303%20EN.pdf
+
 ## Decision to make
 
 Choose a managed routing API that can calculate and refresh routes using current road/traffic data while keeping the driver app lightweight and compatible with a practical range of Android phones. Do not build an in-house road graph or routing engine.
@@ -51,7 +57,7 @@ Obtain written answers from both providers:
 
 1. Is commercial school-bus routing, fleet tracking, and driver GPS display permitted under the proposed plan and license?
 2. What are the road-network update cadence and source/handling of reported closures? Which data are live versus historical/modelled?
-3. Which bus-specific parameters and restrictions are supported in Saudi Arabia, including height, width, length, gross/axle weight, restricted roads, turns, and U-turns?
+3. Can the API represent the actual school bus dimensions/profile? How does it handle narrow streets/usable road width, turning space, one-way/restricted turns, and safe pickup/drop-off access? Which height/weight restrictions are applicable and supported for this fleet in Saudi Arabia?
 4. What is the maximum stop/waypoint count for the exact API and plan? What is the recommended method for 40+ stops while preserving a fixed stop order?
 5. Can the provider return road geometry, distance, duration, traffic-aware ETA, and route warnings? What happens when data or connectivity is unavailable?
 6. What are the production price units, free/trial limits, rate limits, quotas, overage rules, SLA, support hours, data retention, and outage commitments?
@@ -65,8 +71,8 @@ Use the same representative Dammam-area test set for both providers. Record prov
 ### Route scenarios
 
 - 20, 30, 40, and 50 ordered stops, including morning and afternoon patterns.
-- Stops on both sides of divided roads, one-way streets, restricted turns, U-turn-sensitive locations, and safe stopping locations.
-- Bus profiles with the operator's actual dimensions and weights once supplied; do not invent vehicle dimensions.
+- Narrow streets and constrained road widths, turns requiring more swept space, stops on both sides of divided roads, one-way streets, restricted turns, and safe stopping locations.
+- Use the operator's actual bus dimensions (especially width and length) and only the vehicle restrictions relevant to that bus; do not assume truck rules or invent dimensions.
 - Known roadworks/closures and traffic-sensitive periods, with a human-verified expected outcome.
 - Invalid or unreachable stop, missing coordinates, API timeout, rate limiting, and no-network fallback.
 - Change to a future route version while a trip is active: current trip must remain on its approved version.
