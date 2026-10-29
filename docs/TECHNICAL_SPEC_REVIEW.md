@@ -6,11 +6,11 @@
 ## A. Kondisi proyek
 - [ ] Dipastikan apakah proyek dimulai dari nol atau ada aplikasi/repository/database yang harus dipertahankan.
 - [ ] Pemilik produk dan pihak yang berwenang menyetujui perubahan ditentukan.
-- [ ] Negara/wilayah operasi dan kewajiban hukum terkait anak, lokasi, kamera, serta transportasi sekolah ditinjau.
-- [ ] Skala awal: jumlah sekolah, siswa, bus, pengemudi, dan perjalanan diperkirakan.
+- [ ] Wilayah operasi sudah ditetapkan: Arab Saudi. Tinjauan kewajiban hukum terkait anak, lokasi, kamera, transportasi sekolah, hosting, dan retensi masih harus dilakukan.
+- [ ] Skala awal masih BELUM DIPUTUSKAN: jumlah sekolah, siswa, bus, pengemudi, perjalanan, dan stop maksimum.
 
 ## B. Platform dan penggunaan
-- [ ] Diputuskan kebutuhan admin web, pengemudi mobile, dan orang tua mobile/web.
+- [ ] Kebutuhan platform awal dijawab: Admin, Pengemudi, dan Wali masing-masing membutuhkan web dan mobile. Detail OS, kesetaraan fitur antarplatform, dan kebutuhan offline belum diputuskan.
 - [ ] Kebutuhan koneksi buruk/offline ditentukan.
 - [ ] Bahasa, zona waktu, aksesibilitas, dan dukungan perangkat ditentukan.
 - [ ] Alur login, pemulihan akun, sesi, dan pencabutan akses ditetapkan.
@@ -33,13 +33,13 @@
 - [ ] Aturan rekomendasi titik jemput bersama dan persetujuan admin ditetapkan.
 
 ## E. GPS dan validasi lokasi
-- [ ] Sumber GPS bus dan interval pembaruan diketahui.
+- [ ] Sumber GPS masih BELUM DIPUTUSKAN; pilihan ponsel pengemudi, tracker bus/AVL, atau kombinasi belum dievaluasi.
 - [ ] Penanganan akurasi, data kedaluwarsa, dan kehilangan sinyal ditentukan.
 - [ ] Radius awal 100 meter diuji bersama akurasi GPS dan kondisi lokasi nyata.
 - [ ] Mekanisme pengecualian yang berwenang dan auditnya ditetapkan.
 
 ## F. Kamera live
-- [ ] Merek/model kamera atau DVR, protokol, autentikasi, dan metode akses diketahui.
+- [ ] Kamera/DVR masih BELUM DIPUTUSKAN; perangkat kandidat, protokol, autentikasi, kapasitas stream, dan pencabutan akses belum diverifikasi.
 - [ ] Kapasitas streaming bersamaan dan dukungan perangkat mobile diuji.
 - [ ] Cara menghentikan sesi streaming saat hak akses berakhir diuji.
 - [ ] Kebijakan akses pengemudi dan akses per anak ditetapkan.
@@ -65,6 +65,14 @@
 - [ ] Tes akses langsung ke API tanpa izin dirancang.
 - [ ] Skenario kamera/GPS offline, siswa belum terkonfirmasi turun, dan sesi kerja belum dapat ditutup diuji.
 - [ ] Kriteria penerimaan tiap tahap disepakati.
+
+## Catatan jawaban awal
+
+- Wilayah operasi: Arab Saudi; kota pilot dan model operator masih perlu ditentukan.
+- Kondisi awal: proyek baru dari nol.
+- Platform: Admin Pusat, Pengemudi, dan Wali membutuhkan web serta mobile; cakupan fitur dan OS belum dirinci.
+- Skala awal, kamera/DVR, dan sumber GPS tetap BELUM DIPUTUSKAN.
+- Temuan rinci dan sumber awal untuk konteks Arab Saudi tercatat di `docs/TECHNICAL_REVIEW_FINDINGS.md`.
 
 ## Gerbang sebelum coding
 Coding fitur bisnis belum boleh dimulai sampai:
