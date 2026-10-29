@@ -1,11 +1,25 @@
 # Routing Provider PoC — Test Record
 
-**Status:** Blocked pending vendor access and operator-approved sample data.  
-**Purpose:** Capture comparable evidence for HudHud Maps and HERE Routing without selecting a provider by marketing claims alone.
+**Status:** HERE-first PoC blocked pending vendor access and operator-approved sample data.  
+**Purpose:** Capture evidence for HERE first; evaluate HudHud only if HERE fails a mandatory gate or commercial/coverage checks. Do not select a provider by marketing claims alone.
 
 ## Vehicle-routing assumptions (refined)
 
 Do not default to a freight-truck profile for school buses. Access rules may resemble passenger-vehicle rules, but a school bus is wider/longer than a small car and needs adequate road width and turning space. Prioritize usable road width, safe passing, turn/swept-path feasibility, and safe pickup/drop-off access. Apply height/weight restrictions only when relevant to the actual fleet. Confirm real bus dimensions with the operator; do not use generic dimensions as fleet facts. Saudi Highway Code 303 gives design examples of a conventional school bus at 2.5 m wide and 10.9 m long versus a passenger car at 2.0 m wide and 5.1 m long; these are reference design vehicles, not the pilot bus specification: https://shc.rga.gov.sa/content/dam/roadcodes/assets/road-code-library/303%20EN.pdf
+
+## Current direction: HERE-first proof of concept (2026-10-29)
+
+The project direction is now to evaluate **HERE first**, because current official documentation describes real-time traffic flow and incident data, including road closures and construction, and Routing API v8 supports multiple transport modes including buses. This is a priority for testing, **not a final vendor approval**.
+
+Official references:
+- HERE Routing API v8 modes and capabilities: https://docs.here.com/routing/reference/routing-v8-api-overview
+- HERE Real-Time Traffic update cadence: https://docs.here.com/traffic-api/docs/real-time-traffic-here-traffic-api-v7-concepts
+- HERE Base Plan excluded Asset Management use cases: https://www.here.com/get-started/pricing/base-plan-restrictions
+- HERE product coverage information: https://docs.here.com/coverage/docs/here-coverage-information
+
+**Hard blockers before a real PoC:** obtain written commercial permission and suitable pricing for fleet tracking/map display/route calculation; confirm product coverage for Dammam; obtain credentials; collect operator-approved anonymized test stops and actual bus dimensions; establish human-reviewed baseline routes. Do not use production child/home coordinates or commit API keys.
+
+Traffic flow is documented as updated every minute and incident data every two minutes, but that does not guarantee that every Dammam incident or closure is detected immediately. Validate freshness and completeness with local scenarios. Routing must never silently change the approved stop order or active-trip route version.
 
 ## Current evidence-based position (2026-10-29)
 
@@ -103,4 +117,4 @@ Do not calculate a final weighted score while a mandatory gate is blocked or fai
 
 ## Current outcome
 
-**No provider selected. No live API tests have been run.** The repository currently lacks provider credentials, approved route coordinates, vehicle profiles, and vendor license confirmation. The next step is to obtain these inputs and run this matrix against both providers.
+**HERE is the priority PoC candidate, but it is not approved. No live API tests have been run.** The repository currently lacks provider credentials, approved route coordinates, actual vehicle profiles, and written license confirmation. First obtain these inputs and test HERE. Only test HudHud as a fallback if HERE fails a mandatory gate or commercial/coverage checks.
