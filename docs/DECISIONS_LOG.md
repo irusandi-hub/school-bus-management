@@ -63,5 +63,20 @@ Catat keputusan yang disetujui pemilik produk. Jangan mencatat rekomendasi yang 
 - **Keputusan:** Repository `school-bus-management` dimulai dari dokumentasi dan aturan proyek; implementasi fitur bisnis menunggu tinjauan spesifikasi teknis.
 - **Dampak:** Struktur repository dan instruksi agen.
 
+### DEC-011 — Peran produk adalah penyedia aplikasi
+- **Tanggal:** 2026-10-29
+- **Status:** DISETUJUI
+- **Keputusan:** Proyek menyediakan aplikasi untuk sekolah, perusahaan/operator bus sekolah beserta pengemudinya, dan orang tua/wali siswa. Sekolah dan operator dapat menggunakan aplikasi bersama-sama atau masing-masing sesuai model operasi mereka. Penyedia aplikasi tidak diposisikan sebagai operator transportasi sekolah.
+- **Alasan:** Pemilik produk secara eksplisit membatasi ruang lingkup bisnis pada penyediaan aplikasi.
+- **Dampak pada dokumen/tes:** Perbarui master specification, matriks model operasi, onboarding organisasi, matriks akses multi-organisasi, dan rancangan T&C/privasi. Jangan menyimpulkan bahwa penyedia aplikasi bebas dari kewajiban hukumnya sendiri.
+
+### DEC-012 — Kewenangan pengguna dan Terms & Conditions
+- **Tanggal:** 2026-10-29
+- **Status:** DISETUJUI SEBAGAI PRINSIP PRODUK; REDAKSI HUKUM BELUM FINAL
+- **Keputusan:** Pengguna/organisasi yang menjalankan kegiatan melalui aplikasi wajib memiliki izin, kewenangan, dan hak yang diperlukan serta mematuhi peraturan yang berlaku di wilayah operasinya. Prinsip ini dijelaskan dalam Terms & Conditions; perubahan atau berakhirnya kewenangan perlu ditangani sesuai proses yang akan ditentukan.
+- **Alasan:** Pemilik produk menyatakan izin dan kewenangan operasional melekat pada masing-masing pihak; aplikasi disediakan sebagai perangkat lunak.
+- **Dampak pada dokumen/tes:** Susun T&C dan onboarding yang menyatakan tanggung jawab pengguna/organisasi dengan jelas; tinjau rumusan oleh penasihat hukum yang kompeten. T&C tidak otomatis menghapus kewajiban hukum penyedia aplikasi dan tidak menggantikan kebijakan privasi, keamanan, atau kewajiban lain yang berlaku. Belum diputuskan apakah onboarding memerlukan nomor/dokumen izin atau hanya pernyataan pengguna.
+
 ## Hal yang belum diputuskan
-Lihat `TECHNICAL_SPEC_REVIEW.md` dan bagian 19 pada `MASTER_SPEC.md`. Jangan mengubah pertanyaan terbuka menjadi keputusan tanpa persetujuan.
+
+Lihat `TECHNICAL_SPEC_REVIEW.md`, bagian 19 pada `MASTER_SPEC.md`, serta `OPERATING_MODEL_RESPONSIBILITY_MATRIX.md`. Jangan mengubah pertanyaan terbuka menjadi keputusan tanpa persetujuan.
