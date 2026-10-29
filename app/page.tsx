@@ -89,7 +89,25 @@ export default function Home() {
           </label>
         </section>
 
-        {section === "Ringkasan" ? (
+        {section === "Perjalanan" && role === "Pengemudi" ? (
+          <section className="panel">
+            <div className="panel-head">
+              <div><h3 className="panel-title">Navigasi pengemudi</h3><div className="panel-subtitle">Menu Perjalanan · Petunjuk arah ke titik berikutnya</div></div>
+              <span className="status wait">Menunggu rute</span>
+            </div>
+            <div className="driver-directions">
+              <div className="directions-icon">↗</div>
+              <h3>Petunjuk arah ada di sini</h3>
+              <p>Setelah admin menetapkan rute dan koordinat setiap titik jemput, pengemudi dapat membuka Google Maps untuk navigasi ke pemberhentian berikutnya.</p>
+              <div className="directions-steps">
+                <div><span>1</span><div><strong>Buka penugasan</strong><small>Perjalanan yang diberikan admin akan muncul di bagian ini.</small></div></div>
+                <div><span>2</span><div><strong>Pilih titik berikutnya</strong><small>Urutan berhenti mengikuti rute yang sudah disetujui.</small></div></div>
+                <div><span>3</span><div><strong>Mulai navigasi</strong><small>Tombol Google Maps aktif setelah tujuan dan koordinat tersedia.</small></div></div>
+              </div>
+              <div className="directions-note">Navigasi belum aktif karena aplikasi masih memakai data contoh. Kami tidak menampilkan arah palsu atau tujuan yang belum dikonfirmasi.</div>
+            </div>
+          </section>
+        ) : section === "Ringkasan" ? (
           <>
             <section className="stats" aria-label="Ringkasan operasional">
               {[roleContent.first, roleContent.second, roleContent.third, roleContent.fourth].map((label, index) => (
