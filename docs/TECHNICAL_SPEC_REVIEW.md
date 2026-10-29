@@ -7,7 +7,7 @@
 - [ ] Dipastikan apakah proyek dimulai dari nol atau ada aplikasi/repository/database yang harus dipertahankan.
 - [ ] Pemilik produk dan pihak yang berwenang menyetujui perubahan ditentukan.
 - [ ] Wilayah operasi sudah ditetapkan: Arab Saudi. Tinjauan kewajiban hukum terkait anak, lokasi, kamera, transportasi sekolah, hosting, dan retensi masih harus dilakukan.
-- [ ] Skala awal masih BELUM DIPUTUSKAN: jumlah sekolah, siswa, bus, pengemudi, perjalanan, dan stop maksimum.
+- [x] Target skala pelayanan awal sekitar 100 bus; jumlah sekolah, siswa, pengemudi, perjalanan, pengguna bersamaan, dan stop maksimum masih harus ditentukan.
 
 ## B. Platform dan penggunaan
 - [ ] Kebutuhan platform awal dijawab: Admin, Pengemudi, dan Wali masing-masing membutuhkan web dan mobile. Detail OS, kesetaraan fitur antarplatform, dan kebutuhan offline belum diputuskan.
@@ -39,7 +39,7 @@
 - [ ] Mekanisme pengecualian yang berwenang dan auditnya ditetapkan.
 
 ## F. Kamera live
-- [ ] Kamera/DVR masih BELUM DIPUTUSKAN; perangkat kandidat, protokol, autentikasi, kapasitas stream, dan pencabutan akses belum diverifikasi.
+- [x] Arah integrasi kamera: spesifikasi generik, tidak terkunci merek/protokol. Sumber dapat berupa perangkat/DVR langsung atau live stream yang disediakan aplikasi/platform AV yang sudah terpasang, jika integrasi resmi dan terotorisasi tersedia. Inventaris perangkat/aplikasi, protokol, autentikasi, kapasitas, dan pencabutan akses masih BELUM TERVERIFIKASI.
 - [ ] Kapasitas streaming bersamaan dan dukungan perangkat mobile diuji.
 - [ ] Cara menghentikan sesi streaming saat hak akses berakhir diuji.
 - [ ] Kebijakan akses pengemudi dan akses per anak ditetapkan.
@@ -68,10 +68,11 @@
 
 ## Catatan jawaban awal
 
-- Wilayah operasi: Arab Saudi; kota pilot dan model operator masih perlu ditentukan.
+- Wilayah operasi: Arab Saudi; kota pilot disetujui Dammam dan sekitarnya.
 - Kondisi awal: proyek baru dari nol.
 - Platform: Admin Pusat, Pengemudi, dan Wali membutuhkan web serta mobile; cakupan fitur dan OS belum dirinci.
-- Skala awal, kamera/DVR, dan sumber GPS tetap BELUM DIPUTUSKAN.
+- Target skala awal sekitar 100 bus. Detail sekolah/siswa/pengguna bersamaan dan sumber GPS tetap BELUM DIPUTUSKAN.
+- Kamera/DVR sudah terpasang. Metode integrasi stream tetap netral: perangkat/DVR langsung atau aplikasi/platform AV yang sudah ada; kelayakan tiap opsi BELUM TERVERIFIKASI.
 - Temuan rinci dan sumber awal untuk konteks Arab Saudi tercatat di `docs/TECHNICAL_REVIEW_FINDINGS.md`.
 
 ## Gerbang sebelum coding
@@ -113,13 +114,13 @@ Sumber pendukung dan batasan bukti dicatat di docs/TECHNICAL_REVIEW_FINDINGS.md.
 ## Pembaruan keputusan operasional — 2026-10-29
 
 - [x] Model operasional awal dijawab: **sekolah dan perusahaan transportasi** (kedua pola perlu ditinjau).
-- [ ] Kota pilot Arab Saudi: **BELUM DIPUTUSKAN**.
+- [x] Kota pilot Arab Saudi: **Dammam dan sekitarnya**.
 - [ ] Petakan tanggung jawab dan batas akses untuk sekolah yang mengoperasikan bus sendiri versus sekolah yang memakai perusahaan transportasi.
 - [ ] Tentukan apakah satu sekolah boleh memakai kedua model dan apakah satu perusahaan boleh melayani beberapa sekolah.
-- [ ] Tentukan siapa yang bertanggung jawab atas lisensi, pengemudi, bus, rute, GPS/AVL, kamera/DVR, hubungan wali–siswa, dan respons insiden.
+- [ ] Tentukan siapa yang bertanggung jawab atas lisensi, pengemudi, bus, rute, GPS/AVL, kamera/DVR atau aplikasi AV yang sudah ada, hubungan wali–siswa, dan respons insiden.
 - [ ] Definisikan isolasi data dan izin jika perusahaan melayani lebih dari satu sekolah; jangan menganggap staf perusahaan otomatis dapat melihat seluruh data sekolah.
 - [ ] Konfirmasi persyaratan perizinan terbaru untuk kedua pola dengan TGA/MoE atau penasihat Saudi yang kompeten.
-- [ ] Setelah kota pilot dipilih, uji bukti cakupan routing bus besar, peta, GPS, dan kamera/AVL di kota tersebut.
+- [ ] Untuk pilot Dammam dan sekitarnya, uji bukti cakupan routing bus besar, peta, GPS, dan integrasi stream kamera/AV.
 
 **Bukti publik yang diperiksa:** pemberitahuan Asharqia Chamber 9 September 2026 tentang regulasi transportasi pendidikan TGA (https://www.chamber.org.sa/en/information-center/memos/memo-4997/); keputusan Umm Al-Qura 10 April 2026 mengenai jadwal tes kompetensi profesional pengemudi bus (https://www.uqn.gov.sa/decisions-and-regulations/authorities/4000704); portal layanan transportasi sekolah melalui Noor (https://my.gov.sa/en/services/18428); panduan PDPL SDAIA (https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPLCP). Sumber-sumber ini tidak membuktikan API Noor, kepatuhan sistem, atau kelayakan provider tertentu.
 
@@ -143,6 +144,7 @@ Status: dokumen pendukung dibuat; keputusan operasional belum final; tidak ada p
 - [x] Prinsip produk: organisasi/pengguna wajib memiliki izin, kewenangan, dan hak yang diperlukan untuk kegiatan serta data yang mereka kelola; prinsip ini dicantumkan dalam T&C.
 - [ ] T&C dan pemberitahuan privasi harus ditinjau oleh penasihat hukum yang kompeten. Jangan menyatakan bahwa T&C menghapus semua kewajiban penyedia aplikasi.
 - [ ] Prosedur onboarding dan bukti kewenangan yang diminta masih belum diputuskan.
-- [ ] Kota pilot, skala, kandidat kamera/DVR, dan sumber GPS tetap belum diputuskan.
+- [x] Kota pilot Dammam dan sekitarnya; target skala sekitar 100 bus; perangkat kamera/DVR sudah terpasang.
+- [ ] Sumber GPS, jumlah pengguna bersamaan, dan metode teknis integrasi stream tetap belum diputuskan/terverifikasi.
 
 Rincian dicatat dalam `docs/MASTER_SPEC.md`, `docs/OPERATING_MODEL_RESPONSIBILITY_MATRIX.md`, dan `docs/DECISIONS_LOG.md`.
