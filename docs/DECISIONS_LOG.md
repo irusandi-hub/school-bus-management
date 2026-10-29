@@ -80,9 +80,9 @@ Catat keputusan yang disetujui pemilik produk. Jangan mencatat rekomendasi yang 
 ### DEC-013 — Kota pilot, skala awal, dan sumber kamera
 - **Tanggal:** 2026-10-29
 - **Status:** DISETUJUI UNTUK ASUMSI PERENCANAAN AWAL
-- **Keputusan:** Kota pilot adalah Dammam dan sekitarnya. Target skala pelayanan awal sekitar 100 bus. Kamera dan DVR sudah terpasang secara mandiri pada bus; aplikasi hanya menghubungkan live stream dari perangkat tersebut, bukan mengadakan atau memasang perangkat.
+- **Keputusan:** Kota pilot adalah Dammam dan sekitarnya. Target skala pelayanan awal sekitar 100 bus. Kamera dan DVR sudah terpasang secara mandiri pada bus; aplikasi hanya menyediakan akses live stream. Sumber stream boleh berupa perangkat/DVR langsung atau aplikasi/platform AV yang sudah terpasang, selama integrasi resmi/terotorisasi dan kontrol akses memadai tersedia. Aplikasi tidak mengadakan atau memasang perangkat.
 - **Alasan:** Dikonfirmasi langsung oleh pemilik produk.
-- **Dampak pada dokumen/tes:** Uji cakupan routing dan GPS di area pilot; inventaris perangkat kamera/DVR aktual; verifikasi protokol, autentikasi, kompatibilitas, pencabutan akses, kapasitas stream bersamaan, bandwidth, dan biaya. Target 100 bus tidak berarti 100 stream bersamaan; kebutuhan konkurensi masih harus diukur.
+- **Dampak pada dokumen/tes:** Uji cakupan routing dan GPS di area pilot; inventaris perangkat kamera/DVR aktual; inventaris perangkat/DVR dan aplikasi/platform AV yang sudah ada; verifikasi protokol, autentikasi, kompatibilitas, hak integrasi, pencabutan akses, kapasitas stream bersamaan, bandwidth, dan biaya. Target 100 bus tidak berarti 100 stream bersamaan; kebutuhan konkurensi masih harus diukur.
 
 ### DEC-014 — Spesifikasi umum sumber live stream kamera
 - **Tanggal:** 2026-10-29
