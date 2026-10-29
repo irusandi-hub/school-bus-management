@@ -198,3 +198,10 @@ Pertanyaan tersebut belum dijawab dan tidak boleh dijadikan asumsi implementasi.
 2. Minta konfirmasi TGA/MoE atau penasihat setempat mengenai izin yang berlaku pada kedua pola.
 3. Minta vendor routing, DVR, dan AVL menjawab persyaratan teknis setelah kota pilot ditetapkan.
 4. Tentukan kisaran skala awal dan siapa yang bertanggung jawab atas data pribadi pada tiap pola.
+
+
+## Artefak lanjutan: matriks tanggung jawab operasional
+
+Dibuat dokumen `docs/OPERATING_MODEL_RESPONSIBILITY_MATRIX.md` sebagai draf RACI untuk membandingkan sekolah yang mengoperasikan bus sendiri dengan sekolah yang memakai perusahaan transportasi. Semua tanggung jawab masih ditandai TBD untuk menghindari asumsi hukum/operasional. Dokumen ini menyoroti keputusan multi-sekolah, isolasi akses, siapa mengelola pengemudi/rute/GPS/kamera, pemrosesan data, dan pencabutan akses ketika kontrak atau penugasan berakhir.
+
+Kota pilot tetap BELUM DIPUTUSKAN. Sumber publik TGA/MoE/SDAIA yang dirujuk mendukung perlunya verifikasi lebih lanjut, tetapi tidak menetapkan bahwa sistem ini sudah patuh, tidak membuktikan API Noor, dan tidak membenarkan pemilihan provider. Tidak ada coding fitur bisnis.
