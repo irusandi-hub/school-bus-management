@@ -92,3 +92,15 @@ Hasil tinjauan harus berupa daftar `LULUS`, `BELUM LULUS`, atau `TERBLOKIR` bese
 - [ ] Kota pilot, model operator, skala awal, kandidat kamera/DVR, dan sumber GPS tetap belum diputuskan.
 
 Sumber riset dan batasan bukti dicatat di `docs/TECHNICAL_REVIEW_FINDINGS.md`. Ini bukan pendapat hukum dan belum merupakan verifikasi langsung dari vendor atau otoritas.
+
+
+## Gerbang lanjutan: operasi Arab Saudi
+
+- [ ] Konfirmasi apakah sistem menjadi sistem internal sekolah, operator transportasi berizin, atau layanan tambahan; jangan mengasumsikan integrasi dengan Noor.
+- [ ] Konfirmasi persyaratan TGA/MoE terbaru untuk jenis operator, kendaraan, pengemudi, AVL, dan kamera. Gunakan sumber lama hanya sebagai petunjuk awal, bukan spesifikasi final.
+- [ ] Tinjau keputusan TGA yang diterbitkan pada April 2026 terkait jadwal persyaratan uji kompetensi profesional pengemudi dan tentukan apakah relevan dengan model operasi.
+- [ ] Buat inventaris aliran data PDPL sebelum memilih hosting atau vendor: tujuan, pengendali/pemroses, lokasi data, akses, retensi, penghapusan, dan transfer lintas negara.
+- [ ] Routing bus besar: minta bukti tertulis dukungan batas kendaraan untuk kota pilot Saudi dan uji dengan skenario sintetis; navigasi umum tidak cukup sebagai bukti.
+- [ ] Kamera/GPS: minta dokumentasi API/protokol, autentikasi, jumlah sesi bersamaan, lokasi pemrosesan data, serta pencabutan akses sebelum membeli perangkat.
+
+Sumber pendukung dan batasan bukti dicatat di docs/TECHNICAL_REVIEW_FINDINGS.md. Belum ada provider atau arsitektur yang dipilih dan belum ada coding fitur bisnis.
