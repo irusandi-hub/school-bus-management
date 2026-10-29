@@ -84,6 +84,13 @@ Catat keputusan yang disetujui pemilik produk. Jangan mencatat rekomendasi yang 
 - **Alasan:** Dikonfirmasi langsung oleh pemilik produk.
 - **Dampak pada dokumen/tes:** Uji cakupan routing dan GPS di area pilot; inventaris perangkat kamera/DVR aktual; verifikasi protokol, autentikasi, kompatibilitas, pencabutan akses, kapasitas stream bersamaan, bandwidth, dan biaya. Target 100 bus tidak berarti 100 stream bersamaan; kebutuhan konkurensi masih harus diukur.
 
+### DEC-014 — Spesifikasi umum sumber live stream kamera
+- **Tanggal:** 2026-10-29
+- **Status:** DISETUJUI SEBAGAI ARAH DESAIN; METODE TEKNIS BELUM DIPUTUSKAN
+- **Keputusan:** Spesifikasi integrasi kamera dibuat umum dan tidak dikunci ke merek, perangkat, atau protokol tertentu. Live stream dapat diambil langsung dari perangkat/DVR yang telah terpasang atau disediakan melalui aplikasi/platform AV yang sudah berjalan pada sistem bus, selama tersedia integrasi resmi/terotorisasi dan memenuhi keamanan serta kontrol akses aplikasi.
+- **Alasan:** Pemilik produk ingin menghindari ketergantungan pada satu metode koneksi sebelum perangkat dan kemampuan integrasinya diketahui.
+- **Dampak pada dokumen/tes:** Tetapkan antarmuka integrasi yang netral terhadap sumber; evaluasi opsi direct-device/DVR dan AV-platform handoff berdasarkan dokumentasi resmi, autentikasi, kemampuan pencabutan sesi, batas stream bersamaan, latensi, jaringan, biaya, dan lokasi pemrosesan data. Jangan menerima URL publik permanen sebagai mekanisme akses yang aman. Tidak ada pilihan teknis atau vendor yang difinalkan.
+
 ## Hal yang belum diputuskan
 
 Lihat `TECHNICAL_SPEC_REVIEW.md`, bagian 19 pada `MASTER_SPEC.md`, serta `OPERATING_MODEL_RESPONSIBILITY_MATRIX.md`. Jangan mengubah pertanyaan terbuka menjadi keputusan tanpa persetujuan.
