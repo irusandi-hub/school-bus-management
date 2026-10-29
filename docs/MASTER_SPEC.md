@@ -14,8 +14,17 @@ Jangan mulai coding berdasarkan asumsi. Tandai hal yang belum diputuskan sebagai
 
 Semua peran login masing-masing. Otorisasi harus ditegakkan di server dan database, bukan hanya dengan menyembunyikan menu.
 
-## 3. Lingkup awal
-Termasuk: login dan peran; data sekolah/siswa/wali/bus/pengemudi; persetujuan relasi wali; penugasan; perjalanan pagi dan sore terpisah; rute default yang disetujui; validasi GPS; lokasi bus dengan indikator kedaluwarsa; akses kamera live; riwayat keikutsertaan; laporan/ekspor terbatas; audit dan status integrasi.
+## 3. Prioritas produk dan lingkup awal
+
+**Prioritas utama versi awal adalah navigasi operasional bus sekolah dan informasi/laporan untuk orang tua.** Kamera live merupakan fitur tambahan yang dapat diaktifkan atau dikonfigurasi pada tahap berikutnya; integrasi kamera tidak boleh menjadi prasyarat untuk menyelesaikan alur inti.
+
+Urutan prioritas:
+1. **Navigasi dan operasional perjalanan:** penugasan, perjalanan pagi/sore, rute yang disetujui, urutan stop, validasi GPS, status jemput/turun, penanganan GPS usang/offline, dan konsistensi rute aktif.
+2. **Informasi dan laporan orang tua:** status anak, lokasi bus dengan waktu pembaruan yang jelas, riwayat keikutsertaan, laporan yang mudah dipahami, serta ekspor terbatas sesuai hak akses.
+3. **Administrasi dan pengawasan:** pengelolaan sekolah, siswa, wali, bus, pengemudi, penugasan, koreksi data, audit, dan pemisahan akses antarorganisasi.
+4. **Fitur tambahan:** live stream kamera, yang dapat diaktifkan setelah kebutuhan inti berjalan dan kompatibilitas/izin integrasinya dipastikan.
+
+Lingkup dasar mencakup login dan peran; data sekolah/siswa/wali/bus/pengemudi; persetujuan relasi wali; penugasan; perjalanan pagi dan sore terpisah; rute default yang disetujui; validasi GPS; lokasi bus dengan indikator kedaluwarsa; riwayat keikutsertaan; laporan/ekspor terbatas; audit dan status integrasi. Kamera live dicatat sebagai kemampuan tambahan, bukan gerbang peluncuran fitur inti.
 
 Bukan kebutuhan awal kecuali disetujui kemudian: notifikasi rutin SMS/WhatsApp, push notification sebagai ketergantungan wajib, penagihan/pembayaran, playback atau unduh rekaman kamera, dan pengubahan otomatis urutan stop selama perjalanan aktif.
 
@@ -59,7 +68,9 @@ Sekolah; Siswa; Orang tua/wali; Relasi siswa–wali; Titik jemput; Bus (kapasita
 - Simpan lokasi, waktu, akurasi, jarak, hasil validasi, aktor, siswa, dan perjalanan sesuai kebutuhan.
 - Wali harus melihat status kedaluwarsa/tidak tersedia saat data lokasi usang atau perangkat offline.
 
-## 9. Kamera live
+## 9. Fitur tambahan: kamera live
+Kamera bukan fungsi inti yang harus selesai sebelum navigasi dan laporan orang tua dapat digunakan. Kemampuan ini dapat dikonfigurasi/diaktifkan pada tahap berikutnya sesuai prioritas produk dan kesiapan teknis.
+
 - Kamera dan DVR sudah terpasang secara mandiri pada bus. Aplikasi hanya menyediakan akses ke live stream; pengadaan, pemasangan, atau pengelolaan fisik perangkat bukan lingkup aplikasi awal. Jalur integrasi dibuat generik dan belum mengunci merek/protokol: stream dapat berasal langsung dari perangkat/DVR atau diteruskan melalui aplikasi/platform AV yang sudah terpasang, selama tersedia integrasi resmi/terotorisasi dan kontrol akses memadai. Tidak termasuk playback atau unduh rekaman.
 - Pengemudi dapat mengakses kamera selama sesi kerja aktif.
 - Wali hanya dapat mengakses stream selama anak tertentu telah dikonfirmasi berada di bus dan izin masih berlaku. Akses berakhir saat anak turun atau izin dicabut, meskipun bus masih membawa siswa lain.
@@ -137,3 +148,17 @@ Persyaratan umum integrasi kamera, terlepas dari vendor atau metode koneksi, dic
 Sumber potensial meliputi perangkat/DVR langsung atau aplikasi/platform AV yang sudah terpasang, hanya jika metode integrasi resmi dan terotorisasi tersedia. Backend harus mengendalikan otorisasi, sesi stream, kedaluwarsa, dan pencabutan akses. URL publik permanen dan penyimpanan kredensial sumber di klien tidak diterima sebagai pola aman.
 
 Sebelum implementasi, inventaris perangkat/platform aktual dan buktikan autentikasi, kemampuan pencabutan, dukungan klien, batas stream bersamaan, biaya, serta lokasi pemrosesan data. Target sekitar 100 bus bukan asumsi 100 stream simultan.
+
+
+## 18. Prinsip tahapan produk
+
+Navigasi operasional dan laporan orang tua menjadi fokus utama. Pekerjaan kamera live harus diperlakukan sebagai fitur tambahan dan tidak boleh mengambil alih prioritas desain, validasi, maupun implementasi inti.
+
+Sebelum menilai produk inti siap diuji, prioritaskan pembuktian:
+- rute dan urutan stop yang disetujui dapat digunakan pengemudi dengan aman;
+- status jemput/turun dan riwayat keikutsertaan tercatat konsisten;
+- lokasi bus menampilkan waktu pembaruan dan kondisi data usang/offline secara jujur;
+- orang tua hanya melihat anak yang relasinya disetujui, status perjalanan yang relevan, dan laporan anak yang berhak diakses;
+- laporan mudah dipahami, dapat ditelusuri ke data operasional, dan koreksinya diaudit.
+
+Kamera live dapat direncanakan setelah alur inti stabil. Kontrak antarmuka kamera tetap tersedia sebagai dokumentasi pendukung, bukan indikator bahwa kamera adalah prioritas pertama.
