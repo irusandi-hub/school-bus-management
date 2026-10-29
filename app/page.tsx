@@ -126,6 +126,43 @@ function AdminWorkspace({ section }: { section: string }) {
   );
 }
 
+type OperationalSection = "Daftar Siswa" | "Riwayat & Laporan";
+
+const operationalSectionDetails: Record<OperationalSection, { description: string; columns: string[]; emptyTitle: string; emptyDetail: string; footnote: string }> = {
+  "Daftar Siswa": {
+    description: "Daftar hanya untuk siswa yang tercantum pada penugasan pengemudi yang sah.",
+    columns: ["Urutan stop", "Status siswa", "Konfirmasi", "Catatan"],
+    emptyTitle: "Daftar siswa belum tersedia",
+    emptyDetail: "Data siswa baru tampil setelah penugasan dan relasi perjalanan tersedia. Jangan mengandalkan daftar ini untuk perjalanan nyata selama masih dalam pratinjau.",
+    footnote: "Tidak ada data siswa yang dimuat pada pratinjau ini.",
+  },
+  "Riwayat & Laporan": {
+    description: "Riwayat perjalanan pagi dan sore, dengan status terkonfirmasi dipisahkan dari status yang belum diketahui.",
+    columns: ["Tanggal", "Perjalanan", "Keikutsertaan", "Laporan"],
+    emptyTitle: "Belum ada riwayat perjalanan",
+    emptyDetail: "Riwayat akan muncul setelah catatan perjalanan tersedia. Status yang belum dikonfirmasi tidak boleh dianggap sebagai hadir atau tidak ikut.",
+    footnote: "Riwayat dan ekspor belum terhubung ke sumber data.",
+  },
+};
+
+function OperationalWorkspace({ section }: { section: OperationalSection }) {
+  const config = operationalSectionDetails[section];
+  return (
+    <section className="panel operational-workspace">
+      <div className="panel-head operational-workspace-head">
+        <div><h3 className="panel-title">{section === "Daftar Siswa" ? "Daftar siswa pada penugasan" : "Riwayat perjalanan anak"}</h3><div className="panel-subtitle">{config.description}</div></div>
+        <Status>Belum tersedia</Status>
+      </div>
+      <div className="workspace-table-wrap">
+        <table className="workspace-table">
+          <thead><tr>{config.columns.map((column) => <th key={column} scope="col">{column}</th>)}</tr></thead>
+          <tbody><tr><td colSpan={config.columns.length}><div className="workspace-empty"><span className="workspace-empty-icon" aria-hidden="true">{section === "Daftar Siswa" ? "♧" : "▤"}</span><strong>{config.emptyTitle}</strong><p>{config.emptyDetail}</p><small>{config.footnote}</small></div></td></tr></tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
+
 export default function Home() {
   const [role, setRole] = useState<Role>("Admin Pusat");
   const [section, setSection] = useState<Section>("Ringkasan");
@@ -199,7 +236,7 @@ export default function Home() {
         </>}
 
         {role === "Pengemudi" && section === "Perjalanan" && <section className="panel"><div className="panel-head"><div><h3 className="panel-title">Navigasi perjalanan</h3><div className="panel-subtitle">Petunjuk arah ke titik berikutnya</div></div><Status>Menunggu rute</Status></div><div className="driver-empty"><div className="driver-empty-icon">⌖</div><h3>Rute belum tersedia</h3><p>Rute yang disetujui admin akan muncul di sini. Tujuan dan urutan pemberhentian harus berasal dari penugasan yang valid.</p><div className="directions-steps"><div><span>1</span><div><strong>Periksa penugasan</strong><small>Pastikan bus, jadwal, dan rute sesuai tugas Anda.</small></div></div><div><span>2</span><div><strong>Ikuti urutan stop</strong><small>Urutan pemberhentian tetap sesuai rute yang disetujui.</small></div></div><div><span>3</span><div><strong>Buka petunjuk arah</strong><small>Navigasi akan aktif setelah koordinat tujuan tersedia.</small></div></div></div></div></section>}
-        {role === "Pengemudi" && section === "Daftar Siswa" && <EmptyPanel title="Daftar siswa pada tugas" detail="Hanya siswa yang terkait dengan penugasan aktif akan ditampilkan. Status naik/turun dicatat per siswa dan per perjalanan." />}
+        {role === "Pengemudi" && section === "Daftar Siswa" && <OperationalWorkspace section="Daftar Siswa" />}
         {role === "Pengemudi" && section === "Kendala & Pemeriksaan" && <section className="driver-action-panel"><div className="panel-head"><div><h3 className="panel-title">Keselamatan perjalanan</h3><div className="panel-subtitle">Alur sebelum dan sesudah bertugas</div></div><Status>Belum aktif</Status></div><div className="safety-items"><div><span>01</span><section><strong>Laporkan kendala</strong><p>Catat masalah bus, rute, GPS, atau data siswa untuk ditinjau admin.</p></section></div><div><span>02</span><section><strong>Periksa kabin</strong><p>Pemeriksaan fisik wajib sebelum menutup sesi kerja.</p></section></div><div><span>03</span><section><strong>Selesaikan perjalanan</strong><p>Penutupan mengikuti status siswa dan aturan operasional yang disetujui.</p></section></div></div></section>}
 
         {role === "Orang Tua/Wali" && section === "Anak Saya" && <>
@@ -208,7 +245,7 @@ export default function Home() {
           <div className="notice"><strong>Privasi keluarga.</strong> Wali hanya boleh melihat anak yang memiliki relasi aktif dan disetujui. Posisi bus nantinya selalu disertai waktu pembaruan.</div>
         </>}
         {role === "Orang Tua/Wali" && section === "Perjalanan" && <section className="panel"><div className="panel-head"><div><h3 className="panel-title">Status perjalanan anak</h3><div className="panel-subtitle">Pagi dan sore ditampilkan secara terpisah</div></div><Status>Belum tersedia</Status></div><div className="parent-timeline"><div className="timeline-line"/>{[{n:"01",title:"Menunggu perjalanan",desc:"Jadwal akan tampil setelah anak terhubung ke penugasan."},{n:"02",title:"Status naik/turun",desc:"Hanya konfirmasi yang tercatat yang akan ditampilkan."},{n:"03",title:"Lokasi bus terakhir",desc:"Lokasi akan menyertakan waktu pembaruan dan status kesegaran."}].map(x=><div className="timeline-item" key={x.n}><span>{x.n}</span><div><strong>{x.title}</strong><p>{x.desc}</p></div></div>)}</div></section>}
-        {role === "Orang Tua/Wali" && section === "Riwayat & Laporan" && <EmptyPanel title="Riwayat perjalanan anak" detail="Riwayat akan memisahkan perjalanan pagi dan sore, membedakan status terkonfirmasi dari status yang belum diketahui, dan hanya menampilkan data anak yang berhak diakses." />}
+        {role === "Orang Tua/Wali" && section === "Riwayat & Laporan" && <OperationalWorkspace section="Riwayat & Laporan" />}
         {role === "Orang Tua/Wali" && section === "Akun" && <EmptyPanel title="Profil dan akses akun" detail="Informasi akun dan pengelolaan sesi akan ditampilkan di sini. Peran dan hubungan wali tidak dapat diubah sendiri dari halaman profil." />}
 
         <footer className="page-footer"><span>School Bus Management</span><span>Interface pratinjau · bukan sistem operasional</span></footer>
