@@ -82,3 +82,13 @@ Coding fitur bisnis belum boleh dimulai sampai:
 4. ruang lingkup tahap pertama dan kriteria penerimaannya disetujui pemilik produk.
 
 Hasil tinjauan harus berupa daftar `LULUS`, `BELUM LULUS`, atau `TERBLOKIR` beserta bukti dan penanggung jawab.
+
+
+## Pembaruan riset Arab Saudi — 2026-10-29
+
+- [ ] **Routing bus besar belum lulus.** Dokumentasi Google Large Vehicle Routing yang diperiksa tidak mencantumkan Arab Saudi dalam wilayah tersedia. Daftar cakupan HERE yang diperiksa juga belum membuktikan cakupan pembatasan truk untuk Saudi. Wajib ada konfirmasi tertulis vendor dan uji lapangan sebelum pemilihan.
+- [ ] **Kepatuhan transportasi pendidikan belum lulus.** Konfirmasi jenis operator dan persyaratan terkini kepada TGA/MoE, termasuk lisensi dan perlengkapan teknis kendaraan.
+- [ ] **Privasi/data belum lulus.** Tinjau PDPL serta pemrosesan data anak, lokasi, foto/video, retensi, hosting, dan akses lintas negara dengan pihak yang kompeten.
+- [ ] Kota pilot, model operator, skala awal, kandidat kamera/DVR, dan sumber GPS tetap belum diputuskan.
+
+Sumber riset dan batasan bukti dicatat di `docs/TECHNICAL_REVIEW_FINDINGS.md`. Ini bukan pendapat hukum dan belum merupakan verifikasi langsung dari vendor atau otoritas.
