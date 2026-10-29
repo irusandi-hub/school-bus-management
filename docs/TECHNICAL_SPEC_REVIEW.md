@@ -104,3 +104,19 @@ Sumber riset dan batasan bukti dicatat di `docs/TECHNICAL_REVIEW_FINDINGS.md`. I
 - [ ] Kamera/GPS: minta dokumentasi API/protokol, autentikasi, jumlah sesi bersamaan, lokasi pemrosesan data, serta pencabutan akses sebelum membeli perangkat.
 
 Sumber pendukung dan batasan bukti dicatat di docs/TECHNICAL_REVIEW_FINDINGS.md. Belum ada provider atau arsitektur yang dipilih dan belum ada coding fitur bisnis.
+
+
+## Pembaruan keputusan operasional — 2026-10-29
+
+- [x] Model operasional awal dijawab: **sekolah dan perusahaan transportasi** (kedua pola perlu ditinjau).
+- [ ] Kota pilot Arab Saudi: **BELUM DIPUTUSKAN**.
+- [ ] Petakan tanggung jawab dan batas akses untuk sekolah yang mengoperasikan bus sendiri versus sekolah yang memakai perusahaan transportasi.
+- [ ] Tentukan apakah satu sekolah boleh memakai kedua model dan apakah satu perusahaan boleh melayani beberapa sekolah.
+- [ ] Tentukan siapa yang bertanggung jawab atas lisensi, pengemudi, bus, rute, GPS/AVL, kamera/DVR, hubungan wali–siswa, dan respons insiden.
+- [ ] Definisikan isolasi data dan izin jika perusahaan melayani lebih dari satu sekolah; jangan menganggap staf perusahaan otomatis dapat melihat seluruh data sekolah.
+- [ ] Konfirmasi persyaratan perizinan terbaru untuk kedua pola dengan TGA/MoE atau penasihat Saudi yang kompeten.
+- [ ] Setelah kota pilot dipilih, uji bukti cakupan routing bus besar, peta, GPS, dan kamera/AVL di kota tersebut.
+
+**Bukti publik yang diperiksa:** pemberitahuan Asharqia Chamber 9 September 2026 tentang regulasi transportasi pendidikan TGA (https://www.chamber.org.sa/en/information-center/memos/memo-4997/); keputusan Umm Al-Qura 10 April 2026 mengenai jadwal tes kompetensi profesional pengemudi bus (https://www.uqn.gov.sa/decisions-and-regulations/authorities/4000704); portal layanan transportasi sekolah melalui Noor (https://my.gov.sa/en/services/18428); panduan PDPL SDAIA (https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPLCP). Sumber-sumber ini tidak membuktikan API Noor, kepatuhan sistem, atau kelayakan provider tertentu.
+
+**Gerbang coding tetap berlaku:** belum ada coding fitur bisnis, provider belum dipilih, dan tinjauan teknis belum dinyatakan lulus.
