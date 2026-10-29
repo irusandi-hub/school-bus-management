@@ -60,11 +60,11 @@ Sekolah; Siswa; Orang tua/wali; Relasi siswa–wali; Titik jemput; Bus (kapasita
 - Wali harus melihat status kedaluwarsa/tidak tersedia saat data lokasi usang atau perangkat offline.
 
 ## 9. Kamera live
-- Kamera/DVR bus berasal dari perangkat eksternal; aplikasi hanya menyediakan live stream pada versi awal, bukan playback atau unduh.
+- Kamera dan DVR sudah terpasang secara mandiri pada bus. Aplikasi hanya menghubungkan/menampilkan live stream dari perangkat yang ada; pengadaan, pemasangan, atau pengelolaan fisik perangkat bukan lingkup aplikasi awal. Tidak termasuk playback atau unduh rekaman.
 - Pengemudi dapat mengakses kamera selama sesi kerja aktif.
 - Wali hanya dapat mengakses stream selama anak tertentu telah dikonfirmasi berada di bus dan izin masih berlaku. Akses berakhir saat anak turun atau izin dicabut, meskipun bus masih membawa siswa lain.
 - Server harus mengautentikasi dan mengotorisasi setiap akses. Tautan lama tidak boleh melewati autentikasi. Hentikan/cabut stream jika didukung dan tampilkan status offline.
-- Merek/model, protokol, autentikasi, kapasitas akses bersamaan, dan mekanisme pencabutan masih harus diverifikasi.
+- Merek/model dan firmware kamera/DVR yang sudah terpasang, protokol/API yang tersedia, metode autentikasi, kemampuan relay/proxy stream, kapasitas akses bersamaan, biaya/batas vendor, serta mekanisme pencabutan masih harus diverifikasi per perangkat. Jangan menganggap semua perangkat kompatibel.
 
 ## 10. Sesi kerja dan pemeriksaan kabin
 Sesi kerja pengemudi berbeda dari sesi perjalanan anak. Sebelum menutup tugas, pengemudi harus memeriksa kabin secara fisik. Jika ada siswa yang masih tercatat di bus atau statusnya belum jelas, sistem memperingatkan dan menahan penutupan normal sesuai kebijakan. Catat pelaksana, waktu, dan hasil pemeriksaan.
@@ -89,10 +89,10 @@ Data anak, kontak wali, dan lokasi harus dibatasi berdasarkan kebutuhan. Terapka
 ## 13. Hal yang belum diputuskan atau harus diverifikasi
 - Apakah ada aplikasi/database lama yang harus dipertahankan.
 - Platform final (admin web, aplikasi pengemudi, portal wali), metode login, pemulihan akun, dan kebutuhan offline.
-- Wilayah operasi awal: Arab Saudi. Kota pilot dan kewajiban hukum spesifik terkait anak, lokasi, kamera, serta transportasi tetap perlu ditinjau.
-- Skala sekolah/siswa/bus/pengemudi serta pola penugasan.
+- Wilayah operasi awal: Arab Saudi; kota pilot disetujui Dammam dan sekitarnya. Kewajiban hukum spesifik terkait anak, lokasi, kamera, serta transportasi tetap perlu ditinjau.
+- Skala target awal: pelayanan sekitar 100 bus. Jumlah sekolah, siswa, pengemudi, pengguna bersamaan, dan pola penugasan masih harus ditentukan.
 - Prosedur pembuktian relasi wali dan definisi final semua status.
-- Model kamera/DVR, protokol streaming, GPS dan interval pembaruan.
+- Inventaris model/firmware kamera-DVR yang sudah terpasang, protokol streaming, metode autentikasi dan pencabutan; sumber GPS/AVL dan interval pembaruan.
 - Penyedia peta/routing yang benar-benar mendukung bus besar.
 - Aturan perjalanan batal, keadaan darurat, pergantian kendaraan, dan status siswa belum jelas.
 - Model tarif masa depan, retensi, backup, format laporan, hosting, database, monitoring, dan proses rilis.
