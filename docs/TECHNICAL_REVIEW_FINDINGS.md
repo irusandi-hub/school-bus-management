@@ -153,3 +153,48 @@ Sebelum memilih hosting atau vendor kamera/GPS, buat inventaris aliran data: jen
 5. Tetapkan kota pilot dan kisaran skala untuk membangun skenario uji sintetis. Data siswa nyata tidak diperlukan untuk tahap kelayakan awal.
 
 Status tetap: **belum ada provider, platform teknis, database, atau integrasi yang dipilih; belum ada fitur bisnis yang dibuat.**
+
+
+## Pembaruan keputusan operasional — 2026-10-29
+
+### Jawaban pemilik proyek
+- **Model operasional:** sekolah dan perusahaan transportasi.
+- **Kota pilot:** BELUM DIPUTUSKAN.
+- **Wilayah:** Arab Saudi.
+- **Status:** tinjauan dokumentasi/riset saja; tidak ada coding fitur bisnis dan tidak ada provider dipilih.
+
+### Implikasi model dua jalur
+Aplikasi perlu dianalisis untuk dua pola operasi yang mungkin berjalan berdampingan:
+1. **Sekolah mengoperasikan bus sendiri.**
+2. **Sekolah menggunakan perusahaan transportasi.**
+
+Ini belum berarti semua sekolah akan memakai kedua pola sekaligus. Sebelum desain arsitektur, petakan aktor dan tanggung jawab untuk tiap pola: siapa pemilik/penanggung jawab bus, pihak yang mempekerjakan atau menugaskan pengemudi, pihak yang memegang lisensi, siapa mengelola siswa dan wali, siapa menyetujui rute, siapa memantau perjalanan, siapa mengelola DVR/AVL, dan siapa yang menjadi pengendali/pemroses data pribadi. Jangan memberi perusahaan akses ke semua data sekolah atau menganggap satu perusahaan menangani banyak sekolah tanpa keputusan dan model izin yang jelas.
+
+### Pertanyaan teknis yang kini lebih spesifik
+- Apakah satu sekolah dapat berganti antara bus sendiri dan perusahaan transportasi per rute, bus, atau periode?
+- Apakah perusahaan dapat melayani beberapa sekolah, dan bagaimana pemisahan tenant/data serta akses stafnya?
+- Siapa yang mengundang/menonaktifkan pengemudi dan bertanggung jawab atas pemeriksaan dokumen/lisensi?
+- Siapa yang menyetujui perubahan rute, penggantian bus/pengemudi, dan pengecualian GPS?
+- Siapa yang memiliki perangkat kamera/AVL dan berwenang memberi atau mencabut akses?
+- Kontrak, izin, dan tanggung jawab atas insiden/retensi data apa yang harus direpresentasikan atau sekadar dirujuk oleh sistem?
+
+Pertanyaan tersebut belum dijawab dan tidak boleh dijadikan asumsi implementasi.
+
+### Verifikasi sumber Saudi yang diperbarui
+1. **Transportasi pendidikan / TGA:** pemberitahuan Asharqia Chamber bertanggal 9 September 2026 merujuk pada peraturan pelaksanaan aktivitas transportasi pendidikan TGA yang diterbitkan pada 2025. Pemberitahuan itu menyebut sekolah swasta harus memperoleh izin yang diwajibkan untuk institusi, kendaraan, dan pengemudi atau membuat kontrak dengan penyedia aktivitas transportasi pendidikan berizin, serta memenuhi perlengkapan teknis. Ini relevan langsung bagi dua model operasi, tetapi teks pemberitahuan sekunder bukan pengganti pemeriksaan regulasi resmi dan penerapannya pada kasus tertentu. Sumber: https://www.chamber.org.sa/en/information-center/memos/memo-4997/
+2. **Keputusan kompetensi pengemudi:** keputusan Umm Al-Qura tanggal 10 April 2026 mengubah waktu berlakunya kewajiban tes kompetensi profesional untuk kartu pengemudi profesional dalam konteks transportasi bus, terkait peluncuran program kualifikasi profesional. Penerapan tepatnya perlu dikonfirmasi untuk kelas operator/pengemudi yang relevan. Sumber: https://www.uqn.gov.sa/decisions-and-regulations/authorities/4000704
+3. **Alur transportasi sekolah digital:** portal layanan pemerintah Saudi menerangkan layanan pendaftaran transportasi sekolah melalui sistem Noor. Halaman tersebut membuktikan adanya layanan digital, bukan adanya API publik, hak integrasi, atau izin mengambil data. Sumber: https://my.gov.sa/en/services/18428
+4. **Privasi dan transfer data:** panduan resmi SDAIA menjelaskan PDPL mencakup pemrosesan data pribadi, termasuk alamat, nomor kontak, foto, dan video; aturan transfer ke luar Kerajaan juga perlu diperiksa sebelum memilih hosting, DVR, GPS, atau vendor cloud. Sumber: https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPLCP
+
+### Dampak terhadap keputusan teknis
+- **Belum memilih kota pilot** berarti belum bisa menguji cakupan peta/routing, kualitas pembatasan jalan, GPS di lapangan, atau konektivitas kamera untuk wilayah yang benar-benar dituju.
+- **Model operasi ganda** membuat pemisahan akses antar sekolah/perusahaan dan kepemilikan tanggung jawab menjadi gerbang desain utama, bukan detail yang boleh ditunda setelah coding.
+- Routing bus besar tetap **TERBLOKIR untuk pemilihan provider** sampai cakupan kota Saudi dibuktikan secara tertulis dan diuji.
+- Kamera/DVR dan GPS tetap belum dipilih atau diverifikasi.
+- Tidak ada klaim bahwa sistem sudah patuh regulasi; tinjauan hukum/privasi yang kompeten tetap diperlukan.
+
+### Langkah berikutnya tanpa coding
+1. Buat matriks tanggung jawab (RACI sederhana) untuk sekolah dengan bus sendiri versus sekolah yang memakai operator berizin.
+2. Minta konfirmasi TGA/MoE atau penasihat setempat mengenai izin yang berlaku pada kedua pola.
+3. Minta vendor routing, DVR, dan AVL menjawab persyaratan teknis setelah kota pilot ditetapkan.
+4. Tentukan kisaran skala awal dan siapa yang bertanggung jawab atas data pribadi pada tiap pola.
