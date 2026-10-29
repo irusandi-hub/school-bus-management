@@ -111,3 +111,12 @@ Jangan menggunakan hasil kalkulasi sebagai jaminan hukum atau keselamatan tanpa 
 - Tidak ada database, kebijakan RLS, penyimpanan berkas, GPS, kamera, atau akses vendor yang diverifikasi.
 - Informasi vendor di atas berasal dari dokumentasi publik dan tidak menggantikan uji langsung, verifikasi ketersediaan wilayah, peninjauan lisensi, atau konfirmasi komersial.
 - Tidak ada keputusan platform, provider, database, atau framework yang dibuat dalam laporan ini.
+
+
+## Pembaruan riset Saudi — 2026-10-29
+
+- Google Large Vehicle Routing tidak dapat diasumsikan tersedia di Arab Saudi: dokumentasi resmi saat ini membatasi ketersediaan yang dinyatakan pada 48 negara bagian AS yang bersebelahan dan Jepang eksperimental. Sumber: https://developers.google.com/maps/documentation/routes/lvr
+- Cakupan pembatasan truk HERE di Arab Saudi belum terbukti dari daftar cakupan publik yang diperiksa. Konfirmasi langsung ke vendor dan uji lapangan tetap diperlukan. Sumber: https://docs.here.com/routing/docs/routing-v8-truck-routing-coverage
+- Transportasi pendidikan di Saudi memiliki persyaratan perizinan dan perlengkapan yang harus ditinjau dengan TGA/MoE. Sumber awal: https://www.chamber.org.sa/en/information-center/memos/memo-4997/
+- PDPL dan aturan data anak, lokasi, serta foto/video perlu ditinjau oleh pihak yang kompeten. Sumber: https://dgp.sdaia.gov.sa/wps/portal/pdp/knowledgecenter/details/PDPL/
+- Status routing tetap TERBLOKIR; tidak ada provider yang dipilih. Kota pilot, model operator, skala, kamera/DVR, dan sumber GPS masih perlu ditentukan.
