@@ -31,10 +31,13 @@ Bukan kebutuhan awal kecuali disetujui kemudian: notifikasi rutin SMS/WhatsApp, 
 ## 4. Akun dan relasi wali
 - Nomor HP dapat digunakan untuk verifikasi/keamanan, bukan notifikasi rutin.
 - Verifikasi nomor saja tidak membuktikan seseorang adalah wali.
-- Relasi siswa–wali harus disetujui melalui prosedur admin.
-- Satu wali dapat terhubung ke banyak siswa dan satu siswa dapat memiliki banyak wali, jika relasi masing-masing disetujui.
-- Perubahan nomor atau pencabutan relasi harus menghentikan akses lama sesuai kebijakan.
-- Terapkan batas percobaan OTP, masa berlaku, pemulihan akun, audit, dan pemeriksaan akses pada setiap permintaan sensitif.
+- Relasi siswa–wali harus ditetapkan dan dikelola Admin Pusat.
+- **Satu siswa hanya memiliki satu wali/akun wali yang terhubung; satu akun wali dapat terhubung ke beberapa siswa.** Tidak ada kategori akun keluarga terpisah; perbedaannya hanya jumlah siswa yang ditampilkan pada akun yang sama.
+- Email wali harus tersimpan dalam data yang dikelola admin sebelum pendaftaran. Signup hanya menggunakan email terdaftar, bukan Admissions Number; email diverifikasi melalui tautan sebelum wali membuat kata sandi. Login menggunakan email dan kata sandi.
+- Signup dan akses akun mensyaratkan setidaknya satu siswa terkait yang berstatus aktif mengikuti layanan. Jika satu siswa tidak aktif tetapi siswa lain pada akun yang sama masih aktif, akun tetap dapat digunakan hanya untuk siswa yang aktif. Jika seluruh siswa terkait tidak aktif, akun tidak dapat mengakses layanan siswa.
+- Admissions Number adalah identitas siswa, bukan nama pengguna/login. Nomor HP adalah informasi kontak, bukan pengganti email login.
+- Status layanan siswa terpisah dari kehadiran perjalanan dan status GPS. Perubahan status tidak menghapus riwayat operasional; simpan alasan dan tanggal efektif bila relevan.
+- Perubahan email/relasi atau pencabutan akses harus menghentikan akses lama sesuai kebijakan. Terapkan pembatasan percobaan, masa berlaku token, pemulihan akun, audit, dan pemeriksaan akses pada setiap permintaan sensitif.
 
 ## 5. Master data konseptual
 Sekolah; Siswa; Orang tua/wali; Relasi siswa–wali; Titik jemput; Bus (kapasitas, dimensi, tinggi, berat, profil akses); Pengemudi; Penugasan; Rute dan versi rute; Perjalanan; Stop perjalanan; Status siswa-perjalanan; Data lokasi bus; Perangkat kamera; Sesi kamera/izin akses; Riwayat keikutsertaan; Rekap penggunaan; Laporan/ekspor; Log audit; Status integrasi. Ini daftar kebutuhan, bukan skema SQL final.
@@ -83,6 +86,16 @@ Sesi kerja pengemudi berbeda dari sesi perjalanan anak. Sebelum menutup tugas, p
 ## 11. Keamanan dan privasi
 Data anak, kontak wali, dan lokasi harus dibatasi berdasarkan kebutuhan. Terapkan hak akses minimum, otorisasi server/database, audit tindakan admin dan ekspor, sesi yang dapat dicabut, tautan kedaluwarsa, retensi sesuai hukum, backup dan uji pemulihan. Jangan menggunakan data produksi nyata untuk pengujian tanpa izin dan perlindungan.
 
+## 11A. Standar pesan penolakan dan kegagalan
+
+Setiap tindakan yang ditolak atau gagal harus memberikan informasi yang jelas, ringkas, sesuai penyebab yang diketahui, dan menyebutkan langkah berikutnya jika tersedia. Berlaku untuk autentikasi, formulir, CRUD, izin akses, status siswa, GPS, kamera, koneksi, dan seluruh proses lain. Kontrol yang tidak aktif juga harus menjelaskan alasannya bila hal itu menghalangi tindakan pengguna.
+
+- Jangan gunakan pesan generik jika penyebab sebenarnya diketahui.
+- Jangan mengarang penyebab. Jika penyebab belum diketahui, nyatakan proses belum berhasil dan berikan langkah pemulihan yang aman.
+- Jangan membocorkan keberadaan akun/email orang lain, data anak, koordinat rumah, rahasia server, token, atau detail internal. Pada kondisi sensitif, gunakan pesan aman yang tetap memberi petunjuk tindakan.
+- Detail diagnostik dicatat di log internal sesuai kebutuhan, dengan pembatasan akses dan tanpa rahasia/data pribadi yang tidak diperlukan.
+- Data kosong atau integrasi tidak tersedia harus menampilkan status eksplisit (misalnya lokasi belum tersedia, GPS usang, atau kamera offline), bukan panel kosong tanpa penjelasan.
+
 ## 12. Kriteria penerimaan awal
 - Pengemudi tidak dapat mengubah nomor wali; permintaan ditolak server.
 - Wali tidak dapat membuka data anak lain, termasuk melalui akses API langsung.
@@ -91,6 +104,7 @@ Data anak, kontak wali, dan lokasi harus dibatasi berdasarkan kebutuhan. Terapka
 - GPS di luar radius, usang, tidak akurat, atau offline tidak lolos validasi normal.
 - Saat anak turun, akses kamera wali anak tersebut dicabut tanpa otomatis mencabut akses wali lain yang sah.
 - Kamera/GPS offline terlihat jelas.
+- Setiap penolakan/kegagalan dan kontrol nonaktif yang relevan memberikan pesan yang jelas, aman, ringkas, serta langkah berikutnya bila tersedia.
 - Rute yang tidak layak untuk bus besar memberi peringatan; stop yang dilewati tidak mengubah urutan.
 - Perubahan data membuat versi rute baru untuk perjalanan mendatang, bukan mengubah rute aktif diam-diam.
 - Penutupan sesi memeriksa status siswa dan pemeriksaan kabin.
