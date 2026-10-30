@@ -204,3 +204,24 @@ Gunakan dokumen alur inti sebagai acuan untuk memecah pekerjaan teknis berikutny
 - [ ] Rancang dan tinjau alur email terdaftar, verifikasi, token kedaluwarsa/sekali pakai, pemulihan akun, rate limiting, serta pesan anti-enumerasi.
 - [ ] Tambahkan matriks QA untuk semua jalur penolakan/kegagalan, termasuk tombol nonaktif, validasi, jaringan/server, izin, siswa nonaktif, GPS/video tidak tersedia.
 - [ ] Tinjauan teknis dan desain hak akses belum disetujui; tidak ada implementasi bisnis atau perubahan database yang diizinkan oleh pembaruan dokumentasi ini.
+
+
+## Aturan tahapan verifikasi — 2026-10-30
+
+Checklist tinjauan harus mengikuti tahap kesiapan, bukan memaksa pengujian terhadap fitur, perangkat, vendor, atau konfigurasi yang belum tersedia.
+
+1. **Tinjau sekarang (tanpa implementasi):** konsistensi keputusan produk, alur kerja, batas peran/tanggung jawab, klasifikasi data, risiko keselamatan/privasi, kebutuhan akses, dan pertanyaan yang memang harus dijawab sebelum arsitektur disetujui.
+2. **Saat konfigurasi atau pemilihan dilakukan:** verifikasi hanya hal yang bergantung pada pilihan nyata, misalnya nilai ambang yang dapat dikonfigurasi, OS/perangkat minimum, interval GPS, retensi, kapasitas, atau pengaturan notifikasi. Sebelum pilihan itu dibuat, catat sebagai parameter terbuka—bukan kegagalan atau penghambat otomatis.
+3. **Setelah implementasi tersedia:** jalankan tes fungsional, integrasi, keamanan, dan penerimaan terhadap fitur yang benar-benar sudah dibuat. Jangan mencatat hasil tes seolah-olah telah dilakukan bila belum ada implementasi.
+4. **Saat perangkat/vendor/data uji tersedia:** lakukan proof of concept atau uji lapangan yang memang memerlukan akses tersebut. Jika belum tersedia, catat prasyarat dan pemilik tindak lanjut, bukan membuat hasil uji pengganti.
+
+### Klasifikasi butir checklist
+
+- **Gerbang sebelum desain/implementasi:** keputusan yang berdampak pada keselamatan, privasi, model data, otorisasi, dan ruang lingkup inti.
+- **Verifikasi saat konfigurasi:** parameter yang memang dapat ditetapkan kemudian dan tidak mengubah keputusan produk mendasar.
+- **Verifikasi setelah implementasi:** perilaku aplikasi, API, database, UI, dan penanganan kegagalan yang belum ada untuk diuji.
+- **Validasi eksternal/lapangan:** dukungan vendor, lisensi, perangkat nyata, cakupan peta, serta kondisi operasional yang memerlukan bukti dari luar repository.
+
+Nilai radius penjemputan, ambang GPS usang, interval pengiriman, dan batas akurasi bukan angka yang boleh dianggap final hanya karena pernah muncul sebagai contoh. Tetapkan melalui konfigurasi/keputusan yang disetujui dan uji ketika implementasi serta kondisi uji tersedia. Kamera live tetap fitur tambahan; ketiadaan konfigurasi kamera bukan alasan menunda tinjauan atau validasi alur inti navigasi dan laporan.
+
+**Status saat pembaruan ini:** tidak ada pengujian aplikasi, GPS, kamera, atau routing yang diklaim telah dilakukan. Perubahan ini hanya memperjelas urutan dan prasyarat verifikasi.
