@@ -110,3 +110,20 @@ Lihat `TECHNICAL_SPEC_REVIEW.md`, bagian 19 pada `MASTER_SPEC.md`, serta `OPERAT
 - **Keputusan:** Fokus utama aplikasi adalah navigasi operasional bus sekolah dan informasi/laporan orang tua. Live stream kamera adalah fitur tambahan yang dapat dikonfigurasi atau diaktifkan kemudian; kesiapan integrasi kamera bukan prasyarat untuk menyelesaikan alur inti.
 - **Alasan:** Pemilik produk menegaskan bahwa pekerjaan sebelumnya terlalu berfokus pada perangkat AV, padahal video hanya fitur tambahan.
 - **Dampak pada dokumen/tes:** Prioritaskan validasi rute dan urutan stop, GPS, status jemput/turun, status lokasi terbaru/usang, riwayat keikutsertaan, laporan orang tua, isolasi akses, dan audit. Dokumen kamera tetap dipertahankan sebagai referensi lanjutan dan tidak boleh menggeser prioritas navigasi/laporan.
+
+
+### DEC-017 — Model akun wali, email, dan kelayakan layanan siswa
+- **Tanggal:** 2026-10-30
+- **Status:** DISETUJUI
+- **Keputusan:** Email wali harus dipra-daftarkan oleh Admin Pusat dan disimpan di database. Signup menggunakan email terdaftar, tautan verifikasi email, lalu pembuatan kata sandi. Sign-in menggunakan email dan kata sandi; Admissions Number hanya identitas siswa. Satu siswa hanya memiliki satu relasi akun wali, sementara satu akun wali dapat terhubung ke beberapa siswa. Tidak ada kategori akun keluarga.
+- **Kelayakan layanan:** Signup dan sign-in memerlukan setidaknya satu siswa terkait berstatus layanan aktif. Jika akun memiliki beberapa siswa dan hanya sebagian aktif, akun tetap dapat digunakan hanya untuk siswa aktif. Jika semua siswa terkait nonaktif, akses layanan ditolak. Status layanan siswa terpisah dari kehadiran/perjalanan dan status GPS; riwayat tidak dihapus otomatis saat status berubah.
+- **Alasan:** Dikonfirmasi langsung oleh pemilik produk.
+- **Dampak pada dokumen/tes:** Perbarui MASTER_SPEC, model data dan matriks akses setelah tinjauan; uji relasi satu wali per siswa, banyak siswa per wali, email pra-daftar/verifikasi, semua kombinasi status aktif/nonaktif, dan pemutusan akses server/database. Desain implementasi dan migrasi tetap menunggu gerbang tinjauan teknis.
+
+### DEC-018 — Pesan wajib untuk semua penolakan dan kegagalan
+- **Tanggal:** 2026-10-30
+- **Status:** DISETUJUI
+- **Keputusan:** Setiap penolakan, validasi gagal, akses ditolak, tindakan tidak tersedia, atau proses gagal wajib memberikan informasi yang jelas, ringkas, akurat, dan relevan. Bila memungkinkan, sertakan langkah berikutnya. Tidak boleh ada kegagalan senyap atau tombol nonaktif tanpa alasan yang dapat dipahami.
+- **Batas keamanan:** Pesan tidak boleh membocorkan data siswa, keberadaan akun orang lain, rahasia, kredensial, token, stack trace, atau detail internal server. Bila penyebab belum diketahui, jangan menebak; sampaikan bahwa proses belum berhasil dan berikan langkah pemulihan yang aman. Detail teknis dicatat di log internal terlindungi.
+- **Alasan:** Dikonfirmasi langsung oleh pemilik produk.
+- **Dampak pada dokumen/tes:** Terapkan ke seluruh peran dan fitur, termasuk autentikasi, CRUD, otorisasi, perjalanan, GPS, kamera/video, dan ekspor. QA wajib mencakup seluruh jalur penolakan/kegagalan dan memeriksa kejelasan pesan serta tidak adanya kebocoran data.

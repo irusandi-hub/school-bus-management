@@ -28,13 +28,16 @@ Lingkup dasar mencakup login dan peran; data sekolah/siswa/wali/bus/pengemudi; p
 
 Bukan kebutuhan awal kecuali disetujui kemudian: notifikasi rutin SMS/WhatsApp, push notification sebagai ketergantungan wajib, penagihan/pembayaran, playback atau unduh rekaman kamera, dan pengubahan otomatis urutan stop selama perjalanan aktif.
 
-## 4. Akun dan relasi wali
-- Nomor HP dapat digunakan untuk verifikasi/keamanan, bukan notifikasi rutin.
-- Verifikasi nomor saja tidak membuktikan seseorang adalah wali.
-- Relasi siswa–wali harus disetujui melalui prosedur admin.
-- Satu wali dapat terhubung ke banyak siswa dan satu siswa dapat memiliki banyak wali, jika relasi masing-masing disetujui.
-- Perubahan nomor atau pencabutan relasi harus menghentikan akses lama sesuai kebijakan.
-- Terapkan batas percobaan OTP, masa berlaku, pemulihan akun, audit, dan pemeriksaan akses pada setiap permintaan sensitif.
+## 4. Akun, email, dan relasi orang tua/wali
+- Email orang tua/wali harus didaftarkan oleh Admin Pusat dan disimpan di database sebelum proses signup. Signup hanya dapat dimulai dengan email yang telah terdaftar; sistem mengirim tautan verifikasi ke alamat tersebut. Setelah verifikasi, pengguna membuat kata sandi dan masuk menggunakan email serta kata sandi.
+- Nomor Admissions Number adalah identitas siswa, bukan username atau kredensial login.
+- Satu siswa hanya boleh memiliki satu relasi akun orang tua/wali aktif. Satu akun orang tua/wali dapat terhubung ke satu atau beberapa siswa. Tidak ada jenis akun khusus “akun keluarga”; jumlah kartu siswa yang ditampilkan mengikuti relasi yang sah.
+- Signup mensyaratkan email terdaftar yang terhubung dengan setidaknya satu siswa berstatus layanan aktif. Sign-in juga hanya diizinkan jika akun memiliki setidaknya satu siswa berstatus layanan aktif.
+- Status layanan siswa terpisah dari status kehadiran/perjalanan dan status GPS. Jika salah satu siswa nonaktif tetapi masih ada siswa lain yang aktif, akun tetap dapat digunakan hanya untuk siswa aktif. Jika semua siswa terkait nonaktif, akun tidak dapat mengakses layanan siswa.
+- Menonaktifkan layanan siswa tidak menghapus data historis, relasi, atau catatan perjalanan secara otomatis. Perubahan status dan alasan yang diwajibkan harus dapat diaudit.
+- Email digunakan untuk login; nomor telepon adalah informasi kontak dan bukan pengganti email atau Admissions Number.
+- Perubahan email, pencabutan relasi, dan penonaktifan layanan harus memperbarui akses di server/database, bukan hanya menyembunyikan UI.
+- Terapkan pembatasan percobaan, token verifikasi sekali pakai yang kedaluwarsa, pemulihan akun, audit, dan pemeriksaan akses pada setiap permintaan sensitif. Pesan signup tidak boleh mengungkap apakah email atau nomor Admissions Number milik orang lain terdaftar.
 
 ## 5. Master data konseptual
 Sekolah; Siswa; Orang tua/wali; Relasi siswa–wali; Titik jemput; Bus (kapasitas, dimensi, tinggi, berat, profil akses); Pengemudi; Penugasan; Rute dan versi rute; Perjalanan; Stop perjalanan; Status siswa-perjalanan; Data lokasi bus; Perangkat kamera; Sesi kamera/izin akses; Riwayat keikutsertaan; Rekap penggunaan; Laporan/ekspor; Log audit; Status integrasi. Ini daftar kebutuhan, bukan skema SQL final.
@@ -91,6 +94,8 @@ Data anak, kontak wali, dan lokasi harus dibatasi berdasarkan kebutuhan. Terapka
 - GPS di luar radius, usang, tidak akurat, atau offline tidak lolos validasi normal.
 - Saat anak turun, akses kamera wali anak tersebut dicabut tanpa otomatis mencabut akses wali lain yang sah.
 - Kamera/GPS offline terlihat jelas.
+- Setiap penolakan, kegagalan validasi, akses ditolak, tindakan yang tidak tersedia, atau proses yang gagal memberi pesan jelas, ringkas, akurat, dan—bila memungkinkan—langkah berikutnya. Tidak boleh ada tombol nonaktif atau kegagalan senyap tanpa penjelasan.
+- Pesan pengguna tidak membocorkan data anak, keberadaan akun orang lain, rahasia, atau detail internal server; penyebab yang belum diketahui tidak boleh ditebak.
 - Rute yang tidak layak untuk bus besar memberi peringatan; stop yang dilewati tidak mengubah urutan.
 - Perubahan data membuat versi rute baru untuk perjalanan mendatang, bukan mengubah rute aktif diam-diam.
 - Penutupan sesi memeriksa status siswa dan pemeriksaan kabin.
@@ -169,3 +174,16 @@ Kamera live dapat direncanakan setelah alur inti stabil. Kontrak antarmuka kamer
 Alur operasional dan kriteria penerimaan terperinci ada di `docs/CORE_WORKFLOWS_NAVIGATION_AND_PARENT_REPORTS.md`. Dokumen ini menjadi rujukan kerja untuk alur sebelum perjalanan, navigasi dan status selama perjalanan, lokasi bus beserta kesegaran data, tampilan wali, riwayat, laporan, pengecualian, dan QA.
 
 Dokumen alur inti memprioritaskan navigasi dan laporan orang tua. Kamera live adalah fitur tambahan dan tidak menjadi gerbang penyelesaian atau pengujian alur inti. Routing bus besar dan sumber GPS tetap harus dibuktikan secara teknis; dokumen kebutuhan tidak berarti provider sudah dipilih atau dinyatakan lulus.
+
+
+## 20. Standar pesan penolakan dan kegagalan
+
+Setiap kondisi penolakan atau kegagalan di seluruh peran dan fitur wajib memberikan informasi yang jelas, ringkas, akurat, dan relevan dengan tindakan yang sedang dilakukan. Berlaku untuk autentikasi, formulir, CRUD, validasi data, otorisasi, penugasan, perjalanan, GPS, kamera/video, ekspor, dan operasi sistem.
+
+- Jelaskan apa yang tidak dapat dilakukan dan alasan yang aman untuk diungkapkan.
+- Berikan langkah berikutnya bila pengguna dapat menyelesaikan masalah, misalnya melengkapi data, mencoba kembali, atau menghubungi Admin Pusat.
+- Tombol yang dinonaktifkan harus disertai alasan yang dapat dipahami; kegagalan tidak boleh hanya ditunjukkan dengan layar kosong, indikator berputar tanpa akhir, atau perubahan yang tidak terjadi.
+- Gunakan pesan umum yang aman bila rincian dapat membocorkan keberadaan akun, data siswa, atau izin pengguna lain. Jangan mengungkap rahasia, token, stack trace, kredensial, atau detail internal server.
+- Bila penyebab belum diketahui, nyatakan bahwa permintaan belum berhasil dan berikan langkah pemulihan yang aman; jangan mengarang penyebab.
+- Detail teknis yang dibutuhkan untuk investigasi dicatat pada log internal yang terlindungi dan tidak menyalin rahasia atau data pribadi secara tidak perlu.
+- QA harus menguji pesan pada setiap jalur penolakan dan kegagalan, termasuk kegagalan jaringan/server, validasi, sesi kedaluwarsa, akses tanpa izin, siswa nonaktif, GPS usang/offline, dan kamera tidak tersedia.
