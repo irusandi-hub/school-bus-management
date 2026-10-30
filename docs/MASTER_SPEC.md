@@ -108,7 +108,7 @@ Data anak, kontak wali, dan lokasi harus dibatasi berdasarkan kebutuhan. Terapka
 - Wilayah operasi awal: Arab Saudi; kota pilot disetujui Dammam dan sekitarnya. Kewajiban hukum spesifik terkait anak, lokasi, kamera, serta transportasi tetap perlu ditinjau.
 - Skala target awal: pelayanan sekitar 100 bus. Jumlah sekolah, siswa, pengemudi, pengguna bersamaan, dan pola penugasan masih harus ditentukan.
 - Prosedur pembuktian relasi wali dan definisi final semua status.
-- Inventaris model/firmware kamera-DVR yang sudah terpasang, protokol streaming, metode autentikasi dan pencabutan; sumber GPS/AVL dan interval pembaruan.
+- Inventaris model/firmware kamera-DVR yang sudah terpasang, protokol streaming, metode autentikasi dan pencabutan. Sumber GPS fase pertama sudah ditetapkan sebagai ponsel Android pengemudi yang sedang ditugaskan; interval pembaruan, kesegaran, akurasi, perangkat minimum, baterai/data, background, dan offline masih harus diuji.
 - Penyedia peta/routing yang benar-benar mendukung bus besar.
 - Aturan perjalanan batal, keadaan darurat, pergantian kendaraan, dan status siswa belum jelas.
 - Model tarif masa depan, retensi, backup, format laporan, hosting, database, monitoring, dan proses rilis.
