@@ -1,0 +1,117 @@
+# Arsip Backlog Implementasi Produk
+
+**Tanggal pembaruan:** 2026-10-30  
+**Status umum:** Arsip kebutuhan dan keputusan; bukan bukti bahwa fitur sudah tersedia.  
+**Tujuan:** Menjadi sumber kesinambungan ketika pekerjaan dilanjutkan di chat atau sesi agen baru.
+
+## Cara menggunakan arsip ini
+
+1. Baca `AGENTS.md`, `README.md`, `docs/MASTER_SPEC.md`, `docs/TECHNICAL_SPEC_REVIEW.md`, dan `docs/DECISIONS_LOG.md` sebelum melanjutkan.
+2. Audit kode dan database aktual untuk setiap butir. Jangan menganggap dokumentasi berarti fitur telah dibuat.
+3. Tandai tiap butir sebagai `BELUM DIAUDIT`, `BELUM DIKERJAKAN`, `SEDANG DIKERJAKAN`, `TERIMPLEMENTASI BELUM DIVERIFIKASI`, `SELESAI DAN LULUS TES`, atau `TERBLOKIR`, dengan bukti.
+4. Jangan mengubah database produksi, menambahkan RLS/policy, menjalankan migrasi, merge, atau deploy tanpa izin eksplisit. Gerbang tinjauan teknis DEC-010 tetap berlaku.
+5. Saat keputusan baru disetujui, perbarui MASTER_SPEC dan DECISIONS_LOG serta backlog ini.
+
+## A. Keputusan produk yang harus dipertahankan
+
+- [x] Tiga peran utama: Admin Pusat, Pengemudi, Orang Tua/Wali.
+- [x] Produk adalah penyedia aplikasi, bukan operator transportasi sekolah.
+- [x] Pilot Dammam dan sekitarnya; target perencanaan awal sekitar 100 bus.
+- [x] Fokus utama: navigasi operasional bus dan informasi/laporan wali. Kamera live adalah fitur tambahan.
+- [x] Satu siswa hanya terhubung ke satu wali/akun wali.
+- [x] Satu akun wali dapat terhubung ke beberapa siswa; tidak ada kategori akun keluarga terpisah.
+- [x] Email wali harus dipra-daftarkan admin dan disimpan di database. Signup hanya menggunakan email terdaftar; verifikasi tautan dilakukan sebelum membuat kata sandi. Login dengan email dan kata sandi.
+- [x] Admissions Number adalah identitas siswa, bukan username/login. Nomor HP hanya kontak.
+- [x] Minimal satu siswa terkait harus berstatus aktif mengikuti layanan agar signup/akses akun diizinkan.
+- [x] Jika sebagian siswa nonaktif tetapi setidaknya satu masih aktif, akun dapat digunakan hanya untuk siswa aktif. Jika seluruh siswa nonaktif, akses layanan ditolak.
+- [x] Status layanan siswa berbeda dari kehadiran pada perjalanan dan status GPS. Perubahan status tidak menghapus riwayat.
+- [x] Semua penolakan/kegagalan/kontrol nonaktif yang menghalangi tindakan harus menjelaskan alasan dengan jelas dan ringkas, serta langkah berikutnya bila tersedia. Jangan membocorkan data sensitif atau mengarang penyebab.
+- [x] UI wali memakai frame/kartu anak yang ringkas dan adaptif. Informasi video, GPS, dan status dapat tampil bersama; hindari kartu terlalu besar dan panel kosong besar ketika data tidak tersedia.
+
+## B. Backlog wajib sebelum/selama implementasi
+
+### B1. Audit kesenjangan implementasi
+- [ ] Audit seluruh halaman, komponen, route handler/API, server actions, autentikasi, database, storage, dan integrasi.
+- [ ] Untuk setiap keputusan di bagian A, catat file/komponen/endpoint/database yang merealisasikan aturan atau nyatakan belum ada.
+- [ ] Bedakan fitur yang hanya berupa UI preview/mock dari fitur yang benar-benar tersambung ke database.
+- [ ] Catat hasil tes aktual; jangan mengklaim lolos tanpa bukti.
+
+### B2. Pesan penolakan dan kegagalan — prioritas lintas sistem
+- [ ] Buat inventaris seluruh kondisi ditolak/gagal: validasi form, email, signup/login, verifikasi, sesi kedaluwarsa, hak akses, status siswa, CRUD, duplikasi data, konflik perubahan, jaringan/server, GPS, kamera/video, perjalanan/rute, dan ekspor.
+- [ ] Buat katalog pesan berbahasa sederhana: penyebab yang diketahui, tindakan pengguna berikutnya, dan kapan harus menghubungi admin.
+- [ ] Pastikan tombol nonaktif yang menghalangi tindakan menjelaskan alasannya melalui teks atau bantuan kontekstual yang mudah ditemukan.
+- [ ] Pastikan respons API memiliki kode/status terstruktur dan pesan aman yang konsisten; UI menerjemahkannya menjadi bahasa pengguna.
+- [ ] Jika penyebab tidak diketahui, jangan menebak. Sampaikan bahwa proses belum berhasil, berikan langkah aman (misalnya coba lagi/periksa koneksi), dan sediakan kode referensi bila sesuai.
+- [ ] Jangan membocorkan keberadaan email/akun orang lain, data anak, koordinat rumah, kredensial, token, stack trace, atau detail internal.
+- [ ] Catat detail diagnostik di log internal dengan akses terbatas dan minimisasi data pribadi.
+- [ ] Uji setiap jalur gagal/ditolak, bukan hanya jalur sukses.
+
+Contoh kondisi yang perlu dipetakan: email belum didaftarkan; email belum diverifikasi; tidak ada siswa aktif; siswa tertentu tidak aktif; data wajib kosong; format salah; Admissions Number/email duplikat; tidak berwenang; sesi berakhir; GPS tidak tersedia/usang/tidak akurat/di luar radius; kamera offline/tidak terkonfigurasi; koneksi gagal; server gagal; data konflik. Contoh ini bukan pesan final untuk semua kondisi: wording harus mengikuti konteks dan keamanan.
+
+### B3. Akun wali, pra-pendaftaran, dan status layanan
+- [ ] Audit struktur saat ini: tabel profil/wali, siswa, Admissions Number, email, relasi, status layanan, serta constraint unik/FK.
+- [ ] Rancang model relasi satu siswa–satu wali dan satu wali–banyak siswa tanpa membuat tipe akun keluarga.
+- [ ] Tentukan sumber kebenaran email wali dan proses admin untuk menambah/mengubah email secara aman.
+- [ ] Rancang signup berbasis email yang telah dipra-daftarkan; token verifikasi terbatas waktu dan sekali pakai; pembuatan kata sandi setelah verifikasi.
+- [ ] Login menggunakan email + kata sandi; Admissions Number tidak dipakai sebagai kredensial.
+- [ ] Terapkan syarat minimal satu siswa aktif untuk signup/akses akun dan isolasi akses siswa nonaktif.
+- [ ] Definisikan status layanan (aktif, sementara tidak ikut/tidak aktif sementara, dikeluarkan/dihentikan, atau istilah final yang disetujui), alasan, tanggal efektif, aktor, dan riwayat perubahan.
+- [ ] Pastikan status layanan tidak tercampur dengan status kehadiran perjalanan atau status GPS.
+- [ ] Uji kasus satu siswa aktif; semua nonaktif; campuran aktif/nonaktif; email belum terdaftar; email salah; token kedaluwarsa/terpakai; perubahan email; pencabutan relasi.
+- [ ] Jangan ungkap apakah email terdaftar kepada pihak yang tidak berwenang; pesan harus tetap jelas tetapi aman.
+
+### B4. Administrasi data dan CRUD nyata
+- [ ] Audit menu admin yang sudah ada dan tandai menu aktif, preview, tidak berfungsi, atau belum dibuat.
+- [ ] Rancang CRUD admin untuk sekolah, bus, pengemudi, siswa, wali, rute, stop, penugasan, dan titik lokasi.
+- [ ] Admin dapat mengelola data siswa, Admissions Number unik, sekolah, nama, tanggal lahir, email wali, nomor kontak, status layanan, dan titik rumah/penjemputan pada peta.
+- [ ] Koordinat rumah adalah data privat dan tidak boleh tampil ke pengguna yang tidak berwenang.
+- [ ] Tentukan arsip/nonaktif vs hapus permanen; pertahankan riwayat operasional dan audit.
+- [ ] Pastikan semua perubahan tersimpan di database dan ada validasi, pencarian, pagination, empty state, error state, serta konfirmasi untuk tindakan penting.
+
+### B5. UI wali ringkas dan adaptif
+- [ ] Audit UI aktual untuk akun dengan satu dan beberapa siswa.
+- [ ] Gunakan model akun yang sama; jangan munculkan label atau mode khusus “akun keluarga”.
+- [ ] Kartu/frame tiap anak harus kompak agar beberapa anak dapat ditampilkan bersamaan dengan video, GPS, dan status.
+- [ ] Pada layar ponsel, susun informasi tanpa kartu anak oversized; pada layar lebar, manfaatkan tata letak berdampingan.
+- [ ] Saat video/GPS belum tersedia atau offline, tampilkan status ringkas dan jangan sisakan panel kosong besar.
+- [ ] Uji ukuran layar ponsel dan desktop, satu siswa, beberapa siswa, serta data video/GPS tersedia dan tidak tersedia.
+
+### B6. Navigasi, perjalanan, GPS, dan laporan wali
+- [ ] Validasi model perjalanan pagi/sore, penugasan, rute yang disetujui, urutan stop stabil, dan versi rute.
+- [ ] Verifikasi provider routing bus besar untuk Dammam; jangan menyatakan dukungan tanpa bukti vendor dan pengujian.
+- [ ] Verifikasi sumber GPS, akurasi, kesegaran, offline, dan radius awal 100 meter pada kondisi nyata.
+- [ ] Status jemput/turun dan riwayat keikutsertaan harus konsisten dan dapat diaudit.
+- [ ] Wali hanya melihat status/laporan anak yang berhak diakses.
+- [ ] Tampilkan timestamp pembaruan lokasi dan status usang/offline dengan jelas.
+- [ ] Uji perjalanan batal, pergantian bus/pengemudi, rute tidak aman, dan pengecualian berwenang.
+
+### B7. Kamera live — prioritas setelah alur inti
+- [ ] Inventaris perangkat/DVR dan aplikasi/platform AV yang sudah terpasang.
+- [ ] Verifikasi dokumentasi integrasi resmi, autentikasi server-side, pencabutan sesi, konkurensi, biaya, bandwidth, dan lokasi pemrosesan.
+- [ ] Pastikan akses wali hanya saat anak terkait dikonfirmasi berada di bus dan akses dicabut saat turun/izin berakhir.
+- [ ] Tampilkan status kamera belum dikonfigurasi/offline/gagal dengan pesan ringkas; jangan tampilkan panel kosong.
+- [ ] Jangan menjadikan kamera sebagai penghambat penyelesaian navigasi dan laporan inti.
+
+### B8. Keamanan, audit, dan kesiapan rilis
+- [ ] Finalisasi matriks akses Admin/Pengemudi/Wali dan isolasi antarorganisasi.
+- [ ] Rancang RLS dan hak akses database setelah tinjauan teknis; jangan memakai UI hiding sebagai keamanan.
+- [ ] Periksa grants, policies, Storage, fungsi privileged, session revocation, rate limits, dan proteksi password.
+- [ ] Audit tindakan admin, perubahan status, relasi wali, ekspor, dan koreksi historis.
+- [ ] Tinjau PDPL dan kewajiban Saudi terkait data anak, lokasi, kamera, retensi, hosting, dan transfer lintas negara.
+- [ ] Susun QA end-to-end dan uji lapangan sebelum rilis bertahap.
+
+## C. Kondisi audit database yang sudah diketahui (read-only, 2026-10-29)
+
+- 11 tabel inti ditemukan: `profiles`, `buses`, `drivers`, `students`, `guardian_students`, `routes`, `route_stops`, `trip_assignments`, `trips`, `trip_student_events`, `bus_locations`.
+- RLS aktif pada 11 tabel dan belum ada policy pada tabel-tabel tersebut saat audit.
+- Role `anon` dan `authenticated` memiliki SQL grants luas pada tabel-tabel itu. RLS tanpa policy saat audit berarti akses baris melalui RLS ditolak; jangan menyimpulkan data terbuka hanya dari grants tersebut.
+- Audit tidak membuktikan bahwa tabel kosong; estimasi statistik jumlah baris tidak tersedia.
+- Tabel `organizations`, `schools`, `audit_logs`, dan `route_versions` belum ditemukan pada pemeriksaan saat itu.
+- Password leaked protection dilaporkan nonaktif; lima foreign key belum memiliki supporting index (detail harus diaudit ulang).
+- **Tidak ada perubahan database, policy, migration, atau seed data yang dilakukan dalam audit tersebut.** Periksa ulang kondisi aktual sebelum tindakan berikutnya.
+
+## D. Status dan catatan kesinambungan
+
+Arsip ini mencatat kebutuhan yang disetujui dan item pekerjaan yang belum terbukti selesai. Checklist tidak boleh dicentang hanya karena desain atau dokumentasi sudah dibuat. Setiap perubahan status harus menyertakan bukti: file/commit, hasil tes, pemeriksaan database bila relevan, dan keterbatasan.
+
+**Urutan kerja yang disarankan:** audit kode dan database → cocokkan dengan keputusan/backlog → finalisasi technical review dan model akses → persetujuan pemilik produk → implementasi bertahap → QA tiap jalur sukses dan gagal.  
