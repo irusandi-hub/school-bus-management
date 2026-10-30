@@ -79,7 +79,8 @@ Contoh kondisi yang perlu dipetakan: email belum didaftarkan; email belum diveri
 ### B6. Navigasi, perjalanan, GPS, dan laporan wali
 - [ ] Validasi model perjalanan pagi/sore, penugasan, rute yang disetujui, urutan stop stabil, dan versi rute.
 - [ ] Verifikasi provider routing bus besar untuk Dammam; jangan menyatakan dukungan tanpa bukti vendor dan pengujian.
-- [ ] Uji kelayakan sumber GPS yang sudah dipilih (ponsel Android pengemudi yang sedang ditugaskan), termasuk akurasi, kesegaran, offline, konsumsi baterai/data, background, perangkat minimum, dan radius awal 100 meter pada kondisi nyata.
+- [ ] Setelah alur GPS benar-benar diimplementasikan dan perangkat uji tersedia, validasi sumber GPS ponsel Android pengemudi yang sedang ditugaskan: akurasi, kesegaran, offline, konsumsi baterai/data, dan background.
+- [ ] Tetapkan interval, ambang kesegaran, batas akurasi, perangkat minimum, serta radius penjemputan melalui keputusan/konfigurasi saat dibutuhkan; jangan memperlakukan angka contoh sebagai ketetapan atau menguji parameter sebelum tersedia.
 - [ ] Status jemput/turun dan riwayat keikutsertaan harus konsisten dan dapat diaudit.
 - [ ] Wali hanya melihat status/laporan anak yang berhak diakses.
 - [ ] Tampilkan timestamp pembaruan lokasi dan status usang/offline dengan jelas.
@@ -115,3 +116,16 @@ Contoh kondisi yang perlu dipetakan: email belum didaftarkan; email belum diveri
 Arsip ini mencatat kebutuhan yang disetujui dan item pekerjaan yang belum terbukti selesai. Checklist tidak boleh dicentang hanya karena desain atau dokumentasi sudah dibuat. Setiap perubahan status harus menyertakan bukti: file/commit, hasil tes, pemeriksaan database bila relevan, dan keterbatasan.
 
 **Urutan kerja yang disarankan:** audit kode dan database → cocokkan dengan keputusan/backlog → finalisasi technical review dan model akses → persetujuan pemilik produk → implementasi bertahap → QA tiap jalur sukses dan gagal.  
+
+
+## Urutan verifikasi backlog — 2026-10-30
+
+Gunakan urutan berikut untuk setiap item; checklist tidak meminta pengujian prematur.
+
+- **Dokumentasi/desain:** boleh ditinjau sekarang berdasarkan keputusan dan bukti yang sudah tersedia.
+- **Konfigurasi:** parameter yang dapat diatur kemudian tetap berstatus terbuka sampai pemilik produk/operasi memilih nilainya. Tidak perlu memaksa keputusan sekarang jika belum dibutuhkan untuk desain inti.
+- **Implementasi:** tes UI/API/database hanya dijadwalkan setelah bagian terkait benar-benar tersedia. Mockup, menu preview, atau spesifikasi bukan bukti implementasi.
+- **Integrasi/perangkat/vendor:** uji hanya setelah akses, perangkat, kredensial, lisensi, dan data uji yang sah tersedia.
+- **Lapangan/operasional:** lakukan ketika pilot dan pihak operasional siap; jangan mengganti bukti lapangan dengan asumsi atau simulasi yang tidak representatif.
+
+Kamera live tetap tambahan dan dapat dikonfigurasi kemudian. Jangan menjadikan konfigurasi atau pengujian kamera sebagai prasyarat backlog navigasi dan laporan inti. Parameter GPS yang dapat dikonfigurasi juga tidak otomatis menjadi blocker tinjauan spesifikasi; yang harus ditinjau sekarang adalah prinsip sesi terikat penugasan, otorisasi, timestamp/kesegaran yang terlihat, dan perlindungan akses lokasi.
