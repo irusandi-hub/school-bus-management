@@ -189,3 +189,18 @@ Status kamera tetap **BELUM TERVERIFIKASI** secara teknis, tetapi bukan penghamb
 - [ ] Belum ada implementasi atau uji operasional fitur.
 
 Gunakan dokumen alur inti sebagai acuan untuk memecah pekerjaan teknis berikutnya. Jangan mulai implementasi yang bergantung pada asumsi terbuka tanpa mencatat mitigasi atau keputusan pemilik produk.
+
+
+## Pembaruan keputusan produk dan backlog implementasi — 2026-10-30
+
+- [x] **Relasi wali:** satu siswa hanya memiliki satu wali/akun wali; satu akun wali dapat terhubung ke beberapa siswa. Tidak ada tipe akun keluarga terpisah.
+- [x] **Autentikasi wali:** email yang dimasukkan admin disimpan sebagai email terdaftar; signup hanya melalui email tersebut, verifikasi tautan, lalu pembuatan kata sandi. Login menggunakan email dan kata sandi. Admissions Number hanya identitas siswa, bukan kredensial login.
+- [x] **Kelayakan akun:** minimal satu siswa terkait harus berstatus aktif mengikuti layanan agar signup/akses akun diizinkan. Siswa nonaktif tidak dapat diakses; akun tetap berfungsi untuk siswa lain yang masih aktif. Jika semua siswa nonaktif, akses layanan ditolak.
+- [x] **Status siswa:** status layanan terpisah dari status kehadiran perjalanan dan status GPS; perubahan tidak menghapus riwayat.
+- [x] **Pesan penolakan:** semua penolakan, kegagalan, dan kontrol nonaktif yang menghalangi pengguna wajib menjelaskan alasan secara jelas dan ringkas serta langkah berikutnya bila tersedia, tanpa membocorkan data sensitif.
+- [ ] Audit seluruh UI, API, dan proses untuk memastikan pesan tersebut benar-benar tersedia; kebutuhan ini belum dianggap terimplementasi hanya karena sudah didokumentasikan.
+- [ ] Implementasikan dan uji alur pre-registration email, verifikasi, pembuatan kata sandi, login, satu wali per siswa, banyak siswa per akun, dan aturan akses berdasarkan status aktif.
+- [ ] Rancang perubahan skema dan kebijakan akses setelah tinjauan teknis; jangan jalankan migrasi atau mengubah database produksi sebelum persetujuan.
+- [ ] Verifikasi desain tampilan wali dengan frame/kartu anak yang ringkas dan adaptif; satu atau banyak anak memakai model akun yang sama. Informasi video, GPS, dan status harus tetap terbaca tanpa panel kosong besar saat sumber tidak tersedia.
+
+Status: keputusan produk dicatat; realisasi kode dan pengujian masih harus diaudit. Gerbang tinjauan teknis tetap berlaku.
