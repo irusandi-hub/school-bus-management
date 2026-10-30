@@ -79,7 +79,7 @@ Contoh kondisi yang perlu dipetakan: email belum didaftarkan; email belum diveri
 ### B6. Navigasi, perjalanan, GPS, dan laporan wali
 - [ ] Validasi model perjalanan pagi/sore, penugasan, rute yang disetujui, urutan stop stabil, dan versi rute.
 - [ ] Verifikasi provider routing bus besar untuk Dammam; jangan menyatakan dukungan tanpa bukti vendor dan pengujian.
-- [ ] Verifikasi sumber GPS, akurasi, kesegaran, offline, dan radius awal 100 meter pada kondisi nyata.
+- [ ] Uji kelayakan sumber GPS yang sudah dipilih (ponsel Android pengemudi yang sedang ditugaskan), termasuk akurasi, kesegaran, offline, konsumsi baterai/data, background, perangkat minimum, dan radius awal 100 meter pada kondisi nyata.
 - [ ] Status jemput/turun dan riwayat keikutsertaan harus konsisten dan dapat diaudit.
 - [ ] Wali hanya melihat status/laporan anak yang berhak diakses.
 - [ ] Tampilkan timestamp pembaruan lokasi dan status usang/offline dengan jelas.
