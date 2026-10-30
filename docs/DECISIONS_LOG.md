@@ -127,3 +127,10 @@ Lihat `TECHNICAL_SPEC_REVIEW.md`, bagian 19 pada `MASTER_SPEC.md`, serta `OPERAT
 - **Batas keamanan:** Pesan tidak boleh membocorkan data siswa, keberadaan akun orang lain, rahasia, kredensial, token, stack trace, atau detail internal server. Bila penyebab belum diketahui, jangan menebak; sampaikan bahwa proses belum berhasil dan berikan langkah pemulihan yang aman. Detail teknis dicatat di log internal terlindungi.
 - **Alasan:** Dikonfirmasi langsung oleh pemilik produk.
 - **Dampak pada dokumen/tes:** Terapkan ke seluruh peran dan fitur, termasuk autentikasi, CRUD, otorisasi, perjalanan, GPS, kamera/video, dan ekspor. QA wajib mencakup seluruh jalur penolakan/kegagalan dan memeriksa kejelasan pesan serta tidak adanya kebocoran data.
+
+### DEC-019 — Tampilan wali adaptif dan ringkas untuk banyak siswa
+- **Tanggal:** 2026-10-30
+- **Status:** DISETUJUI
+- **Keputusan:** Akun satu siswa dan banyak siswa menggunakan model akun yang sama. UI menampilkan kartu/frame anak berukuran ringkas dan adaptif; informasi video, GPS, dan status harus dapat terlihat bersama tanpa membuat kartu anak terlalu besar atau menampilkan panel kosong besar saat data tidak tersedia.
+- **Alasan:** Pemilik produk menginginkan tampilan yang efisien untuk beberapa informasi sekaligus.
+- **Dampak pada dokumen/tes:** Audit dan desain ulang UI wali responsif; uji satu dan beberapa siswa pada layar ponsel serta layar lebih lebar. Kebutuhan ini belum dianggap terimplementasi sebelum diverifikasi pada aplikasi.
