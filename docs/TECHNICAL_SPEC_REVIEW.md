@@ -73,7 +73,7 @@ Kamera adalah fitur tambahan, bukan gerbang untuk menyelesaikan navigasi dan lap
 - Kondisi awal: proyek baru dari nol.
 - Sumber GPS fase pertama: ponsel Android pengemudi yang sedang ditugaskan; GPS/AVL bawaan bus ditunda ke fase berikutnya. Interval, kesegaran, akurasi, perangkat minimum, baterai/data, background, dan offline belum diputuskan dan harus diuji.
 - Platform: Admin Pusat, Pengemudi, dan Wali membutuhkan web serta mobile; cakupan fitur dan OS belum dirinci.
-- Target skala awal sekitar 100 bus. Detail sekolah/siswa/pengguna bersamaan dan sumber GPS tetap BELUM DIPUTUSKAN.
+- Target skala awal sekitar 100 bus. Detail sekolah/siswa/pengguna bersamaan masih BELUM DIPUTUSKAN. Sumber GPS fase pertama telah ditetapkan sebagai ponsel Android pengemudi yang sedang ditugaskan; parameter dan kelayakan lapangannya belum terverifikasi.
 - Kamera/DVR sudah terpasang. Metode integrasi stream tetap netral: perangkat/DVR langsung atau aplikasi/platform AV yang sudah ada; kelayakan tiap opsi BELUM TERVERIFIKASI.
 - Temuan rinci dan sumber awal untuk konteks Arab Saudi tercatat di `docs/TECHNICAL_REVIEW_FINDINGS.md`.
 
