@@ -110,3 +110,25 @@ Lihat `TECHNICAL_SPEC_REVIEW.md`, bagian 19 pada `MASTER_SPEC.md`, serta `OPERAT
 - **Keputusan:** Fokus utama aplikasi adalah navigasi operasional bus sekolah dan informasi/laporan orang tua. Live stream kamera adalah fitur tambahan yang dapat dikonfigurasi atau diaktifkan kemudian; kesiapan integrasi kamera bukan prasyarat untuk menyelesaikan alur inti.
 - **Alasan:** Pemilik produk menegaskan bahwa pekerjaan sebelumnya terlalu berfokus pada perangkat AV, padahal video hanya fitur tambahan.
 - **Dampak pada dokumen/tes:** Prioritaskan validasi rute dan urutan stop, GPS, status jemput/turun, status lokasi terbaru/usang, riwayat keikutsertaan, laporan orang tua, isolasi akses, dan audit. Dokumen kamera tetap dipertahankan sebagai referensi lanjutan dan tidak boleh menggeser prioritas navigasi/laporan.
+
+
+### DEC-017 — Model akun wali, email terdaftar, dan kelayakan siswa aktif
+- **Tanggal:** 2026-10-30
+- **Status:** DISETUJUI
+- **Keputusan:** Satu siswa hanya memiliki satu wali/akun wali yang terhubung; satu akun wali dapat terhubung ke beberapa siswa. Tidak ada kategori akun keluarga terpisah. Email wali disimpan sebagai email terdaftar oleh admin dan menjadi satu-satunya identitas signup/login; Admissions Number hanya identitas siswa. Signup memerlukan email yang telah didaftarkan dan diverifikasi melalui tautan sebelum pembuatan kata sandi. Minimal satu siswa terkait harus aktif mengikuti layanan untuk signup/akses. Jika ada siswa nonaktif dan siswa lain aktif, akun tetap dapat digunakan hanya untuk siswa aktif; jika seluruh siswa nonaktif, akses layanan ditolak. Nomor HP hanya kontak.
+- **Alasan:** Ditetapkan langsung oleh pemilik produk.
+- **Dampak pada dokumen/tes:** Model data relasi wali, autentikasi, status layanan, UI multi-anak, API dan RLS harus mengikuti aturan ini. Uji satu wali-satu siswa, satu wali-banyak siswa, signup email terdaftar/tidak terdaftar, verifikasi, status aktif/nonaktif campuran, dan seluruh siswa nonaktif. Jangan mengimplementasikan sebelum tinjauan teknis dan desain akses disetujui.
+
+### DEC-018 — Informasi wajib untuk penolakan dan kegagalan
+- **Tanggal:** 2026-10-30
+- **Status:** DISETUJUI
+- **Keputusan:** Setiap kondisi penolakan, kegagalan, atau kontrol nonaktif yang menghalangi tindakan pengguna harus memberikan informasi yang jelas, ringkas, sesuai penyebab yang diketahui, dan langkah berikutnya bila tersedia. Berlaku di seluruh peran dan seluruh modul. Jika penyebab belum diketahui, jangan mengarang; sampaikan bahwa proses belum berhasil dan berikan pemulihan aman. Pesan tidak boleh membocorkan data pribadi, keberadaan akun orang lain, kredensial, atau detail internal.
+- **Alasan:** Pemilik produk meminta agar pengguna tidak menemui penolakan atau kegagalan tanpa penjelasan yang dapat dipahami.
+- **Dampak pada dokumen/tes:** Standar pesan menjadi persyaratan lintas aplikasi, API, autentikasi, CRUD, GPS, video, dan integrasi. Buat inventaris semua kondisi gagal/ditolak, katalog pesan, tindakan pemulihan, logging internal, serta QA untuk setiap kondisi. Status realisasi kode belum diverifikasi.
+
+### DEC-019 — Tampilan wali adaptif dan ringkas untuk banyak siswa
+- **Tanggal:** 2026-10-30
+- **Status:** DISETUJUI
+- **Keputusan:** Akun satu siswa dan banyak siswa menggunakan model akun yang sama. UI menampilkan kartu/frame anak berukuran ringkas dan adaptif; informasi video, GPS, dan status harus dapat terlihat bersama tanpa membuat kartu anak terlalu besar atau menampilkan panel kosong besar saat data tidak tersedia.
+- **Alasan:** Pemilik produk menginginkan tampilan yang efisien untuk beberapa informasi sekaligus.
+- **Dampak pada dokumen/tes:** Audit dan desain ulang UI wali responsif; uji satu dan beberapa siswa pada layar ponsel serta layar lebih lebar. Kebutuhan ini belum dianggap terimplementasi sebelum diverifikasi pada aplikasi.
