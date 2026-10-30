@@ -82,7 +82,7 @@ Jika koneksi terputus:
 - tampilkan keadaan tidak tersedia jika belum ada posisi yang bisa digunakan;
 - setelah koneksi pulih, verifikasi urutan waktu dan penugasan sebelum memperbarui tampilan.
 
-Sumber lokasi—ponsel pengemudi, tracker/AVL bus, atau kombinasi—masih **BELUM DIPUTUSKAN** dan harus dievaluasi sebelum implementasi.
+Sumber lokasi fase pertama **DISETUJUI: ponsel Android pengemudi yang sedang ditugaskan**. GPS/AVL bawaan bus ditunda ke fase berikutnya. Lokasi harus terkait penugasan/perjalanan aktif yang sah. Interval, ambang status usang, batas akurasi, perangkat minimum, konsumsi baterai/data, serta perilaku latar belakang dan offline masih **BELUM DIPUTUSKAN** sampai diuji pada perangkat pilot.
 
 ## 6. Pengalaman orang tua/wali
 
