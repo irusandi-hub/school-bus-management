@@ -187,3 +187,28 @@ Setiap kondisi penolakan atau kegagalan di seluruh peran dan fitur wajib memberi
 - Bila penyebab belum diketahui, nyatakan bahwa permintaan belum berhasil dan berikan langkah pemulihan yang aman; jangan mengarang penyebab.
 - Detail teknis yang dibutuhkan untuk investigasi dicatat pada log internal yang terlindungi dan tidak menyalin rahasia atau data pribadi secara tidak perlu.
 - QA harus menguji pesan pada setiap jalur penolakan dan kegagalan, termasuk kegagalan jaringan/server, validasi, sesi kedaluwarsa, akses tanpa izin, siswa nonaktif, GPS usang/offline, dan kamera tidak tersedia.
+
+## 21. Penegasan keputusan fase pilot — 2026-10-30
+
+Bagian ini memperbarui status keputusan yang sebelumnya masih tertulis terbuka. Jika ada kalimat lama yang bertentangan, gunakan penegasan pada bagian ini bersama `docs/DECISIONS_LOG.md`.
+
+### Konteks pilot dan sumber GPS
+- Wilayah pilot: Dammam dan sekitarnya.
+- Skala perencanaan awal: sekitar 100 bus. Angka ini bukan jumlah sekolah, siswa, pengemudi, pengguna bersamaan, atau stream kamera simultan.
+- **Sumber GPS fase pertama adalah ponsel Android pengemudi yang sedang ditugaskan.** GPS/AVL bawaan bus ditunda ke fase berikutnya dan bukan prasyarat peluncuran GPS fase pertama.
+- Ponsel hanya mengirim lokasi untuk penugasan/perjalanan aktif yang sah. Pergantian pengemudi atau bus harus memutus keterkaitan sesi lama dan tercatat.
+- Interval pengiriman, ambang status usang, batas akurasi, kebutuhan minimum perangkat, konsumsi baterai/data, serta perilaku latar belakang dan offline tetap BELUM DIPUTUSKAN sampai diuji pada perangkat Android pilot.
+
+### Prioritas pelaksanaan
+1. Penugasan, perjalanan pagi/sore, rute dan urutan stop yang disetujui.
+2. Pencatatan status jemput/turun dan pengecualian siswa.
+3. GPS dari ponsel Android pengemudi beserta timestamp dan status kesegaran.
+4. Informasi wali, riwayat, dan laporan yang hanya memuat siswa yang berhak diakses.
+5. Administrasi, audit, dan penyempurnaan operasional.
+6. Kamera live sebagai fitur tambahan setelah alur inti; kesiapan kamera tidak boleh memblokir alur inti.
+
+### Platform per peran
+Kebutuhan web dan mobile untuk Admin Pusat, Pengemudi, dan Wali tetap tercatat sebagai arah produk. Kesetaraan fitur antarplatform, OS minimum, dan pembagian fitur per peran belum disetujui. Jangan mengasumsikan setiap fitur harus identik di web dan mobile. Rancangan platform harus mengutamakan kebutuhan kerja: administrasi pada layar yang sesuai untuk pengelolaan data, perjalanan/GPS pada perangkat pengemudi, dan akses informasi wali yang responsif. Rekomendasi implementasi platform harus diajukan sebagai rancangan untuk ditinjau, bukan dianggap keputusan produk.
+
+### Routing
+HERE adalah kandidat pertama untuk proof of concept, bukan vendor terpilih atau disetujui. PoC terblokir sampai ada konfirmasi tertulis lisensi komersial untuk use case yang tepat, bukti cakupan Dammam, kredensial, profil bus aktual dari operator, dan titik uji anonim yang disetujui. Uji 20/30/40+ stop dan peninjauan manusia wajib dilakukan sebelum menyatakan routing layak.
