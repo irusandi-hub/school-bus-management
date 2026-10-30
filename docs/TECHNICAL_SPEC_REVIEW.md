@@ -92,7 +92,7 @@ Hasil tinjauan harus berupa daftar `LULUS`, `BELUM LULUS`, atau `TERBLOKIR` bese
 - [ ] **Routing bus besar belum lulus.** Dokumentasi Google Large Vehicle Routing yang diperiksa tidak mencantumkan Arab Saudi dalam wilayah tersedia. Daftar cakupan HERE yang diperiksa juga belum membuktikan cakupan pembatasan truk untuk Saudi. Wajib ada konfirmasi tertulis vendor dan uji lapangan sebelum pemilihan.
 - [ ] **Kepatuhan transportasi pendidikan belum lulus.** Konfirmasi jenis operator dan persyaratan terkini kepada TGA/MoE, termasuk lisensi dan perlengkapan teknis kendaraan.
 - [ ] **Privasi/data belum lulus.** Tinjau PDPL serta pemrosesan data anak, lokasi, foto/video, retensi, hosting, dan akses lintas negara dengan pihak yang kompeten.
-- [x] Kota pilot Dammam dan sekitarnya; target perencanaan awal sekitar 100 bus; kamera/DVR sudah terpasang. Metode integrasi live stream dibuat generik. Sumber GPS, vendor/protokol stream, dan kelayakan integrasi tetap belum diputuskan/terverifikasi.
+- [x] Kota pilot Dammam dan sekitarnya; target perencanaan awal sekitar 100 bus; kamera/DVR sudah terpasang. Metode integrasi live stream dibuat generik. Sumber GPS fase pertama ditetapkan sebagai ponsel Android pengemudi yang sedang ditugaskan; parameter GPS dan kelayakan lapangan, serta vendor/protokol stream dan kelayakan integrasinya, tetap belum terverifikasi.
 
 Sumber riset dan batasan bukti dicatat di `docs/TECHNICAL_REVIEW_FINDINGS.md`. Ini bukan pendapat hukum dan belum merupakan verifikasi langsung dari vendor atau otoritas.
 
@@ -147,7 +147,7 @@ Status: dokumen pendukung dibuat; keputusan operasional belum final; tidak ada p
 - [ ] T&C dan pemberitahuan privasi harus ditinjau oleh penasihat hukum yang kompeten. Jangan menyatakan bahwa T&C menghapus semua kewajiban penyedia aplikasi.
 - [ ] Prosedur onboarding dan bukti kewenangan yang diminta masih belum diputuskan.
 - [x] Kota pilot Dammam dan sekitarnya; target skala sekitar 100 bus; perangkat kamera/DVR sudah terpasang.
-- [ ] Sumber GPS, jumlah pengguna bersamaan, dan metode teknis integrasi stream tetap belum diputuskan/terverifikasi.
+- [ ] Parameter teknis dan kelayakan lapangan sumber GPS Android, jumlah pengguna bersamaan, dan metode teknis integrasi stream tetap belum diputuskan/terverifikasi.
 
 Rincian dicatat dalam `docs/MASTER_SPEC.md`, `docs/OPERATING_MODEL_RESPONSIBILITY_MATRIX.md`, dan `docs/DECISIONS_LOG.md`.
 
