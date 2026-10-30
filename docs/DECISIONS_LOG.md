@@ -134,3 +134,12 @@ Lihat `TECHNICAL_SPEC_REVIEW.md`, bagian 19 pada `MASTER_SPEC.md`, serta `OPERAT
 - **Keputusan:** Akun satu siswa dan banyak siswa menggunakan model akun yang sama. UI menampilkan kartu/frame anak berukuran ringkas dan adaptif; informasi video, GPS, dan status harus dapat terlihat bersama tanpa membuat kartu anak terlalu besar atau menampilkan panel kosong besar saat data tidak tersedia.
 - **Alasan:** Pemilik produk menginginkan tampilan yang efisien untuk beberapa informasi sekaligus.
 - **Dampak pada dokumen/tes:** Audit dan desain ulang UI wali responsif; uji satu dan beberapa siswa pada layar ponsel serta layar lebih lebar. Kebutuhan ini belum dianggap terimplementasi sebelum diverifikasi pada aplikasi.
+
+
+### DEC-020 — Sumber GPS fase pertama untuk pilot
+- **Tanggal:** 2026-10-30
+- **Status:** DISETUJUI UNTUK ARAH FASE PERTAMA; PARAMETER DAN KELAYAKAN LAPANGAN BELUM TERVERIFIKASI
+- **Keputusan:** Sumber GPS fase pertama adalah ponsel Android milik pengemudi yang sedang ditugaskan. GPS/AVL bawaan bus ditunda ke fase berikutnya. Lokasi hanya dikirim untuk penugasan/perjalanan aktif yang sah. Pergantian pengemudi atau bus harus mengakhiri keterkaitan sesi lama dan tercatat.
+- **Hal yang tetap terbuka:** Interval pengiriman, ambang status usang, batas akurasi, perangkat minimum, konsumsi baterai/data, perilaku latar belakang dan offline harus ditentukan melalui pengujian pada perangkat pilot.
+- **Alasan:** Dikonfirmasi oleh pemilik produk sebagai sumber GPS untuk fase pertama.
+- **Dampak pada dokumen/tes:** MASTER_SPEC, alur inti, dan tinjauan teknis harus konsisten. Uji siklus hidup sesi saat pergantian pengemudi/bus, izin lokasi, aplikasi di latar belakang/layar terkunci, jaringan putus/pulih, akurasi, kesegaran, baterai, dan penggunaan data. Keputusan ini tidak menyatakan perangkat atau perilaku GPS sudah lulus uji dan tidak mengizinkan implementasi sebelum gerbang tinjauan teknis disetujui.

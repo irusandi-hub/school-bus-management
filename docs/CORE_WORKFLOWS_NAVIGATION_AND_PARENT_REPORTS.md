@@ -82,7 +82,7 @@ Jika koneksi terputus:
 - tampilkan keadaan tidak tersedia jika belum ada posisi yang bisa digunakan;
 - setelah koneksi pulih, verifikasi urutan waktu dan penugasan sebelum memperbarui tampilan.
 
-Sumber lokasi—ponsel pengemudi, tracker/AVL bus, atau kombinasi—masih **BELUM DIPUTUSKAN** dan harus dievaluasi sebelum implementasi.
+Sumber lokasi fase pertama **DISETUJUI: ponsel Android pengemudi yang sedang ditugaskan**. GPS/AVL bawaan bus ditunda ke fase berikutnya. Lokasi harus terkait penugasan/perjalanan aktif yang sah. Interval, ambang status usang, batas akurasi, perangkat minimum, konsumsi baterai/data, serta perilaku latar belakang dan offline masih **BELUM DIPUTUSKAN** sampai diuji pada perangkat pilot.
 
 ## 6. Pengalaman orang tua/wali
 
@@ -168,7 +168,7 @@ Admin yang berwenang dapat memeriksa rekap per sekolah/operator, bus, perjalanan
 ## 10. Hal yang masih harus diputuskan atau dibuktikan
 
 - Platform untuk masing-masing peran (web/mobile), OS sasaran, kebutuhan bahasa, dan dukungan aksesibilitas.
-- Sumber GPS/AVL, interval pembaruan, ambang status usang, dan kebutuhan offline.
+- Kelayakan lapangan sumber GPS fase pertama (ponsel Android pengemudi yang sedang ditugaskan), interval pembaruan, ambang status usang, dan kebutuhan offline. GPS/AVL bawaan bus ditunda ke fase berikutnya.
 - Penyedia routing yang mendukung batas bus di Dammam dan sekitarnya, profil kendaraan, dan bukti kondisi jalan.
 - Perjalanan batal, siswa tidak ditemukan, pengemudi/bus pengganti, prosedur darurat, dan otoritas pengecualian.
 - Definisi status final, pihak yang berhak mengoreksi status, dan proses sengketa/koreksi.

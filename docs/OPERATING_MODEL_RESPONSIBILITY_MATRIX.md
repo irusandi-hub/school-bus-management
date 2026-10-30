@@ -3,7 +3,7 @@
 **Status:** Draf yang diperbarui berdasarkan klarifikasi pemilik produk  
 **Wilayah:** Arab Saudi (wilayah lain dapat mengikuti aturan lokal yang berlaku)  
 **Model yang harus didukung:** sekolah mengoperasikan bus sendiri dan/atau memakai perusahaan transportasi  
-**Kota pilot:** BELUM DIPUTUSKAN  
+**Kota pilot:** Dammam dan sekitarnya  
 **Batas:** dokumentasi dan analisis saja; tidak ada coding fitur bisnis atau pemilihan provider.
 
 ## 1. Klarifikasi ruang lingkup yang disetujui
@@ -35,7 +35,7 @@ Ketiga model di atas adalah pola penggunaan aplikasi, bukan pernyataan bahwa sem
 | Kebenaran data yang dimasukkan | Organisasi pengguna memastikan data yang dimasukkan akurat dan berhak diproses | Menyediakan kontrol akses, audit perubahan, dan mekanisme koreksi yang sesuai |
 | Penugasan pengemudi/bus dan operasional perjalanan | Pihak yang menjalankan operasi menetapkan dan mengawasi penugasan | Menyediakan fitur sesuai ruang lingkup yang disepakati; tidak mengambil alih keputusan operasional pengguna |
 | Persetujuan rute dan keselamatan lapangan | Pihak operasional yang berwenang meninjau dan menyetujui rute serta tindakan lapangan | Menyajikan rute/peringatan dengan batasan yang jelas; tidak menjanjikan bahwa hasil algoritme menjamin keselamatan atau kepatuhan |
-| GPS/AVL dan kamera/DVR | Pihak yang mengadakan/mengoperasikan perangkat memastikan penggunaan dan aksesnya memiliki dasar serta kewenangan | Menyediakan kontrol teknis aplikasi sesuai kemampuan integrasi yang terbukti; tidak mengklaim akses perangkat yang belum diverifikasi |
+| GPS ponsel Android pengemudi fase pertama dan kamera/DVR | Menetapkan/menyediakan perangkat serta penugasan sesuai model operasi; memastikan dasar dan kewenangan penggunaan | Mengikat sesi GPS pada penugasan/perjalanan aktif, membatasi akses, menampilkan kesegaran, dan mencatat audit sesuai rancangan; integrasi kamera hanya jika terbukti dan diotorisasi |
 | Data siswa, wali, lokasi, dan video | Peran dan dasar pemrosesan ditetapkan berdasarkan hubungan nyata, kontrak, dan hukum yang berlaku | Menyediakan perlindungan teknis dan informasi privasi sesuai peran hukumnya; peran legal final perlu ditinjau |
 | Akun dan staf | Organisasi mengelola pengguna yang diberi wewenang dan meminta pencabutan akses saat hak berakhir | Menyediakan manajemen akun, pembatasan akses, dan pencatatan aktivitas sesuai desain |
 | Kepatuhan hukum | Setiap pihak memenuhi kewajiban yang berlaku untuk perannya; kewajiban tidak boleh diasumsikan dapat dialihkan sepenuhnya melalui T&C | Memenuhi kewajiban yang berlaku pada penyedia aplikasi dan meninjau T&C/privasi dengan penasihat yang kompeten |
@@ -65,7 +65,7 @@ Tabel ini adalah pembagian konseptual untuk desain produk, bukan penetapan hukum
 | Memasukkan/memperbarui data siswa dan wali | Sesuai kewenangan/kontrak | Hanya jika berwenang dan diperlukan | Tidak mengelola master data | Menjaga kontrol teknis dan audit | Memberi informasi yang benar dan mengajukan koreksi |
 | Menyetujui relasi wali–siswa | Pihak yang ditunjuk sesuai proses | Jika diberi kewenangan yang sah | — | Menyediakan mekanisme akses yang aman | Memberi informasi pendukung sesuai proses |
 | Meninjau/menyetujui rute | Jika bertanggung jawab | Jika bertanggung jawab | Mengikuti rute yang disetujui | Menyediakan data/fungsi rute dengan batasan yang jelas | — |
-| Mengelola GPS/AVL dan kamera/DVR | Sesuai kepemilikan/kontrak | Sesuai kepemilikan/kontrak | Menggunakan perangkat sesuai tugas | Menegakkan izin aplikasi untuk integrasi yang didukung | Akses sesuai hak yang sah |
+| Menyediakan ponsel Android dan menjalankan sesi GPS saat penugasan aktif | Menetapkan/menyetujui perangkat dan penugasan sesuai model operasi | Menyediakan/menetapkan perangkat dan penugasan sesuai model operasi | Mengaktifkan GPS hanya selama penugasan/perjalanan aktif yang sah; melaporkan kendala | Menyediakan kontrol akses, validasi, status kesegaran, dan audit sesuai rancangan | Melihat lokasi bus sesuai hak akses dan indikator waktu/kesegaran |
 | Menanggapi insiden operasional | Sesuai peran | Sesuai peran | Melaporkan sesuai prosedur | Menangani insiden platform sesuai kewajiban dan kontrak | Melapor melalui kanal yang tersedia |
 | Menangani data pribadi | Berdasarkan peran nyata dan hukum | Berdasarkan peran nyata dan hukum | Mengakses hanya yang dibutuhkan | Berdasarkan peran legal aktual; bukan ditentukan sepihak dalam dokumen ini | Mengakses data anak yang berhak dilihat |
 
@@ -84,7 +84,7 @@ Matriks ini sengaja tidak menetapkan RACI legal final. Hubungan kontraktual dan 
 
 | ID | Pertanyaan | Status |
 |---|---|---|
-| OM-01 | Kota pilot dan skala awal? | BELUM DIPUTUSKAN |
+| OM-01 | Kota pilot dan skala awal? | Dammam dan sekitarnya; perencanaan sekitar 100 bus |
 | OM-02 | Proses onboarding dan bukti/konfirmasi kewenangan organisasi seperti apa yang realistis untuk versi awal? | PERLU DISESUAIKAN DENGAN T&C DAN TINJAUAN HUKUM |
 | OM-03 | Apakah organisasi wajib memasukkan nomor/jenis izin atau hanya menyatakan kewenangan pada onboarding? | BELUM DIPUTUSKAN |
 | OM-04 | Siapa di pihak sekolah/operator yang dapat mengundang dan menonaktifkan pengemudi/staf? | BELUM DIPUTUSKAN |

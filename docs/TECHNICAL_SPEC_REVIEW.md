@@ -33,7 +33,7 @@
 - [ ] Aturan rekomendasi titik jemput bersama dan persetujuan admin ditetapkan.
 
 ## E. GPS dan validasi lokasi
-- [ ] Sumber GPS masih BELUM DIPUTUSKAN; pilihan ponsel pengemudi, tracker bus/AVL, atau kombinasi belum dievaluasi.
+- [x] Sumber GPS fase pertama ditetapkan: ponsel Android pengemudi yang sedang ditugaskan. GPS/AVL bawaan bus ditunda ke fase berikutnya. Kelayakan teknis perangkat dan perilaku operasional tetap harus diuji.
 - [ ] Penanganan akurasi, data kedaluwarsa, dan kehilangan sinyal ditentukan.
 - [ ] Radius awal 100 meter diuji bersama akurasi GPS dan kondisi lokasi nyata.
 - [ ] Mekanisme pengecualian yang berwenang dan auditnya ditetapkan.
@@ -71,8 +71,9 @@ Kamera adalah fitur tambahan, bukan gerbang untuk menyelesaikan navigasi dan lap
 
 - Wilayah operasi: Arab Saudi; kota pilot disetujui Dammam dan sekitarnya.
 - Kondisi awal: proyek baru dari nol.
+- Sumber GPS fase pertama: ponsel Android pengemudi yang sedang ditugaskan; GPS/AVL bawaan bus ditunda ke fase berikutnya. Interval, kesegaran, akurasi, perangkat minimum, baterai/data, background, dan offline belum diputuskan dan harus diuji.
 - Platform: Admin Pusat, Pengemudi, dan Wali membutuhkan web serta mobile; cakupan fitur dan OS belum dirinci.
-- Target skala awal sekitar 100 bus. Detail sekolah/siswa/pengguna bersamaan dan sumber GPS tetap BELUM DIPUTUSKAN.
+- Target skala awal sekitar 100 bus. Detail sekolah/siswa/pengguna bersamaan masih BELUM DIPUTUSKAN. Sumber GPS fase pertama telah ditetapkan sebagai ponsel Android pengemudi yang sedang ditugaskan; parameter dan kelayakan lapangannya belum terverifikasi.
 - Kamera/DVR sudah terpasang. Metode integrasi stream tetap netral: perangkat/DVR langsung atau aplikasi/platform AV yang sudah ada; kelayakan tiap opsi BELUM TERVERIFIKASI.
 - Temuan rinci dan sumber awal untuk konteks Arab Saudi tercatat di `docs/TECHNICAL_REVIEW_FINDINGS.md`.
 
@@ -91,7 +92,7 @@ Hasil tinjauan harus berupa daftar `LULUS`, `BELUM LULUS`, atau `TERBLOKIR` bese
 - [ ] **Routing bus besar belum lulus.** Dokumentasi Google Large Vehicle Routing yang diperiksa tidak mencantumkan Arab Saudi dalam wilayah tersedia. Daftar cakupan HERE yang diperiksa juga belum membuktikan cakupan pembatasan truk untuk Saudi. Wajib ada konfirmasi tertulis vendor dan uji lapangan sebelum pemilihan.
 - [ ] **Kepatuhan transportasi pendidikan belum lulus.** Konfirmasi jenis operator dan persyaratan terkini kepada TGA/MoE, termasuk lisensi dan perlengkapan teknis kendaraan.
 - [ ] **Privasi/data belum lulus.** Tinjau PDPL serta pemrosesan data anak, lokasi, foto/video, retensi, hosting, dan akses lintas negara dengan pihak yang kompeten.
-- [x] Kota pilot Dammam dan sekitarnya; target perencanaan awal sekitar 100 bus; kamera/DVR sudah terpasang. Metode integrasi live stream dibuat generik. Sumber GPS, vendor/protokol stream, dan kelayakan integrasi tetap belum diputuskan/terverifikasi.
+- [x] Kota pilot Dammam dan sekitarnya; target perencanaan awal sekitar 100 bus; kamera/DVR sudah terpasang. Metode integrasi live stream dibuat generik. Sumber GPS fase pertama ditetapkan sebagai ponsel Android pengemudi yang sedang ditugaskan; parameter GPS dan kelayakan lapangan, serta vendor/protokol stream dan kelayakan integrasinya, tetap belum terverifikasi.
 
 Sumber riset dan batasan bukti dicatat di `docs/TECHNICAL_REVIEW_FINDINGS.md`. Ini bukan pendapat hukum dan belum merupakan verifikasi langsung dari vendor atau otoritas.
 
@@ -146,7 +147,7 @@ Status: dokumen pendukung dibuat; keputusan operasional belum final; tidak ada p
 - [ ] T&C dan pemberitahuan privasi harus ditinjau oleh penasihat hukum yang kompeten. Jangan menyatakan bahwa T&C menghapus semua kewajiban penyedia aplikasi.
 - [ ] Prosedur onboarding dan bukti kewenangan yang diminta masih belum diputuskan.
 - [x] Kota pilot Dammam dan sekitarnya; target skala sekitar 100 bus; perangkat kamera/DVR sudah terpasang.
-- [ ] Sumber GPS, jumlah pengguna bersamaan, dan metode teknis integrasi stream tetap belum diputuskan/terverifikasi.
+- [ ] Parameter teknis dan kelayakan lapangan sumber GPS Android, jumlah pengguna bersamaan, dan metode teknis integrasi stream tetap belum diputuskan/terverifikasi.
 
 Rincian dicatat dalam `docs/MASTER_SPEC.md`, `docs/OPERATING_MODEL_RESPONSIBILITY_MATRIX.md`, dan `docs/DECISIONS_LOG.md`.
 
@@ -184,7 +185,8 @@ Status kamera tetap **BELUM TERVERIFIKASI** secara teknis, tetapi bukan penghamb
 
 - [x] Dibuat `docs/CORE_WORKFLOWS_NAVIGATION_AND_PARENT_REPORTS.md` untuk merinci alur sebelum perjalanan, perjalanan aktif, status jemput/turun, kualitas data GPS, pengalaman wali, riwayat/laporan, pengecualian, dan kriteria penerimaan.
 - [x] Kriteria QA menegaskan bahwa kamera belum dikonfigurasi tidak menghalangi uji alur inti.
-- [ ] Routing bus besar dan sumber GPS belum diverifikasi pada perangkat/lapangan di Dammam dan sekitarnya.
+- [ ] Routing bus besar belum diverifikasi pada perangkat/lapangan di Dammam dan sekitarnya.
+- [ ] Sumber GPS Android pengemudi sudah dipilih sebagai arah fase pertama, tetapi kelayakan perangkat, interval, kesegaran, akurasi, baterai/data, background, dan offline belum diuji.
 - [ ] Definisi status final, batas kesegaran GPS, kebutuhan offline, dan format laporan masih perlu disetujui.
 - [ ] Belum ada implementasi atau uji operasional fitur.
 
@@ -202,3 +204,24 @@ Gunakan dokumen alur inti sebagai acuan untuk memecah pekerjaan teknis berikutny
 - [ ] Rancang dan tinjau alur email terdaftar, verifikasi, token kedaluwarsa/sekali pakai, pemulihan akun, rate limiting, serta pesan anti-enumerasi.
 - [ ] Tambahkan matriks QA untuk semua jalur penolakan/kegagalan, termasuk tombol nonaktif, validasi, jaringan/server, izin, siswa nonaktif, GPS/video tidak tersedia.
 - [ ] Tinjauan teknis dan desain hak akses belum disetujui; tidak ada implementasi bisnis atau perubahan database yang diizinkan oleh pembaruan dokumentasi ini.
+
+
+## Aturan tahapan verifikasi — 2026-10-30
+
+Checklist tinjauan harus mengikuti tahap kesiapan, bukan memaksa pengujian terhadap fitur, perangkat, vendor, atau konfigurasi yang belum tersedia.
+
+1. **Tinjau sekarang (tanpa implementasi):** konsistensi keputusan produk, alur kerja, batas peran/tanggung jawab, klasifikasi data, risiko keselamatan/privasi, kebutuhan akses, dan pertanyaan yang memang harus dijawab sebelum arsitektur disetujui.
+2. **Saat konfigurasi atau pemilihan dilakukan:** verifikasi hanya hal yang bergantung pada pilihan nyata, misalnya nilai ambang yang dapat dikonfigurasi, OS/perangkat minimum, interval GPS, retensi, kapasitas, atau pengaturan notifikasi. Sebelum pilihan itu dibuat, catat sebagai parameter terbuka—bukan kegagalan atau penghambat otomatis.
+3. **Setelah implementasi tersedia:** jalankan tes fungsional, integrasi, keamanan, dan penerimaan terhadap fitur yang benar-benar sudah dibuat. Jangan mencatat hasil tes seolah-olah telah dilakukan bila belum ada implementasi.
+4. **Saat perangkat/vendor/data uji tersedia:** lakukan proof of concept atau uji lapangan yang memang memerlukan akses tersebut. Jika belum tersedia, catat prasyarat dan pemilik tindak lanjut, bukan membuat hasil uji pengganti.
+
+### Klasifikasi butir checklist
+
+- **Gerbang sebelum desain/implementasi:** keputusan yang berdampak pada keselamatan, privasi, model data, otorisasi, dan ruang lingkup inti.
+- **Verifikasi saat konfigurasi:** parameter yang memang dapat ditetapkan kemudian dan tidak mengubah keputusan produk mendasar.
+- **Verifikasi setelah implementasi:** perilaku aplikasi, API, database, UI, dan penanganan kegagalan yang belum ada untuk diuji.
+- **Validasi eksternal/lapangan:** dukungan vendor, lisensi, perangkat nyata, cakupan peta, serta kondisi operasional yang memerlukan bukti dari luar repository.
+
+Nilai radius penjemputan, ambang GPS usang, interval pengiriman, dan batas akurasi bukan angka yang boleh dianggap final hanya karena pernah muncul sebagai contoh. Tetapkan melalui konfigurasi/keputusan yang disetujui dan uji ketika implementasi serta kondisi uji tersedia. Kamera live tetap fitur tambahan; ketiadaan konfigurasi kamera bukan alasan menunda tinjauan atau validasi alur inti navigasi dan laporan.
+
+**Status saat pembaruan ini:** tidak ada pengujian aplikasi, GPS, kamera, atau routing yang diklaim telah dilakukan. Perubahan ini hanya memperjelas urutan dan prasyarat verifikasi.
