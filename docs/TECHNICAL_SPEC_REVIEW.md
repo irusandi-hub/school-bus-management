@@ -33,7 +33,7 @@
 - [ ] Aturan rekomendasi titik jemput bersama dan persetujuan admin ditetapkan.
 
 ## E. GPS dan validasi lokasi
-- [ ] Sumber GPS masih BELUM DIPUTUSKAN; pilihan ponsel pengemudi, tracker bus/AVL, atau kombinasi belum dievaluasi.
+- [x] Sumber GPS fase pertama ditetapkan: ponsel Android pengemudi yang sedang ditugaskan. GPS/AVL bawaan bus ditunda ke fase berikutnya. Kelayakan teknis perangkat dan perilaku operasional tetap harus diuji.
 - [ ] Penanganan akurasi, data kedaluwarsa, dan kehilangan sinyal ditentukan.
 - [ ] Radius awal 100 meter diuji bersama akurasi GPS dan kondisi lokasi nyata.
 - [ ] Mekanisme pengecualian yang berwenang dan auditnya ditetapkan.
@@ -71,6 +71,7 @@ Kamera adalah fitur tambahan, bukan gerbang untuk menyelesaikan navigasi dan lap
 
 - Wilayah operasi: Arab Saudi; kota pilot disetujui Dammam dan sekitarnya.
 - Kondisi awal: proyek baru dari nol.
+- Sumber GPS fase pertama: ponsel Android pengemudi yang sedang ditugaskan; GPS/AVL bawaan bus ditunda ke fase berikutnya. Interval, kesegaran, akurasi, perangkat minimum, baterai/data, background, dan offline belum diputuskan dan harus diuji.
 - Platform: Admin Pusat, Pengemudi, dan Wali membutuhkan web serta mobile; cakupan fitur dan OS belum dirinci.
 - Target skala awal sekitar 100 bus. Detail sekolah/siswa/pengguna bersamaan dan sumber GPS tetap BELUM DIPUTUSKAN.
 - Kamera/DVR sudah terpasang. Metode integrasi stream tetap netral: perangkat/DVR langsung atau aplikasi/platform AV yang sudah ada; kelayakan tiap opsi BELUM TERVERIFIKASI.
@@ -184,7 +185,8 @@ Status kamera tetap **BELUM TERVERIFIKASI** secara teknis, tetapi bukan penghamb
 
 - [x] Dibuat `docs/CORE_WORKFLOWS_NAVIGATION_AND_PARENT_REPORTS.md` untuk merinci alur sebelum perjalanan, perjalanan aktif, status jemput/turun, kualitas data GPS, pengalaman wali, riwayat/laporan, pengecualian, dan kriteria penerimaan.
 - [x] Kriteria QA menegaskan bahwa kamera belum dikonfigurasi tidak menghalangi uji alur inti.
-- [ ] Routing bus besar dan sumber GPS belum diverifikasi pada perangkat/lapangan di Dammam dan sekitarnya.
+- [ ] Routing bus besar belum diverifikasi pada perangkat/lapangan di Dammam dan sekitarnya.
+- [ ] Sumber GPS Android pengemudi sudah dipilih sebagai arah fase pertama, tetapi kelayakan perangkat, interval, kesegaran, akurasi, baterai/data, background, dan offline belum diuji.
 - [ ] Definisi status final, batas kesegaran GPS, kebutuhan offline, dan format laporan masih perlu disetujui.
 - [ ] Belum ada implementasi atau uji operasional fitur.
 
