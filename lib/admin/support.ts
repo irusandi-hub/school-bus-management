@@ -1,0 +1,78 @@
+import { createServerSupabase } from "@/lib/supabase/server";
+import { supabaseNotConfiguredMessage } from "@/lib/supabase/env";
+import { failure, type ActionState } from "@/lib/validation";
+
+export type ServerSupabase = NonNullable<Awaited<ReturnType<typeof createServerSupabase>>>;
+
+type DbError = { code?: string; message?: string; details?: string | null } | null;
+
+export const PAGE_SIZE = 20;
+
+export type AdminActionContext =
+  | { ok: true; supabase: ServerSupabase; userId: string }
+  | { ok: false; state: ActionState };
+
+/**
+ * Every admin mutation requires an authenticated session whose database profile role is
+ * `admin`. Row level security enforces the same rule independently, so a request that
+ * bypasses the UI still cannot write.
+ */
+export async function adminActionContext(): Promise<AdminActionContext> {
+  const supabase = await createServerSupabase();
+  if (!supabase) return { ok: false, state: failure(supabaseNotConfiguredMessage) };
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { ok: false, state: failure("Sesi Anda sudah berakhir. Muat ulang halaman lalu masuk kembali.") };
+  }
+
+  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+
+  if (profile?.role !== "admin") {
+    return { ok: false, state: failure("Akun Anda tidak memiliki izin Admin Pusat untuk tindakan ini.") };
+  }
+
+  return { ok: true, supabase, userId: user.id };
+}
+
+/**
+ * Maps database errors to safe Indonesian messages. Internal codes are logged for
+ * diagnostics; constraint names, SQL text and personal data are never sent to the UI.
+ */
+export function writeFailure(
+  error: DbError,
+  messages: { unique?: string; foreignKey?: string; fallback?: string } = {},
+): ActionState {
+  console.error("[admin] write failed", error?.code ?? "unknown");
+
+  switch (error?.code) {
+    case "23505":
+      return failure(messages.unique ?? "Data dengan kode atau identitas tersebut sudah ada. Gunakan nilai lain.");
+    case "23503":
+      return failure(
+        messages.foreignKey ??
+          "Data terkait tidak ditemukan atau masih dipakai oleh data lain, sehingga perubahan belum tersimpan.",
+      );
+    case "23514":
+      return failure("Data belum memenuhi ketentuan. Periksa kembali rentang nilai dan isian wajib.");
+    case "42501":
+      return failure("Akun Anda tidak memiliki izin untuk perubahan ini.");
+    default:
+      return failure(messages.fallback ?? "Perubahan belum tersimpan. Periksa koneksi Anda lalu coba lagi.");
+  }
+}
+
+export function parsePage(value: string | string[] | undefined): number {
+  const raw = Array.isArray(value) ? value[0] : value;
+  const parsed = Number(raw ?? "1");
+  if (!Number.isFinite(parsed) || parsed < 1) return 1;
+  return Math.floor(parsed);
+}
+
+export function pageRange(page: number) {
+  const from = (page - 1) * PAGE_SIZE;
+  return { from, to: from + PAGE_SIZE - 1 };
+}

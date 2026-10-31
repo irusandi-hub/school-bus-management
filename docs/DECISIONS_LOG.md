@@ -91,6 +91,19 @@ Catat keputusan yang disetujui pemilik produk. Jangan mencatat rekomendasi yang 
 - **Alasan:** Pemilik produk ingin menghindari ketergantungan pada satu metode koneksi sebelum perangkat dan kemampuan integrasinya diketahui.
 - **Dampak pada dokumen/tes:** Tetapkan antarmuka integrasi yang netral terhadap sumber; evaluasi opsi direct-device/DVR dan AV-platform handoff berdasarkan dokumentasi resmi, autentikasi, kemampuan pencabutan sesi, batas stream bersamaan, latensi, jaringan, biaya, dan lokasi pemrosesan data. Jangan menerima URL publik permanen sebagai mekanisme akses yang aman. Tidak ada pilihan teknis atau vendor yang difinalkan.
 
+### DEC-021 — Implementasi modul data Admin Pusat dan akun wali
+- **Tanggal:** 2026-10-31
+- **Status:** DISETUJUI (instruksi pemilik produk untuk tahap implementasi ini)
+- **Keputusan:** Pemilik produk meminta implementasi nyata modul data Admin Pusat (sekolah, operator, siswa, wali, bus, pengemudi) yang tersambung ke Supabase, beserta alur akun wali sesuai DEC-017. Ini membuka gerbang implementasi DEC-010 **hanya** untuk modul data dan akun; GPS, routing, kamera, integrasi perangkat/vendor, dan modul perjalanan tetap di luar lingkup dan tetap memerlukan gerbang terpisah.
+- **Aturan turunan yang diterapkan:**
+  - Peran akun hanya dibaca dari `public.profiles.role` di database. Tidak ada pemilih peran yang memberi hak akses.
+  - Akun wali hanya dapat diklaim jika email terverifikasi, sudah didaftarkan Admin pada tabel `guardians`, aktif, dan memiliki minimal satu siswa berstatus layanan `active`. Klaim dilakukan oleh fungsi `public.claim_guardian_account()`; fungsi itu juga yang menulis `profiles.role = 'parent'`.
+  - Satu siswa hanya memiliki satu wali (`students.guardian_id`), satu wali dapat memiliki banyak siswa (`guardians.id`).
+  - Status layanan siswa (`active`, `paused`, `ended`) terpisah dari kehadiran perjalanan dan GPS. Perubahan status wajib beralasan dan hanya melalui `public.set_student_service_status()`; histori dicatat pada `student_service_status_history` yang bersifat append-only.
+  - Tidak ada penghapusan data: nonaktifkan menggantikan hapus, dan tidak ada hak `DELETE` yang diberikan pada tabel modul ini.
+- **Alasan:** Instruksi eksplisit untuk melanjutkan pembangunan modul data dengan penyimpanan nyata dan akses aman, tanpa menunggu modul operasional yang masih bergantung pada vendor/perangkat.
+- **Dampak pada dokumen/tes:** README, backlog, dan migrasi `20261031000000_admin_core_crud.sql`. Pengujian yang dijalankan hanya typecheck, build, dan unit test fungsi validasi karena belum ada kredensial Supabase maupun lingkungan database untuk pengujian integrasi.
+
 ## Hal yang belum diputuskan
 
 Lihat `TECHNICAL_SPEC_REVIEW.md`, bagian 19 pada `MASTER_SPEC.md`, serta `OPERATING_MODEL_RESPONSIBILITY_MATRIX.md`. Jangan mengubah pertanyaan terbuka menjadi keputusan tanpa persetujuan.

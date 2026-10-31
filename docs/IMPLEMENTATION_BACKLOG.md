@@ -129,3 +129,42 @@ Gunakan urutan berikut untuk setiap item; checklist tidak meminta pengujian prem
 - **Lapangan/operasional:** lakukan ketika pilot dan pihak operasional siap; jangan mengganti bukti lapangan dengan asumsi atau simulasi yang tidak representatif.
 
 Kamera live tetap tambahan dan dapat dikonfigurasi kemudian. Jangan menjadikan konfigurasi atau pengujian kamera sebagai prasyarat backlog navigasi dan laporan inti. Parameter GPS yang dapat dikonfigurasi juga tidak otomatis menjadi blocker tinjauan spesifikasi; yang harus ditinjau sekarang adalah prinsip sesi terikat penugasan, otorisasi, timestamp/kesegaran yang terlihat, dan perlindungan akses lokasi.
+
+## Status implementasi modul data — 2026-10-31
+
+**Dasar:** DEC-021. Ruang lingkup hanya modul data Admin Pusat dan akun wali; perjalanan, GPS, routing, kamera, dan vendor tetap di luar lingkup.
+
+### Terimplementasi (kode + migrasi), terverifikasi sebatas statis/unit
+
+- [x] CRUD sekolah: `app/admin/sekolah/*`, tabel `schools`, policy admin, nonaktifkan tanpa hapus.
+- [x] CRUD operator: `app/admin/operator/*`, tabel `operators`.
+- [x] CRUD siswa: `app/admin/siswa/*`, `students`, relasi satu sekolah dan satu wali, koordinat rumah privat.
+- [x] CRUD wali (pra-pendaftaran email): `app/admin/wali/*`, tabel `guardians`.
+- [x] CRUD bus: `app/admin/bus/*`, kolom operator/model/catatan pada `buses`.
+- [x] CRUD pengemudi: `app/admin/pengemudi/*`, kolom nama/telepon/operator pada `drivers`.
+- [x] Riwayat status layanan append-only: `student_service_status_history` + `set_student_service_status()`.
+- [x] Audit otomatis: trigger `private.audit_row_change()` ke `audit_logs`.
+- [x] Alur akun wali: `/daftar`, `/akun/kata-sandi`, `claim_guardian_account()`, login email + kata sandi.
+- [x] Peran dari database: tidak ada pemilih peran yang memberi akses; `/admin` menolak peran selain `admin`.
+- [x] Pencarian, filter, paginasi, empty state, loading state, notifikasi berhasil/gagal, konfirmasi tindakan.
+
+**Bukti:** `npm run typecheck` lulus, `npm test` 21/21 lulus, `npm run build` lulus. Migrasi `supabase/migrations/20261031000000_admin_core_crud.sql` ditulis dan belum diterapkan ke database mana pun.
+
+### `TERIMPLEMENTASI TETAPI BELUM TERVERIFIKASI`
+
+- Eksekusi migrasi pada Postgres/Supabase nyata, termasuk backfill nama sekolah lama dan relasi wali lama.
+- Perilaku RLS dengan akun admin, wali, dan pengguna tanpa profil yang sebenarnya (uji isolasi antarwali belum dijalankan).
+- Alur email verifikasi Supabase end-to-end dan masa berlaku tautan.
+- Kebijakan rate limiting formulir aktivasi (saat ini hanya mengandalkan batas bawaan Supabase Auth).
+- Pemulihan kata sandi mandiri dan verifikasi ulang saat admin mengganti email wali.
+
+### `BELUM DIKERJAKAN` (di luar lingkup DEC-021)
+
+- CRUD rute, stop, penugasan, dan perjalanan.
+- Tampilan audit di UI (data audit sudah tersimpan di database).
+- Pembuatan akun login pengemudi dan modul pengemudi.
+- GPS, routing, kamera, dan integrasi vendor.
+
+### Catatan audit database
+
+Audit read-only 2026-10-29 mencatat 11 tabel inti dengan RLS aktif dan tanpa policy. Migrasi ini mengasumsikan skema awal persis seperti `20261029000000_initial_school_bus_schema.sql`. Sebelum menerapkan, periksa kembali skema aktual: nama constraint unik `students_student_code_key`, keberadaan kolom `active`/`school_name` pada `students`, dan apakah tabel `schools`/`operators` sudah dibuat manual di proyek tersebut.
