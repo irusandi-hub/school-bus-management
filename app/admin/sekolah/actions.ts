@@ -31,6 +31,7 @@ export async function saveSchool(_prev: ActionState, formData: FormData): Promis
   const contactName = readOptionalText(formData, "contact_name");
   const contactEmail = readOptionalText(formData, "contact_email");
   const contactPhone = readOptionalText(formData, "contact_phone");
+  const operatorId = readOptionalText(formData, "operator_id");
 
   const errors: FieldErrors = {};
   if (name.length < 2 || name.length > 120) errors.name = "Nama sekolah harus 2–120 karakter.";
@@ -68,6 +69,7 @@ export async function saveSchool(_prev: ActionState, formData: FormData): Promis
     contact_name: contactName,
     contact_email: contactEmail ? contactEmail.toLowerCase() : null,
     contact_phone: contactPhone,
+    operator_id: operatorId,
   };
 
   const { error } = id

@@ -36,7 +36,6 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </Link>
 
         <div className="nav-group">
-          <div className="workspace-label">Data induk</div>
           <AdminNav />
         </div>
 
@@ -72,7 +71,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
         <footer className="page-footer">
           <span>School Bus Management</span>
-          <span>Data master · modul perjalanan belum aktif</span>
+          <span>Data induk · operasional terbatas</span>
         </footer>
       </main>
 
@@ -86,8 +85,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <Link href="/admin/wali">
           <span aria-hidden="true">☎</span>Wali
         </Link>
-        <Link href="/admin/bus">
-          <span aria-hidden="true">▰</span>Bus
+        <Link href="/admin/rute">
+          <span aria-hidden="true">⇢</span>Rute
+        </Link>
+        <Link href="/admin/perjalanan">
+          <span aria-hidden="true">◷</span>Perjalanan
         </Link>
       </nav>
     </div>

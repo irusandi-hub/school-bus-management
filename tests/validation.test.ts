@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   formatDate,
+  formatTime,
   isServiceStatus,
   isValidAdmissionsNumber,
   isValidEmail,
@@ -9,11 +10,14 @@ import {
   normalizeCode,
   normalizeEmail,
   parseCoordinate,
+  routeDirectionLabel,
   sanitizeSearch,
   serviceStatusLabel,
+  tripEventLabel,
+  tripStatusLabel,
   validateLength,
 } from "../lib/validation.ts";
-import { safeNextPath } from "../lib/paths.ts";
+import { homeForRole, safeNextPath, scopedNext } from "../lib/paths.ts";
 
 describe("email handling", () => {
   it("normalizes surrounding spaces and casing", () => {
@@ -141,5 +145,58 @@ describe("post-login redirect safety", () => {
     assert.equal(safeNextPath("https://contoh.com", "/admin"), "/admin");
     assert.equal(safeNextPath("//contoh.com", "/admin"), "/admin");
     assert.equal(safeNextPath(null, "/admin"), "/admin");
+  });
+
+  it("maps each database role to its own area", () => {
+    assert.equal(homeForRole("admin"), "/admin");
+    assert.equal(homeForRole("operator"), "/operator");
+    assert.equal(homeForRole("driver"), "/pengemudi");
+    assert.equal(homeForRole("parent"), "/wali");
+    assert.equal(homeForRole(null), "/tanpa-akses");
+  });
+
+  it("never carries a post-login destination into another role's area", () => {
+    assert.equal(scopedNext("parent", "/admin/siswa"), "/wali");
+    assert.equal(scopedNext("driver", "/admin"), "/pengemudi");
+    assert.equal(scopedNext("operator", "/admin/operator"), "/operator");
+    assert.equal(scopedNext("admin", "/operator"), "/admin");
+    assert.equal(scopedNext("parent", "//contoh.com"), "/wali");
+  });
+
+  it("keeps a destination inside the role's own area", () => {
+    assert.equal(scopedNext("parent", "/wali/anak/123"), "/wali/anak/123");
+    assert.equal(scopedNext("driver", "/pengemudi/tugas/abc"), "/pengemudi/tugas/abc");
+    assert.equal(scopedNext("operator", "/operator/bus"), "/operator/bus");
+    assert.equal(scopedNext("admin", "/admin/rute"), "/admin/rute");
+  });
+});
+
+describe("operational labels", () => {
+  it("labels route directions", () => {
+    assert.equal(routeDirectionLabel("morning"), "Pagi");
+    assert.equal(routeDirectionLabel("afternoon"), "Sore");
+    assert.equal(routeDirectionLabel(""), "Tidak diketahui");
+  });
+
+  it("labels trip statuses without inventing an active trip", () => {
+    assert.equal(tripStatusLabel("scheduled"), "Dijadwalkan");
+    assert.equal(tripStatusLabel("in_progress"), "Berlangsung");
+    assert.equal(tripStatusLabel("completed"), "Selesai");
+    assert.equal(tripStatusLabel("cancelled"), "Dibatalkan");
+    assert.equal(tripStatusLabel("unknown"), "Tidak diketahui");
+  });
+
+  it("labels student events", () => {
+    assert.equal(tripEventLabel("boarded"), "Sudah naik");
+    assert.equal(tripEventLabel("dropped_off"), "Sudah turun");
+    assert.equal(tripEventLabel("absent"), "Tidak ikut");
+    assert.equal(tripEventLabel("issue"), "Kendala");
+    assert.equal(tripEventLabel("lainnya"), "Belum dicatat");
+  });
+
+  it("formats time and handles empty values", () => {
+    assert.equal(formatTime(null), "—");
+    assert.equal(formatTime(""), "—");
+    assert.match(formatTime("2026-10-31T07:05:00.000Z"), /^\d{2}[.:]\d{2}$/);
   });
 });

@@ -2,214 +2,159 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "School Bus | Manajemen transportasi sekolah",
+  title: "Masuk | School Bus Management",
   description:
-    "Aplikasi manajemen bus sekolah untuk Admin Pusat, pengemudi, dan wali siswa. Modul data induk sudah aktif dan tersimpan di database.",
+    "Gerbang akses School Bus Management untuk Admin & Operator, Pengemudi, dan Orang Tua/Wali.",
 };
 
-const modules = [
-  {
-    icon: "⌂",
-    title: "Sekolah & operator",
-    body: "Simpan identitas sekolah, operator transportasi, kontak resmi, dan koordinat sekolah sebagai acuan rute.",
-    status: "Aktif",
-  },
-  {
-    icon: "♧",
-    title: "Siswa & wali",
-    body: "Admissions Number unik, data wali, titik rumah, dan status layanan dengan riwayat perubahan yang tidak dihapus.",
-    status: "Aktif",
-  },
-  {
-    icon: "▰",
-    title: "Bus & pengemudi",
-    body: "Armada, kapasitas, nomor polisi, pengemudi, dan operatornya, dengan validasi data penting.",
-    status: "Aktif",
-  },
-  {
-    icon: "☎",
-    title: "Akun wali",
-    body: "Email wali didaftarkan admin, diverifikasi, lalu wali membuat kata sandi sendiri. Peran tidak dipilih dari tampilan.",
-    status: "Aktif",
-  },
-];
-
-const upcoming = [
-  { title: "Penugasan & perjalanan pagi/sore", note: "Membutuhkan rute yang disetujui admin." },
-  { title: "GPS dari ponsel pengemudi", note: "Menunggu uji perangkat Android pilot." },
-  { title: "Rute bus besar & titik jemput", note: "Validasi vendor routing belum lulus." },
-  { title: "Kamera live", note: "Fitur tambahan, menunggu integrasi resmi." },
-];
-
-export default function HomePage() {
+function AdminIcon() {
   return (
-    <div className="landing">
-      <div className="landing-inner">
-        <header className="landing-nav">
-          <Link className="landing-brand" href="/">
-            <span className="landing-mark">S</span>
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" aria-hidden="true">
+      <path d="M4 20V9.5L12 4l8 5.5V20" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M9 20v-6h6v6" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+      <path d="M2.5 20h19" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function DriverIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" aria-hidden="true">
+      <rect x="3" y="5" width="18" height="12" rx="2.5" stroke="currentColor" strokeWidth="1.7" />
+      <path d="M3 11h18" stroke="currentColor" strokeWidth="1.7" />
+      <circle cx="7.5" cy="19" r="1.8" stroke="currentColor" strokeWidth="1.7" />
+      <circle cx="16.5" cy="19" r="1.8" stroke="currentColor" strokeWidth="1.7" />
+      <path d="M7 8h3M14 8h3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function GuardianIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" aria-hidden="true">
+      <circle cx="12" cy="8" r="3.2" stroke="currentColor" strokeWidth="1.7" />
+      <path d="M4.5 20c.7-3.6 3.4-5.6 7.5-5.6s6.8 2 7.5 5.6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      <path d="M12 3v1.6M4.8 8H3.2M20.8 8h-1.6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+const doors = [
+  {
+    href: "/login?peran=admin",
+    label: "Admin & Operator",
+    kicker: "Pengelolaan",
+    description:
+      "Kelola sekolah, operator, siswa, wali, bus, pengemudi, rute, dan perjalanan sesuai kewenangan akun.",
+    points: ["Data induk & armada", "Rute dan penugasan", "Laporan operasional"],
+    cta: "Masuk sebagai Admin & Operator",
+    icon: <AdminIcon />,
+    tone: "admin",
+  },
+  {
+    href: "/login?peran=pengemudi",
+    label: "Pengemudi",
+    kicker: "Operasional",
+    description:
+      "Lihat tugas hari ini, urutan titik jemput, dan catat kehadiran siswa selama perjalanan.",
+    points: ["Tugas & manifest hari ini", "Mulai dan akhiri perjalanan", "Riwayat perjalanan sendiri"],
+    cta: "Masuk sebagai Pengemudi",
+    icon: <DriverIcon />,
+    tone: "driver",
+  },
+  {
+    href: "/login?peran=wali",
+    label: "Orang Tua/Wali",
+    kicker: "Pemantauan",
+    description:
+      "Pantau anak yang terhubung dengan akun Anda: sekolah, layanan, status perjalanan, dan riwayatnya.",
+    points: ["Kartu anak & status layanan", "Status perjalanan hari ini", "Riwayat perjalanan anak"],
+    cta: "Masuk sebagai Orang Tua/Wali",
+    icon: <GuardianIcon />,
+    tone: "parent",
+  },
+];
+
+export default function AccessGatePage() {
+  return (
+    <main className="gate">
+      <div className="gate-inner">
+        <header className="gate-nav">
+          <Link className="gate-brand" href="/">
+            <span className="gate-mark" aria-hidden="true">S</span>
             <span>
               <strong>School Bus</strong>
-              <small>Manajemen transportasi sekolah</small>
+              <small>Manajemen Transportasi Sekolah</small>
             </span>
           </Link>
-          <nav className="landing-nav-links" aria-label="Navigasi utama">
-            <a href="#modul">Modul</a>
-            <a href="#alur">Cara mulai</a>
-            <a href="#status">Status fitur</a>
-          </nav>
-          <div className="landing-nav-actions">
-            <Link className="landing-link" href="/daftar">
-              Aktivasi akun wali
-            </Link>
-            <Link className="landing-cta" href="/login">
-              Masuk
-            </Link>
-          </div>
+          <span className="gate-area">Dammam · Pilot</span>
         </header>
 
-        <section className="landing-hero">
-          <div className="hero-copy">
-            <p className="hero-kicker">PILOT DAMMAM &amp; SEKITARNYA</p>
-            <h1 className="hero-title">
-              Data transportasi sekolah yang <em>tertib</em> sejak awal.
-            </h1>
-            <p className="hero-sub">
-              Admin Pusat mengelola sekolah, operator, siswa, wali, bus, dan pengemudi dalam satu tempat. Wali hanya
-              dapat melihat anak yang memang terhubung dengannya — diperiksa oleh database, bukan oleh tampilan.
-            </p>
-            <div className="hero-actions">
-              <Link className="btn btn-primary btn-lg" href="/login">
-                Masuk ke ruang kerja
-              </Link>
-              <Link className="btn btn-outline btn-lg" href="/daftar">
-                Aktivasi akun wali
-              </Link>
-            </div>
-            <p className="hero-note">
-              Akun wali hanya dapat diaktifkan untuk email yang sudah didaftarkan Admin Pusat dan memiliki siswa dengan
-              layanan aktif.
-            </p>
+        <section className="gate-hero">
+          <p className="gate-kicker">Satu gerbang akses</p>
+          <h1>Tiga ruang kerja, satu layanan bus sekolah yang aman.</h1>
+          <p className="gate-copy">
+            Pilih pintu masuk yang sesuai dengan peran Anda. Kartu di bawah hanya mengarahkan ke halaman masuk —
+            hak akses tetap dibaca dari peran akun di database setelah Anda terautentikasi.
+          </p>
+          <div className="gate-meta">
+            <span className="gate-meta-item">
+              <span className="gate-dot" aria-hidden="true" /> Otorisasi server &amp; database
+            </span>
+            <span className="gate-meta-item">Bahasa Indonesia</span>
+            <span className="gate-meta-item">Akses sesuai peran</span>
           </div>
-
-          <aside className="hero-panel" id="status">
-            <div className="hero-panel-head">
-              <span className="hero-panel-dot" aria-hidden="true" />
-              Status modul
-            </div>
-            <ul className="module-status-list">
-              <li>
-                <span>Data induk &amp; akun wali</span>
-                <span className="pill success">Aktif</span>
-              </li>
-              <li>
-                <span>Penugasan &amp; perjalanan</span>
-                <span className="pill neutral">Belum aktif</span>
-              </li>
-              <li>
-                <span>GPS pengemudi</span>
-                <span className="pill neutral">Belum aktif</span>
-              </li>
-              <li>
-                <span>Kamera live</span>
-                <span className="pill neutral">Belum aktif</span>
-              </li>
-            </ul>
-            <p className="hero-panel-foot">
-              Kami tidak menampilkan angka atau status contoh. Ringkasan hanya berisi data yang benar-benar tersimpan.
-            </p>
-          </aside>
         </section>
 
-        <section className="landing-section" id="modul">
-          <div className="section-head">
-            <p className="hero-kicker dark">MODUL YANG SUDAH BERJALAN</p>
-            <h2>Empat fondasi data, satu sumber kebenaran</h2>
+        <section className="gate-cards" aria-label="Pilih pintu masuk">
+          {doors.map((door) => (
+            <article className={`gate-card gate-card-${door.tone}`} key={door.href}>
+              <div className="gate-card-top">
+                <span className="gate-icon" aria-hidden="true">{door.icon}</span>
+                <span className="gate-card-kicker">{door.kicker}</span>
+              </div>
+              <h2>{door.label}</h2>
+              <p>{door.description}</p>
+              <ul className="gate-points">
+                {door.points.map((point) => (
+                  <li key={point}>{point}</li>
+                ))}
+              </ul>
+              <Link className="gate-cta" href={door.href}>
+                {door.cta}
+                <span aria-hidden="true">→</span>
+              </Link>
+              {door.tone === "parent" && (
+                <Link className="gate-secondary" href="/daftar">
+                  Belum punya kata sandi? Aktivasi akun wali
+                </Link>
+              )}
+            </article>
+          ))}
+        </section>
+
+        <section className="gate-footnote" aria-label="Informasi penting">
+          <div>
+            <strong>Peran tidak dipilih di sini</strong>
             <p>
-              Semua formulir tersambung ke database dengan validasi, pencarian, dan konfirmasi tindakan. Data historis
-              tidak dihapus; status dinonaktifkan agar riwayat tetap utuh.
+              Memilih kartu tidak memberikan akses tambahan. Setelah masuk, sistem membaca peran akun dan
+              mengarahkan Anda ke area yang benar. URL atau parameter yang diubah tidak memperluas akses.
             </p>
           </div>
-          <div className="feature-grid">
-            {modules.map((module) => (
-              <article className="feature-card" key={module.title}>
-                <div className="feature-top">
-                  <span className="feature-icon" aria-hidden="true">
-                    {module.icon}
-                  </span>
-                  <span className="pill success">{module.status}</span>
-                </div>
-                <h3>{module.title}</h3>
-                <p>{module.body}</p>
-              </article>
-            ))}
+          <div>
+            <strong>Yang belum tersedia</strong>
+            <p>
+              Posisi bus langsung (GPS), kamera di dalam bus, dan integrasi perangkat belum aktif. Modul tersebut
+              tidak ditampilkan sebagai fitur yang berjalan dan tidak menggunakan data contoh.
+            </p>
           </div>
         </section>
 
-        <section className="landing-section" id="alur">
-          <div className="section-head">
-            <p className="hero-kicker dark">ALUR AKSES WALI</p>
-            <h2>Tiga langkah, tanpa memilih peran sendiri</h2>
-          </div>
-          <div className="step-grid">
-            <article className="step-card">
-              <span className="step-number">01</span>
-              <h3>Admin mendaftarkan email</h3>
-              <p>Email wali disimpan di database dan dihubungkan ke siswa yang tepat.</p>
-            </article>
-            <article className="step-card">
-              <span className="step-number">02</span>
-              <h3>Wali memverifikasi email</h3>
-              <p>Tautan verifikasi dikirim ke email terdaftar, lalu wali membuat kata sandi.</p>
-            </article>
-            <article className="step-card">
-              <span className="step-number">03</span>
-              <h3>Masuk dengan email &amp; kata sandi</h3>
-              <p>Akses dibuka hanya untuk siswa yang terhubung dan masih memiliki layanan aktif.</p>
-            </article>
-          </div>
-        </section>
-
-        <section className="landing-section">
-          <div className="cta-band">
-            <div>
-              <h2>Mulai dari data yang benar</h2>
-              <p>
-                Belum punya akun? Akun Admin Pusat dibuat oleh pengelola sistem. Wali memulai dari aktivasi akun dengan
-                email terdaftar.
-              </p>
-            </div>
-            <div className="cta-actions">
-              <Link className="btn btn-primary btn-lg" href="/login">
-                Masuk
-              </Link>
-              <Link className="btn btn-outline btn-lg" href="/daftar">
-                Aktivasi akun wali
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        <section className="landing-section">
-          <div className="section-head">
-            <p className="hero-kicker dark">TAHAP BERIKUTNYA</p>
-            <h2>Yang belum aktif — dan tidak kami tampilkan seolah berjalan</h2>
-          </div>
-          <ul className="upcoming-list">
-            {upcoming.map((item) => (
-              <li key={item.title}>
-                <strong>{item.title}</strong>
-                <span>{item.note}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <footer className="landing-footer">
+        <footer className="gate-footer">
           <span>School Bus Management</span>
-          <span>Pilot Dammam · modul data induk</span>
+          <span>Modul data &amp; perjalanan terbatas · GPS dan kamera belum aktif</span>
         </footer>
       </div>
-    </div>
+    </main>
   );
 }

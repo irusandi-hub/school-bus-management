@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
 import { RecordForm, type FieldDef } from "@/components/admin/RecordForm";
 import { ConfigNotice, Notice, PageHeader, Pill } from "@/components/admin/ui";
 import { adminReadContext } from "@/lib/admin/read";
@@ -8,10 +9,12 @@ import type { StatusHistoryRow, StudentRow } from "@/lib/types";
 import {
   formatDate,
   formatDateTime,
+  routeDirectionLabel,
   serviceStatusLabel,
   serviceStatusOptions,
 } from "@/lib/validation";
 import { changeStudentServiceStatus } from "../actions";
+import { assignStudentToStop, removeStudentFromRoute } from "../../rute/actions";
 
 export const metadata: Metadata = { title: "Detail Siswa | Admin Pusat" };
 
@@ -41,6 +44,31 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
     .order("changed_at", { ascending: false });
 
   const history = (historyData ?? []) as unknown as StatusHistoryRow[];
+
+  const [placementsResult, allStopsResult] = await Promise.all([
+    supabase
+      .from("student_route_stops")
+      .select("id, student_id, route_id, stop_id, direction, active, route_stops(stop_name, stop_order), routes(route_name)")
+      .eq("student_id", id)
+      .eq("active", true),
+    supabase
+      .from("route_stops")
+      .select("id, stop_name, stop_order, route_id, routes(route_name)")
+      .order("stop_order", { ascending: true }),
+  ]);
+
+  const placements = (placementsResult.data ?? []) as unknown as {
+    id: string;
+    direction: string;
+    route_stops: { stop_name: string; stop_order: number } | null;
+    routes: { route_name: string } | null;
+  }[];
+  const allStops = (allStopsResult.data ?? []) as unknown as {
+    id: string;
+    stop_name: string;
+    stop_order: number;
+    routes: { route_name: string } | null;
+  }[];
 
   const statusFields: FieldDef[] = [
     {
@@ -164,6 +192,99 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
           </div>
         </section>
       </div>
+
+      <section className="panel route-placements">
+        <header className="panel-head">
+          <div>
+            <h2 className="panel-title">Rute &amp; titik jemput</h2>
+            <div className="panel-subtitle">
+              Menentukan urutan titik dan daftar siswa pada perjalanan pengemudi
+            </div>
+          </div>
+          <Pill tone={placements.length > 0 ? "success" : "warning"}>
+            {placements.length > 0 ? "Sudah ditempatkan" : "Belum ditempatkan"}
+          </Pill>
+        </header>
+
+        <div className="admin-table-wrap">
+          <table className="admin-table admin-table-compact">
+            <thead>
+              <tr>
+                <th scope="col">Arah</th>
+                <th scope="col">Rute</th>
+                <th scope="col">Titik</th>
+                <th scope="col">Tindakan</th>
+              </tr>
+            </thead>
+            <tbody>
+              {placements.length === 0 ? (
+                <tr>
+                  <td colSpan={4}>
+                    <div className="table-empty">
+                      <strong>Siswa belum ditempatkan pada rute</strong>
+                      <p>
+                        Tanpa penempatan, siswa tidak muncul pada daftar jemput pengemudi dan riwayat perjalanan wali.
+                        Pilih titik jemput di bawah.
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                placements.map((placement) => (
+                  <tr key={placement.id}>
+                    <td>{routeDirectionLabel(placement.direction)}</td>
+                    <td>{placement.routes?.route_name ?? "—"}</td>
+                    <td>
+                      {placement.route_stops?.stop_order}. {placement.route_stops?.stop_name}
+                    </td>
+                    <td>
+                      <form action={removeStudentFromRoute}>
+                        <input type="hidden" name="id" value={placement.id} />
+                        <input type="hidden" name="return_to" value={`/admin/siswa/${student.id}`} />
+                        <ConfirmSubmit message="Keluarkan siswa dari rute aktif ini? Riwayat penempatan tetap tersimpan.">
+                          Keluarkan
+                        </ConfirmSubmit>
+                      </form>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        <form className="inline-form roster-form" action={assignStudentToStop}>
+          <input type="hidden" name="student_id" value={student.id} />
+          <input type="hidden" name="return_to" value={`/admin/siswa/${student.id}`} />
+          <label>
+            Titik jemput
+            <select name="stop_id" required defaultValue="">
+              <option value="" disabled>
+                {allStops.length === 0 ? "Belum ada titik jemput pada rute mana pun" : "Pilih titik jemput"}
+              </option>
+              {allStops.map((stop) => (
+                <option key={stop.id} value={stop.id}>
+                  {stop.routes?.route_name ?? "Rute"} · {stop.stop_order}. {stop.stop_name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Arah
+            <select name="direction" defaultValue="morning">
+              <option value="morning">Pagi</option>
+              <option value="afternoon">Sore</option>
+            </select>
+          </label>
+          <button className="btn btn-primary" type="submit" disabled={allStops.length === 0}>
+            Simpan penempatan
+          </button>
+        </form>
+        <p className="detail-footnote">
+          Satu siswa hanya memiliki satu titik aktif per arah. Memilih titik baru pada arah yang sama akan memindahkan
+          penempatan sebelumnya tanpa menghapus riwayatnya.
+        </p>
+      </section>
 
       <section className="panel">
         <header className="panel-head">

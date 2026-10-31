@@ -65,6 +65,46 @@ export function writeFailure(
   }
 }
 
+export type OperatorActionContext =
+  | { ok: true; supabase: ServerSupabase; userId: string; operatorId: string }
+  | { ok: false; state: ActionState };
+
+/**
+ * Mutations in the operator area require the operator role AND an active organisation
+ * link. The organisation id is taken from the database, never from the form, so an
+ * operator cannot write into another operator's fleet by changing a field.
+ */
+export async function operatorActionContext(): Promise<OperatorActionContext> {
+  const supabase = await createServerSupabase();
+  if (!supabase) return { ok: false, state: failure(supabaseNotConfiguredMessage) };
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { ok: false, state: failure("Sesi Anda sudah berakhir. Muat ulang halaman lalu masuk kembali.") };
+  }
+
+  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+  if (profile?.role !== "operator") {
+    return { ok: false, state: failure("Akun Anda tidak memiliki izin area operator untuk tindakan ini.") };
+  }
+
+  const { data: operator } = await supabase
+    .from("operators")
+    .select("id")
+    .eq("profile_id", user.id)
+    .eq("active", true)
+    .maybeSingle();
+
+  if (!operator) {
+    return { ok: false, state: failure("Akun operator belum ditautkan ke organisasi yang aktif.") };
+  }
+
+  return { ok: true, supabase, userId: user.id, operatorId: operator.id as string };
+}
+
 export function parsePage(value: string | string[] | undefined): number {
   const raw = Array.isArray(value) ? value[0] : value;
   const parsed = Number(raw ?? "1");

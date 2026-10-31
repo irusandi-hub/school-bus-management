@@ -113,6 +113,51 @@ export function serviceStatusLabel(value: string): string {
   return "Tidak diketahui";
 }
 
+export function routeDirectionLabel(value: string): string {
+  if (value === "morning") return "Pagi";
+  if (value === "afternoon") return "Sore";
+  return "Tidak diketahui";
+}
+
+export function tripStatusLabel(value: string): string {
+  switch (value) {
+    case "scheduled":
+      return "Dijadwalkan";
+    case "in_progress":
+      return "Berlangsung";
+    case "completed":
+      return "Selesai";
+    case "cancelled":
+      return "Dibatalkan";
+    case "delayed":
+      return "Tertunda";
+    default:
+      return "Tidak diketahui";
+  }
+}
+
+export function tripEventLabel(value: string): string {
+  switch (value) {
+    case "boarded":
+      return "Sudah naik";
+    case "dropped_off":
+      return "Sudah turun";
+    case "absent":
+      return "Tidak ikut";
+    case "issue":
+      return "Kendala";
+    default:
+      return "Belum dicatat";
+  }
+}
+
+export function formatTime(value: string | null | undefined): string {
+  if (!value) return "—";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "—";
+  return new Intl.DateTimeFormat("id-ID", { hour: "2-digit", minute: "2-digit" }).format(date);
+}
+
 export function formatDate(value: string | null | undefined): string {
   if (!value) return "—";
   const date = new Date(value.length <= 10 ? `${value}T00:00:00Z` : value);

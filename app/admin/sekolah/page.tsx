@@ -22,7 +22,7 @@ export const metadata: Metadata = { title: "Sekolah | Admin Pusat" };
 
 const path = "/admin/sekolah";
 const selectColumns =
-  "id, name, code, city, address, latitude, longitude, contact_name, contact_email, contact_phone, active";
+  "id, name, code, city, address, latitude, longitude, contact_name, contact_email, contact_phone, operator_id, active";
 
 export default async function SekolahPage({
   searchParams,
@@ -52,6 +52,13 @@ export default async function SekolahPage({
   const { data, count, error } = await query;
   const rows = (data ?? []) as SchoolRow[];
   const total = count ?? 0;
+
+  const { data: operatorRows } = await supabase
+    .from("operators")
+    .select("id, name")
+    .eq("active", true)
+    .order("name", { ascending: true });
+  const operators = (operatorRows ?? []) as { id: string; name: string }[];
 
   let editing: SchoolRow | null = null;
   if (editId) {
@@ -86,6 +93,18 @@ export default async function SekolahPage({
       required: true,
       maxLength: 80,
       defaultValue: editing?.city ?? "Dammam",
+    },
+    {
+      name: "operator_id",
+      label: "Operator transportasi",
+      type: "select",
+      defaultValue: editing?.operator_id ?? "",
+      options: [
+        { value: "", label: "Belum ditautkan" },
+        ...operators.map((operator) => ({ value: operator.id, label: operator.name })),
+      ],
+      help: "Menentukan operator yang dapat melihat siswa di sekolah ini. Data induk tetap dikelola Admin Pusat.",
+      fullWidth: true,
     },
     {
       name: "address",

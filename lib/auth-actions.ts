@@ -4,7 +4,8 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { supabaseNotConfiguredMessage } from "@/lib/supabase/env";
-import { safeNextPath } from "@/lib/paths";
+import { scopedNext } from "@/lib/access";
+import type { UserRole } from "@/lib/types";
 import {
   failure,
   isValidEmail,
@@ -53,11 +54,52 @@ export async function loginAction(_prev: ActionState, formData: FormData): Promi
     redirect("/akun/kata-sandi?alasan=belum-aktivasi");
   }
 
-  if (profile.role === "admin") {
-    redirect(safeNextPath(readText(formData, "next"), "/admin"));
+  // The destination is derived from the role stored in the database, never from the
+  // card the visitor clicked or from the `next` query parameter alone.
+  const role = profile.role as UserRole;
+  const requestedNext = readText(formData, "next");
+
+  if (role === "admin") {
+    redirect(scopedNext("admin", requestedNext));
   }
 
-  if (profile.role === "parent") {
+  if (role === "operator") {
+    const { data: operator } = await supabase
+      .from("operators")
+      .select("id")
+      .eq("profile_id", data.user.id)
+      .eq("active", true)
+      .maybeSingle();
+
+    if (!operator) {
+      await supabase.auth.signOut();
+      return failure(
+        "Akun ini memiliki peran operator tetapi belum ditautkan ke organisasi transportasi yang aktif. Hubungi Admin Pusat untuk menautkan akun Anda.",
+      );
+    }
+
+    redirect(scopedNext("operator", requestedNext));
+  }
+
+  if (role === "driver") {
+    const { data: driver } = await supabase
+      .from("drivers")
+      .select("id")
+      .eq("profile_id", data.user.id)
+      .eq("active", true)
+      .maybeSingle();
+
+    if (!driver) {
+      await supabase.auth.signOut();
+      return failure(
+        "Akun ini memiliki peran pengemudi tetapi belum ditautkan ke data pengemudi yang aktif. Hubungi Admin Pusat untuk menautkan akun Anda.",
+      );
+    }
+
+    redirect(scopedNext("driver", requestedNext));
+  }
+
+  if (role === "parent") {
     const { count } = await supabase
       .from("students")
       .select("id", { count: "exact", head: true });
@@ -69,14 +111,7 @@ export async function loginAction(_prev: ActionState, formData: FormData): Promi
       );
     }
 
-    redirect("/wali");
-  }
-
-  if (profile.role === "driver") {
-    await supabase.auth.signOut();
-    return failure(
-      "Modul pengemudi belum tersedia pada tahap ini. Akun pengemudi akan diaktifkan setelah modul perjalanan selesai. Hubungi Admin Pusat bila Anda memerlukan bantuan.",
-    );
+    redirect(scopedNext("parent", requestedNext));
   }
 
   await supabase.auth.signOut();
@@ -192,5 +227,5 @@ export async function completeAccountAction(_prev: ActionState, formData: FormDa
 export async function signOutAction() {
   const supabase = await createServerSupabase();
   await supabase?.auth.signOut();
-  redirect("/login");
+  redirect("/");
 }
