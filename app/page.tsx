@@ -1,259 +1,160 @@
-"use client";
+import Link from "next/link";
+import type { Metadata } from "next";
 
-import { useMemo, useState } from "react";
-
-type Role = "Admin Pusat" | "Pengemudi" | "Orang Tua/Wali";
-type Section = string;
-
-const menus: Record<Role, { label: string; icon: string }[]> = {
-  "Admin Pusat": [
-    { label: "Ringkasan", icon: "▦" },
-    { label: "Sekolah & Operator", icon: "⌂" },
-    { label: "Data Siswa & Wali", icon: "♧" },
-    { label: "Bus & Pengemudi", icon: "▰" },
-    { label: "Rute & Titik Jemput", icon: "⌖" },
-    { label: "Penugasan", icon: "↗" },
-    { label: "Laporan & Audit", icon: "▤" },
-  ],
-  "Pengemudi": [
-    { label: "Tugas Saya", icon: "▦" },
-    { label: "Perjalanan", icon: "↗" },
-    { label: "Daftar Siswa", icon: "♧" },
-    { label: "Kendala & Pemeriksaan", icon: "✓" },
-  ],
-  "Orang Tua/Wali": [
-    { label: "Anak Saya", icon: "⌂" },
-    { label: "Perjalanan", icon: "↗" },
-    { label: "Riwayat & Laporan", icon: "▤" },
-    { label: "Akun", icon: "○" },
-  ],
+export const metadata: Metadata = {
+  title: "Masuk | School Bus Management",
+  description:
+    "Gerbang akses School Bus Management untuk Admin & Operator, Pengemudi, dan Orang Tua/Wali.",
 };
 
-const roleIntro: Record<Role, { greeting: string; description: string }> = {
-  "Admin Pusat": {
-    greeting: "Kendalikan operasi transportasi",
-    description: "Kelola data, penugasan, rute, dan laporan sesuai kewenangan organisasi.",
-  },
-  "Pengemudi": {
-    greeting: "Siap menjalankan tugas?",
-    description: "Periksa penugasan dan rute yang disetujui sebelum memulai perjalanan.",
-  },
-  "Orang Tua/Wali": {
-    greeting: "Informasi perjalanan anak",
-    description: "Pantau status perjalanan dan lihat riwayat anak yang terhubung ke akun Anda.",
-  },
-};
-
-function Status({ children, kind = "wait" }: { children: React.ReactNode; kind?: "wait" | "live" | "done" }) {
-  return <span className={`status ${kind}`}>{children}</span>;
-}
-
-function Metric({ label, value, note, icon }: { label: string; value: string; note: string; icon: string }) {
-  return <article className="stat-card"><div className="stat-top"><span>{label}</span><span className="stat-icon">{icon}</span></div><div className="stat-value">{value}</div><div className="stat-note">{note}</div></article>;
-}
-
-function EmptyPanel({ title, detail }: { title: string; detail: string }) {
-  return <section className="panel"><div className="panel-head"><div><h3 className="panel-title">{title}</h3><div className="panel-subtitle">Ruang kerja siap dihubungkan</div></div><Status>Belum terhubung</Status></div><div className="empty-state"><div className="empty-illustration">⌁</div><strong className="empty-title">Belum ada data operasional</strong><p>{detail}</p><span className="muted-hint">Data akan muncul setelah akun, hak akses, dan sumber data disiapkan.</span></div></section>;
-}
-
-type AdminSection = "Sekolah & Operator" | "Data Siswa & Wali" | "Bus & Pengemudi" | "Rute & Titik Jemput" | "Penugasan" | "Laporan & Audit";
-
-const adminSectionDetails: Record<AdminSection, { description: string; columns: string[]; emptyTitle: string; emptyDetail: string; action: string }> = {
-  "Sekolah & Operator": {
-    description: "Daftar organisasi yang menggunakan aplikasi dan informasi dasar operasionalnya.",
-    columns: ["Nama organisasi", "Jenis", "Kontak utama", "Status"],
-    emptyTitle: "Belum ada sekolah atau operator",
-    emptyDetail: "Data organisasi akan ditampilkan di sini setelah sumber data disiapkan.",
-    action: "Tambah organisasi",
-  },
-  "Data Siswa & Wali": {
-    description: "Data siswa, relasi wali, dan status verifikasi hubungan keluarga.",
-    columns: ["Nama siswa", "Sekolah", "Relasi wali", "Status relasi"],
-    emptyTitle: "Belum ada data siswa",
-    emptyDetail: "Data siswa dan wali tidak ditampilkan sampai tersedia sumber data yang benar.",
-    action: "Tambah siswa",
-  },
-  "Bus & Pengemudi": {
-    description: "Informasi armada dan pengemudi untuk kebutuhan penugasan.",
-    columns: ["Identitas bus", "Kapasitas", "Pengemudi", "Status"],
-    emptyTitle: "Belum ada bus atau pengemudi",
-    emptyDetail: "Armada dan pengemudi akan muncul setelah data terdaftar.",
-    action: "Tambah armada",
-  },
-  "Rute & Titik Jemput": {
-    description: "Rute, urutan titik jemput, dan status pemeriksaan/persetujuan rute.",
-    columns: ["Nama rute", "Perjalanan", "Jumlah stop", "Status persetujuan"],
-    emptyTitle: "Belum ada rute",
-    emptyDetail: "Rute yang disiapkan harus ditinjau dan disetujui sebelum dipakai. Urutan stop rute aktif tidak boleh berubah diam-diam.",
-    action: "Buat rute",
-  },
-  "Penugasan": {
-    description: "Pencocokan pengemudi, bus, rute, dan jadwal perjalanan.",
-    columns: ["Jadwal", "Pengemudi", "Bus", "Rute", "Status"],
-    emptyTitle: "Belum ada penugasan",
-    emptyDetail: "Penugasan akan tampil setelah data pengemudi, bus, rute, dan jadwal tersedia.",
-    action: "Buat penugasan",
-  },
-  "Laporan & Audit": {
-    description: "Riwayat operasional, laporan, dan catatan perubahan yang dapat ditelusuri.",
-    columns: ["Waktu", "Kategori", "Referensi", "Pelaksana", "Ringkasan"],
-    emptyTitle: "Belum ada laporan atau catatan audit",
-    emptyDetail: "Laporan dan koreksi nantinya harus merujuk catatan sumber serta menyimpan alasan dan jejak perubahan.",
-    action: "Buat laporan",
-  },
-};
-
-function AdminWorkspace({ section }: { section: string }) {
-  const config = adminSectionDetails[section as AdminSection];
-  if (!config) return <EmptyPanel title={section} detail="Ruang kerja ini belum disusun." />;
+function AdminIcon() {
   return (
-    <section className="panel admin-workspace">
-      <div className="panel-head admin-workspace-head">
-        <div><h3 className="panel-title">{section}</h3><div className="panel-subtitle">{config.description}</div></div>
-        <button className="workspace-action" type="button" disabled title="Belum aktif pada tahap pratinjau">{config.action}</button>
-      </div>
-      <div className="workspace-toolbar">
-        <label className="workspace-search"><span aria-hidden="true">⌕</span><input type="search" placeholder={"Cari " + section.toLowerCase() + "…"} disabled aria-label={"Cari " + section} /></label>
-        <span className="workspace-count">Belum ada data</span>
-      </div>
-      <div className="workspace-table-wrap">
-        <table className="workspace-table">
-          <thead><tr>{config.columns.map((column) => <th key={column} scope="col">{column}</th>)}</tr></thead>
-          <tbody><tr><td colSpan={config.columns.length}><div className="workspace-empty"><span className="workspace-empty-icon" aria-hidden="true">▤</span><strong>{config.emptyTitle}</strong><p>{config.emptyDetail}</p><small>Pratinjau interface · belum terhubung ke database</small></div></td></tr></tbody>
-        </table>
-      </div>
-    </section>
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" aria-hidden="true">
+      <path d="M4 20V9.5L12 4l8 5.5V20" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M9 20v-6h6v6" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+      <path d="M2.5 20h19" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </svg>
   );
 }
 
-type OperationalSection = "Daftar Siswa" | "Riwayat & Laporan";
-
-const operationalSectionDetails: Record<OperationalSection, { description: string; columns: string[]; emptyTitle: string; emptyDetail: string; footnote: string }> = {
-  "Daftar Siswa": {
-    description: "Daftar hanya untuk siswa yang tercantum pada penugasan pengemudi yang sah.",
-    columns: ["Urutan stop", "Status siswa", "Konfirmasi", "Catatan"],
-    emptyTitle: "Daftar siswa belum tersedia",
-    emptyDetail: "Data siswa baru tampil setelah penugasan dan relasi perjalanan tersedia. Jangan mengandalkan daftar ini untuk perjalanan nyata selama masih dalam pratinjau.",
-    footnote: "Tidak ada data siswa yang dimuat pada pratinjau ini.",
-  },
-  "Riwayat & Laporan": {
-    description: "Riwayat perjalanan pagi dan sore, dengan status terkonfirmasi dipisahkan dari status yang belum diketahui.",
-    columns: ["Tanggal", "Perjalanan", "Keikutsertaan", "Laporan"],
-    emptyTitle: "Belum ada riwayat perjalanan",
-    emptyDetail: "Riwayat akan muncul setelah catatan perjalanan tersedia. Status yang belum dikonfirmasi tidak boleh dianggap sebagai hadir atau tidak ikut.",
-    footnote: "Riwayat dan ekspor belum terhubung ke sumber data.",
-  },
-};
-
-function OperationalWorkspace({ section }: { section: OperationalSection }) {
-  const config = operationalSectionDetails[section];
+function DriverIcon() {
   return (
-    <section className="panel operational-workspace">
-      <div className="panel-head operational-workspace-head">
-        <div><h3 className="panel-title">{section === "Daftar Siswa" ? "Daftar siswa pada penugasan" : "Riwayat perjalanan anak"}</h3><div className="panel-subtitle">{config.description}</div></div>
-        <Status>Belum tersedia</Status>
-      </div>
-      <div className="workspace-table-wrap">
-        <table className="workspace-table">
-          <thead><tr>{config.columns.map((column) => <th key={column} scope="col">{column}</th>)}</tr></thead>
-          <tbody><tr><td colSpan={config.columns.length}><div className="workspace-empty"><span className="workspace-empty-icon" aria-hidden="true">{section === "Daftar Siswa" ? "♧" : "▤"}</span><strong>{config.emptyTitle}</strong><p>{config.emptyDetail}</p><small>{config.footnote}</small></div></td></tr></tbody>
-        </table>
-      </div>
-    </section>
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" aria-hidden="true">
+      <rect x="3" y="5" width="18" height="12" rx="2.5" stroke="currentColor" strokeWidth="1.7" />
+      <path d="M3 11h18" stroke="currentColor" strokeWidth="1.7" />
+      <circle cx="7.5" cy="19" r="1.8" stroke="currentColor" strokeWidth="1.7" />
+      <circle cx="16.5" cy="19" r="1.8" stroke="currentColor" strokeWidth="1.7" />
+      <path d="M7 8h3M14 8h3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </svg>
   );
 }
 
-export default function Home() {
-  const [role, setRole] = useState<Role>("Admin Pusat");
-  const [section, setSection] = useState<Section>("Ringkasan");
-  const [notice, setNotice] = useState("Pratinjau interface. Data, lokasi, dan status perjalanan belum berasal dari operasi nyata.");
-
-  const navigation = menus[role];
-  const intro = roleIntro[role];
-
-  function changeRole(nextRole: Role) {
-    setRole(nextRole);
-    setSection(menus[nextRole][0].label);
-    setNotice("Mode pratinjau peran berubah. Pemilih ini hanya untuk meninjau tampilan, bukan menentukan hak akses akun.");
-  }
-
-  function selectSection(label: string) {
-    setSection(label);
-    setNotice(label + " masih berupa rancangan interface dan belum terhubung ke data operasional.");
-  }
-
-  const avatar = role === "Admin Pusat" ? "AP" : role === "Pengemudi" ? "PG" : "OW";
-
+function GuardianIcon() {
   return (
-    <div className={`app-shell role-${role === "Admin Pusat" ? "admin" : role === "Pengemudi" ? "driver" : "parent"}`}>
-      <aside className="sidebar">
-        <a className="brand" href="/" aria-label="School Bus beranda">
-          <div className="brand-mark">S</div>
-          <div><div className="brand-name">School Bus</div><div className="brand-sub">Manajemen transportasi</div></div>
-        </a>
-        <div className="nav-group">
-          <div className="workspace-label">Ruang kerja</div>
-          <nav className="nav-list" aria-label={`Menu ${role}`}>
-            {navigation.map((item) => <button key={item.label} className={`nav-item ${section === item.label ? "active" : ""}`} onClick={() => selectSection(item.label)}><span className="nav-icon">{item.icon}</span><span>{item.label}</span>{section === item.label && <span className="nav-active-dot" />}</button>)}
-          </nav>
-        </div>
-        <div className="sidebar-bottom"><span className="security-icon">✓</span><strong>Akses sesuai peran</strong><p>Data operasional harus dibatasi oleh izin akun, organisasi, dan penugasan.</p></div>
-      </aside>
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" aria-hidden="true">
+      <circle cx="12" cy="8" r="3.2" stroke="currentColor" strokeWidth="1.7" />
+      <path d="M4.5 20c.7-3.6 3.4-5.6 7.5-5.6s6.8 2 7.5 5.6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      <path d="M12 3v1.6M4.8 8H3.2M20.8 8h-1.6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+    </svg>
+  );
+}
 
-      <main className="main">
-        <header className="topbar">
-          <div className="topbar-title"><div className="eyebrow">DAMMAM · PILOT</div><h1 className="page-title">{section}</h1></div>
-          <div className="top-actions"><span className="demo-badge"><span className="demo-dot" /> PRATINJAU</span><a className="login-link" href="/login">Masuk</a><div className="avatar" aria-label={role}>{avatar}</div></div>
+const doors = [
+  {
+    href: "/login?peran=admin",
+    label: "Admin & Operator",
+    kicker: "Pengelolaan",
+    description:
+      "Kelola sekolah, operator, siswa, wali, bus, pengemudi, rute, dan perjalanan sesuai kewenangan akun.",
+    points: ["Data induk & armada", "Rute dan penugasan", "Laporan operasional"],
+    cta: "Masuk sebagai Admin & Operator",
+    icon: <AdminIcon />,
+    tone: "admin",
+  },
+  {
+    href: "/login?peran=pengemudi",
+    label: "Pengemudi",
+    kicker: "Operasional",
+    description:
+      "Lihat tugas hari ini, urutan titik jemput, dan catat kehadiran siswa selama perjalanan.",
+    points: ["Tugas & manifest hari ini", "Mulai dan akhiri perjalanan", "Riwayat perjalanan sendiri"],
+    cta: "Masuk sebagai Pengemudi",
+    icon: <DriverIcon />,
+    tone: "driver",
+  },
+  {
+    href: "/login?peran=wali",
+    label: "Orang Tua/Wali",
+    kicker: "Pemantauan",
+    description:
+      "Pantau anak yang terhubung dengan akun Anda: sekolah, layanan, status perjalanan, dan riwayatnya.",
+    points: ["Kartu anak & status layanan", "Status perjalanan hari ini", "Riwayat perjalanan anak"],
+    cta: "Masuk sebagai Orang Tua/Wali",
+    icon: <GuardianIcon />,
+    tone: "parent",
+  },
+];
+
+export default function AccessGatePage() {
+  return (
+    <main className="gate">
+      <div className="gate-inner">
+        <header className="gate-nav">
+          <Link className="gate-brand" href="/">
+            <span className="gate-mark" aria-hidden="true">S</span>
+            <span>
+              <strong>School Bus</strong>
+              <small>Manajemen Transportasi Sekolah</small>
+            </span>
+          </Link>
+          <span className="gate-area">Dammam · Pilot</span>
         </header>
 
-        <section className="welcome">
-          <div className="welcome-copy"><div className="welcome-kicker">RUANG KERJA {role.toUpperCase()}</div><h2>{section === navigation[0].label ? intro.greeting : section}</h2><p>{section === navigation[0].label ? intro.description : `Menu ${section} untuk peran ${role}.`}</p></div>
-          <label className="role-preview"><span className="eyebrow">Pratinjau sebagai</span><select className="role-select" value={role} onChange={(event) => changeRole(event.target.value as Role)} aria-label="Pilih interface untuk pratinjau"><option>Admin Pusat</option><option>Pengemudi</option><option>Orang Tua/Wali</option></select></label>
+        <section className="gate-hero">
+          <p className="gate-kicker">Satu gerbang akses</p>
+          <h1>Tiga ruang kerja, satu layanan bus sekolah yang aman.</h1>
+          <p className="gate-copy">
+            Pilih pintu masuk yang sesuai dengan peran Anda. Kartu di bawah hanya mengarahkan ke halaman masuk —
+            hak akses tetap dibaca dari peran akun di database setelah Anda terautentikasi.
+          </p>
+          <div className="gate-meta">
+            <span className="gate-meta-item">
+              <span className="gate-dot" aria-hidden="true" /> Otorisasi server &amp; database
+            </span>
+            <span className="gate-meta-item">Bahasa Indonesia</span>
+            <span className="gate-meta-item">Akses sesuai peran</span>
+          </div>
         </section>
 
-        {role === "Admin Pusat" && section === "Ringkasan" && <>
-          <section className="stats" aria-label="Ringkasan admin">
-            <Metric label="Sekolah & operator" value="—" note="Menunggu data terdaftar" icon="⌂" />
-            <Metric label="Bus terdaftar" value="—" note="Belum ada data nyata" icon="▰" />
-            <Metric label="Perjalanan hari ini" value="—" note="Pagi dan sore" icon="↗" />
-            <Metric label="Perlu ditinjau" value="—" note="Tidak ada angka simulasi" icon="!" />
-          </section>
-          <section className="content-grid admin-grid">
-            <article className="panel"><div className="panel-head"><div><h3 className="panel-title">Ikhtisar operasional</h3><div className="panel-subtitle">Ringkasan akan mengikuti data yang dapat diakses admin</div></div><Status>Menunggu data</Status></div><div className="admin-overview"><div className="overview-icon">▦</div><h3>Operasi akan tampil di sini</h3><p>Setelah sekolah/operator, armada, rute, dan penugasan tersedia, halaman ini merangkum keadaan operasional tanpa mencampur data antarorganisasi.</p></div></article>
-            <article className="panel"><div className="panel-head"><div><h3 className="panel-title">Tindakan administrasi</h3><div className="panel-subtitle">Pintasan pengelolaan</div></div></div><div className="quick-list">
-              {["Sekolah & Operator", "Data Siswa & Wali", "Bus & Pengemudi", "Rute & Titik Jemput"].map((label, i) => <button className="quick-row" key={label} onClick={() => selectSection(label)}><span className="quick-icon">{["⌂","♧","▰","⌖"][i]}</span><span><strong>{label}</strong><small>Kelola data dan periksa kelengkapan</small></span><span className="quick-arrow">›</span></button>)}
-            </div></article>
-          </section>
-          <div className="notice"><strong>Belum terhubung ke data operasional.</strong> Angka dan status nyata baru ditampilkan setelah sumber data dan kebijakan akses siap.</div>
-        </>}
+        <section className="gate-cards" aria-label="Pilih pintu masuk">
+          {doors.map((door) => (
+            <article className={`gate-card gate-card-${door.tone}`} key={door.href}>
+              <div className="gate-card-top">
+                <span className="gate-icon" aria-hidden="true">{door.icon}</span>
+                <span className="gate-card-kicker">{door.kicker}</span>
+              </div>
+              <h2>{door.label}</h2>
+              <p>{door.description}</p>
+              <ul className="gate-points">
+                {door.points.map((point) => (
+                  <li key={point}>{point}</li>
+                ))}
+              </ul>
+              <Link className="gate-cta" href={door.href}>
+                {door.cta}
+                <span aria-hidden="true">→</span>
+              </Link>
+              {door.tone === "parent" && (
+                <Link className="gate-secondary" href="/daftar">
+                  Belum punya kata sandi? Aktivasi akun wali
+                </Link>
+              )}
+            </article>
+          ))}
+        </section>
 
-        {role === "Admin Pusat" && section !== "Ringkasan" && <AdminWorkspace section={section} />}
+        <section className="gate-footnote" aria-label="Informasi penting">
+          <div>
+            <strong>Peran tidak dipilih di sini</strong>
+            <p>
+              Memilih kartu tidak memberikan akses tambahan. Setelah masuk, sistem membaca peran akun dan
+              mengarahkan Anda ke area yang benar. URL atau parameter yang diubah tidak memperluas akses.
+            </p>
+          </div>
+          <div>
+            <strong>Yang belum tersedia</strong>
+            <p>
+              Posisi bus langsung (GPS), kamera di dalam bus, dan integrasi perangkat belum aktif. Modul tersebut
+              tidak ditampilkan sebagai fitur yang berjalan dan tidak menggunakan data contoh.
+            </p>
+          </div>
+        </section>
 
-        {role === "Pengemudi" && section === "Tugas Saya" && <>
-          <section className="driver-hero"><div className="driver-hero-top"><div><span className="eyebrow light">TUGAS HARI INI</span><h2>Belum ada penugasan</h2><p>Penugasan bus dan rute akan tampil setelah diberikan oleh admin.</p></div><div className="driver-big-icon">↗</div></div><div className="driver-hero-bottom"><div><span>Bus</span><strong>Belum ditetapkan</strong></div><div><span>Jadwal</span><strong>Belum tersedia</strong></div><Status>Menunggu penugasan</Status></div></section>
-          <section className="driver-action-grid"><button className="driver-action" onClick={() => selectSection("Perjalanan")}><span className="driver-action-icon">↗</span><strong>Buka perjalanan</strong><small>Lihat rute dan stop yang disetujui</small></button><button className="driver-action" onClick={() => selectSection("Daftar Siswa")}><span className="driver-action-icon">♧</span><strong>Daftar siswa</strong><small>Periksa siswa pada penugasan</small></button><button className="driver-action" onClick={() => selectSection("Kendala & Pemeriksaan")}><span className="driver-action-icon">✓</span><strong>Kendala & pemeriksaan</strong><small>Laporkan masalah dan periksa kabin</small></button></section>
-          <div className="notice"><strong>Mode pratinjau.</strong> Tombol belum memulai perjalanan atau mengirim data.</div>
-        </>}
-
-        {role === "Pengemudi" && section === "Perjalanan" && <section className="panel"><div className="panel-head"><div><h3 className="panel-title">Navigasi perjalanan</h3><div className="panel-subtitle">Petunjuk arah ke titik berikutnya</div></div><Status>Menunggu rute</Status></div><div className="driver-empty"><div className="driver-empty-icon">⌖</div><h3>Rute belum tersedia</h3><p>Rute yang disetujui admin akan muncul di sini. Tujuan dan urutan pemberhentian harus berasal dari penugasan yang valid.</p><div className="directions-steps"><div><span>1</span><div><strong>Periksa penugasan</strong><small>Pastikan bus, jadwal, dan rute sesuai tugas Anda.</small></div></div><div><span>2</span><div><strong>Ikuti urutan stop</strong><small>Urutan pemberhentian tetap sesuai rute yang disetujui.</small></div></div><div><span>3</span><div><strong>Buka petunjuk arah</strong><small>Navigasi akan aktif setelah koordinat tujuan tersedia.</small></div></div></div></div></section>}
-        {role === "Pengemudi" && section === "Daftar Siswa" && <OperationalWorkspace section="Daftar Siswa" />}
-        {role === "Pengemudi" && section === "Kendala & Pemeriksaan" && <section className="driver-action-panel"><div className="panel-head"><div><h3 className="panel-title">Keselamatan perjalanan</h3><div className="panel-subtitle">Alur sebelum dan sesudah bertugas</div></div><Status>Belum aktif</Status></div><div className="safety-items"><div><span>01</span><section><strong>Laporkan kendala</strong><p>Catat masalah bus, rute, GPS, atau data siswa untuk ditinjau admin.</p></section></div><div><span>02</span><section><strong>Periksa kabin</strong><p>Pemeriksaan fisik wajib sebelum menutup sesi kerja.</p></section></div><div><span>03</span><section><strong>Selesaikan perjalanan</strong><p>Penutupan mengikuti status siswa dan aturan operasional yang disetujui.</p></section></div></div></section>}
-
-        {role === "Orang Tua/Wali" && section === "Anak Saya" && <>
-          <section className="parent-welcome-card"><div className="parent-icon">♡</div><div><span className="eyebrow">KELUARGA</span><h2>Belum ada anak terhubung</h2><p>Anak akan muncul setelah hubungan wali diverifikasi dan disetujui.</p></div><Status>Belum terhubung</Status></section>
-          <section className="parent-status-grid"><article className="parent-status-card"><span className="parent-card-icon">↗</span><span className="eyebrow">PERJALANAN PAGI</span><strong>Belum tersedia</strong><p>Status akan ditampilkan setelah penugasan tersedia.</p></article><article className="parent-status-card"><span className="parent-card-icon">⌖</span><span className="eyebrow">LOKASI BUS</span><strong>Belum tersedia</strong><p>Tidak ada lokasi yang ditampilkan tanpa data terbaru.</p></article></section>
-          <div className="notice"><strong>Privasi keluarga.</strong> Wali hanya boleh melihat anak yang memiliki relasi aktif dan disetujui. Posisi bus nantinya selalu disertai waktu pembaruan.</div>
-        </>}
-        {role === "Orang Tua/Wali" && section === "Perjalanan" && <section className="panel"><div className="panel-head"><div><h3 className="panel-title">Status perjalanan anak</h3><div className="panel-subtitle">Pagi dan sore ditampilkan secara terpisah</div></div><Status>Belum tersedia</Status></div><div className="parent-timeline"><div className="timeline-line"/>{[{n:"01",title:"Menunggu perjalanan",desc:"Jadwal akan tampil setelah anak terhubung ke penugasan."},{n:"02",title:"Status naik/turun",desc:"Hanya konfirmasi yang tercatat yang akan ditampilkan."},{n:"03",title:"Lokasi bus terakhir",desc:"Lokasi akan menyertakan waktu pembaruan dan status kesegaran."}].map(x=><div className="timeline-item" key={x.n}><span>{x.n}</span><div><strong>{x.title}</strong><p>{x.desc}</p></div></div>)}</div></section>}
-        {role === "Orang Tua/Wali" && section === "Riwayat & Laporan" && <OperationalWorkspace section="Riwayat & Laporan" />}
-        {role === "Orang Tua/Wali" && section === "Akun" && <EmptyPanel title="Profil dan akses akun" detail="Informasi akun dan pengelolaan sesi akan ditampilkan di sini. Peran dan hubungan wali tidak dapat diubah sendiri dari halaman profil." />}
-
-        <footer className="page-footer"><span>School Bus Management</span><span>Interface pratinjau · bukan sistem operasional</span></footer>
-      </main>
-
-      <nav className="mobile-nav" aria-label="Navigasi seluler">
-        {navigation.slice(0, 4).map((item) => <button key={item.label} className={section === item.label ? "active" : ""} onClick={() => selectSection(item.label)}><span>{item.icon}</span>{item.label}</button>)}
-      </nav>
-    </div>
+        <footer className="gate-footer">
+          <span>School Bus Management</span>
+          <span>Modul data &amp; perjalanan terbatas · GPS dan kamera belum aktif</span>
+        </footer>
+      </div>
+    </main>
   );
 }

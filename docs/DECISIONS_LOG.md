@@ -91,6 +91,19 @@ Catat keputusan yang disetujui pemilik produk. Jangan mencatat rekomendasi yang 
 - **Alasan:** Pemilik produk ingin menghindari ketergantungan pada satu metode koneksi sebelum perangkat dan kemampuan integrasinya diketahui.
 - **Dampak pada dokumen/tes:** Tetapkan antarmuka integrasi yang netral terhadap sumber; evaluasi opsi direct-device/DVR dan AV-platform handoff berdasarkan dokumentasi resmi, autentikasi, kemampuan pencabutan sesi, batas stream bersamaan, latensi, jaringan, biaya, dan lokasi pemrosesan data. Jangan menerima URL publik permanen sebagai mekanisme akses yang aman. Tidak ada pilihan teknis atau vendor yang difinalkan.
 
+### DEC-021 — Implementasi modul data Admin Pusat dan akun wali
+- **Tanggal:** 2026-10-31
+- **Status:** DISETUJUI (instruksi pemilik produk untuk tahap implementasi ini)
+- **Keputusan:** Pemilik produk meminta implementasi nyata modul data Admin Pusat (sekolah, operator, siswa, wali, bus, pengemudi) yang tersambung ke Supabase, beserta alur akun wali sesuai DEC-017. Ini membuka gerbang implementasi DEC-010 **hanya** untuk modul data dan akun; GPS, routing, kamera, integrasi perangkat/vendor, dan modul perjalanan tetap di luar lingkup dan tetap memerlukan gerbang terpisah.
+- **Aturan turunan yang diterapkan:**
+  - Peran akun hanya dibaca dari `public.profiles.role` di database. Tidak ada pemilih peran yang memberi hak akses.
+  - Akun wali hanya dapat diklaim jika email terverifikasi, sudah didaftarkan Admin pada tabel `guardians`, aktif, dan memiliki minimal satu siswa berstatus layanan `active`. Klaim dilakukan oleh fungsi `public.claim_guardian_account()`; fungsi itu juga yang menulis `profiles.role = 'parent'`.
+  - Satu siswa hanya memiliki satu wali (`students.guardian_id`), satu wali dapat memiliki banyak siswa (`guardians.id`).
+  - Status layanan siswa (`active`, `paused`, `ended`) terpisah dari kehadiran perjalanan dan GPS. Perubahan status wajib beralasan dan hanya melalui `public.set_student_service_status()`; histori dicatat pada `student_service_status_history` yang bersifat append-only.
+  - Tidak ada penghapusan data: nonaktifkan menggantikan hapus, dan tidak ada hak `DELETE` yang diberikan pada tabel modul ini.
+- **Alasan:** Instruksi eksplisit untuk melanjutkan pembangunan modul data dengan penyimpanan nyata dan akses aman, tanpa menunggu modul operasional yang masih bergantung pada vendor/perangkat.
+- **Dampak pada dokumen/tes:** README, backlog, dan migrasi `20261031000000_admin_core_crud.sql`. Pengujian yang dijalankan hanya typecheck, build, dan unit test fungsi validasi karena belum ada kredensial Supabase maupun lingkungan database untuk pengujian integrasi.
+
 ## Hal yang belum diputuskan
 
 Lihat `TECHNICAL_SPEC_REVIEW.md`, bagian 19 pada `MASTER_SPEC.md`, serta `OPERATING_MODEL_RESPONSIBILITY_MATRIX.md`. Jangan mengubah pertanyaan terbuka menjadi keputusan tanpa persetujuan.
@@ -143,3 +156,16 @@ Lihat `TECHNICAL_SPEC_REVIEW.md`, bagian 19 pada `MASTER_SPEC.md`, serta `OPERAT
 - **Hal yang tetap terbuka:** Interval pengiriman, ambang status usang, batas akurasi, perangkat minimum, konsumsi baterai/data, perilaku latar belakang dan offline harus ditentukan melalui pengujian pada perangkat pilot.
 - **Alasan:** Dikonfirmasi oleh pemilik produk sebagai sumber GPS untuk fase pertama.
 - **Dampak pada dokumen/tes:** MASTER_SPEC, alur inti, dan tinjauan teknis harus konsisten. Uji siklus hidup sesi saat pergantian pengemudi/bus, izin lokasi, aplikasi di latar belakang/layar terkunci, jaringan putus/pulih, akurasi, kesegaran, baterai, dan penggunaan data. Keputusan ini tidak menyatakan perangkat atau perilaku GPS sudah lulus uji dan tidak mengizinkan implementasi sebelum gerbang tinjauan teknis disetujui.
+
+
+### DEC-022 — Main Access Gate, tiga area pengguna, dan identitas visual School Bus Yellow
+- **Tanggal:** 2026-10-31
+- **Status:** DISETUJUI UNTUK IMPLEMENTASI UI; ISOLASI RLS ANTARPERAN BELUM TERVERIFIKASI
+- **Keputusan:**
+  - Halaman pertama menjadi **Main Access Gate** dengan tiga kartu: Admin & Operator, Pengemudi, Orang Tua/Wali. Kartu hanya pintu masuk ke `/login?peran=...`; kartu tidak pernah menentukan hak akses. Setelah autentikasi, peran dibaca dari `profiles.role` dan relasi organisasi (`operators.profile_id`, `drivers.profile_id`, relasi wali–siswa), lalu pengguna diarahkan ke area miliknya. `scopedNext` menolak tujuan pasca-login yang berada di luar area peran.
+  - Tiga area terpisah dengan layout, navigasi, dan Server Action sendiri: Admin & Operator (`/admin`, `/operator`), Pengemudi (`/pengemudi`), Orang Tua/Wali (`/wali`). Admin Pusat = kewenangan platform; Operator = hanya organisasinya (CRUD bus/pengemudi/penugasan sendiri, rute hanya baca). Pengemudi hanya penugasan/perjalanan miliknya. Wali hanya siswa aktif miliknya. Setiap layout dan Server Action memanggil pemeriksaan peran di server, dan seluruh rute internal dilindungi middleware.
+  - Peran baru `operator` ditambahkan melalui migrasi aditif `20261031000001_operator_driver_guardian_areas.sql` (role operator, `operators.profile_id`, `schools.operator_id`, `student_route_stops`, `trips.arrived_at`, policy RLS per peran, trigger audit). Skema tidak diubah di luar kebutuhan area baru, dan migrasi **belum dijalankan**.
+  - Identitas visual **School Bus Yellow**: `#FFC431` (brand), `#FFD670`, `#FFE4A1`, `#FFEEC5`, `#FFF4DB` sebagai token pusat di `app/globals.css`; teks `#252525`/`#666666`, latar `#FFFDF8`, garis `#E9E3D8`. Tombol utama kuning dengan teks gelap, sidebar netral dengan aksen kuning, status operasional tetap memakai warna semantik (bukan semua kuning).
+  - Tidak ada data GPS, perjalanan, atau kamera yang dibuat-buat; modul yang belum tersedia hanya menampilkan keterangan jujur, dan tautan kamera tidak ditampilkan sama sekali.
+- **Alasan:** Permintaan pemilik produk untuk satu gerbang akses, tiga pengalaman pengguna terpisah, pemisahan hak akses di server/database, dan identitas visual konsisten, sambil mempertahankan CRUD Admin Pusat dari DEC-021.
+- **Dampak pada dokumen/tes:** README (rute, migrasi, ringkasan RLS, penautan akun operator/pengemudi), status backlog. Verifikasi: `typecheck` lulus, 28 unit test lulus, `next build` lulus, preview gate dan rute internal dicek. **BELUM TERVERIFIKASI:** eksekusi migrasi, isolasi RLS dengan akun tiap peran, dan alur login end-to-end — lingkungan ini tidak memiliki kredensial Supabase. Jangan menganggap isolasi antarperan teruji sebelum pengujian di proyek pengembangan.

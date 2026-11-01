@@ -1,0 +1,353 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import type { Metadata } from "next";
+import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
+import { ConfigNotice, EmptyRow, Notice, Pill } from "@/components/admin/ui";
+import { firstParam, noticeFromParams } from "@/lib/admin/query";
+import { requireDriver } from "@/lib/auth";
+import { createServerSupabase } from "@/lib/supabase/server";
+import type { RouteStopRow, TripEventRow } from "@/lib/types";
+import {
+  formatDate,
+  formatTime,
+  routeDirectionLabel,
+  tripEventLabel,
+  tripStatusLabel,
+} from "@/lib/validation";
+import { confirmArrival, endTrip, recordStudentEvent, startTrip } from "../../actions";
+
+export const metadata: Metadata = { title: "Detail Tugas | Pengemudi" };
+
+type RosterEntry = {
+  id: string;
+  student_id: string;
+  direction: string;
+  route_stops: { stop_name: string; stop_order: number } | null;
+  students: {
+    full_name: string;
+    admissions_number: string;
+    home_address: string | null;
+    pickup_notes: string | null;
+  } | null;
+};
+
+function eventTone(type: string | undefined) {
+  if (type === "boarded") return "success" as const;
+  if (type === "dropped_off") return "info" as const;
+  if (type === "absent") return "warning" as const;
+  if (type === "issue") return "danger" as const;
+  return "neutral" as const;
+}
+
+export default async function DriverTaskPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const { id } = await params;
+  const query = await searchParams;
+  const access = await requireDriver();
+  if (access.status === "unconfigured") return <ConfigNotice />;
+
+  const supabase = await createServerSupabase();
+  if (!supabase) return <ConfigNotice />;
+
+  // Ownership is part of the query, not only of the RLS policy.
+  const { data: assignmentData } = await supabase
+    .from("trip_assignments")
+    .select(
+      "id, service_date, routes(id, route_name, school_name, direction), buses(fleet_code, plate_number, capacity), trips(id, status, started_at, arrived_at, completed_at)",
+    )
+    .eq("id", id)
+    .eq("driver_id", access.driver.id)
+    .maybeSingle();
+
+  const assignment = assignmentData as unknown as {
+    id: string;
+    service_date: string;
+    routes: { id: string; route_name: string; school_name: string; direction: string } | null;
+    buses: { fleet_code: string; plate_number: string | null; capacity: number } | null;
+    trips: { id: string; status: string; started_at: string | null; arrived_at: string | null; completed_at: string | null }[];
+  } | null;
+
+  if (!assignment) notFound();
+
+  const routeId = assignment.routes?.id ?? "";
+  const direction = assignment.routes?.direction ?? "morning";
+  const trip = assignment.trips?.[0] ?? null;
+  const notice = noticeFromParams(query);
+
+  const [stopsResult, rosterResult, eventsResult] = await Promise.all([
+    supabase
+      .from("route_stops")
+      .select("id, route_id, stop_order, stop_name, latitude, longitude, is_school")
+      .eq("route_id", routeId)
+      .order("stop_order", { ascending: true }),
+    supabase
+      .from("student_route_stops")
+      .select(
+        "id, student_id, direction, route_stops(stop_name, stop_order), students(full_name, admissions_number, home_address, pickup_notes)",
+      )
+      .eq("route_id", routeId)
+      .eq("direction", direction)
+      .eq("active", true),
+    trip
+      ? supabase
+          .from("trip_student_events")
+          .select("id, trip_id, student_id, event_type, occurred_at, notes")
+          .eq("trip_id", trip.id)
+          .order("occurred_at", { ascending: false })
+      : Promise.resolve({ data: [] as TripEventRow[], error: null }),
+  ]);
+
+  const stops = (stopsResult.data ?? []) as unknown as RouteStopRow[];
+  const roster = ((rosterResult.data ?? []) as unknown as RosterEntry[]).sort(
+    (a, b) => (a.route_stops?.stop_order ?? 0) - (b.route_stops?.stop_order ?? 0),
+  );
+  const events = (eventsResult.data ?? []) as unknown as TripEventRow[];
+
+  const latestEvent = new Map<string, TripEventRow>();
+  for (const event of events) {
+    if (!latestEvent.has(event.student_id)) latestEvent.set(event.student_id, event);
+  }
+
+  const inProgress = trip?.status === "in_progress";
+  const completed = trip?.status === "completed";
+
+  return (
+    <>
+      <div className="breadcrumb">
+        <Link href="/pengemudi">‹ Kembali ke tugas hari ini</Link>
+      </div>
+
+      <section className="task-head">
+        <div>
+          <p className="eyebrow">{formatDate(assignment.service_date)} · {routeDirectionLabel(direction)}</p>
+          <h1>{assignment.routes?.route_name ?? "Tugas"}</h1>
+          <p className="task-sub">
+            {assignment.routes?.school_name} · Bus {assignment.buses?.fleet_code ?? "—"}
+            {assignment.buses?.plate_number ? ` (${assignment.buses.plate_number})` : ""} ·{" "}
+            {assignment.buses?.capacity ?? 0} kursi
+          </p>
+        </div>
+        <Pill tone={completed ? "success" : inProgress ? "info" : "neutral"}>
+          {trip ? tripStatusLabel(trip.status) : "Belum dimulai"}
+        </Pill>
+      </section>
+
+      {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
+      {stopsResult.error && <Notice kind="error">Urutan titik jemput belum dapat dimuat.</Notice>}
+      {rosterResult.error && <Notice kind="error">Daftar siswa belum dapat dimuat.</Notice>}
+
+      <section className="panel task-actions">
+        <header className="panel-head">
+          <div>
+            <h2 className="panel-title">Perjalanan</h2>
+            <div className="panel-subtitle">Waktu dicatat otomatis oleh sistem</div>
+          </div>
+        </header>
+        <div className="task-action-body">
+          {!trip && (
+            <>
+              <p>Perjalanan belum dimulai. Mulai hanya setelah bus siap dan penugasan ini benar.</p>
+              <form action={startTrip}>
+                <input type="hidden" name="assignment_id" value={assignment.id} />
+                <ConfirmSubmit
+                  className="btn btn-primary btn-lg"
+                  message="Mulai perjalanan untuk tugas ini? Waktu mulai akan dicatat."
+                  pendingLabel="Memulai…"
+                >
+                  Mulai perjalanan
+                </ConfirmSubmit>
+              </form>
+            </>
+          )}
+
+          {trip && (
+            <dl className="task-times">
+              <div>
+                <dt>Mulai</dt>
+                <dd>{formatTime(trip.started_at)}</dd>
+              </div>
+              <div>
+                <dt>Tiba di sekolah</dt>
+                <dd>{trip.arrived_at ? formatTime(trip.arrived_at) : "Belum dikonfirmasi"}</dd>
+              </div>
+              <div>
+                <dt>Selesai</dt>
+                <dd>{trip.completed_at ? formatTime(trip.completed_at) : "—"}</dd>
+              </div>
+            </dl>
+          )}
+
+          {inProgress && trip && (
+            <div className="task-action-row">
+              {!trip.arrived_at && (
+                <form action={confirmArrival}>
+                  <input type="hidden" name="trip_id" value={trip.id} />
+                  <input type="hidden" name="assignment_id" value={assignment.id} />
+                  <ConfirmSubmit
+                    className="btn btn-secondary"
+                    message="Konfirmasi bus sudah tiba di sekolah?"
+                    pendingLabel="Menyimpan…"
+                  >
+                    Konfirmasi tiba di sekolah
+                  </ConfirmSubmit>
+                </form>
+              )}
+              <form action={endTrip}>
+                <input type="hidden" name="trip_id" value={trip.id} />
+                <input type="hidden" name="assignment_id" value={assignment.id} />
+                <ConfirmSubmit
+                  className="btn btn-primary"
+                  message="Akhiri perjalanan ini? Status perjalanan akan menjadi selesai dan tidak dapat dimulai ulang."
+                  pendingLabel="Mengakhiri…"
+                >
+                  Akhiri perjalanan
+                </ConfirmSubmit>
+              </form>
+            </div>
+          )}
+
+          {completed && (
+            <p className="task-completed">
+              Perjalanan sudah selesai pada {formatTime(trip?.completed_at)}. Catatan kehadiran tersimpan sebagai
+              riwayat dan tidak dapat diubah lagi.
+            </p>
+          )}
+        </div>
+      </section>
+
+      <section className="panel">
+        <header className="panel-head">
+          <div>
+            <h2 className="panel-title">Urutan titik jemput</h2>
+            <div className="panel-subtitle">{stops.length} titik pada rute ini</div>
+          </div>
+        </header>
+        {stops.length === 0 ? (
+          <div className="table-empty">
+            <strong>Belum ada titik jemput</strong>
+            <p>Admin Pusat belum menambahkan titik pada rute ini. Hubungi Admin Pusat sebelum memulai perjalanan.</p>
+          </div>
+        ) : (
+          <ol className="stop-timeline">
+            {stops.map((stop) => (
+              <li key={stop.id} className={stop.is_school ? "is-school" : undefined}>
+                <span className="stop-number" aria-hidden="true">
+                  {stop.stop_order}
+                </span>
+                <div>
+                  <strong>{stop.stop_name}</strong>
+                  <small>
+                    {stop.is_school ? "Gerbang sekolah" : "Titik jemput"} · {stop.latitude}, {stop.longitude}
+                  </small>
+                </div>
+              </li>
+            ))}
+          </ol>
+        )}
+      </section>
+
+      <section className="panel">
+        <header className="panel-head">
+          <div>
+            <h2 className="panel-title">Daftar siswa</h2>
+            <div className="panel-subtitle">
+              {inProgress
+                ? "Catat status setiap siswa. Ketuk satu tombol per siswa."
+                : completed
+                  ? "Status akhir perjalanan"
+                  : "Status dapat dicatat setelah perjalanan dimulai"}
+            </div>
+          </div>
+          <Pill tone={roster.length > 0 ? "info" : "warning"}>{roster.length} siswa</Pill>
+        </header>
+
+        {roster.length === 0 ? (
+          <div className="table-empty">
+            <strong>Belum ada siswa pada rute ini</strong>
+            <p>
+              Admin Pusat belum menempatkan siswa pada titik jemput rute ini. Jangan mencatat siswa yang tidak
+              terdaftar.
+            </p>
+          </div>
+        ) : (
+          <ul className="manifest-list">
+            {roster.map((entry) => {
+              const latest = latestEvent.get(entry.student_id);
+              return (
+                <li className="manifest-item" key={entry.id}>
+                  <div className="manifest-main">
+                    <span className="manifest-avatar" aria-hidden="true">
+                      {(entry.students?.full_name ?? "S").slice(0, 1).toUpperCase()}
+                    </span>
+                    <div>
+                      <strong>{entry.students?.full_name ?? "Siswa"}</strong>
+                      <small>
+                        {entry.route_stops?.stop_order}. {entry.route_stops?.stop_name} ·{" "}
+                        {entry.students?.admissions_number}
+                      </small>
+                      {entry.students?.pickup_notes && <small className="manifest-note">{entry.students.pickup_notes}</small>}
+                    </div>
+                    <Pill tone={eventTone(latest?.event_type)}>
+                      {latest ? tripEventLabel(latest.event_type) : "Belum dicatat"}
+                    </Pill>
+                  </div>
+
+                  {latest?.notes && <p className="manifest-issue">Catatan: {latest.notes}</p>}
+
+                  {inProgress && trip && (
+                    <>
+                      <form className="manifest-actions" action={recordStudentEvent}>
+                        <input type="hidden" name="trip_id" value={trip.id} />
+                        <input type="hidden" name="assignment_id" value={assignment.id} />
+                        <input type="hidden" name="student_id" value={entry.student_id} />
+                        <button className="chip chip-board" type="submit" name="event_type" value="boarded">
+                          Naik
+                        </button>
+                        <button className="chip chip-drop" type="submit" name="event_type" value="dropped_off">
+                          Turun
+                        </button>
+                        <button className="chip chip-absent" type="submit" name="event_type" value="absent">
+                          Tidak ikut
+                        </button>
+                      </form>
+
+                      <details className="manifest-details">
+                        <summary>Catat kendala</summary>
+                        <form className="manifest-actions" action={recordStudentEvent}>
+                          <input type="hidden" name="trip_id" value={trip.id} />
+                          <input type="hidden" name="assignment_id" value={assignment.id} />
+                          <input type="hidden" name="student_id" value={entry.student_id} />
+                          <input type="hidden" name="event_type" value="issue" />
+                          <textarea
+                            name="notes"
+                            rows={2}
+                            maxLength={300}
+                            required
+                            placeholder="Contoh: siswa tidak hadir di titik jemput, orang tua memberi kabar."
+                          />
+                          <button className="btn btn-secondary btn-sm" type="submit">
+                            Simpan kendala
+                          </button>
+                        </form>
+                      </details>
+                    </>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
+
+      <Notice kind="info">
+        Lokasi bus langsung dan kamera belum tersedia. Halaman ini tidak menampilkan peta, posisi, atau tautan kamera
+        yang tidak benar-benar terhubung.
+      </Notice>
+    </>
+  );
+}

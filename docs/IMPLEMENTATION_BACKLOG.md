@@ -129,3 +129,77 @@ Gunakan urutan berikut untuk setiap item; checklist tidak meminta pengujian prem
 - **Lapangan/operasional:** lakukan ketika pilot dan pihak operasional siap; jangan mengganti bukti lapangan dengan asumsi atau simulasi yang tidak representatif.
 
 Kamera live tetap tambahan dan dapat dikonfigurasi kemudian. Jangan menjadikan konfigurasi atau pengujian kamera sebagai prasyarat backlog navigasi dan laporan inti. Parameter GPS yang dapat dikonfigurasi juga tidak otomatis menjadi blocker tinjauan spesifikasi; yang harus ditinjau sekarang adalah prinsip sesi terikat penugasan, otorisasi, timestamp/kesegaran yang terlihat, dan perlindungan akses lokasi.
+
+## Status implementasi modul data — 2026-10-31
+
+**Dasar:** DEC-021. Ruang lingkup hanya modul data Admin Pusat dan akun wali; perjalanan, GPS, routing, kamera, dan vendor tetap di luar lingkup.
+
+### Terimplementasi (kode + migrasi), terverifikasi sebatas statis/unit
+
+- [x] CRUD sekolah: `app/admin/sekolah/*`, tabel `schools`, policy admin, nonaktifkan tanpa hapus.
+- [x] CRUD operator: `app/admin/operator/*`, tabel `operators`.
+- [x] CRUD siswa: `app/admin/siswa/*`, `students`, relasi satu sekolah dan satu wali, koordinat rumah privat.
+- [x] CRUD wali (pra-pendaftaran email): `app/admin/wali/*`, tabel `guardians`.
+- [x] CRUD bus: `app/admin/bus/*`, kolom operator/model/catatan pada `buses`.
+- [x] CRUD pengemudi: `app/admin/pengemudi/*`, kolom nama/telepon/operator pada `drivers`.
+- [x] Riwayat status layanan append-only: `student_service_status_history` + `set_student_service_status()`.
+- [x] Audit otomatis: trigger `private.audit_row_change()` ke `audit_logs`.
+- [x] Alur akun wali: `/daftar`, `/akun/kata-sandi`, `claim_guardian_account()`, login email + kata sandi.
+- [x] Peran dari database: tidak ada pemilih peran yang memberi akses; `/admin` menolak peran selain `admin`.
+- [x] Pencarian, filter, paginasi, empty state, loading state, notifikasi berhasil/gagal, konfirmasi tindakan.
+
+**Bukti:** `npm run typecheck` lulus, `npm test` 21/21 lulus, `npm run build` lulus. Migrasi `supabase/migrations/20261031000000_admin_core_crud.sql` ditulis dan belum diterapkan ke database mana pun.
+
+### `TERIMPLEMENTASI TETAPI BELUM TERVERIFIKASI`
+
+- Eksekusi migrasi pada Postgres/Supabase nyata, termasuk backfill nama sekolah lama dan relasi wali lama.
+- Perilaku RLS dengan akun admin, wali, dan pengguna tanpa profil yang sebenarnya (uji isolasi antarwali belum dijalankan).
+- Alur email verifikasi Supabase end-to-end dan masa berlaku tautan.
+- Kebijakan rate limiting formulir aktivasi (saat ini hanya mengandalkan batas bawaan Supabase Auth).
+- Pemulihan kata sandi mandiri dan verifikasi ulang saat admin mengganti email wali.
+
+### `BELUM DIKERJAKAN` (di luar lingkup DEC-021)
+
+- CRUD rute, stop, penugasan, dan perjalanan.
+- Tampilan audit di UI (data audit sudah tersimpan di database).
+- Pembuatan akun login pengemudi dan modul pengemudi.
+- GPS, routing, kamera, dan integrasi vendor.
+
+### Catatan audit database
+
+Audit read-only 2026-10-29 mencatat 11 tabel inti dengan RLS aktif dan tanpa policy. Migrasi ini mengasumsikan skema awal persis seperti `20261029000000_initial_school_bus_schema.sql`. Sebelum menerapkan, periksa kembali skema aktual: nama constraint unik `students_student_code_key`, keberadaan kolom `active`/`school_name` pada `students`, dan apakah tabel `schools`/`operators` sudah dibuat manual di proyek tersebut.
+
+---
+
+## Status implementasi Main Access Gate dan tiga area — 2026-10-31
+
+**Dasar:** permintaan implementasi UI utama (gate, tiga area pengguna, pemisahan hak akses, identitas School Bus Yellow). CRUD Admin Pusat dari DEC-021 dipertahankan.
+
+### Terimplementasi (kode + migrasi), terverifikasi sebatas statis/unit
+
+- [x] Main Access Gate di `/`: tiga kartu akses dengan ikon, deskripsi, dan tombol masuk; kartu hanya pintu masuk ke `/login?peran=...`.
+- [x] Gate per-peran: judul/isi kartu menyesuaikan `?peran=`; tanpa kartu terpilih, tiga kartu ditampilkan.
+- [x] Arah pasca-login mengikuti `profiles.role` (admin → `/admin`, operator → `/operator`, driver → `/pengemudi`, parent → `/wali`) melalui `lib/auth.ts` dan `scopedNext`.
+- [x] Area Admin & Operator: `/admin` (ringkasan, laporan/audit), `/admin/rute`, `/admin/rute/[id]`, `/admin/penugasan`, `/admin/perjalanan`, plus CRUD lama; form sekolah menempatkan operator.
+- [x] Area Operator: `/operator` + bus, pengemudi, siswa, rute (baca), penugasan, perjalanan, laporan — dibatasi `operators.profile_id` aktif milik akun.
+- [x] Area Pengemudi: `/pengemudi` (tugas hari ini), `/pengemudi/tugas/[id]` (manifest + mulai/akhiri/tiba + status siswa), `/pengemudi/riwayat` — hanya penugasan miliknya.
+- [x] Area Wali: `/wali` (kartu anak adaptif), `/wali/anak/[id]`, `/wali/riwayat` — hanya siswa aktif miliknya.
+- [x] Pemeriksaan peran di server pada setiap layout halaman dan setiap Server Action; middleware melindungi seluruh rute internal.
+- [x] Migrasi `20261031000001_operator_driver_guardian_areas.sql`: role operator, tautan akun operator/pengemudi, `student_route_stops`, `trips.arrived_at`, policy RLS per peran, trigger audit.
+- [x] Identitas School Bus Yellow: token terpusat di `app/globals.css` (`#FFC431`, `#FFD670`, `#FFE4A1`, `#FFEEC5`, `#FFF4DB`, teks `#252525`/`#666666`, latar `#FFFDF8`, garis `#E9E3D8`); tombol utama kuning dengan teks gelap; sidebar netral dengan aksen kuning; status tetap memakai warna semantik.
+- [x] Empty state, loading state (streaming), pesan galat, dan konfirmasi tindakan pada seluruh tampilan baru.
+- [x] Unit test `scopedNext`/`homeForRole` (isolasi tujuan pasca-login) dan label arah rute/status perjalanan/status siswa.
+
+**Bukti:** `npm run typecheck` lulus, `npm test` 28/28 lulus, `npm run build` lulus (39 route). Preview: `/` menampilkan gate tiga kartu; rute internal tanpa Supabase menampilkan pemberitahuan konfigurasi tanpa data contoh.
+
+### `TERIMPLEMENTASI TETAPI BELUM TERVERIFIKASI`
+
+- Migrasi `20261031000001_operator_driver_guardian_areas.sql` belum dijalankan ke database mana pun.
+- Isolasi RLS antarperan (admin vs operator vs pengemudi vs wali) belum diuji dengan akun nyata — tidak ada kredensial Supabase di lingkungan ini.
+- Alur login tiga peran dan penautan akun operator/pengemudi belum diuji end-to-end.
+
+### `BELUM DIKERJAKAN`
+
+- UI penautan akun operator/pengemudi (saat ini SQL/back office) → `/tanpa-akses` menangani akun belum tertaut.
+- GPS nyata, kamera live, dan routing (tanpa data palsu; UI hanya menyatakan belum tersedia).
+- Uji responsivitas visual pada perangkat nyata dan audit kontras warna.

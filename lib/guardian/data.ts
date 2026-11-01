@@ -1,0 +1,163 @@
+import type { ServerSupabase } from "@/lib/admin/support";
+import type { StudentRow } from "@/lib/types";
+
+export type Placement = {
+  id: string;
+  direction: string;
+  routeId: string;
+  routeName: string;
+  schoolName: string;
+  stopName: string;
+  stopOrder: number;
+};
+
+export type TodayTrip = {
+  routeId: string;
+  direction: string;
+  status: string;
+  busCode: string | null;
+  plateNumber: string | null;
+  startedAt: string | null;
+  arrivedAt: string | null;
+  completedAt: string | null;
+};
+
+export type ChildOverview = {
+  student: StudentRow;
+  placements: Placement[];
+  todayTrips: TodayTrip[];
+};
+
+export function todayDate() {
+  const now = new Date();
+  return new Date(now.getTime() - now.getTimezoneOffset() * 60_000).toISOString().slice(0, 10);
+}
+
+export async function loadChildren(supabase: ServerSupabase): Promise<ChildOverview[]> {
+  const { data } = await supabase
+    .from("students")
+    .select(
+      "id, admissions_number, full_name, date_of_birth, school_id, guardian_id, home_address, home_latitude, home_longitude, pickup_notes, service_status, service_status_changed_at, schools(name, city), guardians(full_name, email, phone)",
+    )
+    .eq("service_status", "active")
+    .order("full_name", { ascending: true });
+
+  const students = (data ?? []) as unknown as StudentRow[];
+  const today = todayDate();
+
+  return Promise.all(
+    students.map(async (student) => {
+      const { data: placementRows } = await supabase
+        .from("student_route_stops")
+        .select("id, direction, routes(id, route_name, school_name), route_stops(stop_name, stop_order)")
+        .eq("student_id", student.id)
+        .eq("active", true);
+
+      const placements: Placement[] = ((placementRows ?? []) as unknown as {
+        id: string;
+        direction: string;
+        routes: { id: string; route_name: string; school_name: string } | null;
+        route_stops: { stop_name: string; stop_order: number } | null;
+      }[])
+        .filter((row) => row.routes?.id)
+        .map((row) => ({
+          id: row.id,
+          direction: row.direction,
+          routeId: row.routes?.id ?? "",
+          routeName: row.routes?.route_name ?? "Rute",
+          schoolName: row.routes?.school_name ?? "",
+          stopName: row.route_stops?.stop_name ?? "",
+          stopOrder: row.route_stops?.stop_order ?? 0,
+        }));
+
+      const routeIds = placements.map((placement) => placement.routeId);
+      let todayTrips: TodayTrip[] = [];
+
+      if (routeIds.length > 0) {
+        const { data: assignmentRows } = await supabase
+          .from("trip_assignments")
+          .select(
+            "route_id, service_date, buses(fleet_code, plate_number), trips(id, status, started_at, arrived_at, completed_at)",
+          )
+          .in("route_id", routeIds)
+          .eq("service_date", today);
+
+        todayTrips = ((assignmentRows ?? []) as unknown as {
+          route_id: string;
+          buses: { fleet_code: string; plate_number: string | null } | null;
+          trips: { status: string; started_at: string | null; arrived_at: string | null; completed_at: string | null }[];
+        }[]).map((row) => {
+          const placement = placements.find((item) => item.routeId === row.route_id);
+          const trip = row.trips?.[0];
+          return {
+            routeId: row.route_id,
+            direction: placement?.direction ?? "morning",
+            status: trip?.status ?? "scheduled",
+            busCode: row.buses?.fleet_code ?? null,
+            plateNumber: row.buses?.plate_number ?? null,
+            startedAt: trip?.started_at ?? null,
+            arrivedAt: trip?.arrived_at ?? null,
+            completedAt: trip?.completed_at ?? null,
+          };
+        });
+      }
+
+      return { student, placements, todayTrips };
+    }),
+  );
+}
+
+export type ChildTrip = {
+  id: string;
+  serviceDate: string;
+  status: string;
+  routeName: string;
+  schoolName: string;
+  direction: string;
+  busCode: string | null;
+  startedAt: string | null;
+  arrivedAt: string | null;
+  completedAt: string | null;
+};
+
+export async function loadChildTrips(
+  supabase: ServerSupabase,
+  routeIds: string[],
+  limit = 10,
+): Promise<ChildTrip[]> {
+  if (routeIds.length === 0) return [];
+
+  const { data } = await supabase
+    .from("trips")
+    .select(
+      "id, status, started_at, arrived_at, completed_at, created_at, trip_assignments!inner(service_date, route_id, routes(route_name, school_name, direction), buses(fleet_code))",
+    )
+    .in("trip_assignments.route_id", routeIds)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  return ((data ?? []) as unknown as {
+    id: string;
+    status: string;
+    started_at: string | null;
+    arrived_at: string | null;
+    completed_at: string | null;
+    created_at: string;
+    trip_assignments: {
+      service_date: string;
+      routes: { route_name: string; school_name: string; direction: string } | null;
+      buses: { fleet_code: string } | null;
+    } | null;
+  }[]).map((trip) => ({
+    id: trip.id,
+    serviceDate: trip.trip_assignments?.service_date ?? trip.created_at,
+    status: trip.status,
+    routeName: trip.trip_assignments?.routes?.route_name ?? "Rute",
+    schoolName: trip.trip_assignments?.routes?.school_name ?? "",
+    direction: trip.trip_assignments?.routes?.direction ?? "morning",
+    busCode: trip.trip_assignments?.buses?.fleet_code ?? null,
+    startedAt: trip.started_at,
+    arrivedAt: trip.arrived_at,
+    completedAt: trip.completed_at,
+  }));
+}
