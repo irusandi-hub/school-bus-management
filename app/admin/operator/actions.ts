@@ -8,6 +8,7 @@ import {
   isValidEmail,
   isValidPhone,
   normalizeCode,
+  normalizeEmail,
   readCheckbox,
   readOptionalText,
   readText,
@@ -60,6 +61,61 @@ export async function saveOperator(_prev: ActionState, formData: FormData): Prom
   revalidatePath(path);
   revalidatePath("/admin");
   return success(id ? "Data operator berhasil diperbarui." : "Operator baru berhasil ditambahkan.");
+}
+
+/** Error text raised by our own SQL functions is safe to show; anything else is not. */
+function linkMessage(raw: string | undefined): string {
+  const own =
+    /Akses ditolak|Isian belum lengkap|tidak ditemukan|Email belum terdaftar|sudah tertaut|Admin Pusat dan tidak dapat|akun orang tua\/wali/i;
+  if (raw && own.test(raw)) return raw;
+  return "Penautan akun belum berhasil. Periksa email lalu coba lagi; jika berlanjut, hubungi pengelola sistem.";
+}
+
+export async function linkOperatorAccount(formData: FormData) {
+  const ctx = await adminActionContext();
+  if (!ctx.ok) {
+    redirect(`${path}?jenis=error&pesan=${encodeURIComponent(ctx.state.message)}`);
+  }
+
+  const id = readText(formData, "id");
+  const email = normalizeEmail(readText(formData, "email"));
+  if (!id || !isValidEmail(email)) {
+    redirect(
+      `${path}?jenis=error&pesan=${encodeURIComponent("Isian belum lengkap: masukkan operator dan email akun yang valid.")}`,
+    );
+  }
+
+  const { error } = await ctx.supabase.rpc("link_operator_account", { p_operator_id: id, p_email: email });
+
+  if (error) {
+    redirect(`${path}?jenis=error&pesan=${encodeURIComponent(linkMessage(error.message))}`);
+  }
+
+  revalidatePath(path);
+  revalidatePath("/operator");
+  redirect(`${path}?pesan=${encodeURIComponent("Akun berhasil ditautkan sebagai Operator.")}`);
+}
+
+export async function unlinkOperatorAccount(formData: FormData) {
+  const ctx = await adminActionContext();
+  if (!ctx.ok) {
+    redirect(`${path}?jenis=error&pesan=${encodeURIComponent(ctx.state.message)}`);
+  }
+
+  const id = readText(formData, "id");
+  if (!id) {
+    redirect(`${path}?jenis=error&pesan=${encodeURIComponent("Operator belum dipilih.")}`);
+  }
+
+  const { error } = await ctx.supabase.rpc("unlink_operator_account", { p_operator_id: id });
+
+  if (error) {
+    redirect(`${path}?jenis=error&pesan=${encodeURIComponent(linkMessage(error.message))}`);
+  }
+
+  revalidatePath(path);
+  revalidatePath("/operator");
+  redirect(`${path}?pesan=${encodeURIComponent("Tautan akun operator dilepas.")}`);
 }
 
 export async function setOperatorActive(formData: FormData) {

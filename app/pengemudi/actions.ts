@@ -97,33 +97,100 @@ export async function confirmArrival(formData: FormData) {
   const target = `/pengemudi/tugas/${assignmentId}`;
   if (!ctx.ok) backTo(target, ctx.state.message, "error");
 
-  const { error } = await ctx.supabase
+  const { data, error } = await ctx.supabase
     .from("trips")
     .update({ arrived_at: new Date().toISOString() })
     .eq("id", tripId)
-    .eq("status", "in_progress");
+    .eq("status", "in_progress")
+    .select("id");
 
   if (error) backTo(target, "Konfirmasi tiba belum tersimpan. Coba lagi.", "error");
+  if (!data || data.length === 0) {
+    backTo(target, "Konfirmasi tiba tidak dapat dicatat karena perjalanan ini sedang berlangsung.", "error");
+  }
 
   revalidatePath(target);
   revalidatePath("/admin/perjalanan");
   backTo(target, "Tiba di sekolah tercatat. Lanjutkan penurunan siswa bila diperlukan.");
 }
 
+/**
+ * Students whose latest status is not "dropped off" or "absent" must be checked
+ * before the trip is closed (cabin check, MASTER_SPEC section 10).
+ */
+async function countUnclearStudents(
+  ctx: Extract<DriverContext, { ok: true }>,
+  assignmentId: string,
+  tripId: string,
+): Promise<number | null> {
+  const { data: assignment } = await ctx.supabase
+    .from("trip_assignments")
+    .select("id, routes(id, direction)")
+    .eq("id", assignmentId)
+    .eq("driver_id", ctx.driverId)
+    .maybeSingle();
+
+  const route = assignment?.routes as unknown as { id: string; direction: string } | null;
+  if (!assignment || !route) return null;
+
+  const [rosterResult, eventsResult] = await Promise.all([
+    ctx.supabase
+      .from("student_route_stops")
+      .select("student_id")
+      .eq("route_id", route.id)
+      .eq("direction", route.direction)
+      .eq("active", true),
+    ctx.supabase
+      .from("trip_student_events")
+      .select("student_id, event_type, occurred_at")
+      .eq("trip_id", tripId)
+      .order("occurred_at", { ascending: false }),
+  ]);
+
+  if (rosterResult.error || eventsResult.error) return null;
+
+  const latest = new Map<string, string>();
+  for (const event of (eventsResult.data ?? []) as { student_id: string; event_type: string }[]) {
+    if (!latest.has(event.student_id)) latest.set(event.student_id, event.event_type);
+  }
+
+  return ((rosterResult.data ?? []) as { student_id: string }[]).filter((entry) => {
+    const status = latest.get(entry.student_id);
+    return !status || status === "boarded";
+  }).length;
+}
+
 export async function endTrip(formData: FormData) {
   const ctx = await driverActionContext();
   const tripId = readText(formData, "trip_id");
   const assignmentId = readText(formData, "assignment_id");
+  const acknowledged = readText(formData, "acknowledge_open");
   const target = `/pengemudi/tugas/${assignmentId}`;
   if (!ctx.ok) backTo(target, ctx.state.message, "error");
 
-  const { error } = await ctx.supabase
+  const openStudents = await countUnclearStudents(ctx, assignmentId, tripId);
+  if (openStudents === null) {
+    backTo(target, "Perjalanan tidak ditemukan untuk akun Anda.", "error");
+  }
+  if (openStudents > 0 && acknowledged !== "1") {
+    backTo(
+      target,
+      `${openStudents} siswa masih berstatus naik atau belum dicatat. Periksa kabin dan status siswa tersebut, lalu centang konfirmasi pemeriksaan sebelum mengakhiri perjalanan.`,
+      "error",
+    );
+  }
+
+  const { data, error } = await ctx.supabase
     .from("trips")
     .update({ status: "completed", completed_at: new Date().toISOString() })
     .eq("id", tripId)
-    .eq("status", "in_progress");
+    .eq("status", "in_progress")
+    .select("id");
 
   if (error) backTo(target, "Perjalanan belum dapat diakhiri. Coba lagi.", "error");
+  if (!data || data.length === 0) {
+    backTo(target, "Perjalanan ini sedang berlangsung dan tidak dapat diubah. Muat ulang halaman.", "error");
+  }
 
   revalidatePath(target);
   revalidatePath("/pengemudi");

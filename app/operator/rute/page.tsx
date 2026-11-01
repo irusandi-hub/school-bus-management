@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 import { ConfigNotice, EmptyRow, Notice, PageHeader, Pill } from "@/components/admin/ui";
 import { operatorReadContext } from "@/lib/operator/read";
@@ -56,6 +57,11 @@ export default async function OperatorRoutesPage() {
                   <tr key={route.id}>
                     <td>
                       <strong>{route.route_name}</strong>
+                      <div className="row-actions">
+                        <Link className="row-link" href={`/operator/rute/${route.id}`}>
+                          Lihat titik jemput
+                        </Link>
+                      </div>
                     </td>
                     <td>{route.school_name}</td>
                     <td>{routeDirectionLabel(route.direction)}</td>

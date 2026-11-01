@@ -116,6 +116,12 @@ export default async function DriverTaskPage({
   const inProgress = trip?.status === "in_progress";
   const completed = trip?.status === "completed";
 
+  // Students whose status is unclear for closing the trip (not dropped off/absent).
+  const unclearStudents = roster.filter((entry) => {
+    const status = latestEvent.get(entry.student_id)?.event_type;
+    return !status || status === "boarded";
+  }).length;
+
   return (
     <>
       <div className="breadcrumb">
@@ -197,17 +203,31 @@ export default async function DriverTaskPage({
                   </ConfirmSubmit>
                 </form>
               )}
-              <form action={endTrip}>
-                <input type="hidden" name="trip_id" value={trip.id} />
-                <input type="hidden" name="assignment_id" value={assignment.id} />
-                <ConfirmSubmit
-                  className="btn btn-primary"
-                  message="Akhiri perjalanan ini? Status perjalanan akan menjadi selesai dan tidak dapat dimulai ulang."
-                  pendingLabel="Mengakhiri…"
-                >
-                  Akhiri perjalanan
-                </ConfirmSubmit>
-              </form>
+              <div className="end-trip-block">
+                {unclearStudents > 0 && (
+                  <div className="close-warning">
+                    <strong>Masih ada {unclearStudents} siswa dengan status naik atau belum dicatat.</strong>
+                    <p>Periksa kabin dan pastikan setiap siswa sudah turun, tidak ikut, atau dicatat kendalanya.</p>
+                  </div>
+                )}
+                <form action={endTrip}>
+                  <input type="hidden" name="trip_id" value={trip.id} />
+                  <input type="hidden" name="assignment_id" value={assignment.id} />
+                  {unclearStudents > 0 && (
+                    <label className="close-check">
+                      <input type="checkbox" name="acknowledge_open" value="1" required />
+                      <span>Saya sudah memeriksa kabin dan memastikan status siswa tersebut benar.</span>
+                    </label>
+                  )}
+                  <ConfirmSubmit
+                    className="btn btn-primary"
+                    message="Akhiri perjalanan ini? Status perjalanan akan menjadi selesai dan tidak dapat dimulai ulang."
+                    pendingLabel="Mengakhiri…"
+                  >
+                    Akhiri perjalanan
+                  </ConfirmSubmit>
+                </form>
+              </div>
             </div>
           )}
 
