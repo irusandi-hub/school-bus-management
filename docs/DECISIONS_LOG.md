@@ -169,3 +169,15 @@ Lihat `TECHNICAL_SPEC_REVIEW.md`, bagian 19 pada `MASTER_SPEC.md`, serta `OPERAT
   - Tidak ada data GPS, perjalanan, atau kamera yang dibuat-buat; modul yang belum tersedia hanya menampilkan keterangan jujur, dan tautan kamera tidak ditampilkan sama sekali.
 - **Alasan:** Permintaan pemilik produk untuk satu gerbang akses, tiga pengalaman pengguna terpisah, pemisahan hak akses di server/database, dan identitas visual konsisten, sambil mempertahankan CRUD Admin Pusat dari DEC-021.
 - **Dampak pada dokumen/tes:** README (rute, migrasi, ringkasan RLS, penautan akun operator/pengemudi), status backlog. Verifikasi: `typecheck` lulus, 28 unit test lulus, `next build` lulus, preview gate dan rute internal dicek. **BELUM TERVERIFIKASI:** eksekusi migrasi, isolasi RLS dengan akun tiap peran, dan alur login end-to-end — lingkungan ini tidak memiliki kredensial Supabase. Jangan menganggap isolasi antarperan teruji sebelum pengujian di proyek pengembangan.
+
+
+
+### DEC-023 — UI terbuka selama tahap pengembangan
+- **Tanggal:** 2026-11-01
+- **Status:** DISETUJUI
+- **Keputusan:** Selama tahap pembangunan dan peninjauan UI, seluruh area Admin Pusat, Operator, Pengemudi, dan Orang Tua/Wali dapat dibuka tanpa login, pendaftaran akun, verifikasi email, atau penautan akun. Autentikasi, verifikasi, pemeriksaan peran, RLS, dan pembatasan akses final ditunda sampai seluruh halaman dan alur empat area selesai ditinjau.
+- **Batas keamanan wajib:** Mode terbuka hanya boleh aktif pada local/development/preview non-production dengan deteksi environment yang eksplisit dan fail-closed. Mode ini tidak boleh aktif di production, tidak boleh memakai atau membuka data produksi, dan tidak membenarkan pelemahan RLS/database produksi. Data simulasi hanya boleh dipakai di development serta harus diberi label.
+- **Urutan pengerjaan:** Admin Pusat → Operator → Pengemudi → Orang Tua/Wali → integrasi autentikasi dan otorisasi final.
+- **Alasan:** Pemilik produk meminta semua halaman dan workflow selesai dan ditinjau sebelum proses autentikasi/registrasi diintegrasikan.
+- **Dampak pada dokumen/tes:** Perbarui AGENTS.md, README, konfigurasi environment, middleware, server guards, dan pengujian agar mode pengembangan terbuka terpisah tegas dari keamanan production. Setiap halaman diuji fungsi, hubungan data, responsivitas, pesan gagal/penolakan, serta penandaan fitur GPS/routing/kamera yang belum tersedia.
+- **Pihak yang menyetujui:** Pemilik produk melalui percakapan 2026-11-01.
