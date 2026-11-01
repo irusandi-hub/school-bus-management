@@ -16,7 +16,7 @@ import { firstParam, listHref, noticeFromParams } from "@/lib/admin/query";
 import { PAGE_SIZE, pageRange, parsePage } from "@/lib/admin/support";
 import type { DriverRow } from "@/lib/types";
 import { sanitizeSearch } from "@/lib/validation";
-import { saveDriver, setDriverActive } from "./actions";
+import { linkDriverAccount, saveDriver, setDriverActive, unlinkDriverAccount } from "./actions";
 
 export const metadata: Metadata = { title: "Pengemudi | Admin Pusat" };
 
@@ -58,6 +58,14 @@ export default async function PengemudiPage({
 
   const { data, count, error } = await query;
   const rows = (data ?? []) as unknown as DriverRow[];
+
+  const linkedIds = rows.filter((row) => row.profile_id).map((row) => row.profile_id as string);
+  let emailRows: { profile_id: string; email: string }[] = [];
+  if (linkedIds.length) {
+    const res = await supabase.rpc("linked_account_emails", { p_profile_ids: linkedIds });
+    emailRows = (res.data ?? []) as { profile_id: string; email: string }[];
+  }
+  const emailById = new Map<string, string>(emailRows.map((row) => [row.profile_id, row.email]));
   const total = count ?? 0;
 
   let editing: DriverRow | null = null;
@@ -115,7 +123,7 @@ export default async function PengemudiPage({
     <>
       <PageHeader
         title="Pengemudi"
-        description="Data pengemudi untuk kebutuhan penugasan. Akun login pengemudi belum dibuat pada tahap ini; modul perjalanan masih menunggu tahap berikutnya."
+        description="Data pengemudi untuk kebutuhan penugasan. Tautkan akun login pengemudi pada kolom Akun masuk agar akun tersebut dapat membuka area Pengemudi."
       />
 
       {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
@@ -158,13 +166,14 @@ export default async function PengemudiPage({
                   <th scope="col">Nomor SIM</th>
                   <th scope="col">Operator</th>
                   <th scope="col">Status</th>
+                  <th scope="col">Akun masuk</th>
                   <th scope="col">Tindakan</th>
                 </tr>
               </thead>
               <tbody>
                 {rows.length === 0 ? (
                   <EmptyRow
-                    colSpan={6}
+                    colSpan={7}
                     title={q || status || operatorFilter ? "Tidak ada pengemudi yang cocok" : "Belum ada data pengemudi"}
                     detail={
                       q || status || operatorFilter
@@ -183,6 +192,41 @@ export default async function PengemudiPage({
                       <td>{row.operators?.name ?? "Belum ditetapkan"}</td>
                       <td>
                         <Pill tone={row.active ? "success" : "neutral"}>{row.active ? "Aktif" : "Nonaktif"}</Pill>
+                      </td>
+                      <td className="account-cell">
+                        {row.profile_id ? (
+                          <>
+                            <Pill tone="info">Tertaut</Pill>
+                            <small>{emailById.get(row.profile_id) ?? "Akun tersambung"}</small>
+                            <form action={unlinkDriverAccount} className="row-form">
+                              <input type="hidden" name="id" value={row.id} />
+                              <ConfirmSubmit
+                                className="row-link danger"
+                                message={`Lepas tautan akun ${emailById.get(row.profile_id) ?? "tersebut"} dari ${row.full_name}? Akun tersebut tidak lagi dapat masuk area Pengemudi.`}
+                              >
+                                Lepas tautan
+                              </ConfirmSubmit>
+                            </form>
+                          </>
+                        ) : (
+                          <form action={linkDriverAccount} className="account-link-form">
+                            <input type="hidden" name="id" value={row.id} />
+                            <input
+                              type="email"
+                              name="email"
+                              required
+                              maxLength={254}
+                              placeholder="email@contoh.com"
+                              aria-label={`Email akun untuk ${row.full_name}`}
+                            />
+                            <ConfirmSubmit
+                              className="row-link"
+                              message={`Tautkan akun ini ke ${row.full_name}? Peran akun menjadi Pengemudi dan hanya dapat melihat penugasan miliknya.`}
+                            >
+                              Tautkan
+                            </ConfirmSubmit>
+                          </form>
+                        )}
                       </td>
                       <td>
                         <div className="row-actions">
@@ -237,7 +281,7 @@ export default async function PengemudiPage({
               fields={fields}
               hidden={{ id: editing?.id ?? "" }}
               submitLabel={editing ? "Simpan perubahan" : "Tambah pengemudi"}
-              note="Menonaktifkan pengemudi tidak menghapus data atau riwayat. Penautan akun login pengemudi akan ditambahkan bersama modul perjalanan."
+              note="Menonaktifkan pengemudi tidak menghapus data atau riwayat. Penautan dan pelepasan akun dilakukan dari kolom Akun masuk pada tabel."
               secondary={editing ? { href: listHref(path, baseQuery), label: "Batal" } : undefined}
             />
           </div>

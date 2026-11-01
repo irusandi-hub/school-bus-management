@@ -34,6 +34,12 @@ comment on column public.schools.operator_id is
 
 alter table public.trips add column arrived_at timestamptz;
 
+-- One live trip per assignment: the UI already refuses a second start, and the
+-- database must refuse it too when requests bypass the UI.
+create unique index trips_one_active_idx
+  on public.trips (assignment_id)
+  where status in ('scheduled', 'in_progress');
+
 comment on column public.trips.arrived_at is
   'Set by the assigned driver when the bus reaches the school.';
 
@@ -126,6 +132,129 @@ revoke all on function private.current_driver_id() from public, anon;
 grant execute on function private.current_operator_id() to authenticated;
 grant execute on function private.current_driver_id() to authenticated;
 
+-- Scope helpers used by the policies below.
+--
+-- Policy expressions must never join across tables that carry their own policies:
+-- PostgreSQL detects the mutual recursion and fails with "infinite recursion
+-- detected in policy". Each helper is SECURITY DEFINER, so it reads the tables as
+-- their owner and no policy is evaluated while resolving a scope.
+
+create or replace function private.operator_school_ids()
+returns setof uuid
+language sql stable security definer set search_path = ''
+as $$
+  select s.id
+  from public.schools s
+  where s.operator_id = private.current_operator_id();
+$$;
+
+create or replace function private.operator_student_ids()
+returns setof uuid
+language sql stable security definer set search_path = ''
+as $$
+  select s.id
+  from public.students s
+  join public.schools sc on sc.id = s.school_id
+  where sc.operator_id = private.current_operator_id();
+$$;
+
+create or replace function private.operator_route_ids()
+returns setof uuid
+language sql stable security definer set search_path = ''
+as $$
+  select r.id
+  from public.routes r
+  where r.school_name in (
+    select sc.name
+    from public.schools sc
+    where sc.operator_id = private.current_operator_id()
+  );
+$$;
+
+create or replace function private.driver_route_ids()
+returns setof uuid
+language sql stable security definer set search_path = ''
+as $$
+  select ta.route_id
+  from public.trip_assignments ta
+  where ta.driver_id = private.current_driver_id();
+$$;
+
+create or replace function private.driver_student_ids()
+returns setof uuid
+language sql stable security definer set search_path = ''
+as $$
+  select srs.student_id
+  from public.student_route_stops srs
+  where srs.active
+    and srs.route_id in (select private.driver_route_ids());
+$$;
+
+create or replace function private.guardian_bus_ids()
+returns setof uuid
+language sql stable security definer set search_path = ''
+as $$
+  select distinct ta.bus_id
+  from public.trip_assignments ta
+  join public.student_route_stops srs on srs.route_id = ta.route_id and srs.active
+  join public.students s on s.id = srs.student_id
+  join public.guardians g on g.id = s.guardian_id
+  where g.profile_id = auth.uid()
+    and g.active
+    and s.service_status = 'active';
+$$;
+
+create or replace function private.operator_bus_ids()
+returns setof uuid
+language sql stable security definer set search_path = ''
+as $$
+  select b.id
+  from public.buses b
+  where b.operator_id = private.current_operator_id();
+$$;
+
+create or replace function private.operator_driver_ids()
+returns setof uuid
+language sql stable security definer set search_path = ''
+as $$
+  select d.id
+  from public.drivers d
+  where d.operator_id = private.current_operator_id();
+$$;
+
+create or replace function private.operator_guardian_ids()
+returns setof uuid
+language sql stable security definer set search_path = ''
+as $$
+  select distinct s.guardian_id
+  from public.students s
+  join public.schools sc on sc.id = s.school_id
+  where s.guardian_id is not null
+    and sc.operator_id = private.current_operator_id();
+$$;
+
+do $$
+begin
+  revoke all on function private.operator_school_ids() from public, anon;
+  revoke all on function private.operator_student_ids() from public, anon;
+  revoke all on function private.operator_route_ids() from public, anon;
+  revoke all on function private.driver_route_ids() from public, anon;
+  revoke all on function private.driver_student_ids() from public, anon;
+  revoke all on function private.guardian_bus_ids() from public, anon;
+  revoke all on function private.operator_guardian_ids() from public, anon;
+  revoke all on function private.operator_bus_ids() from public, anon;
+  revoke all on function private.operator_driver_ids() from public, anon;
+  grant execute on function private.operator_school_ids() to authenticated;
+  grant execute on function private.operator_student_ids() to authenticated;
+  grant execute on function private.operator_route_ids() to authenticated;
+  grant execute on function private.driver_route_ids() to authenticated;
+  grant execute on function private.driver_student_ids() to authenticated;
+  grant execute on function private.guardian_bus_ids() to authenticated;
+  grant execute on function private.operator_guardian_ids() to authenticated;
+  grant execute on function private.operator_bus_ids() to authenticated;
+  grant execute on function private.operator_driver_ids() to authenticated;
+end $$;
+
 -- ---------------------------------------------------------------------------
 -- Row level security
 -- ---------------------------------------------------------------------------
@@ -157,46 +286,20 @@ create policy schools_select_guardian on public.schools
     )
   );
 
--- Students: operator scope is the schools it serves; driver scope is a route the
--- driver has been assigned to in the last 30 days.
+-- Students: operator scope is the schools it serves; driver scope is the roster of
+-- routes assigned to that driver. Both use SECURITY DEFINER helpers so the policy
+-- on schools / student_route_stops is not evaluated from here.
 create policy students_select_operator on public.students
   for select to authenticated
-  using (
-    exists (
-      select 1
-      from public.schools sc
-      where sc.id = school_id
-        and sc.operator_id = private.current_operator_id()
-    )
-  );
+  using (school_id in (select private.operator_school_ids()));
 
 create policy students_select_driver on public.students
   for select to authenticated
-  using (
-    exists (
-      select 1
-      from public.student_route_stops srs
-      join public.trip_assignments ta on ta.route_id = srs.route_id
-      join public.drivers d on d.id = ta.driver_id
-      where srs.student_id = students.id
-        and srs.active
-        and d.profile_id = auth.uid()
-        and d.active
-        and ta.service_date >= current_date - 30
-    )
-  );
+  using (id in (select private.driver_student_ids()));
 
 create policy guardians_select_operator on public.guardians
   for select to authenticated
-  using (
-    exists (
-      select 1
-      from public.students s
-      join public.schools sc on sc.id = s.school_id
-      where s.guardian_id = guardians.id
-        and sc.operator_id = private.current_operator_id()
-    )
-  );
+  using (id in (select private.operator_guardian_ids()));
 
 -- Buses and drivers: an operator manages its own fleet and staff only. Admin Pusat
 -- keeps the broader policies already defined in the previous migration.
@@ -234,8 +337,18 @@ create policy routes_insert_admin on public.routes
   for insert to authenticated with check (private.is_admin());
 create policy routes_update_admin on public.routes
   for update to authenticated using (private.is_admin()) with check (private.is_admin());
+-- Scope: an operator only reads routes of schools it serves. routes.school_name is
+-- the school's name chosen from the schools module, so the name join is exact.
 create policy routes_select_operator on public.routes
-  for select to authenticated using (private.current_operator_id() is not null);
+  for select to authenticated
+  using (
+    exists (
+      select 1
+      from public.schools sc
+      where sc.name = routes.school_name
+        and sc.operator_id = private.current_operator_id()
+    )
+  );
 create policy routes_select_driver on public.routes
   for select to authenticated
   using (
@@ -271,7 +384,16 @@ create policy route_stops_insert_admin on public.route_stops
 create policy route_stops_update_admin on public.route_stops
   for update to authenticated using (private.is_admin()) with check (private.is_admin());
 create policy route_stops_select_operator on public.route_stops
-  for select to authenticated using (private.current_operator_id() is not null);
+  for select to authenticated
+  using (
+    exists (
+      select 1
+      from public.routes r
+      join public.schools sc on sc.name = r.school_name
+      where r.id = route_stops.route_id
+        and sc.operator_id = private.current_operator_id()
+    )
+  );
 create policy route_stops_select_driver on public.route_stops
   for select to authenticated
   using (
@@ -310,36 +432,19 @@ create policy student_route_stops_admin on public.student_route_stops
 create policy student_route_stops_operator on public.student_route_stops
   for all to authenticated
   using (
-    exists (
-      select 1
-      from public.students s
-      join public.schools sc on sc.id = s.school_id
-      where s.id = student_id
-        and sc.operator_id = private.current_operator_id()
-    )
+    student_id in (select private.operator_student_ids())
+    and route_id in (select private.operator_route_ids())
   )
   with check (
-    exists (
-      select 1
-      from public.students s
-      join public.schools sc on sc.id = s.school_id
-      where s.id = student_id
-        and sc.operator_id = private.current_operator_id()
-    )
+    student_id in (select private.operator_student_ids())
+    and route_id in (select private.operator_route_ids())
   );
 
 create policy student_route_stops_driver on public.student_route_stops
   for select to authenticated
   using (
     active
-    and exists (
-      select 1
-      from public.trip_assignments ta
-      join public.drivers d on d.id = ta.driver_id
-      where ta.route_id = student_route_stops.route_id
-        and d.profile_id = auth.uid()
-        and d.active
-    )
+    and route_id in (select private.driver_route_ids())
   );
 
 create policy student_route_stops_guardian on public.student_route_stops
@@ -366,30 +471,23 @@ create policy trip_assignments_insert_admin on public.trip_assignments
 create policy trip_assignments_update_admin on public.trip_assignments
   for update to authenticated using (private.is_admin()) with check (private.is_admin());
 
+-- Scope comes from SECURITY DEFINER helpers: a policy that joins routes while
+-- routes has a policy referencing trip_assignments is reported by PostgreSQL as
+-- "infinite recursion detected in policy".
 create policy trip_assignments_select_operator on public.trip_assignments
   for select to authenticated
   using (
-    exists (
-      select 1 from public.buses b
-      where b.id = bus_id and b.operator_id = private.current_operator_id()
-    )
-    or exists (
-      select 1 from public.drivers d
-      where d.id = driver_id and d.operator_id = private.current_operator_id()
-    )
+    bus_id in (select private.operator_bus_ids())
+    or driver_id in (select private.operator_driver_ids())
   );
 
 create policy trip_assignments_insert_operator on public.trip_assignments
   for insert to authenticated
   with check (
-    exists (
-      select 1 from public.buses b
-      where b.id = bus_id and b.operator_id = private.current_operator_id()
-    )
-    and exists (
-      select 1 from public.drivers d
-      where d.id = driver_id and d.operator_id = private.current_operator_id()
-    )
+    bus_id in (select private.operator_bus_ids())
+    and driver_id in (select private.operator_driver_ids())
+    -- The route must belong to a school this operator serves.
+    and route_id in (select private.operator_route_ids())
   );
 
 create policy trip_assignments_select_driver on public.trip_assignments
@@ -537,20 +635,7 @@ create policy trip_student_events_select_guardian on public.trip_student_events
 -- Guardians read the bus assigned to their child's trip (fleet code / plate only).
 create policy buses_select_guardian on public.buses
   for select to authenticated
-  using (
-    exists (
-      select 1
-      from public.trip_assignments ta
-      join public.student_route_stops srs on srs.route_id = ta.route_id
-      join public.students s on s.id = srs.student_id
-      join public.guardians g on g.id = s.guardian_id
-      where ta.bus_id = buses.id
-        and srs.active
-        and g.profile_id = auth.uid()
-        and g.active
-        and s.service_status = 'active'
-    )
-  );
+  using (id in (select private.guardian_bus_ids()));
 
 -- ---------------------------------------------------------------------------
 -- Grants for the operational tables (RLS still decides which rows are reachable)

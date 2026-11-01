@@ -18,11 +18,11 @@ Yang **belum** aktif dan sengaja tidak ditampilkan sebagai fitur berjalan:
 - Kamera live / streaming dan tautan kamera — tidak ada integrasi; tautan tidak ditampilkan.
 - Integrasi HERE atau penyedia routing lain.
 - Integrasi perangkat GPS bus dan vendor eksternal.
-- Penautan akun operator/pengemudi melalui UI — saat ini dilakukan lewat SQL/back office; akun yang belum tertaut diarahkan ke `/tanpa-akses`.
+- Penautan akun operator/pengemudi sudah tersedia di `/admin/operator` dan `/admin/pengemudi` (email akun + tombol tautkan/lepas). Akun yang belum tertaut diarahkan ke `/tanpa-akses` beserta alasannya.
 
 Modul tersebut tetap memerlukan keputusan dan validasi teknis terpisah (lihat `docs/TECHNICAL_SPEC_REVIEW.md`).
 
-> Migrasi database pada perubahan ini **belum dijalankan** ke database mana pun. Terapkan dan tinjau di proyek pengembangan terlebih dahulu; jangan menjalankan migrasi ke produksi tanpa persetujuan.
+> Keempat migrasi sudah dijalankan berurutan pada database Postgres lokal khusus pengembangan dan lulus pemeriksaan RLS. Migrasi **belum dijalankan** pada proyek Supabase mana pun (tidak ada kredensial) dan tidak boleh dijalankan ke produksi tanpa persetujuan.
 
 ## Menjalankan secara lokal
 
@@ -108,13 +108,26 @@ Pesan pada formulir aktivasi bersifat netral (tidak mengungkap apakah sebuah ema
 - `supabase/migrations/20261029000000_initial_school_bus_schema.sql` — skema awal.
 - `supabase/migrations/20261031000000_admin_core_crud.sql` — modul data Admin Pusat.
 - `supabase/migrations/20261031000001_operator_driver_guardian_areas.sql` — area operator/pengemudi/wali.
+- `supabase/migrations/20261031000002_operator_driver_account_linking.sql` — penautan akun operator/pengemudi.
 
-Migrasi ketiga (aditif, **belum dijalankan** ke database mana pun) menambahkan:
+Keempat migrasi sudah dijalankan berurutan pada Postgres 14 lokal (database pengembangan kosong) dan lulus seluruh pemeriksaan RLS di `supabase/tests/migration_checks.sql`. Penerapan pada proyek Supabase pengembangan **belum dilakukan** karena tidak ada kredensial.
+
+Migrasi keempat (aditif, admin-only) menambahkan:
+
+- `private.resolve_account_uid(text)` — mencari `auth.users` berdasarkan email terverifikasi.
+- `public.link_operator_account(uuid, text)`, `public.unlink_operator_account(uuid)`.
+- `public.link_driver_account(uuid, text)`, `public.unlink_driver_account(uuid)`.
+- `public.linked_account_emails(uuid[])` — daftar email akun yang tertaut untuk ditampilkan ke admin.
+
+Semua fungsi tersebut `security definer` dengan `search_path = ''`, memeriksa `private.is_admin()`, memakai pesan Bahasa Indonesia, dan hanya diberikan kepada role `authenticated`. Penautan akun juga menyetel `profiles.role` yang sesuai; pelepasan tautan mengembalikan role menjadi `parent` hanya jika akun tidak lagi tertaut ke baris mana pun.
+
+Migrasi ketiga (aditif) menambahkan:
 
 - Nilai role `operator` pada check constraint `profiles.role`, kolom `operators.profile_id`, dan `schools.operator_id`.
 - Tabel `student_route_stops` (roster siswa per titik jemput, unik parsial per arah) plus trigger validasi bahwa stop milik rute tersebut.
 - Kolom `trips.arrived_at` untuk konfirmasi tiba di sekolah.
-- Fungsi `private.current_operator_id()` dan `private.current_driver_id()` sebagai pembatas scope policy.
+- Fungsi `private.current_operator_id()`, `private.current_driver_id()`, dan helper scope `security definer` (`operator_school_ids`, `operator_student_ids`, `operator_route_ids`, `operator_bus_ids`, `operator_driver_ids`, `operator_guardian_ids`, `driver_route_ids`, `driver_student_ids`, `guardian_bus_ids`). Policy tidak lagi melakukan join antar tabel yang punya policy sendiri, karena Postgres menolak policy yang saling merujuk dengan galat `infinite recursion detected in policy`.
+- Indeks unik parsial `trips_one_active_idx` — satu penugasan hanya boleh punya satu perjalanan `scheduled`/`in_progress`; permintaan ganda dari luar UI tetap ditolak database.
 - Policy RLS baru: operator (scoped ke organisasinya), pengemudi (hanya penugasan/perjalanan miliknya + roster rute aktif + siswa pada penugasan itu), wali (hanya siswa aktif miliknya + rute/stop/perjalanan/riwayat terkait), serta policy baca sekolah untuk wali.
 - Trigger audit untuk `routes`, `route_stops`, dan `student_route_stops`.
 
@@ -150,21 +163,12 @@ on conflict (id) do update
 
 ### Penautan akun operator dan pengemudi
 
-Belum ada formulir UI untuk menautkan akun ke baris operator/pengemudi (dilakukan di luar aplikasi, misalnya SQL Editor):
+Penautan dilakukan oleh Admin Pusat dari UI, bukan lewat SQL manual:
 
-```sql
--- tautkan akun ke operator
-declare operator_id uuid;
-select id into operator_id from public.operators where name = '<nama operator>' limit 1;
-update public.operators set profile_id = '<uuid-pengguna-auth>' where id = operator_id;
-update public.profiles set role = 'operator' where id = '<uuid-pengguna-auth>';
+- `/admin/operator` — kolom **Akun masuk** menampilkan email akun yang tertaut (atau “Belum tertaut”), dengan formulir email + tombol **Tautkan** / **Lepas tautan**.
+- `/admin/pengemudi` — perlakuan yang sama untuk baris pengemudi.
 
--- tautkan akun ke pengemudi
-declare driver_id uuid;
-select id into driver_id from public.drivers where full_name = '<nama pengemudi>' limit 1;
-update public.drivers set profile_id = '<uuid-pengguna-auth>' where id = driver_id;
-update public.profiles set role = 'driver' where id = '<uuid-pengguna-auth>';
-```
+Server Action memanggil RPC `link_operator_account` / `link_driver_account` (dan `unlink_*`), sehingga pemeriksaan admin terjadi di database. Email harus milik akun `auth.users` yang sudah terverifikasi, belum tertaut ke baris lain, dan role-nya belum dipakai peran lain. Pesan kegagalan ditampilkan apa adanya dalam Bahasa Indonesia, sedangkan pesan internal yang tidak dikenal diganti dengan kalimat umum agar tidak membocorkan detail.
 
 Akun dengan role operator/pengemudi yang belum tertaut (atau barisnya tidak aktif) diarahkan ke `/tanpa-akses` dengan alasan yang jelas.
 
@@ -184,13 +188,22 @@ Akun dengan role operator/pengemudi yang belum tertaut (atau barisnya tidak akti
 npm run typecheck   # tsc --noEmit
 npm test            # unit test fungsi validasi & keamanan redirect
 npm run build       # next build
+
+# Uji migrasi + RLS pada Postgres pengembangan (HANYA database kosong/dev)
+psql -v ON_ERROR_STOP=1 -d schoolbus_dev -f supabase/migrations/20261029000000_initial_school_bus_schema.sql
+psql -v ON_ERROR_STOP=1 -d schoolbus_dev -f supabase/migrations/20261031000000_admin_core_crud.sql
+psql -v ON_ERROR_STOP=1 -d schoolbus_dev -f supabase/migrations/20261031000001_operator_driver_guardian_areas.sql
+psql -v ON_ERROR_STOP=1 -d schoolbus_dev -f supabase/migrations/20261031000002_operator_driver_account_linking.sql
+psql -v ON_ERROR_STOP=1 -d schoolbus_dev -f supabase/tests/migration_checks.sql
 ```
 
-Perubahan ini lulus `typecheck`, 28 unit test, dan `next build`. Unit test mencakup normalisasi email/kode, validasi Admissions Number, format telepon, parsing koordinat, sanitasi kata kunci pencarian, status layanan, penolakan redirect ke URL eksternal, pemetaan peran ke area, penolakan `next` lintas area (`scopedNext`), serta label arah rute/status perjalanan/status siswa.
+`supabase/tests/migration_checks.sql` membuat data uji sendiri (delapan profil, dua operator, dua sekolah, dua bus, dua pengemudi, dua wali, tiga siswa, dua rute, tiga titik jemput, dua penugasan, dua perjalanan) lalu menjalankan T1–T14: cakupan operator, penolakan tulis lintas organisasi, cakupan pengemudi, larangan menulis di luar tugas, isolasi wali, isolasi profil/audit, wewenang admin, penolakan `anon`, penolakan penautan akun oleh non-admin, keberhasilan penautan/pelepasan oleh admin, serta penyembunyian email akun dari non-admin. Berkas ini menolak berjalan pada database berisi data nyata dan diakhiri pesan “SEMUA PEMERIKSAAN MIGRASI DAN RLS LULUS”.
+
+Perubahan ini lulus `typecheck`, 28 unit test, `next build`, serta keempat migrasi dan seluruh pemeriksaan T1–T14 pada Postgres 14 lokal. Unit test mencakup normalisasi email/kode, validasi Admissions Number, format telepon, parsing koordinat, sanitasi kata kunci pencarian, status layanan, penolakan redirect ke URL eksternal, pemetaan peran ke area, penolakan `next` lintas area (`scopedNext`), serta label arah rute/status perjalanan/status siswa.
 
 Smoke test pada preview: `/` menampilkan Main Access Gate dengan tiga kartu akses, `/login` merender formulir masuk, dan seluruh rute internal tanpa konfigurasi Supabase menampilkan pemberitahuan “Database belum dikonfigurasi” (tanpa data contoh dan tanpa crash).
 
-**Belum diuji:** integrasi langsung ke database Supabase (tidak ada kredensial pada lingkungan ini), eksekusi migrasi pada Postgres, alur email verifikasi nyata, pengujian RLS lintas peran dengan beberapa akun, serta pengujian otomatisasi Server Action. Semua butir tersebut perlu dijalankan di proyek pengembangan sebelum dinyatakan selesai; tanpa kredensial, isolasi antarperan **BELUM TERVERIFIKASI** secara empiris.
+**Belum diuji:** integrasi langsung ke platform Supabase (tidak ada kredensial pada lingkungan ini), alur email verifikasi nyata, dan pengujian otomatisasi Server Action lewat browser. RLS sudah diuji pada Postgres lokal dengan stub `auth`, sehingga isolasi antarperan **teruji di database lokal tetapi belum terverifikasi di platform Supabase**.
 
 ## Keamanan dan batasan
 
