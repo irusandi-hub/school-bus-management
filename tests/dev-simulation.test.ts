@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
-import { createSimulationClient } from "../lib/dev-simulation/client.ts";
+import { beforeEach, describe, it } from "node:test";
+import { createSimulationClient, resetSimulationData } from "../lib/dev-simulation/client.ts";
 import type { SimRow } from "../lib/dev-simulation/data.ts";
 
 type Result = { data: unknown; error: { code?: string; message: string } | null; count: number | null };
@@ -14,6 +14,10 @@ const STUDENT_2 = "51111111-0000-4000-8000-000000000602";
 const ORGANISATION = "51111111-0000-4000-8000-0000000001b1";
 
 describe("klien simulasi pengembangan", () => {
+  beforeEach(() => {
+    resetSimulationData();
+  });
+
   it("menyelesaikan relasi bersarang seperti siswa → sekolah dan wali", async () => {
     const supabase = createSimulationClient();
 
@@ -136,6 +140,18 @@ describe("klien simulasi pengembangan", () => {
 
     const missing = (await supabase.from("operators").select("id").eq("id", "tidak-ada").maybeSingle()) as Result;
     assert.equal(missing.data, null);
+  });
+
+  it("menyimpan perubahan agar terlihat oleh request berikutnya", async () => {
+    const writer = createSimulationClient();
+    const created = (await writer
+      .from("schools")
+      .insert({ code: "SIM-SCH-PERSIST", name: "Sekolah Contoh Persisten", city: "Dammam", operator_id: null, active: true })) as Result;
+    assert.equal(created.error, null);
+
+    const reader = createSimulationClient();
+    const listed = (await reader.from("schools").select("id, code").eq("code", "SIM-SCH-PERSIST")) as Result;
+    assert.equal(rows(listed).length, 1);
   });
 
   it("menolak proses autentikasi dengan pesan yang jujur", async () => {

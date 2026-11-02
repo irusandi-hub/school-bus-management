@@ -354,8 +354,26 @@ function nextSimId() {
 }
 
 /** Membuat klien simulasi yang dipakai `createServerSupabase()` saat mode dev aktif. */
+/**
+ * Dataset simulasi disimpan sekali untuk seluruh proses server, sama seperti database
+ * sungguhan: tanpa ini setiap request memakai salinan baru dan hasil tambah/ubah dari
+ * Server Action langsung hilang sebelum halaman berikutnya dibaca.
+ */
+let sharedTables: SimTables | null = null;
+
+function simulationTables(): SimTables {
+  sharedTables ??= createSimulationTables();
+  return sharedTables;
+}
+
+/** Mengembalikan dataset simulasi ke kondisi awal; dipakai pengujian dan restart server. */
+export function resetSimulationData() {
+  sharedTables = createSimulationTables();
+  return sharedTables;
+}
+
 export function createSimulationClient() {
-  const tables = createSimulationTables();
+  const tables = simulationTables();
 
   const query = (tableName: string) => new SimQuery(tables, tableName);
 
