@@ -42,6 +42,8 @@ Variabel lingkungan yang diperlukan (lihat `.env.example`):
 
 Tanpa variabel tersebut aplikasi tetap dapat dibuka, tetapi halaman data menampilkan pemberitahuan bahwa database belum dikonfigurasi (tidak ada crash dan tidak ada data contoh).
 
+Selama tahap pengembangan UI (DEC-023), set `DEV_OPEN_ACCESS=1` di `.env.local` untuk membuka keempat area tanpa login dengan dataset simulasi berlabel. Mode ini fail-closed: tidak aktif tanpa variabel itu, tidak aktif saat `NODE_ENV`/`VERCEL_ENV` produksi, dan tidak pernah membuat klien Supabase sehingga tidak menyentuh database nyata. Matikan variabelnya untuk kembali ke alur autentikasi normal.
+
 Konfigurasi tambahan pada Supabase Dashboard → Authentication → URL Configuration:
 
 - Site URL: alamat aplikasi (mis. `http://localhost:3000`).

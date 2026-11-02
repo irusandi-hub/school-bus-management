@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { isDevOpenAccess } from "@/lib/dev-open-access";
 
 export const metadata: Metadata = {
   title: "Masuk | School Bus Management",
@@ -42,40 +43,48 @@ function GuardianIcon() {
 const doors = [
   {
     href: "/login?peran=admin",
+    areaHref: "/admin",
     label: "Admin & Operator",
     kicker: "Pengelolaan",
     description:
       "Kelola sekolah, operator, siswa, wali, bus, pengemudi, rute, dan perjalanan sesuai kewenangan akun.",
     points: ["Data induk & armada", "Rute dan penugasan", "Laporan operasional"],
     cta: "Masuk sebagai Admin & Operator",
+    openCta: "Buka area Admin & Operator",
     icon: <AdminIcon />,
     tone: "admin",
   },
   {
     href: "/login?peran=pengemudi",
+    areaHref: "/pengemudi",
     label: "Pengemudi",
     kicker: "Operasional",
     description:
       "Lihat tugas hari ini, urutan titik jemput, dan catat kehadiran siswa selama perjalanan.",
     points: ["Tugas & manifest hari ini", "Mulai dan akhiri perjalanan", "Riwayat perjalanan sendiri"],
     cta: "Masuk sebagai Pengemudi",
+    openCta: "Buka area Pengemudi",
     icon: <DriverIcon />,
     tone: "driver",
   },
   {
     href: "/login?peran=wali",
+    areaHref: "/wali",
     label: "Orang Tua/Wali",
     kicker: "Pemantauan",
     description:
       "Pantau anak yang terhubung dengan akun Anda: sekolah, layanan, status perjalanan, dan riwayatnya.",
     points: ["Kartu anak & status layanan", "Status perjalanan hari ini", "Riwayat perjalanan anak"],
     cta: "Masuk sebagai Orang Tua/Wali",
+    openCta: "Buka area Orang Tua/Wali",
     icon: <GuardianIcon />,
     tone: "parent",
   },
 ];
 
 export default function AccessGatePage() {
+  const openAccess = isDevOpenAccess();
+
   return (
     <main className="gate">
       <div className="gate-inner">
@@ -94,8 +103,9 @@ export default function AccessGatePage() {
           <p className="gate-kicker">Satu gerbang akses</p>
           <h1>Tiga ruang kerja, satu layanan bus sekolah yang aman.</h1>
           <p className="gate-copy">
-            Pilih pintu masuk yang sesuai dengan peran Anda. Kartu di bawah hanya mengarahkan ke halaman masuk —
-            hak akses tetap dibaca dari peran akun di database setelah Anda terautentikasi.
+            {openAccess
+              ? "Mode pengembangan aktif: keempat area dapat dibuka langsung tanpa login dan memakai data simulasi berlabel. Di produksi, pintu masuk di bawah mengarah ke halaman masuk dan hak akses dibaca dari peran akun di database."
+              : "Pilih pintu masuk yang sesuai dengan peran Anda. Kartu di bawah hanya mengarahkan ke halaman masuk — hak akses tetap dibaca dari peran akun di database setelah Anda terautentikasi."}
           </p>
           <div className="gate-meta">
             <span className="gate-meta-item">
@@ -120,11 +130,11 @@ export default function AccessGatePage() {
                   <li key={point}>{point}</li>
                 ))}
               </ul>
-              <Link className="gate-cta" href={door.href}>
-                {door.cta}
+              <Link className="gate-cta" href={openAccess ? door.areaHref : door.href}>
+                {openAccess ? door.openCta : door.cta}
                 <span aria-hidden="true">→</span>
               </Link>
-              {door.tone === "parent" && (
+              {door.tone === "parent" && !openAccess && (
                 <Link className="gate-secondary" href="/daftar">
                   Belum punya kata sandi? Aktivasi akun wali
                 </Link>

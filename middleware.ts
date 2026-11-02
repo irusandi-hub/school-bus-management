@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { isDevOpenAccess } from "@/lib/dev-open-access";
 import { supabaseConfig } from "@/lib/supabase/env";
 
 const protectedPrefixes = ["/admin", "/operator", "/pengemudi", "/wali", "/akun", "/tanpa-akses"];
@@ -9,6 +10,11 @@ function isProtected(pathname: string) {
 }
 
 export async function middleware(request: NextRequest) {
+  // Mode akses terbuka pengembangan (DEC-024): pengalihan ke /login dimatikan, tetapi
+  // gerbang di setiap layout dan Server Action tetap berjalan. Mode ini tidak pernah
+  // aktif di produksi dan tidak memakai klien Supabase sama sekali.
+  if (isDevOpenAccess()) return NextResponse.next();
+
   const config = supabaseConfig();
   if (!config) return NextResponse.next();
 

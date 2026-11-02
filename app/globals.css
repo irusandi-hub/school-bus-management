@@ -624,3 +624,7 @@ body{background:var(--paper);color:var(--ink)}
   .driver-nav{display:flex}
 }
 
+
+/* Pita mode akses terbuka pengembangan (DEC-024): selalu terlihat di atas konten. */
+.dev-mode-banner{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;padding:9px 16px;background:#fff0d9;border-bottom:1px solid #f0dcb4;color:#795a2d;font-size:12px;line-height:1.5}
+.dev-mode-banner strong{font:800 12px Manrope,sans-serif;letter-spacing:.4px;text-transform:uppercase}

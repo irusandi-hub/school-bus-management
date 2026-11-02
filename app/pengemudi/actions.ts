@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { DEV_DRIVER_RECORD, DEV_VIEWER, isDevOpenAccess } from "@/lib/dev-open-access";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { supabaseNotConfiguredMessage } from "@/lib/supabase/env";
 import { failure, readText, type ActionState } from "@/lib/validation";
@@ -13,6 +14,12 @@ type DriverContext =
 async function driverActionContext(): Promise<DriverContext> {
   const supabase = await createServerSupabase();
   if (!supabase) return { ok: false, state: failure(supabaseNotConfiguredMessage) };
+
+  // Mode akses terbuka pengembangan (DEC-024): tindakan pengemudi dilayani identitas
+  // simulasi. Pemeriksaan peran di bawah tetap utuh untuk mode normal.
+  if (isDevOpenAccess()) {
+    return { ok: true, supabase, userId: DEV_VIEWER.driver.userId, driverId: DEV_DRIVER_RECORD.id };
+  }
 
   const {
     data: { user },
