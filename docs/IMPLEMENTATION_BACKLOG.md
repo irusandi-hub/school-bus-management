@@ -192,14 +192,29 @@ Audit read-only 2026-10-29 mencatat 11 tabel inti dengan RLS aktif dan tanpa pol
 
 **Bukti:** `npm run typecheck` lulus, `npm test` 28/28 lulus, `npm run build` lulus (39 route). Preview: `/` menampilkan gate tiga kartu; rute internal tanpa Supabase menampilkan pemberitahuan konfigurasi tanpa data contoh.
 
+## Iterasi 2026-11-01 — penuntasan alur inti
+
+### `SELESAI DAN LULUS TES`
+
+- [x] Migrasi `20261031000002_operator_driver_account_linking.sql`: `resolve_account_uid`, `link_operator_account`, `unlink_operator_account`, `link_driver_account`, `unlink_driver_account`, `linked_account_emails` (admin-only, `security definer`, `search_path = ''`).
+- [x] UI penautan akun: `/admin/operator` dan `/admin/pengemudi` menampilkan email akun tertaut dan formulir tautkan/lepas tautan; pesan galat dari database diteruskan dalam Bahasa Indonesia.
+- [x] Detail rute operator `GET /operator/rute/[id]` (ringkasan, urutan titik, roster per titik) — tetap hanya-baca sesuai DEC-022.
+- [x] Alur pengemudi: `confirmArrival`/`endTrip` memeriksa jumlah baris terpengaruh; `endTrip` meminta konfirmasi bila masih ada siswa berstatus naik atau belum dicatat (pemeriksaan kabin versi lunak).
+- [x] RLS operator di-scope penuh: rute/titik jemput/roster/penugasan hanya untuk sekolah milik organisasi; tulis lintas organisasi ditolak database.
+- [x] Perbaikan bug migrasi: `private.current_guardian_id()` dipindah setelah kolom `students.guardian_id` ada; deklarasi `%type` pada `do` block diganti `text`.
+- [x] Perbaikan bug RLS serius: policy saling merujuk menyebabkan `infinite recursion detected in policy` (schools ↔ students, schools ↔ guardians, trip_assignments ↔ buses, trip_assignments ↔ routes). Seluruh skop lintas tabel dipindah ke helper `security definer`.
+- [x] Indeks unik parsial `trips_one_active_idx` (satu perjalanan aktif per penugasan) sebagai pertahanan database di luar UI.
+- [x] Suite uji `supabase/tests/migration_checks.sql` (T1–T14): cakupan dan penolakan lintas organisasi, cakupan pengemudi, isolasi wali, wewenang admin, penolakan `anon`, penautan akun, dan penyembunyian email akun.
+
+**Bukti:** keempat migrasi dijalankan berurutan pada Postgres 14 lokal (database kosong + stub `auth`), lalu `supabase/tests/migration_checks.sql` berakhir dengan “SEMUA PEMERIKSAAN MIGRASI DAN RLS LULUS”. `npm run typecheck` lulus, `npm test` 28/28 lulus, `npm run build` lulus.
+
 ### `TERIMPLEMENTASI TETAPI BELUM TERVERIFIKASI`
 
-- Migrasi `20261031000001_operator_driver_guardian_areas.sql` belum dijalankan ke database mana pun.
-- Isolasi RLS antarperan (admin vs operator vs pengemudi vs wali) belum diuji dengan akun nyata — tidak ada kredensial Supabase di lingkungan ini.
-- Alur login tiga peran dan penautan akun operator/pengemudi belum diuji end-to-end.
+- Penerapan migrasi pada proyek Supabase pengembangan (tidak ada kredensial di lingkungan ini; migrasi hanya diuji pada Postgres lokal dengan stub `auth`).
+- Alur login tiga peran dan penautan akun operator/pengemudi end-to-end lewat browser.
+- Pengujian Server Action otomatis (validasi, pesan galat, dan efek samping).
 
 ### `BELUM DIKERJAKAN`
 
-- UI penautan akun operator/pengemudi (saat ini SQL/back office) → `/tanpa-akses` menangani akun belum tertaut.
 - GPS nyata, kamera live, dan routing (tanpa data palsu; UI hanya menyatakan belum tersedia).
 - Uji responsivitas visual pada perangkat nyata dan audit kontras warna.

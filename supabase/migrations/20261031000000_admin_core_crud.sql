@@ -56,30 +56,11 @@ as $$
   );
 $$;
 
-create or replace function private.current_guardian_id()
-returns uuid
-language sql
-stable
-security definer
-set search_path = ''
-as $$
-  select g.id
-  from public.guardians g
-  where g.profile_id = auth.uid()
-    and g.active
-    and exists (
-      select 1
-      from public.students s
-      where s.guardian_id = g.id
-        and s.service_status = 'active'
-    )
-  limit 1;
-$$;
+-- private.current_guardian_id() is defined below, after the guardians table it
+-- references exists, so that a fresh database can apply this file in order.
 
 revoke all on function private.is_admin() from public, anon;
-revoke all on function private.current_guardian_id() from public, anon;
 grant execute on function private.is_admin() to authenticated;
-grant execute on function private.current_guardian_id() to authenticated;
 
 -- ---------------------------------------------------------------------------
 -- Audit trail
@@ -303,6 +284,31 @@ comment on table public.guardian_students is
 
 create index students_school_idx on public.students (school_id);
 create index students_guardian_idx on public.students (guardian_id);
+
+-- Defined here (not above) because it reads students.guardian_id, which is added
+-- on the line above; a fresh database applies this file strictly in order.
+create or replace function private.current_guardian_id()
+returns uuid
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select g.id
+  from public.guardians g
+  where g.profile_id = auth.uid()
+    and g.active
+    and exists (
+      select 1
+      from public.students s
+      where s.guardian_id = g.id
+        and s.service_status = 'active'
+    )
+  limit 1;
+$$;
+
+revoke all on function private.current_guardian_id() from public, anon;
+grant execute on function private.current_guardian_id() to authenticated;
 create index students_service_status_idx on public.students (service_status);
 create index students_name_idx on public.students (lower(full_name));
 

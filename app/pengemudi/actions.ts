@@ -114,13 +114,17 @@ export async function confirmArrival(formData: FormData) {
   const target = `/pengemudi/tugas/${assignmentId}`;
   if (!ctx.ok) backTo(target, ctx.state.message, "error");
 
-  const { error } = await ctx.supabase
+  const { data, error } = await ctx.supabase
     .from("trips")
     .update({ arrived_at: new Date().toISOString() })
     .eq("id", tripId)
-    .eq("status", "in_progress");
+    .eq("status", "in_progress")
+    .select("id");
 
   if (error) backTo(target, "Konfirmasi tiba belum tersimpan. Coba lagi.", "error");
+  if (!data || data.length === 0) {
+    backTo(target, "Konfirmasi tiba tidak dapat dicatat karena perjalanan ini sedang berlangsung.", "error");
+  }
 
   revalidatePath(target);
   revalidatePath("/admin/perjalanan");
@@ -135,6 +139,7 @@ export async function endTrip(formData: FormData) {
   const ctx = await driverActionContext();
   const tripId = readText(formData, "trip_id");
   const assignmentId = readText(formData, "assignment_id");
+  const acknowledged = readText(formData, "acknowledge_open");
   const target = `/pengemudi/tugas/${assignmentId}`;
   if (!ctx.ok) backTo(target, ctx.state.message, "error");
   if (!tripId) backTo(target, "Perjalanan tidak dikenali.", "error");
@@ -144,6 +149,7 @@ export async function endTrip(formData: FormData) {
     .from("trips")
     .select("id, status, arrived_at, trip_assignments(route_id, driver_id, routes(direction))")
     .eq("id", tripId)
+    .eq("assignment_id", assignmentId)
     .maybeSingle();
 
   const trip = tripData as unknown as {
@@ -170,8 +176,12 @@ export async function endTrip(formData: FormData) {
       .eq("route_id", routeId)
       .eq("direction", direction)
       .eq("active", true),
-    ctx.supabase.from("trip_student_events").select("student_id").eq("trip_id", tripId),
+    ctx.supabase.from("trip_student_events").select("student_id, event_type, occurred_at").eq("trip_id", tripId).order("occurred_at", { ascending: false }),
   ]);
+
+  if (rosterResult.error || eventsResult.error) {
+    backTo(target, "Daftar siswa atau status perjalanan belum dapat dimuat. Coba lagi.", "error");
+  }
 
   const rosterIds = ((rosterResult.data ?? []) as unknown as { student_id: string }[]).map((row) => row.student_id);
   const recordedIds = ((eventsResult.data ?? []) as unknown as { student_id: string }[]).map((row) => row.student_id);
@@ -193,6 +203,15 @@ export async function endTrip(formData: FormData) {
     backTo(target, verdict.problems[0], "error");
   }
 
+  const latest = new Map<string, string>();
+  for (const event of (eventsResult.data ?? []) as { student_id: string; event_type: string }[]) {
+    if (!latest.has(event.student_id)) latest.set(event.student_id, event.event_type);
+  }
+  const openStudents = rosterIds.filter((id) => !latest.has(id) || latest.get(id) === "boarded").length;
+  if (openStudents > 0 && acknowledged !== "1") {
+    backTo(target, `${openStudents} siswa masih berstatus naik. Periksa kabin dan konfirmasi status siswa sebelum mengakhiri perjalanan.`, "error");
+  }
+  const exceptionNote = openStudents > 0 ? `Pemeriksaan kabin dikonfirmasi untuk ${openStudents} siswa dengan status naik.` : null;
   const now = new Date().toISOString();
   const { data, error } = await ctx.supabase
     .from("trips")
@@ -200,7 +219,7 @@ export async function endTrip(formData: FormData) {
       status: "completed",
       completed_at: now,
       safety_checked_at: now,
-      safety_check_notes: verdict.notes,
+      safety_check_notes: [verdict.notes, exceptionNote].filter(Boolean).join(" ") || null,
       student_count_confirmed: verdict.studentCount,
     })
     .eq("id", tripId)
@@ -208,6 +227,9 @@ export async function endTrip(formData: FormData) {
     .select("id");
 
   if (error) backTo(target, "Perjalanan belum dapat diakhiri. Coba lagi.", "error");
+  if (!data || data.length === 0) {
+    backTo(target, "Perjalanan ini sedang berlangsung dan tidak dapat diubah. Muat ulang halaman.", "error");
+  }
 
   revalidatePath(target);
   revalidatePath("/pengemudi");

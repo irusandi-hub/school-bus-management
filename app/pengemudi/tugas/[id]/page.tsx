@@ -129,7 +129,13 @@ export default async function DriverTaskPage({
 
   // Siswa yang belum punya catatan apa pun pada perjalanan ini.
   const unrecorded = roster.filter((entry) => !latestEvent.has(entry.student_id));
-  const canEndTrip = Boolean(trip?.arrived_at) && unrecorded.length === 0;
+  const canEndTrip = Boolean(trip?.arrived_at) && unrecorded.length === 0 && !rosterResult.error && !eventsResult.error;
+
+  // Students whose status is unclear for closing the trip (not dropped off/absent).
+  const unclearStudents = roster.filter((entry) => {
+    const status = latestEvent.get(entry.student_id)?.event_type;
+    return !status || status === "boarded";
+  }).length;
 
   return (
     <>
@@ -154,6 +160,7 @@ export default async function DriverTaskPage({
 
       {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
       {stopsResult.error && <Notice kind="error">Urutan titik jemput belum dapat dimuat.</Notice>}
+      {eventsResult.error && <Notice kind="error">Status siswa belum dapat dimuat.</Notice>}
       {rosterResult.error && <Notice kind="error">Daftar siswa belum dapat dimuat.</Notice>}
 
       <section className="panel task-actions">
@@ -215,6 +222,16 @@ export default async function DriverTaskPage({
               <form className="task-end-form" action={endTrip}>
                 <input type="hidden" name="trip_id" value={trip.id} />
                 <input type="hidden" name="assignment_id" value={assignment.id} />
+                {unclearStudents > 0 && (
+                  <div className="close-warning">
+                    <strong>Masih ada {unclearStudents} siswa berstatus naik atau belum dicatat.</strong>
+                    <p>Periksa kabin dan pastikan status setiap siswa benar. Siswa tanpa catatan tetap wajib dicatat terlebih dahulu.</p>
+                    <label className="close-check">
+                      <input type="checkbox" name="acknowledge_open" value="1" required />
+                      <span>Saya sudah memeriksa kabin dan memastikan status siswa tersebut benar.</span>
+                    </label>
+                  </div>
+                )}
                 <fieldset className="safety-checks">
                   <legend>Pemeriksaan keselamatan wajib</legend>
                   {SAFETY_CHECKS.map((check) => (
