@@ -2,8 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { DEV_DRIVER_RECORD, DEV_VIEWER, isDevOpenAccess } from "@/lib/dev-open-access";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { supabaseNotConfiguredMessage } from "@/lib/supabase/env";
+import { evaluateTripEnd, SAFETY_CHECKS, type SafetyFieldName } from "@/lib/driver/trip-end";
 import { failure, readText, type ActionState } from "@/lib/validation";
 
 type DriverContext =
@@ -13,6 +15,12 @@ type DriverContext =
 async function driverActionContext(): Promise<DriverContext> {
   const supabase = await createServerSupabase();
   if (!supabase) return { ok: false, state: failure(supabaseNotConfiguredMessage) };
+
+  // Mode akses terbuka pengembangan (DEC-024): tindakan pengemudi dilayani identitas
+  // simulasi. Pemeriksaan peran di bawah tetap utuh untuk mode normal.
+  if (isDevOpenAccess()) {
+    return { ok: true, supabase, userId: DEV_VIEWER.driver.userId, driverId: DEV_DRIVER_RECORD.id };
+  }
 
   const {
     data: { user },
@@ -76,11 +84,20 @@ export async function startTrip(formData: FormData) {
     backTo(target, "Perjalanan untuk tugas ini sudah selesai dan tidak dapat dimulai ulang.", "error");
   }
 
-  const { error } = await ctx.supabase.from("trips").insert({
-    assignment_id: assignmentId,
-    status: "in_progress",
-    started_at: new Date().toISOString(),
-  });
+  const startedAt = new Date().toISOString();
+
+  // Perjalanan terjadwal yang sudah dibuat saat penjadwalan dilanjutkan, bukan diduplikasi.
+  const { error } = existing
+    ? await ctx.supabase
+        .from("trips")
+        .update({ status: "in_progress", started_at: startedAt })
+        .eq("id", existing.id)
+        .eq("status", "scheduled")
+    : await ctx.supabase.from("trips").insert({
+        assignment_id: assignmentId,
+        status: "in_progress",
+        started_at: startedAt,
+      });
 
   if (error) backTo(target, "Perjalanan belum dapat dimulai. Periksa koneksi lalu coba lagi.", "error");
 
@@ -114,50 +131,8 @@ export async function confirmArrival(formData: FormData) {
   backTo(target, "Tiba di sekolah tercatat. Lanjutkan penurunan siswa bila diperlukan.");
 }
 
-/**
- * Students whose latest status is not "dropped off" or "absent" must be checked
- * before the trip is closed (cabin check, MASTER_SPEC section 10).
- */
-async function countUnclearStudents(
-  ctx: Extract<DriverContext, { ok: true }>,
-  assignmentId: string,
-  tripId: string,
-): Promise<number | null> {
-  const { data: assignment } = await ctx.supabase
-    .from("trip_assignments")
-    .select("id, routes(id, direction)")
-    .eq("id", assignmentId)
-    .eq("driver_id", ctx.driverId)
-    .maybeSingle();
-
-  const route = assignment?.routes as unknown as { id: string; direction: string } | null;
-  if (!assignment || !route) return null;
-
-  const [rosterResult, eventsResult] = await Promise.all([
-    ctx.supabase
-      .from("student_route_stops")
-      .select("student_id")
-      .eq("route_id", route.id)
-      .eq("direction", route.direction)
-      .eq("active", true),
-    ctx.supabase
-      .from("trip_student_events")
-      .select("student_id, event_type, occurred_at")
-      .eq("trip_id", tripId)
-      .order("occurred_at", { ascending: false }),
-  ]);
-
-  if (rosterResult.error || eventsResult.error) return null;
-
-  const latest = new Map<string, string>();
-  for (const event of (eventsResult.data ?? []) as { student_id: string; event_type: string }[]) {
-    if (!latest.has(event.student_id)) latest.set(event.student_id, event.event_type);
-  }
-
-  return ((rosterResult.data ?? []) as { student_id: string }[]).filter((entry) => {
-    const status = latest.get(entry.student_id);
-    return !status || status === "boarded";
-  }).length;
+function readConfirmation(formData: FormData, name: SafetyFieldName) {
+  return formData.get(name) === "on" || formData.get(name) === "true";
 }
 
 export async function endTrip(formData: FormData) {
@@ -167,22 +142,86 @@ export async function endTrip(formData: FormData) {
   const acknowledged = readText(formData, "acknowledge_open");
   const target = `/pengemudi/tugas/${assignmentId}`;
   if (!ctx.ok) backTo(target, ctx.state.message, "error");
+  if (!tripId) backTo(target, "Perjalanan tidak dikenali.", "error");
 
-  const openStudents = await countUnclearStudents(ctx, assignmentId, tripId);
-  if (openStudents === null) {
+  // Perjalanan harus milik pengemudi ini dan masih berjalan, bukan hanya cocok id.
+  const { data: tripData } = await ctx.supabase
+    .from("trips")
+    .select("id, status, arrived_at, trip_assignments(route_id, driver_id, routes(direction))")
+    .eq("id", tripId)
+    .eq("assignment_id", assignmentId)
+    .maybeSingle();
+
+  const trip = tripData as unknown as {
+    id: string;
+    status: string;
+    arrived_at: string | null;
+    trip_assignments: { route_id: string; driver_id: string; routes: { direction: string } | null } | null;
+  } | null;
+
+  if (!trip || !trip.trip_assignments || trip.trip_assignments.driver_id !== ctx.driverId) {
     backTo(target, "Perjalanan tidak ditemukan untuk akun Anda.", "error");
   }
-  if (openStudents > 0 && acknowledged !== "1") {
-    backTo(
-      target,
-      `${openStudents} siswa masih berstatus naik atau belum dicatat. Periksa kabin dan status siswa tersebut, lalu centang konfirmasi pemeriksaan sebelum mengakhiri perjalanan.`,
-      "error",
-    );
+  if (trip.status !== "in_progress") {
+    backTo(target, "Perjalanan ini belum berjalan atau sudah selesai.", "error");
   }
 
+  const routeId = trip.trip_assignments.route_id;
+  const direction = trip.trip_assignments.routes?.direction ?? "morning";
+
+  const [rosterResult, eventsResult] = await Promise.all([
+    ctx.supabase
+      .from("student_route_stops")
+      .select("student_id")
+      .eq("route_id", routeId)
+      .eq("direction", direction)
+      .eq("active", true),
+    ctx.supabase.from("trip_student_events").select("student_id, event_type, occurred_at").eq("trip_id", tripId).order("occurred_at", { ascending: false }),
+  ]);
+
+  if (rosterResult.error || eventsResult.error) {
+    backTo(target, "Daftar siswa atau status perjalanan belum dapat dimuat. Coba lagi.", "error");
+  }
+
+  const rosterIds = ((rosterResult.data ?? []) as unknown as { student_id: string }[]).map((row) => row.student_id);
+  const recordedIds = ((eventsResult.data ?? []) as unknown as { student_id: string }[]).map((row) => row.student_id);
+
+  const confirmations = Object.fromEntries(
+    SAFETY_CHECKS.map((check) => [check.name, readConfirmation(formData, check.name)]),
+  ) as Record<SafetyFieldName, boolean>;
+
+  const verdict = evaluateTripEnd({
+    status: trip.status,
+    arrivedAt: trip.arrived_at,
+    rosterStudentIds: rosterIds,
+    recordedStudentIds: recordedIds,
+    confirmations,
+    notes: readText(formData, "safety_notes"),
+  });
+
+  if (!verdict.ok) {
+    backTo(target, verdict.problems[0], "error");
+  }
+
+  const latest = new Map<string, string>();
+  for (const event of (eventsResult.data ?? []) as { student_id: string; event_type: string }[]) {
+    if (!latest.has(event.student_id)) latest.set(event.student_id, event.event_type);
+  }
+  const openStudents = rosterIds.filter((id) => !latest.has(id) || latest.get(id) === "boarded").length;
+  if (openStudents > 0 && acknowledged !== "1") {
+    backTo(target, `${openStudents} siswa masih berstatus naik. Periksa kabin dan konfirmasi status siswa sebelum mengakhiri perjalanan.`, "error");
+  }
+  const exceptionNote = openStudents > 0 ? `Pemeriksaan kabin dikonfirmasi untuk ${openStudents} siswa dengan status naik.` : null;
+  const now = new Date().toISOString();
   const { data, error } = await ctx.supabase
     .from("trips")
-    .update({ status: "completed", completed_at: new Date().toISOString() })
+    .update({
+      status: "completed",
+      completed_at: now,
+      safety_checked_at: now,
+      safety_check_notes: [verdict.notes, exceptionNote].filter(Boolean).join(" ") || null,
+      student_count_confirmed: verdict.studentCount,
+    })
     .eq("id", tripId)
     .eq("status", "in_progress")
     .select("id");

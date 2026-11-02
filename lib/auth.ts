@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { homeForRole } from "@/lib/access";
+import { DEV_DRIVER_RECORD, DEV_ORGANISATION, DEV_VIEWER, isDevOpenAccess } from "@/lib/dev-open-access";
 import { createServerSupabase } from "@/lib/supabase/server";
 import type { ProfileRow, UserRole } from "@/lib/types";
 
@@ -65,6 +66,26 @@ async function requireViewer(nextPath: string): Promise<Viewer | null> {
   return state.viewer;
 }
 
+/**
+ * Mode akses terbuka pengembangan (DEC-024): setiap gerbang area menyajikan identitas
+ * simulasi untuk areanya sendiri, sehingga keempat area dapat ditinjau bersamaan tanpa
+ * login. Pemeriksaan peran yang sesunguhnya tetap ada di `profiles.role` dan RLS
+ * database, dan kembali berlaku penuh begitu `DEV_OPEN_ACCESS` dimatikan.
+ */
+function devViewerFor(kind: keyof typeof DEV_VIEWER): Viewer {
+  const identity = DEV_VIEWER[kind];
+  return {
+    userId: identity.userId,
+    email: identity.email,
+    profile: {
+      id: identity.userId,
+      full_name: identity.fullName,
+      role: kind as UserRole,
+      phone: null,
+    },
+  };
+}
+
 function requireProfile(viewer: Viewer): ProfileRow {
   if (!viewer.profile) redirect("/akun/kata-sandi?alasan=profil-belum-aktif");
   return viewer.profile;
@@ -79,6 +100,8 @@ export type AdminAccess = { status: "unconfigured" } | { status: "ready"; viewer
 
 /** Server-side gate for every Admin Pusat page and action. */
 export async function requireAdmin(nextPath = "/admin"): Promise<AdminAccess> {
+  if (isDevOpenAccess()) return { status: "ready", viewer: devViewerFor("admin") };
+
   const viewer = await requireViewer(nextPath);
   if (!viewer) return { status: "unconfigured" };
 
@@ -97,6 +120,14 @@ export type OperatorAccess =
  * account. A role without an organisation must not see any organisation data.
  */
 export async function requireOperator(nextPath = "/operator"): Promise<OperatorAccess> {
+  if (isDevOpenAccess()) {
+    return {
+      status: "ready",
+      viewer: devViewerFor("operator"),
+      operator: { id: DEV_ORGANISATION.id, name: DEV_ORGANISATION.name },
+    };
+  }
+
   const viewer = await requireViewer(nextPath);
   if (!viewer) return { status: "unconfigured" };
 
@@ -128,6 +159,14 @@ export type DriverAccess =
 
 /** Driver access requires the database role AND an active driver row for the account. */
 export async function requireDriver(nextPath = "/pengemudi"): Promise<DriverAccess> {
+  if (isDevOpenAccess()) {
+    return {
+      status: "ready",
+      viewer: devViewerFor("driver"),
+      driver: { id: DEV_DRIVER_RECORD.id, full_name: DEV_DRIVER_RECORD.fullName },
+    };
+  }
+
   const viewer = await requireViewer(nextPath);
   if (!viewer) return { status: "unconfigured" };
 
@@ -159,6 +198,8 @@ export type GuardianAccess =
 
 /** Server-side gate for the guardian area. */
 export async function requireGuardian(nextPath = "/wali"): Promise<GuardianAccess> {
+  if (isDevOpenAccess()) return { status: "ready", viewer: devViewerFor("parent") };
+
   const viewer = await requireViewer(nextPath);
   if (!viewer) return { status: "unconfigured" };
 

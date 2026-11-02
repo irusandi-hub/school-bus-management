@@ -42,6 +42,8 @@ Variabel lingkungan yang diperlukan (lihat `.env.example`):
 
 Tanpa variabel tersebut aplikasi tetap dapat dibuka, tetapi halaman data menampilkan pemberitahuan bahwa database belum dikonfigurasi (tidak ada crash dan tidak ada data contoh).
 
+Selama tahap pengembangan UI (DEC-023), set `DEV_OPEN_ACCESS=1` di `.env.local` untuk membuka keempat area tanpa login dengan dataset simulasi berlabel. Mode ini fail-closed: tidak aktif tanpa variabel itu, tidak aktif saat `NODE_ENV`/`VERCEL_ENV` produksi, dan tidak pernah membuat klien Supabase sehingga tidak menyentuh database nyata. Matikan variabelnya untuk kembali ke alur autentikasi normal.
+
 Konfigurasi tambahan pada Supabase Dashboard → Authentication → URL Configuration:
 
 - Site URL: alamat aplikasi (mis. `http://localhost:3000`).
@@ -219,3 +221,17 @@ Risiko yang masih terbuka dan perlu ditangani sebelum produksi: rate limiting kh
 - [Arsip backlog implementasi](docs/IMPLEMENTATION_BACKLOG.md)
 - [Alur inti navigasi dan laporan orang tua](docs/CORE_WORKFLOWS_NAVIGATION_AND_PARENT_REPORTS.md)
 - [Evaluasi penyedia routing](docs/ROUTING_PROVIDER_EVALUATION.md)
+
+
+## Tahap pengembangan UI (DEC-023)
+
+**Instruksi tahap terbaru:** sebelum integrasi autentikasi final, seluruh area Admin Pusat, Operator, Pengemudi, dan Orang Tua/Wali harus dapat ditinjau tanpa login, registrasi, verifikasi email, atau penautan akun. Urutan pengerjaan: Admin Pusat → Operator → Pengemudi → Orang Tua/Wali → integrasi autentikasi/otorisasi final.
+
+Ketentuan ini mengubah urutan implementasi, bukan standar keamanan produksi:
+- Akses terbuka hanya untuk local/development/preview non-production dan harus fail-closed bila environment tidak dikenali.
+- Tidak boleh aktif di production atau menggunakan database/data produksi.
+- Jangan menonaktifkan RLS atau mengubah kebijakan database produksi untuk mempermudah UI.
+- Data contoh hanya untuk development dan harus diberi label simulasi.
+- Seluruh pemeriksaan server/database dan autentikasi final tetap wajib dipulihkan sebelum rilis production.
+
+Catatan status: bagian README lain yang menyebut autentikasi wajib di semua area menggambarkan rancangan integrasi akhir, bukan perilaku yang harus dipaksakan selama tahap UI terbuka ini. README perlu diselaraskan lagi setelah implementasi mode development selesai.

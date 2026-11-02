@@ -1,3 +1,4 @@
+import { DEV_ORGANISATION, DEV_VIEWER, isDevOpenAccess } from "@/lib/dev-open-access";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { supabaseNotConfiguredMessage } from "@/lib/supabase/env";
 import { failure, type ActionState } from "@/lib/validation";
@@ -20,6 +21,11 @@ export type AdminActionContext =
 export async function adminActionContext(): Promise<AdminActionContext> {
   const supabase = await createServerSupabase();
   if (!supabase) return { ok: false, state: failure(supabaseNotConfiguredMessage) };
+
+  // Mode akses terbuka pengembangan (DEC-024): tindakan Admin Pusat dilayani identitas
+  // simulasi atas dataset simulasi. Pemeriksaan peran di bawah tetap utuh dan berlaku
+  // kembali penuh ketika mode dev dimatikan.
+  if (isDevOpenAccess()) return { ok: true, supabase, userId: DEV_VIEWER.admin.userId };
 
   const {
     data: { user },
@@ -77,6 +83,12 @@ export type OperatorActionContext =
 export async function operatorActionContext(): Promise<OperatorActionContext> {
   const supabase = await createServerSupabase();
   if (!supabase) return { ok: false, state: failure(supabaseNotConfiguredMessage) };
+
+  // Mode akses terbuka pengembangan (DEC-024): organisasi simulasi dipakai sebagai
+  // pemilik baris, sehingga tulisan operator tetap terbatas pada satu armada contoh.
+  if (isDevOpenAccess()) {
+    return { ok: true, supabase, userId: DEV_VIEWER.operator.userId, operatorId: DEV_ORGANISATION.id };
+  }
 
   const {
     data: { user },

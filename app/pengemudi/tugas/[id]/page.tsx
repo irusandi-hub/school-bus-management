@@ -5,6 +5,7 @@ import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
 import { ConfigNotice, EmptyRow, Notice, Pill } from "@/components/admin/ui";
 import { firstParam, noticeFromParams } from "@/lib/admin/query";
 import { requireDriver } from "@/lib/auth";
+import { SAFETY_CHECKS } from "@/lib/driver/trip-end";
 import { createServerSupabase } from "@/lib/supabase/server";
 import type { RouteStopRow, TripEventRow } from "@/lib/types";
 import {
@@ -58,7 +59,7 @@ export default async function DriverTaskPage({
   const { data: assignmentData } = await supabase
     .from("trip_assignments")
     .select(
-      "id, service_date, routes(id, route_name, school_name, direction), buses(fleet_code, plate_number, capacity), trips(id, status, started_at, arrived_at, completed_at)",
+      "id, service_date, routes(id, route_name, school_name, direction), buses(fleet_code, plate_number, capacity), trips(id, status, started_at, arrived_at, completed_at, safety_checked_at, student_count_confirmed)",
     )
     .eq("id", id)
     .eq("driver_id", access.driver.id)
@@ -69,7 +70,15 @@ export default async function DriverTaskPage({
     service_date: string;
     routes: { id: string; route_name: string; school_name: string; direction: string } | null;
     buses: { fleet_code: string; plate_number: string | null; capacity: number } | null;
-    trips: { id: string; status: string; started_at: string | null; arrived_at: string | null; completed_at: string | null }[];
+    trips: {
+      id: string;
+      status: string;
+      started_at: string | null;
+      arrived_at: string | null;
+      completed_at: string | null;
+      safety_checked_at?: string | null;
+      student_count_confirmed?: number | null;
+    }[];
   } | null;
 
   if (!assignment) notFound();
@@ -115,6 +124,12 @@ export default async function DriverTaskPage({
 
   const inProgress = trip?.status === "in_progress";
   const completed = trip?.status === "completed";
+  // Perjalanan terjadwal yang belum dimulai tetap harus bisa dijalankan pengemudi.
+  const canStart = !trip || trip.status === "scheduled";
+
+  // Siswa yang belum punya catatan apa pun pada perjalanan ini.
+  const unrecorded = roster.filter((entry) => !latestEvent.has(entry.student_id));
+  const canEndTrip = Boolean(trip?.arrived_at) && unrecorded.length === 0 && !rosterResult.error && !eventsResult.error;
 
   // Students whose status is unclear for closing the trip (not dropped off/absent).
   const unclearStudents = roster.filter((entry) => {
@@ -145,6 +160,7 @@ export default async function DriverTaskPage({
 
       {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
       {stopsResult.error && <Notice kind="error">Urutan titik jemput belum dapat dimuat.</Notice>}
+      {eventsResult.error && <Notice kind="error">Status siswa belum dapat dimuat.</Notice>}
       {rosterResult.error && <Notice kind="error">Daftar siswa belum dapat dimuat.</Notice>}
 
       <section className="panel task-actions">
@@ -155,7 +171,7 @@ export default async function DriverTaskPage({
           </div>
         </header>
         <div className="task-action-body">
-          {!trip && (
+          {canStart && (
             <>
               <p>Perjalanan belum dimulai. Mulai hanya setelah bus siap dan penugasan ini benar.</p>
               <form action={startTrip}>
@@ -171,7 +187,7 @@ export default async function DriverTaskPage({
             </>
           )}
 
-          {trip && (
+          {trip && trip.status !== "scheduled" && (
             <dl className="task-times">
               <div>
                 <dt>Mulai</dt>
@@ -203,31 +219,54 @@ export default async function DriverTaskPage({
                   </ConfirmSubmit>
                 </form>
               )}
-              <div className="end-trip-block">
+              <form className="task-end-form" action={endTrip}>
+                <input type="hidden" name="trip_id" value={trip.id} />
+                <input type="hidden" name="assignment_id" value={assignment.id} />
                 {unclearStudents > 0 && (
                   <div className="close-warning">
-                    <strong>Masih ada {unclearStudents} siswa dengan status naik atau belum dicatat.</strong>
-                    <p>Periksa kabin dan pastikan setiap siswa sudah turun, tidak ikut, atau dicatat kendalanya.</p>
-                  </div>
-                )}
-                <form action={endTrip}>
-                  <input type="hidden" name="trip_id" value={trip.id} />
-                  <input type="hidden" name="assignment_id" value={assignment.id} />
-                  {unclearStudents > 0 && (
+                    <strong>Masih ada {unclearStudents} siswa berstatus naik atau belum dicatat.</strong>
+                    <p>Periksa kabin dan pastikan status setiap siswa benar. Siswa tanpa catatan tetap wajib dicatat terlebih dahulu.</p>
                     <label className="close-check">
                       <input type="checkbox" name="acknowledge_open" value="1" required />
                       <span>Saya sudah memeriksa kabin dan memastikan status siswa tersebut benar.</span>
                     </label>
-                  )}
-                  <ConfirmSubmit
-                    className="btn btn-primary"
-                    message="Akhiri perjalanan ini? Status perjalanan akan menjadi selesai dan tidak dapat dimulai ulang."
-                    pendingLabel="Mengakhiri…"
-                  >
-                    Akhiri perjalanan
-                  </ConfirmSubmit>
-                </form>
-              </div>
+                  </div>
+                )}
+                <fieldset className="safety-checks">
+                  <legend>Pemeriksaan keselamatan wajib</legend>
+                  {SAFETY_CHECKS.map((check) => (
+                    <label key={check.name} className="safety-check">
+                      <input type="checkbox" name={check.name} required />
+                      <span>{check.label}</span>
+                    </label>
+                  ))}
+                  <label className="safety-notes">
+                    <span>Catatan pemeriksaan (opsional)</span>
+                    <textarea name="safety_notes" rows={2} maxLength={400} placeholder="Contoh: lampu kabin kanan diganti sebelum berangkat." />
+                  </label>
+                </fieldset>
+
+                {!canEndTrip && (
+                  <p className="safety-blocked">
+                    {!trip.arrived_at && <span>Konfirmasi kedatangan di sekolah belum dicatat. </span>}
+                    {unrecorded.length > 0 && (
+                      <span>
+                        Catat status {unrecorded.length} siswa berikut sebelum mengakhiri:{" "}
+                        {unrecorded.map((entry) => entry.students?.full_name ?? "Siswa").join(", ")}.
+                      </span>
+                    )}
+                  </p>
+                )}
+
+                <ConfirmSubmit
+                  className="btn btn-primary"
+                  message="Akhiri perjalanan ini? Status perjalanan akan menjadi selesai dan tidak dapat dimulai ulang."
+                  pendingLabel="Mengakhiri…"
+                  disabled={!canEndTrip}
+                >
+                  Akhiri perjalanan
+                </ConfirmSubmit>
+              </form>
             </div>
           )}
 
@@ -235,6 +274,12 @@ export default async function DriverTaskPage({
             <p className="task-completed">
               Perjalanan sudah selesai pada {formatTime(trip?.completed_at)}. Catatan kehadiran tersimpan sebagai
               riwayat dan tidak dapat diubah lagi.
+              {trip?.safety_checked_at && (
+                <> Pemeriksaan keselamatan dicatat {formatTime(trip.safety_checked_at)}</>
+              )}
+              {typeof trip?.student_count_confirmed === "number" && (
+                <> untuk {trip.student_count_confirmed} siswa pada rute ini.</>
+              )}
             </p>
           )}
         </div>

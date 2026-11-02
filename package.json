@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "test": "node --test --experimental-strip-types tests/validation.test.ts"
+    "test": "node --test --experimental-strip-types tests/*.test.ts"
   },
   "dependencies": {
     "next": "^15.5.6",
