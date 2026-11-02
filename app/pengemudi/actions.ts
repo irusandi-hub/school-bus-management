@@ -194,7 +194,7 @@ export async function endTrip(formData: FormData) {
   }
 
   const now = new Date().toISOString();
-  const { error } = await ctx.supabase
+  const { data, error } = await ctx.supabase
     .from("trips")
     .update({
       status: "completed",
@@ -204,7 +204,8 @@ export async function endTrip(formData: FormData) {
       student_count_confirmed: verdict.studentCount,
     })
     .eq("id", tripId)
-    .eq("status", "in_progress");
+    .eq("status", "in_progress")
+    .select("id");
 
   if (error) backTo(target, "Perjalanan belum dapat diakhiri. Coba lagi.", "error");
 
