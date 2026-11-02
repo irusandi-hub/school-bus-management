@@ -181,3 +181,17 @@ Lihat `TECHNICAL_SPEC_REVIEW.md`, bagian 19 pada `MASTER_SPEC.md`, serta `OPERAT
 - **Alasan:** Pemilik produk meminta semua halaman dan workflow selesai dan ditinjau sebelum proses autentikasi/registrasi diintegrasikan.
 - **Dampak pada dokumen/tes:** Perbarui AGENTS.md, README, konfigurasi environment, middleware, server guards, dan pengujian agar mode pengembangan terbuka terpisah tegas dari keamanan production. Setiap halaman diuji fungsi, hubungan data, responsivitas, pesan gagal/penolakan, serta penandaan fitur GPS/routing/kamera yang belum tersedia.
 - **Pihak yang menyetujui:** Pemilik produk melalui percakapan 2026-11-01.
+
+### DEC-024 — Dataset simulasi bertahan selama proses server hidup
+- **Tanggal:** 2026-11-02
+- **Status:** DISETUJUI
+- **Keputusan:** Mode pengembangan terbuka memakai satu dataset simulasi in-memory yang dibuat sekali per proses server, bukan per request, sehingga tambah/ubah dari Server Action terlihat pada halaman berikutnya. Dataset kembali ke kondisi awal saat server dimulai ulang dan tidak pernah menyentuh database produksi.
+- **Batas:** Hanya aktif pada environment non-production yang dikenali eksplisit (fail-closed). Dataset tidak meniru kebijakan RLS, sehingga isolasi antaroperator di mode ini belum dapat dijadikan bukti keamanan.
+- **Dampak pada dokumen/tes:** `tests/dev-simulation.test.ts` mengunci perilaku persistensi ini.
+
+### DEC-025 — Perjalanan tidak boleh ditutup tanpa pemeriksaan keselamatan
+- **Tanggal:** 2026-11-02
+- **Status:** DISETUJUI
+- **Keputusan:** Pengemudi hanya dapat mengakhiri perjalanan setelah (1) kedatangan di sekolah dikonfirmasi, (2) seluruh siswa aktif pada rute sudah dicatat statusnya, dan (3) tiga pemeriksaan keselamatan wajib dikonfirmasi (kondisi bus, kecocokan jumlah siswa, tidak ada siswa tertinggal). Bukti pemeriksaan disimpan pada kolom `trips.safety_checked_at`, `trips.safety_check_notes`, dan `trips.student_count_confirmed`.
+- **Penegakan:** Validasi di Server Action (`lib/driver/trip-end.ts`) dan batasan database `trips_completed_requires_safety_check` agar perjalanan berstatus `completed` selalu memiliki jejak pemeriksaan.
+- **Dampak pada dokumen/tes:** Migration `20261102000000_trip_safety_check.sql`, pengujian `tests/driver-trip-end.test.ts`.

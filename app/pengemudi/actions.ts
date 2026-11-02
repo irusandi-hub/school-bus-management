@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { DEV_DRIVER_RECORD, DEV_VIEWER, isDevOpenAccess } from "@/lib/dev-open-access";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { supabaseNotConfiguredMessage } from "@/lib/supabase/env";
+import { evaluateTripEnd, SAFETY_CHECKS, type SafetyFieldName } from "@/lib/driver/trip-end";
 import { failure, readText, type ActionState } from "@/lib/validation";
 
 type DriverContext =
@@ -83,11 +84,20 @@ export async function startTrip(formData: FormData) {
     backTo(target, "Perjalanan untuk tugas ini sudah selesai dan tidak dapat dimulai ulang.", "error");
   }
 
-  const { error } = await ctx.supabase.from("trips").insert({
-    assignment_id: assignmentId,
-    status: "in_progress",
-    started_at: new Date().toISOString(),
-  });
+  const startedAt = new Date().toISOString();
+
+  // Perjalanan terjadwal yang sudah dibuat saat penjadwalan dilanjutkan, bukan diduplikasi.
+  const { error } = existing
+    ? await ctx.supabase
+        .from("trips")
+        .update({ status: "in_progress", started_at: startedAt })
+        .eq("id", existing.id)
+        .eq("status", "scheduled")
+    : await ctx.supabase.from("trips").insert({
+        assignment_id: assignmentId,
+        status: "in_progress",
+        started_at: startedAt,
+      });
 
   if (error) backTo(target, "Perjalanan belum dapat dimulai. Periksa koneksi lalu coba lagi.", "error");
 
@@ -117,16 +127,82 @@ export async function confirmArrival(formData: FormData) {
   backTo(target, "Tiba di sekolah tercatat. Lanjutkan penurunan siswa bila diperlukan.");
 }
 
+function readConfirmation(formData: FormData, name: SafetyFieldName) {
+  return formData.get(name) === "on" || formData.get(name) === "true";
+}
+
 export async function endTrip(formData: FormData) {
   const ctx = await driverActionContext();
   const tripId = readText(formData, "trip_id");
   const assignmentId = readText(formData, "assignment_id");
   const target = `/pengemudi/tugas/${assignmentId}`;
   if (!ctx.ok) backTo(target, ctx.state.message, "error");
+  if (!tripId) backTo(target, "Perjalanan tidak dikenali.", "error");
 
+  // Perjalanan harus milik pengemudi ini dan masih berjalan, bukan hanya cocok id.
+  const { data: tripData } = await ctx.supabase
+    .from("trips")
+    .select("id, status, arrived_at, trip_assignments(route_id, driver_id, routes(direction))")
+    .eq("id", tripId)
+    .maybeSingle();
+
+  const trip = tripData as unknown as {
+    id: string;
+    status: string;
+    arrived_at: string | null;
+    trip_assignments: { route_id: string; driver_id: string; routes: { direction: string } | null } | null;
+  } | null;
+
+  if (!trip || !trip.trip_assignments || trip.trip_assignments.driver_id !== ctx.driverId) {
+    backTo(target, "Perjalanan tidak ditemukan untuk akun Anda.", "error");
+  }
+  if (trip.status !== "in_progress") {
+    backTo(target, "Perjalanan ini belum berjalan atau sudah selesai.", "error");
+  }
+
+  const routeId = trip.trip_assignments.route_id;
+  const direction = trip.trip_assignments.routes?.direction ?? "morning";
+
+  const [rosterResult, eventsResult] = await Promise.all([
+    ctx.supabase
+      .from("student_route_stops")
+      .select("student_id")
+      .eq("route_id", routeId)
+      .eq("direction", direction)
+      .eq("active", true),
+    ctx.supabase.from("trip_student_events").select("student_id").eq("trip_id", tripId),
+  ]);
+
+  const rosterIds = ((rosterResult.data ?? []) as unknown as { student_id: string }[]).map((row) => row.student_id);
+  const recordedIds = ((eventsResult.data ?? []) as unknown as { student_id: string }[]).map((row) => row.student_id);
+
+  const confirmations = Object.fromEntries(
+    SAFETY_CHECKS.map((check) => [check.name, readConfirmation(formData, check.name)]),
+  ) as Record<SafetyFieldName, boolean>;
+
+  const verdict = evaluateTripEnd({
+    status: trip.status,
+    arrivedAt: trip.arrived_at,
+    rosterStudentIds: rosterIds,
+    recordedStudentIds: recordedIds,
+    confirmations,
+    notes: readText(formData, "safety_notes"),
+  });
+
+  if (!verdict.ok) {
+    backTo(target, verdict.problems[0], "error");
+  }
+
+  const now = new Date().toISOString();
   const { error } = await ctx.supabase
     .from("trips")
-    .update({ status: "completed", completed_at: new Date().toISOString() })
+    .update({
+      status: "completed",
+      completed_at: now,
+      safety_checked_at: now,
+      safety_check_notes: verdict.notes,
+      student_count_confirmed: verdict.studentCount,
+    })
     .eq("id", tripId)
     .eq("status", "in_progress");
 
