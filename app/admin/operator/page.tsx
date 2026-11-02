@@ -16,12 +16,12 @@ import { firstParam, listHref, noticeFromParams } from "@/lib/admin/query";
 import { PAGE_SIZE, pageRange, parsePage } from "@/lib/admin/support";
 import type { OperatorRow } from "@/lib/types";
 import { sanitizeSearch } from "@/lib/validation";
-import { saveOperator, setOperatorActive } from "./actions";
+import { linkOperatorAccount, saveOperator, setOperatorActive, unlinkOperatorAccount } from "./actions";
 
 export const metadata: Metadata = { title: "Operator | Admin Pusat" };
 
 const path = "/admin/operator";
-const selectColumns = "id, name, code, city, contact_name, contact_email, contact_phone, active";
+const selectColumns = "id, name, code, city, contact_name, contact_email, contact_phone, profile_id, active";
 
 export default async function OperatorPage({
   searchParams,
@@ -57,6 +57,14 @@ export default async function OperatorPage({
     const { data: editRow } = await supabase.from("operators").select(selectColumns).eq("id", editId).maybeSingle();
     editing = (editRow as OperatorRow | null) ?? null;
   }
+
+  const linkedIds = rows.filter((row) => row.profile_id).map((row) => row.profile_id as string);
+  let emailRows: { profile_id: string; email: string }[] = [];
+  if (linkedIds.length) {
+    const res = await supabase.rpc("linked_account_emails", { p_profile_ids: linkedIds });
+    emailRows = (res.data ?? []) as { profile_id: string; email: string }[];
+  }
+  const emailById = new Map<string, string>(emailRows.map((row) => [row.profile_id, row.email]));
 
   const notice = noticeFromParams(params);
   const baseQuery = { q, status: status || undefined };
@@ -145,13 +153,14 @@ export default async function OperatorPage({
                   <th scope="col">Kota</th>
                   <th scope="col">Kontak</th>
                   <th scope="col">Status</th>
+                  <th scope="col">Akun masuk</th>
                   <th scope="col">Tindakan</th>
                 </tr>
               </thead>
               <tbody>
                 {rows.length === 0 ? (
                   <EmptyRow
-                    colSpan={6}
+                    colSpan={7}
                     title={q || status ? "Tidak ada operator yang cocok" : "Belum ada data operator"}
                     detail={
                       q || status
@@ -175,6 +184,41 @@ export default async function OperatorPage({
                       </td>
                       <td>
                         <Pill tone={row.active ? "success" : "neutral"}>{row.active ? "Aktif" : "Nonaktif"}</Pill>
+                      </td>
+                      <td className="account-cell">
+                        {row.profile_id ? (
+                          <>
+                            <Pill tone="info">Tertaut</Pill>
+                            <small>{emailById.get(row.profile_id) ?? "Akun tersambung"}</small>
+                            <form action={unlinkOperatorAccount} className="row-form">
+                              <input type="hidden" name="id" value={row.id} />
+                              <ConfirmSubmit
+                                className="row-link danger"
+                                message={`Lepas tautan akun ${emailById.get(row.profile_id) ?? "tersebut"} dari ${row.name}? Akun tersebut tidak lagi dapat masuk area Operator.`}
+                              >
+                                Lepas tautan
+                              </ConfirmSubmit>
+                            </form>
+                          </>
+                        ) : (
+                          <form action={linkOperatorAccount} className="account-link-form">
+                            <input type="hidden" name="id" value={row.id} />
+                            <input
+                              type="email"
+                              name="email"
+                              required
+                              maxLength={254}
+                              placeholder="email@contoh.com"
+                              aria-label={`Email akun untuk ${row.name}`}
+                            />
+                            <ConfirmSubmit
+                              className="row-link"
+                              message={`Tautkan akun ini ke ${row.name}? Peran akun menjadi Operator dan hanya dapat mengakses organisasi tersebut.`}
+                            >
+                              Tautkan
+                            </ConfirmSubmit>
+                          </form>
+                        )}
                       </td>
                       <td>
                         <div className="row-actions">
