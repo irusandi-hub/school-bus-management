@@ -79,7 +79,7 @@ export default async function OperatorTripsPage() {
                     <td>
                       <small>Mulai {formatTime(trip.started_at)}</small>
                       <small>Tiba {formatTime(trip.arrived_at)}</small>
-                      
+                      <small>Selesai {formatTime(trip.completed_at)}</small>
                     </td>
                   </tr>
                 ))
