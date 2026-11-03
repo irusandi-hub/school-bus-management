@@ -42,7 +42,9 @@ Variabel lingkungan yang diperlukan (lihat `.env.example`):
 
 Tanpa variabel tersebut aplikasi tetap dapat dibuka, tetapi halaman data menampilkan pemberitahuan bahwa database belum dikonfigurasi (tidak ada crash dan tidak ada data contoh).
 
-Selama tahap pengembangan UI (DEC-023), set `DEV_OPEN_ACCESS=1` di `.env.local` untuk membuka keempat area tanpa login dengan dataset simulasi berlabel. Mode ini fail-closed: tidak aktif tanpa variabel itu, tidak aktif saat `NODE_ENV`/`VERCEL_ENV` produksi, dan tidak pernah membuat klien Supabase sehingga tidak menyentuh database nyata. Matikan variabelnya untuk kembali ke alur autentikasi normal.
+Selama tahap pengembangan UI (DEC-023, DEC-027), keempat area terbuka tanpa login otomatis pada lingkungan non-produksi yang dikenali: `next dev` lokal dan **Vercel Preview** (`VERCEL_ENV=preview`, diisi Vercel sendiri sehingga tidak perlu konfigurasi tambahan). Mode ini fail-closed: produksi (`VERCEL_ENV=production`, `NODE_ENV=production` tanpa penanda platform, atau penanda lingkungan tak dikenal) selalu tertutup sekalipun `DEV_OPEN_ACCESS=1` terpasang, dan mode ini tidak pernah membuat klien Supabase sehingga tidak menyentuh database nyata — datanya berasal dari dataset simulasi berlabel.
+
+Sakelar darurat: set `DEV_OPEN_ACCESS=0` untuk mematikan akses terbuka di lingkungan non-produksi dan kembali ke alur autentikasi normal.
 
 Konfigurasi tambahan pada Supabase Dashboard → Authentication → URL Configuration:
 

@@ -1,11 +1,12 @@
 import assert from "node:assert/strict";
 import { afterEach, describe, it } from "node:test";
-import { isDevOpenAccess } from "../lib/dev-open-access.ts";
+import { deploymentKind, isDevOpenAccess } from "../lib/dev-open-access.ts";
 
 const ENV_KEYS = [
   "DEV_OPEN_ACCESS",
   "NODE_ENV",
   "VERCEL_ENV",
+  "VERCEL",
   "PRODUCTION",
   "APP_ENV",
   "NEXT_PUBLIC_APP_ENV",
@@ -24,79 +25,91 @@ afterEach(() => {
   setEnv(original as Partial<Record<(typeof ENV_KEYS)[number], string | undefined>>);
 });
 
+describe("deploymentKind", () => {
+  it("mengenali Vercel Preview meski NODE_ENV=production", () => {
+    setEnv({ NODE_ENV: "production", VERCEL_ENV: "preview" });
+    assert.equal(deploymentKind(), "preview");
+  });
+
+  it("mengenali produksi dari penanda Vercel maupun penanda lain", () => {
+    setEnv({ NODE_ENV: "production", VERCEL_ENV: "production" });
+    assert.equal(deploymentKind(), "production");
+
+    setEnv({ NODE_ENV: "development", PRODUCTION: "1" });
+    assert.equal(deploymentKind(), "production");
+
+    setEnv({ NODE_ENV: "development", NEXT_PUBLIC_APP_ENV: "production" });
+    assert.equal(deploymentKind(), "production");
+  });
+
+  it("menganggap lingkungan asing tidak dikenal", () => {
+    setEnv({ NODE_ENV: "production" });
+    assert.equal(deploymentKind(), "unknown");
+
+    setEnv({ NODE_ENV: "server" });
+    assert.equal(deploymentKind(), "unknown");
+
+    setEnv({ NODE_ENV: "development", VERCEL_ENV: "staging" });
+    assert.equal(deploymentKind(), "unknown");
+
+    setEnv({ NODE_ENV: "development", NEXT_PUBLIC_APP_ENV: "client-preview" });
+    assert.equal(deploymentKind(), "unknown");
+  });
+});
+
 describe("isDevOpenAccess", () => {
-  it("menutup mode saat variabel aktif tidak diberikan", () => {
+  it("membuka mode di Vercel Preview tanpa variabel tambahan", () => {
+    setEnv({ NODE_ENV: "production", VERCEL_ENV: "preview" });
+    assert.equal(isDevOpenAccess(), true);
+  });
+
+  it("membuka mode pada pengembangan lokal", () => {
     setEnv({ NODE_ENV: "development" });
-    assert.equal(isDevOpenAccess(), false);
-  });
+    assert.equal(isDevOpenAccess(), true);
 
-  it("menutup mode saat nilai variabel aktif bukan nilai pengaktif", () => {
-    setEnv({ DEV_OPEN_ACCESS: "maybe", NODE_ENV: "development" });
-    assert.equal(isDevOpenAccess(), false);
-  });
-
-  it("membuka mode hanya pada pengembangan dengan aktifasi eksplisit", () => {
-    setEnv({ DEV_OPEN_ACCESS: "1", NODE_ENV: "development" });
+    setEnv({ NODE_ENV: "test" });
     assert.equal(isDevOpenAccess(), true);
   });
 
-  it("tetap tertutup pada NODE_ENV=production berapa pun nilai aktivasinya", () => {
-    setEnv({ DEV_OPEN_ACCESS: "true", NODE_ENV: "production" });
-    assert.equal(isDevOpenAccess(), false);
-  });
-
-  it("tetap tertutup saat penanda produksi lain bernilai produksi", () => {
-    setEnv({ DEV_OPEN_ACCESS: "1", NODE_ENV: "development", VERCEL_ENV: "production" });
-    assert.equal(isDevOpenAccess(), false);
-
-    setEnv({ DEV_OPEN_ACCESS: "1", NODE_ENV: "development", PRODUCTION: "1" });
-    assert.equal(isDevOpenAccess(), false);
-  });
-
-  it("tetap tertutup bila penanda lingkungan menyatakan lokasi lain", () => {
-    setEnv({ DEV_OPEN_ACCESS: "1", NODE_ENV: "development", APP_ENV: "production" });
-    assert.equal(isDevOpenAccess(), false);
-
-    setEnv({ DEV_OPEN_ACCESS: "1", NODE_ENV: "development", APP_ENV: "staging" });
-    assert.equal(isDevOpenAccess(), false);
-
-    setEnv({ DEV_OPEN_ACCESS: "1", NODE_ENV: "development", NEXT_PUBLIC_APP_ENV: "client-preview" });
-    assert.equal(isDevOpenAccess(), false);
-  });
-
-  it("membuka mode untuk preview lokal yang dinyatakan eksplisit", () => {
-    setEnv({ DEV_OPEN_ACCESS: "1", NODE_ENV: "development", APP_ENV: "preview" });
-    assert.equal(isDevOpenAccess(), true);
-  });
-
-  it("membuka mode pada Vercel Preview yang ditandai eksplisit", () => {
+  it("tetap membuka Preview yang masih memakai penanda preview eksplisit", () => {
     setEnv({
-      DEV_OPEN_ACCESS: "1",
       NODE_ENV: "production",
       VERCEL_ENV: "preview",
       NEXT_PUBLIC_APP_ENV: "preview",
+      DEV_OPEN_ACCESS: "1",
     });
     assert.equal(isDevOpenAccess(), true);
   });
 
-  it("tetap menutup Vercel Preview tanpa penanda aplikasi preview", () => {
-    setEnv({ DEV_OPEN_ACCESS: "1", NODE_ENV: "production", VERCEL_ENV: "preview" });
+  it("menutup mode di Preview bila sakelar darurat dimatikan", () => {
+    for (const value of ["0", "false", "off", "no", "disabled"]) {
+      setEnv({ NODE_ENV: "production", VERCEL_ENV: "preview", DEV_OPEN_ACCESS: value });
+      assert.equal(isDevOpenAccess(), false, `DEV_OPEN_ACCESS=${value} harus menutup mode`);
+    }
+  });
+
+  it("menutup mode pada produksi, sekalipun flag aktif terpasang", () => {
+    setEnv({ NODE_ENV: "production", VERCEL_ENV: "production", DEV_OPEN_ACCESS: "1" });
     assert.equal(isDevOpenAccess(), false);
 
-    setEnv({
-      DEV_OPEN_ACCESS: "1",
-      NODE_ENV: "production",
-      VERCEL_ENV: "preview",
-      NEXT_PUBLIC_APP_ENV: "development",
-    });
+    setEnv({ NODE_ENV: "production", DEV_OPEN_ACCESS: "1" });
+    assert.equal(isDevOpenAccess(), false);
+
+    setEnv({ NODE_ENV: "development", PRODUCTION: "1", DEV_OPEN_ACCESS: "1" });
+    assert.equal(isDevOpenAccess(), false);
+
+    setEnv({ NODE_ENV: "development", APP_ENV: "production", DEV_OPEN_ACCESS: "1" });
     assert.equal(isDevOpenAccess(), false);
   });
 
-  it("menutup mode bila NODE_ENV tidak dikenali sama sekali (fail-closed)", () => {
+  it("menutup mode bila lingkungan tidak dikenali (fail-closed)", () => {
     setEnv({ DEV_OPEN_ACCESS: "1" });
     assert.equal(isDevOpenAccess(), false);
 
     setEnv({ DEV_OPEN_ACCESS: "1", NODE_ENV: "server" });
+    assert.equal(isDevOpenAccess(), false);
+
+    setEnv({ DEV_OPEN_ACCESS: "1", NODE_ENV: "development", VERCEL_ENV: "staging" });
     assert.equal(isDevOpenAccess(), false);
   });
 });

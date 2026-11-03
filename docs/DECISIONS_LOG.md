@@ -209,3 +209,20 @@ Lihat `TECHNICAL_SPEC_REVIEW.md`, bagian 19 pada `MASTER_SPEC.md`, serta `OPERAT
 - **Dampak pada dokumen/tes:** README (daftar migrasi keempat, penautan akun lewat UI, ringkasan RLS, cara menjalankan uji migrasi), `docs/IMPLEMENTATION_BACKLOG.md`. Verifikasi: keempat migrasi dijalankan berurutan pada Postgres 14 lokal (database kosong + stub `auth`), lalu `supabase/tests/migration_checks.sql` (T1–T14) berakhir dengan “SEMUA PEMERIKSAAN MIGRASI DAN RLS LULUS”; `npm run typecheck` lulus, `npm test` 28/28 lulus, `npm run build` lulus. **BELUM TERVERIFIKASI:** penerapan migrasi pada proyek Supabase pengembangan, alur login/penautan akun end-to-end lewat browser, dan pengujian Server Action otomatis. GPS, routing, dan kamera tetap ditunda.
 
 **Catatan integrasi PR #12:** Pemeriksaan kabin versi lunak di atas tetap berlaku sebagai konfirmasi tambahan untuk status naik, bukan pengganti DEC-025. Kedatangan, pencatatan seluruh siswa, dan tiga checklist keselamatan tetap wajib; kegagalan pembacaan roster/event menolak penutupan, dan pembaruan tanpa baris berubah ditolak.
+
+### DEC-027 — Akses terbuka Preview memakai penanda platform, bukan dua variabel dashboard
+- **Tanggal:** 2026-11-03
+- **Status:** DISETUJUI UNTUK IMPLEMENTASI (perbaikan setelah PR #14 di-merge)
+- **Masalah:** Setelah PR #14 di-merge, deploy Vercel masih mengarahkan ke `/login`. Penyebabnya: `isDevOpenAccess()` mensyaratkan `DEV_OPEN_ACCESS=1` **dan** `NEXT_PUBLIC_APP_ENV=preview` di environment Preview, sementara `NODE_ENV` pada deploy non-development selalu `production`, sehingga penanda preview tunggal tidak pernah cukup. Kedua variabel itu hanya bisa diisi dari dashboard Vercel.
+- **Keputusan:** Jenis lingkungan ditentukan satu fungsi terpusat `deploymentKind()` di `lib/dev-open-access.ts` dari penanda yang disuntikkan platform: `VERCEL_ENV` (`production`/`preview`/`development`), `NODE_ENV`, dan penanda aplikasi (`APP_ENV`/`NEXT_PUBLIC_APP_ENV`).
+  - `production` selalu tertutup, termasuk bila `DEV_OPEN_ACCESS=1` atau `PRODUCTION=1` terpasang.
+  - Lingkungan tak dikenal (`NODE_ENV=production` tanpa penanda Vercel, `VERCEL_ENV` asing, penanda aplikasi asing) tertutup — fail-closed.
+  - `preview` (Vercel Preview) dan `development` (lokal) **terbuka secara default**, sehingga peninjauan UI tidak lagi bergantung pada pengaturan dashboard Vercel.
+  - Sakelar darurat `DEV_OPEN_ACCESS=0/false/off/no` menutup mode di lingkungan non-produksi.
+  - `NEXT_PUBLIC_APP_ENV=preview` tidak lagi wajib; bila ada dan bernilai `production`, justru menutup mode.
+- **Batas keamanan tetap:** mode terbuka tidak pernah membuat klien Supabase (tidak ada permintaan ke database), RLS dan seluruh policy tidak diubah, tidak ada akun atau data produksi yang dibuat, dan gerbang `requireAdmin/requireOperator/requireDriver/requireGuardian`, pemeriksaan peran, serta skop organisasi tetap utuh untuk lingkungan tertutup. Pita peringatan kini menyebut lingkungan aktif (lokal/Vercel Preview).
+- **Verifikasi (2026-11-03):** `npm run typecheck` lulus, `npm test` 60/60 lulus, `npm run build` lulus.
+  - Kondisi 1 (Preview, `VERCEL_ENV=preview`, tanpa `DEV_OPEN_ACCESS`): 15 rute empat area termasuk halaman detail dan ekspor CSV menjawab `200` tanpa redirect.
+  - Kondisi 2 (Preview, `DEV_OPEN_ACCESS=0`): `/admin`, `/operator`, `/pengemudi`, `/wali` menjawab `307` ke `/login?next=…`.
+  - Kondisi 3 (Production, `VERCEL_ENV=production` + `DEV_OPEN_ACCESS=1`): keempat area `307` ke `/login`, gerbang akses menampilkan CTA masuk, tanpa pita mode pengembangan.
+- **Belum terverifikasi:** perilaku pada deployment Vercel sebenarnya (URL Preview terbaru) — lingkungan ini tidak memiliki akses ke pengaturan/deployment Vercel maupun kredensial proyek Supabase pengembangan.
