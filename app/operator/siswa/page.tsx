@@ -35,7 +35,7 @@ export default async function OperatorStudentsPage() {
           </div>
         </header>
         <div className="admin-table-wrap">
-          <table className="admin-table">
+          <table className="admin-table table-stack">
             <thead>
               <tr>
                 <th scope="col">Siswa</th>
@@ -54,13 +54,13 @@ export default async function OperatorStudentsPage() {
               ) : (
                 students.map((student) => (
                   <tr key={student.id}>
-                    <td>
+                    <td data-label="Siswa">
                       <strong>{student.full_name}</strong>
                       <small>{student.admissions_number}</small>
                     </td>
-                    <td>{student.schools?.name ?? "—"}</td>
-                    <td>{student.guardians?.full_name ?? "—"}</td>
-                    <td>
+                    <td data-label="Sekolah">{student.schools?.name ?? "—"}</td>
+                    <td data-label="Wali">{student.guardians?.full_name ?? "—"}</td>
+                    <td data-label="Layanan">
                       <Pill
                         tone={
                           student.service_status === "active"

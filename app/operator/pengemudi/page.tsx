@@ -78,7 +78,7 @@ export default async function OperatorDriversPage({
             </div>
           </header>
           <div className="admin-table-wrap">
-            <table className="admin-table">
+            <table className="admin-table table-stack">
               <thead>
                 <tr>
                   <th scope="col">Pengemudi</th>
@@ -97,16 +97,16 @@ export default async function OperatorDriversPage({
                 ) : (
                   drivers.map((driver) => (
                     <tr key={driver.id}>
-                      <td>
+                      <td data-label="Pengemudi">
                         <strong>{driver.full_name}</strong>
                         <small>{driver.phone ?? "Telepon belum diisi"}</small>
                       </td>
-                      <td>{driver.license_number ?? "—"}</td>
-                      <td>
+                      <td data-label="SIM">{driver.license_number ?? "—"}</td>
+                      <td data-label="Status">
                         <Pill tone={driver.active ? "success" : "neutral"}>{driver.active ? "Aktif" : "Nonaktif"}</Pill>
                         {!driver.profile_id && <small>Akun login belum ditautkan</small>}
                       </td>
-                      <td>
+                      <td data-label="Tindakan">
                         <a className="row-link" href={`/operator/pengemudi?edit=${driver.id}`}>
                           Ubah
                         </a>

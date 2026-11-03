@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ConfigNotice, EmptyRow, Notice, PageHeader, Pill } from "@/components/admin/ui";
+import { ConfigNotice, EmptyRow, Notice, PageHeader, Pill, StatCard } from "@/components/admin/ui";
 import { adminReadContext } from "@/lib/admin/read";
 import type { AuditLogRow } from "@/lib/types";
 import { formatDateTime } from "@/lib/validation";
@@ -40,38 +40,20 @@ export default async function ReportsPage() {
       {audits.error && <Notice kind="error">Jejak audit belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
 
       <section className="stats" aria-label="Ringkasan operasional">
-        <article className="stat-card">
-          <div className="stat-top">
-            <span>Siswa layanan aktif</span>
-            <span className="stat-icon">♧</span>
-          </div>
-          <div className="stat-value">{activeStudents.count ?? 0}</div>
-          <div className="stat-note">Dasar akses portal wali</div>
-        </article>
-        <article className="stat-card">
-          <div className="stat-top">
-            <span>Wali aktif</span>
-            <span className="stat-icon">☎</span>
-          </div>
-          <div className="stat-value">{guardians.count ?? 0}</div>
-          <div className="stat-note">Email wali terdaftar</div>
-        </article>
-        <article className="stat-card">
-          <div className="stat-top">
-            <span>Rute aktif</span>
-            <span className="stat-icon">⇢</span>
-          </div>
-          <div className="stat-value">{routes.count ?? 0}</div>
-          <div className="stat-note">Beserta titik jemput</div>
-        </article>
-        <article className="stat-card">
-          <div className="stat-top">
-            <span>Penugasan hari ini</span>
-            <span className="stat-icon">☑</span>
-          </div>
-          <div className="stat-value">{assignmentsToday.count ?? 0}</div>
-          <div className="stat-note">{completedTrips.count ?? 0} perjalanan selesai tercatat</div>
-        </article>
+        <StatCard
+          label="Siswa layanan aktif"
+          value={activeStudents.count ?? 0}
+          note="Dasar akses portal wali"
+          icon="students"
+        />
+        <StatCard label="Wali aktif" value={guardians.count ?? 0} note="Email wali terdaftar" icon="guardian" />
+        <StatCard label="Rute aktif" value={routes.count ?? 0} note="Beserta titik jemput" icon="route" />
+        <StatCard
+          label="Penugasan hari ini"
+          value={assignmentsToday.count ?? 0}
+          note={`${completedTrips.count ?? 0} perjalanan selesai tercatat`}
+          icon="assignment"
+        />
       </section>
 
       <div className="admin-overview-grid">
@@ -135,7 +117,7 @@ export default async function ReportsPage() {
           </div>
         </header>
         <div className="admin-table-wrap">
-          <table className="admin-table">
+          <table className="admin-table table-stack">
             <thead>
               <tr>
                 <th scope="col">Waktu</th>
@@ -154,12 +136,12 @@ export default async function ReportsPage() {
               ) : (
                 logs.map((log) => (
                   <tr key={log.id}>
-                    <td>{formatDateTime(log.created_at)}</td>
-                    <td>{log.profiles?.full_name ?? "Sistem"}</td>
-                    <td>
+                    <td data-label="Waktu">{formatDateTime(log.created_at)}</td>
+                    <td data-label="Aktor">{log.profiles?.full_name ?? "Sistem"}</td>
+                    <td data-label="Operasi">
                       <code>{log.action}</code>
                     </td>
-                    <td>{log.summary}</td>
+                    <td data-label="Ringkasan">{log.summary}</td>
                   </tr>
                 ))
               )}

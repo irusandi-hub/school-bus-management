@@ -1,10 +1,19 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { ConfigNotice, EmptyRow, Notice, PageHeader, Pill } from "@/components/admin/ui";
+import {
+  ConfigNotice,
+  EmptyRow,
+  Notice,
+  PageHeader,
+  Pill,
+  StatCard,
+  TripStatusPill,
+} from "@/components/admin/ui";
+import { Icon } from "@/components/ui/Icon";
 import { requireOperator } from "@/lib/auth";
 import { operatorReadContext } from "@/lib/operator/read";
 import type { TripAssignmentRow } from "@/lib/types";
-import { formatDate, routeDirectionLabel, tripStatusLabel } from "@/lib/validation";
+import { formatDate, routeDirectionLabel } from "@/lib/validation";
 
 export const metadata: Metadata = { title: "Ringkasan Operator | School Bus" };
 
@@ -43,6 +52,12 @@ export default async function OperatorHomePage() {
       <PageHeader
         title={`Ringkasan ${access.operator.name}`}
         description="Semua angka dan daftar di halaman ini dibatasi oleh kebijakan database ke organisasi Anda. Data organisasi lain tidak dapat dibaca dari area ini."
+        actions={
+          <Link className="btn btn-primary" href="/operator/operasional">
+            <Icon name="clock" size={16} />
+            Buka pusat operasi
+          </Link>
+        }
       />
 
       {todayAssignments.error && (
@@ -50,38 +65,21 @@ export default async function OperatorHomePage() {
       )}
 
       <section className="stats" aria-label="Ringkasan organisasi">
-        <article className="stat-card">
-          <div className="stat-top">
-            <span>Bus aktif</span>
-            <span className="stat-icon">▰</span>
-          </div>
-          <div className="stat-value">{buses.count ?? 0}</div>
-          <div className="stat-note">Armada organisasi Anda</div>
-        </article>
-        <article className="stat-card">
-          <div className="stat-top">
-            <span>Pengemudi aktif</span>
-            <span className="stat-icon">◍</span>
-          </div>
-          <div className="stat-value">{drivers.count ?? 0}</div>
-          <div className="stat-note">Staf yang dapat ditugaskan</div>
-        </article>
-        <article className="stat-card">
-          <div className="stat-top">
-            <span>Siswa aktif</span>
-            <span className="stat-icon">♧</span>
-          </div>
-          <div className="stat-value">{students.count ?? 0}</div>
-          <div className="stat-note">Dari sekolah yang ditautkan ke organisasi</div>
-        </article>
-        <article className="stat-card">
-          <div className="stat-top">
-            <span>Tugas hari ini</span>
-            <span className="stat-icon">☑</span>
-          </div>
-          <div className="stat-value">{assignmentsToday.count ?? 0}</div>
-          <div className="stat-note">{activeTrips.count ?? 0} perjalanan berlangsung</div>
-        </article>
+        <StatCard label="Bus aktif" value={buses.count ?? 0} note="Armada organisasi Anda" icon="bus" />
+        <StatCard label="Pengemudi aktif" value={drivers.count ?? 0} note="Staf yang dapat ditugaskan" icon="driver" />
+        <StatCard
+          label="Siswa aktif"
+          value={students.count ?? 0}
+          note="Dari sekolah yang ditautkan ke organisasi"
+          icon="students"
+        />
+        <StatCard
+          label="Tugas hari ini"
+          value={assignmentsToday.count ?? 0}
+          note={`${activeTrips.count ?? 0} perjalanan berlangsung`}
+          icon="assignment"
+          tone={activeTrips.count ? "live" : "default"}
+        />
       </section>
 
       <section className="panel">
@@ -90,10 +88,15 @@ export default async function OperatorHomePage() {
             <h2 className="panel-title">Penugasan hari ini</h2>
             <div className="panel-subtitle">Hanya bus dan pengemudi organisasi Anda</div>
           </div>
-          <Pill tone="info">{formatDate(today())}</Pill>
+          <div className="panel-head-actions">
+            <Pill tone="info">{formatDate(today())}</Pill>
+            <Link className="btn btn-secondary btn-sm" href="/operator/penugasan">
+              Kelola
+            </Link>
+          </div>
         </header>
         <div className="admin-table-wrap">
-          <table className="admin-table">
+          <table className="admin-table table-stack">
             <thead>
               <tr>
                 <th scope="col">Rute</th>
@@ -114,18 +117,16 @@ export default async function OperatorHomePage() {
                   const trip = row.trips?.[0];
                   return (
                     <tr key={row.id}>
-                      <td>
+                      <td data-label="Rute">
                         <strong>{row.routes?.route_name ?? "Rute"}</strong>
                         <small>
                           {row.routes?.school_name} · {routeDirectionLabel(row.routes?.direction ?? "")}
                         </small>
                       </td>
-                      <td>{row.drivers?.full_name ?? "—"}</td>
-                      <td>{row.buses?.fleet_code ?? "—"}</td>
-                      <td>
-                        <Pill tone={trip?.status === "in_progress" ? "info" : trip?.status === "completed" ? "success" : "neutral"}>
-                          {trip ? tripStatusLabel(trip.status) : "Belum dimulai"}
-                        </Pill>
+                      <td data-label="Pengemudi">{row.drivers?.full_name ?? "—"}</td>
+                      <td data-label="Bus">{row.buses?.fleet_code ?? "—"}</td>
+                      <td data-label="Status">
+                        <TripStatusPill status={trip?.status} />
                       </td>
                     </tr>
                   );
@@ -138,17 +139,17 @@ export default async function OperatorHomePage() {
 
       <div className="quick-grid">
         <Link className="quick-tile" href="/operator/bus">
-          <span aria-hidden="true">▰</span>
+          <span aria-hidden="true"><Icon name="bus" /></span>
           <strong>Kelola armada</strong>
           <small>Tambah bus dan atur kapasitas</small>
         </Link>
         <Link className="quick-tile" href="/operator/pengemudi">
-          <span aria-hidden="true">◍</span>
+          <span aria-hidden="true"><Icon name="driver" /></span>
           <strong>Kelola pengemudi</strong>
           <small>Data staf organisasi Anda</small>
         </Link>
         <Link className="quick-tile" href="/operator/penugasan">
-          <span aria-hidden="true">☑</span>
+          <span aria-hidden="true"><Icon name="assignment" /></span>
           <strong>Buat penugasan</strong>
           <small>Rute, pengemudi, dan bus</small>
         </Link>

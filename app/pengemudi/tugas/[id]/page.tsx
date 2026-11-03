@@ -1,8 +1,7 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
-import { ConfigNotice, EmptyRow, Notice, Pill } from "@/components/admin/ui";
+import { Breadcrumbs, ConfigNotice, Notice, Pill, TripStatusPill } from "@/components/admin/ui";
 import { firstParam, noticeFromParams } from "@/lib/admin/query";
 import { requireDriver } from "@/lib/auth";
 import { SAFETY_CHECKS } from "@/lib/driver/trip-end";
@@ -13,7 +12,6 @@ import {
   formatTime,
   routeDirectionLabel,
   tripEventLabel,
-  tripStatusLabel,
 } from "@/lib/validation";
 import { confirmArrival, endTrip, recordStudentEvent, startTrip } from "../../actions";
 
@@ -129,6 +127,7 @@ export default async function DriverTaskPage({
 
   // Siswa yang belum punya catatan apa pun pada perjalanan ini.
   const unrecorded = roster.filter((entry) => !latestEvent.has(entry.student_id));
+  const recorded = roster.length - unrecorded.length;
   const canEndTrip = Boolean(trip?.arrived_at) && unrecorded.length === 0 && !rosterResult.error && !eventsResult.error;
 
   // Students whose status is unclear for closing the trip (not dropped off/absent).
@@ -139,9 +138,12 @@ export default async function DriverTaskPage({
 
   return (
     <>
-      <div className="breadcrumb">
-        <Link href="/pengemudi">‹ Kembali ke tugas hari ini</Link>
-      </div>
+      <Breadcrumbs
+        items={[
+          { href: "/pengemudi", label: "Tugas hari ini" },
+          { label: assignment.routes?.route_name ?? "Detail tugas" },
+        ]}
+      />
 
       <section className="task-head">
         <div>
@@ -153,9 +155,7 @@ export default async function DriverTaskPage({
             {assignment.buses?.capacity ?? 0} kursi
           </p>
         </div>
-        <Pill tone={completed ? "success" : inProgress ? "info" : "neutral"}>
-          {trip ? tripStatusLabel(trip.status) : "Belum dimulai"}
-        </Pill>
+        <TripStatusPill status={trip?.status} />
       </section>
 
       {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
@@ -330,6 +330,17 @@ export default async function DriverTaskPage({
           </div>
           <Pill tone={roster.length > 0 ? "info" : "warning"}>{roster.length} siswa</Pill>
         </header>
+
+        {roster.length > 0 && (
+          <div className="manifest-progress">
+            <div className={`progress ${recorded === roster.length ? "done" : ""}`} aria-hidden="true">
+              <span style={{ width: `${roster.length === 0 ? 0 : Math.round((recorded / roster.length) * 100)}%` }} />
+            </div>
+            <span>
+              {recorded} dari {roster.length} siswa tercatat
+            </span>
+          </div>
+        )}
 
         {roster.length === 0 ? (
           <div className="table-empty">

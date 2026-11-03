@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { ConfigNotice, Notice, PageHeader, Pill } from "@/components/admin/ui";
+import { ConfigNotice, Notice, PageHeader, Pill, StatCard } from "@/components/admin/ui";
 import { operatorReadContext } from "@/lib/operator/read";
 
 export const metadata: Metadata = { title: "Laporan | Operator" };
@@ -31,10 +31,22 @@ export default async function OperatorReportsPage() {
       />
 
       <section className="stats" aria-label="Ringkasan laporan operator">
-        <article className="stat-card"><div className="stat-top"><span>Bus aktif</span><span className="stat-icon">▰</span></div><div className="stat-value">{buses.count ?? 0}</div><div className="stat-note">Armada yang dapat ditugaskan</div></article>
-        <article className="stat-card"><div className="stat-top"><span>Pengemudi aktif</span><span className="stat-icon">◍</span></div><div className="stat-value">{drivers.count ?? 0}</div><div className="stat-note">Staf organisasi Anda</div></article>
-        <article className="stat-card"><div className="stat-top"><span>Penugasan hari ini</span><span className="stat-icon">☑</span></div><div className="stat-value">{assignmentsToday.count ?? 0}</div><div className="stat-note">Rute yang dijadwalkan hari ini</div></article>
-        <article className="stat-card"><div className="stat-top"><span>Perjalanan selesai</span><span className="stat-icon">◷</span></div><div className="stat-value">{completedTrips.count ?? 0}</div><div className="stat-note">{events.count ?? 0} catatan kehadiran siswa</div></article>
+        <StatCard label="Bus aktif" value={buses.count ?? 0} note="Armada yang dapat ditugaskan" icon="bus" />
+        <StatCard label="Pengemudi aktif" value={drivers.count ?? 0} note="Staf organisasi Anda" icon="driver" />
+        <StatCard
+          label="Penugasan hari ini"
+          value={assignmentsToday.count ?? 0}
+          note="Rute yang dijadwalkan hari ini"
+          icon="assignment"
+          tone="wait"
+        />
+        <StatCard
+          label="Perjalanan selesai"
+          value={completedTrips.count ?? 0}
+          note={`${events.count ?? 0} catatan kehadiran siswa`}
+          icon="check"
+          tone="done"
+        />
       </section>
 
       <div className="admin-overview-grid">

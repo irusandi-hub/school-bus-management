@@ -39,7 +39,7 @@ export default async function OperatorTripsPage() {
           </div>
         </header>
         <div className="admin-table-wrap">
-          <table className="admin-table">
+          <table className="admin-table table-stack">
             <thead>
               <tr>
                 <th scope="col">Tanggal</th>
@@ -59,24 +59,24 @@ export default async function OperatorTripsPage() {
               ) : (
                 trips.map((trip) => (
                   <tr key={trip.id}>
-                    <td>{formatDate(trip.trip_assignments?.service_date ?? trip.created_at)}</td>
-                    <td>
+                    <td data-label="Tanggal">{formatDate(trip.trip_assignments?.service_date ?? trip.created_at)}</td>
+                    <td data-label="Rute">
                       <strong>{trip.trip_assignments?.routes?.route_name ?? "Rute"}</strong>
                       <small>
                         {trip.trip_assignments?.routes?.school_name} ·{" "}
                         {routeDirectionLabel(trip.trip_assignments?.routes?.direction ?? "")}
                       </small>
                     </td>
-                    <td>
+                    <td data-label="Pengemudi">
                       <strong>{trip.trip_assignments?.drivers?.full_name ?? "—"}</strong>
                       <small>{trip.trip_assignments?.buses?.fleet_code}</small>
                     </td>
-                    <td>
+                    <td data-label="Status">
                       <Pill tone={trip.status === "in_progress" ? "info" : trip.status === "completed" ? "success" : "neutral"}>
                         {tripStatusLabel(trip.status)}
                       </Pill>
                     </td>
-                    <td>
+                    <td data-label="Waktu">
                       <small>Mulai {formatTime(trip.started_at)}</small>
                       <small>Tiba {formatTime(trip.arrived_at)}</small>
                       <small>Selesai {formatTime(trip.completed_at)}</small>

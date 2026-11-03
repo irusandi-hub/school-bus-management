@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
 import { RecordForm, type FieldDef } from "@/components/admin/RecordForm";
-import { ConfigNotice, Notice, PageHeader, Pill } from "@/components/admin/ui";
+import { Breadcrumbs, ConfigNotice, Notice, PageHeader, Pill } from "@/components/admin/ui";
 import { adminReadContext } from "@/lib/admin/read";
 import type { StatusHistoryRow, StudentRow } from "@/lib/types";
 import {
@@ -98,9 +98,13 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
 
   return (
     <>
-      <div className="breadcrumb">
-        <Link href="/admin/siswa">‹ Kembali ke Data Siswa</Link>
-      </div>
+      <Breadcrumbs
+        items={[
+          { href: "/admin", label: "Ringkasan" },
+          { href: "/admin/siswa", label: "Data siswa" },
+          { label: student.full_name },
+        ]}
+      />
 
       <PageHeader
         title={student.full_name}

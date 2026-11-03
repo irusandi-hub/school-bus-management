@@ -35,7 +35,7 @@ export default async function OperatorRoutesPage() {
           </div>
         </header>
         <div className="admin-table-wrap">
-          <table className="admin-table">
+          <table className="admin-table table-stack">
             <thead>
               <tr>
                 <th scope="col">Rute</th>
@@ -55,7 +55,7 @@ export default async function OperatorRoutesPage() {
               ) : (
                 routes.map((route) => (
                   <tr key={route.id}>
-                    <td>
+                    <td data-label="Rute">
                       <strong>{route.route_name}</strong>
                       <div className="row-actions">
                         <Link className="row-link" href={`/operator/rute/${route.id}`}>
@@ -63,10 +63,10 @@ export default async function OperatorRoutesPage() {
                         </Link>
                       </div>
                     </td>
-                    <td>{route.school_name}</td>
-                    <td>{routeDirectionLabel(route.direction)}</td>
-                    <td>{route.route_stops?.length ?? 0}</td>
-                    <td>
+                    <td data-label="Sekolah">{route.school_name}</td>
+                    <td data-label="Arah">{routeDirectionLabel(route.direction)}</td>
+                    <td data-label="Titik">{route.route_stops?.length ?? 0}</td>
+                    <td data-label="Status">
                       <Pill tone={route.active ? "success" : "neutral"}>{route.active ? "Aktif" : "Nonaktif"}</Pill>
                     </td>
                   </tr>

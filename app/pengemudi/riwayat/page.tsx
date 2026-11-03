@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ConfigNotice, EmptyRow, Notice, PageHeader, Pill } from "@/components/admin/ui";
+import { ConfigNotice, EmptyRow, Notice, PageHeader, TripStatusPill } from "@/components/admin/ui";
 import { requireDriver } from "@/lib/auth";
 import { createServerSupabase } from "@/lib/supabase/server";
 import type { TripRow } from "@/lib/types";
@@ -50,7 +50,7 @@ export default async function DriverHistoryPage() {
           </div>
         </header>
         <div className="admin-table-wrap">
-          <table className="admin-table">
+          <table className="admin-table table-stack">
             <thead>
               <tr>
                 <th scope="col">Tanggal</th>
@@ -70,21 +70,19 @@ export default async function DriverHistoryPage() {
               ) : (
                 trips.map((trip) => (
                   <tr key={trip.id}>
-                    <td>{formatDate(trip.trip_assignments?.service_date ?? trip.created_at)}</td>
-                    <td>
+                    <td data-label="Tanggal">{formatDate(trip.trip_assignments?.service_date ?? trip.created_at)}</td>
+                    <td data-label="Rute">
                       <strong>{trip.trip_assignments?.routes?.route_name ?? "Rute"}</strong>
                       <small>
                         {trip.trip_assignments?.routes?.school_name} ·{" "}
                         {routeDirectionLabel(trip.trip_assignments?.routes?.direction ?? "")}
                       </small>
                     </td>
-                    <td>{trip.trip_assignments?.buses?.fleet_code ?? "—"}</td>
-                    <td>
-                      <Pill tone={trip.status === "completed" ? "success" : trip.status === "in_progress" ? "info" : "neutral"}>
-                        {tripStatusLabel(trip.status)}
-                      </Pill>
+                    <td data-label="Bus">{trip.trip_assignments?.buses?.fleet_code ?? "—"}</td>
+                    <td data-label="Status">
+                      <TripStatusPill status={trip.status} />
                     </td>
-                    <td>
+                    <td data-label="Waktu">
                       <small>Mulai {formatTime(trip.started_at)}</small>
                       <small>Tiba {formatTime(trip.arrived_at)}</small>
                       <small>Selesai {trip.completed_at ? formatDateTime(trip.completed_at) : "—"}</small>
