@@ -21,7 +21,7 @@ export default async function OperatorAssignmentsPage() {
     supabase
       .from("trip_assignments")
       .select(
-        "id, service_date, routes(route_name, school_name, direction), buses(fleet_code), drivers(full_name), trips(id, status, started_at, completed_at, arrived_at)",
+        "id, driver_id, bus_id, service_date, routes(route_name, school_name, direction), buses(fleet_code), drivers(full_name), trips(id, status, started_at, completed_at, arrived_at)",
       )
       .order("service_date", { ascending: false })
       .limit(50),
@@ -35,6 +35,14 @@ export default async function OperatorAssignmentsPage() {
   const drivers = (driversResult.data ?? []) as { id: string; full_name: string }[];
   const buses = (busesResult.data ?? []) as { id: string; fleet_code: string; capacity: number }[];
   const ready = routes.length > 0 && drivers.length > 0 && buses.length > 0;
+
+  // Resources already booked on today's service date, so the form can say so before saving.
+  const bookedToday = new Set<string>();
+  for (const assignment of assignments) {
+    if (assignment.service_date !== today()) continue;
+    bookedToday.add(assignment.driver_id);
+    bookedToday.add(assignment.bus_id);
+  }
 
   const fields: FieldDef[] = [
     {
@@ -66,7 +74,10 @@ export default async function OperatorAssignmentsPage() {
       defaultValue: "",
       options: [
         { value: "", label: drivers.length === 0 ? "Belum ada pengemudi aktif" : "Pilih pengemudi" },
-        ...drivers.map((driver) => ({ value: driver.id, label: driver.full_name })),
+        ...drivers.map((driver) => ({
+          value: driver.id,
+          label: bookedToday.has(driver.id) ? `${driver.full_name} · sudah ditugaskan hari ini` : driver.full_name,
+        })),
       ],
     },
     {
@@ -77,7 +88,10 @@ export default async function OperatorAssignmentsPage() {
       defaultValue: "",
       options: [
         { value: "", label: buses.length === 0 ? "Belum ada bus aktif" : "Pilih bus" },
-        ...buses.map((bus) => ({ value: bus.id, label: `${bus.fleet_code} · ${bus.capacity} kursi` })),
+        ...buses.map((bus) => ({
+          value: bus.id,
+          label: `${bus.fleet_code} · ${bus.capacity} kursi${bookedToday.has(bus.id) ? " · sudah dipakai hari ini" : ""}`,
+        })),
       ],
     },
   ];
@@ -94,6 +108,12 @@ export default async function OperatorAssignmentsPage() {
         <Notice kind="warning">
           Lengkapi minimal satu rute aktif (dari Admin Pusat), satu pengemudi, dan satu bus organisasi Anda sebelum
           membuat penugasan.
+        </Notice>
+      )}
+      {ready && (
+        <Notice kind="info">
+          Satu pengemudi dan satu bus hanya dapat digunakan untuk satu penugasan pada tanggal layanan yang sama.
+          Sistem memeriksa benturan jadwal sebelum menyimpan penugasan.
         </Notice>
       )}
 

@@ -23,17 +23,23 @@ export function isDevOpenAccess(): boolean {
   const flag = (process.env.DEV_OPEN_ACCESS ?? "").trim().toLowerCase();
   if (!ENABLE_VALUES.has(flag)) return false;
 
-  // Penanda produksi mana pun langsung menutup mode, berapa pun nilai flag.
-  if (process.env.NODE_ENV === "production") return false;
+  // Produksi selalu tertutup, sekalipun flag salah terpasang.
   if (process.env.VERCEL_ENV === "production") return false;
   if ((process.env.PRODUCTION ?? "").trim() === "1") return false;
 
-  // `next build` selalu memakai NODE_ENV=production; nilai lain yang tidak dikenal
-  // juga menutup mode supaya tidak ada lingkungan asing yang ikut terbuka.
   const nodeEnv = (process.env.NODE_ENV ?? "").trim().toLowerCase();
-  if (!DEV_MARKERS.has(nodeEnv) && nodeEnv !== "test") return false;
-
+  const vercelEnv = (process.env.VERCEL_ENV ?? "").trim().toLowerCase();
   const declared = (process.env.NEXT_PUBLIC_APP_ENV ?? process.env.APP_ENV ?? "").trim().toLowerCase();
+
+  // Preview Vercel menjalankan Next.js dengan NODE_ENV=production saat runtime.
+  // Karena itu preview hanya dibuka jika kedua penanda preview cocok dan flag eksplisit aktif.
+  const isExplicitVercelPreview = vercelEnv === "preview" && declared === "preview";
+  if (isExplicitVercelPreview) return true;
+
+  // Untuk lokal: NODE_ENV harus development/test dan penanda aplikasi, bila ada,
+  // harus menyatakan development/local. Lingkungan asing tetap fail-closed.
+  if (nodeEnv === "production") return false;
+  if (!DEV_MARKERS.has(nodeEnv) && nodeEnv !== "test") return false;
   if (declared && !DEV_MARKERS.has(declared)) return false;
 
   return true;
