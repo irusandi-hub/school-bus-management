@@ -2,6 +2,10 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { isDevOpenAccess } from "@/lib/dev-open-access";
 
+// Status akses dibaca saat permintaan berjalan, bukan dibekukan di HTML hasil build
+// (DEC-025): deploy Preview terbuka tanpa perlu build ulang, produksi tetap tertutup.
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Masuk | School Bus Management",
   description:
