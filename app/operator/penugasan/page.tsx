@@ -96,6 +96,12 @@ export default async function OperatorAssignmentsPage() {
           membuat penugasan.
         </Notice>
       )}
+      {ready && (
+        <Notice kind="info">
+          Satu pengemudi dan satu bus hanya dapat digunakan untuk satu penugasan pada tanggal layanan yang sama.
+          Sistem memeriksa benturan jadwal sebelum menyimpan penugasan.
+        </Notice>
+      )}
 
       <div className="admin-split">
         <section className="panel">
