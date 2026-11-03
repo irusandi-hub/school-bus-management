@@ -114,19 +114,22 @@ export async function saveOperatorAssignment(_prev: ActionState, formData: FormD
   if (Object.keys(errors).length > 0) return failure("Periksa kembali isian yang ditandai.", errors);
 
   // Re-check ownership explicitly; RLS enforces the same rule independently.
-  const { data: driver } = await ctx.supabase
-    .from("drivers")
-    .select("operator_id")
-    .eq("id", driverId)
-    .maybeSingle();
-  const { data: bus } = await ctx.supabase.from("buses").select("operator_id").eq("id", busId).maybeSingle();
+  const [{ data: driver }, { data: bus }, { data: route }] = await Promise.all([
+    ctx.supabase.from("drivers").select("operator_id, active").eq("id", driverId).maybeSingle(),
+    ctx.supabase.from("buses").select("operator_id, active").eq("id", busId).maybeSingle(),
+    ctx.supabase.from("routes").select("id, active").eq("id", routeId).maybeSingle(),
+  ]);
 
   if (!driver || driver.operator_id !== ctx.operatorId) {
     return failure("Pengemudi tersebut bukan bagian dari organisasi Anda.");
   }
+  if (!driver.active) return failure("Pengemudi nonaktif tidak dapat menerima penugasan.");
   if (!bus || bus.operator_id !== ctx.operatorId) {
     return failure("Bus tersebut bukan bagian dari organisasi Anda.");
   }
+  if (!bus.active) return failure("Bus nonaktif tidak dapat digunakan untuk penugasan.");
+  if (!route) return failure("Rute tidak tersedia untuk organisasi Anda.");
+  if (!route.active) return failure("Rute nonaktif tidak dapat digunakan untuk penugasan.");
 
   const { error } = await ctx.supabase.from("trip_assignments").insert({
     route_id: routeId,
