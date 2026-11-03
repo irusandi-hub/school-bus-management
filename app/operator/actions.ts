@@ -3,6 +3,11 @@
 import { revalidatePath } from "next/cache";
 import { operatorActionContext, writeFailure } from "@/lib/admin/support";
 import {
+  ASSIGNMENT_CONFLICT_MESSAGES,
+  assignmentConflict,
+  type AssignmentRow,
+} from "@/lib/operator/assignment";
+import {
   failure,
   isValidPhone,
   readCheckbox,
@@ -131,34 +136,23 @@ export async function saveOperatorAssignment(_prev: ActionState, formData: FormD
   if (!route) return failure("Rute tidak tersedia untuk organisasi Anda.");
   if (!route.active) return failure("Rute nonaktif tidak dapat digunakan untuk penugasan.");
 
-  // Prevent assigning the same driver or bus to two routes on the same service date.
-  const [{ data: driverConflict, error: driverConflictError }, { data: busConflict, error: busConflictError }] =
-    await Promise.all([
-      ctx.supabase
-        .from("trip_assignments")
-        .select("id")
-        .eq("driver_id", driverId)
-        .eq("service_date", serviceDate)
-        .limit(1)
-        .maybeSingle(),
-      ctx.supabase
-        .from("trip_assignments")
-        .select("id")
-        .eq("bus_id", busId)
-        .eq("service_date", serviceDate)
-        .limit(1)
-        .maybeSingle(),
-    ]);
+  // Prevent assigning the same driver or bus to a second route on the same service date.
+  const { data: sameDateRows, error: conflictError } = await ctx.supabase
+    .from("trip_assignments")
+    .select("id, driver_id, bus_id, service_date")
+    .eq("service_date", serviceDate);
 
-  if (driverConflictError || busConflictError) {
+  if (conflictError) {
     return failure("Jadwal belum dapat divalidasi. Coba simpan kembali.");
   }
-  if (driverConflict) {
-    return failure("Pengemudi sudah memiliki penugasan pada tanggal tersebut. Pilih pengemudi lain atau tanggal lain.");
-  }
-  if (busConflict) {
-    return failure("Bus sudah digunakan pada tanggal tersebut. Pilih bus lain atau tanggal lain.");
-  }
+
+  const conflict = assignmentConflict({
+    driverId,
+    busId,
+    serviceDate,
+    existing: (sameDateRows ?? []) as AssignmentRow[],
+  });
+  if (conflict) return failure(ASSIGNMENT_CONFLICT_MESSAGES[conflict]);
 
   const { error } = await ctx.supabase.from("trip_assignments").insert({
     route_id: routeId,

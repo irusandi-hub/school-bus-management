@@ -120,12 +120,46 @@ describe("klien simulasi pengembangan", () => {
 
     const assignment = rows(result).find((row) => row.id === "51111111-0000-4000-8000-000000000a12") as SimRow;
     assert.equal((assignment.routes as SimRow).route_name, "Rute Contoh Sore");
-    assert.equal((assignment.buses as SimRow).fleet_code, "SIM-BUS-01");
-    assert.equal((assignment.drivers as SimRow).full_name, "Pengemudi Contoh Satu");
+    assert.equal((assignment.buses as SimRow).fleet_code, "SIM-BUS-03");
+    assert.equal((assignment.drivers as SimRow).full_name, "Pengemudi Contoh Dua");
 
     const trips = assignment.trips as SimRow[];
     assert.equal(trips.length, 1);
     assert.equal(trips[0].status, "in_progress");
+  });
+
+  it("tidak menggandakan pengemudi atau bus pada satu tanggal layanan", async () => {
+    const supabase = createSimulationClient();
+    const result = (await supabase.from("trip_assignments").select("id, driver_id, bus_id, service_date")) as Result;
+
+    const seen = new Set<string>();
+    for (const assignment of rows(result)) {
+      for (const column of ["driver_id", "bus_id"] as const) {
+        const key = `${column}:${assignment[column]}:${assignment.service_date}`;
+        assert.equal(seen.has(key), false, `penugasan ganda pada dataset simulasi: ${key}`);
+        seen.add(key);
+      }
+    }
+  });
+
+  it("menyisakan minimal satu pengemudi dan satu bus aktif untuk penugasan hari ini", async () => {
+    const supabase = createSimulationClient();
+    const date = new Date(Date.now() - new Date().getTimezoneOffset() * 60_000).toISOString().slice(0, 10);
+
+    const [drivers, buses, assignments] = [
+      (await supabase.from("drivers").select("id").eq("active", true)) as Result,
+      (await supabase.from("buses").select("id").eq("active", true)) as Result,
+      (await supabase
+        .from("trip_assignments")
+        .select("driver_id, bus_id, service_date")
+        .eq("service_date", date)) as Result,
+    ];
+
+    const bookedDrivers = new Set(rows(assignments).map((row) => row.driver_id));
+    const bookedBuses = new Set(rows(assignments).map((row) => row.bus_id));
+
+    assert.ok(rows(drivers).some((row) => !bookedDrivers.has(row.id)), "tidak ada pengemudi aktif yang bebas hari ini");
+    assert.ok(rows(buses).some((row) => !bookedBuses.has(row.id)), "tidak ada bus aktif yang bebas hari ini");
   });
 
   it("mengurutkan, membatasi, dan mengambil satu baris seperti klien asli", async () => {

@@ -55,6 +55,7 @@ export default async function OperatorLayout({ children }: { children: React.Rea
         <Link href="/operator/siswa"><span aria-hidden="true">♧</span>Siswa</Link>
         <Link href="/operator/penugasan"><span aria-hidden="true">☑</span>Penugasan</Link>
         <Link href="/operator/perjalanan"><span aria-hidden="true">◷</span>Perjalanan</Link>
+        <Link href="/operator/laporan"><span aria-hidden="true">▤</span>Laporan</Link>
       </nav>
     </div>
   );

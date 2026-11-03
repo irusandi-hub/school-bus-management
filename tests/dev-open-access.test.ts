@@ -69,6 +69,29 @@ describe("isDevOpenAccess", () => {
     assert.equal(isDevOpenAccess(), true);
   });
 
+  it("membuka mode pada Vercel Preview yang ditandai eksplisit", () => {
+    setEnv({
+      DEV_OPEN_ACCESS: "1",
+      NODE_ENV: "production",
+      VERCEL_ENV: "preview",
+      NEXT_PUBLIC_APP_ENV: "preview",
+    });
+    assert.equal(isDevOpenAccess(), true);
+  });
+
+  it("tetap menutup Vercel Preview tanpa penanda aplikasi preview", () => {
+    setEnv({ DEV_OPEN_ACCESS: "1", NODE_ENV: "production", VERCEL_ENV: "preview" });
+    assert.equal(isDevOpenAccess(), false);
+
+    setEnv({
+      DEV_OPEN_ACCESS: "1",
+      NODE_ENV: "production",
+      VERCEL_ENV: "preview",
+      NEXT_PUBLIC_APP_ENV: "development",
+    });
+    assert.equal(isDevOpenAccess(), false);
+  });
+
   it("menutup mode bila NODE_ENV tidak dikenali sama sekali (fail-closed)", () => {
     setEnv({ DEV_OPEN_ACCESS: "1" });
     assert.equal(isDevOpenAccess(), false);
