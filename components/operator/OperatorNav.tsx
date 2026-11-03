@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 const items = [
   { href: "/operator", label: "Ringkasan", icon: "▦" },
+  { href: "/operator/operasional", label: "Pusat Operasi", icon: "◉" },
   { href: "/operator/bus", label: "Armada Bus", icon: "▰" },
   { href: "/operator/pengemudi", label: "Pengemudi", icon: "◍" },
   { href: "/operator/siswa", label: "Siswa", icon: "♧" },
@@ -28,9 +29,7 @@ export function OperatorNav() {
             className={`nav-item ${active ? "active" : ""}`}
             aria-current={active ? "page" : undefined}
           >
-            <span className="nav-icon" aria-hidden="true">
-              {item.icon}
-            </span>
+            <span className="nav-icon" aria-hidden="true">{item.icon}</span>
             <span>{item.label}</span>
             {active && <span className="nav-active-dot" />}
           </Link>
