@@ -39,6 +39,10 @@ const paths: Record<string, string[]> = {
   refresh: ["M20 11a8 8 0 0 0-13.6-4.6L4 8.8", "M4 5v3.8h3.8", "M4 13a8 8 0 0 0 13.6 4.6L20 15.2", "M20 19v-3.8h-3.8"],
   filter: ["M4 6h16M7 12h10M10 18h4"],
   key: ["M15 9.5a3.5 3.5 0 1 1-3.4-3.5", "M11.6 9.5 4 17v3h3v-2h2v-2h2l1.6-1.6"],
+  navigation: ["M12 3.5 20 20l-8-3.2L4 20l8-16.5Z"],
+  camera: ["M3.5 7.5h11A1.5 1.5 0 0 1 16 9v6a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 2 15V9a1.5 1.5 0 0 1 1.5-1.5Z", "m16 11 5-2.5v7L16 13"],
+  expand: ["M9 4H4v5", "M15 20h5v-5", "M20 9V4h-5", "M4 15v5h5"],
+  shrink: ["M9 4v5H4", "M15 20v-5h5", "M20 9h-5V4", "M4 15h5v5"],
 };
 
 export type IconName = keyof typeof paths;

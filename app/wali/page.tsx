@@ -1,9 +1,12 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ConfigNotice, Notice, Pill, ServiceStatusPill } from "@/components/admin/ui";
+import { ParentLiveVideo } from "@/components/guardian/ParentLiveVideo";
 import { requireGuardian } from "@/lib/auth";
+import { isDevOpenAccess } from "@/lib/dev-open-access";
 import { createServerSupabase } from "@/lib/supabase/server";
-import { loadChildren, todayDate } from "@/lib/guardian/data";
+import { loadChildren, loadTodayStudentEvents, todayDate } from "@/lib/guardian/data";
+import { buildChildLiveVideo } from "@/lib/guardian/live-view";
 import { formatDate, formatTime, routeDirectionLabel, tripStatusLabel } from "@/lib/validation";
 
 export const metadata: Metadata = { title: "Anak Saya | Portal Wali" };
@@ -16,6 +19,8 @@ export default async function GuardianHomePage() {
   if (!supabase) return <ConfigNotice />;
 
   const children = await loadChildren(supabase);
+  const liveEvents = await loadTodayStudentEvents(supabase, children);
+  const simulated = isDevOpenAccess();
   const name = access.viewer.profile?.full_name || access.viewer.email || "Wali";
 
   return (
@@ -59,6 +64,8 @@ export default async function GuardianHomePage() {
                 : tripStatusLabel(primaryTrip.status)
               : null;
 
+            const liveVideo = buildChildLiveVideo(child, liveEvents);
+
             const directionState = (direction: string) => {
               const trip = trips.find((entry) => entry.direction === direction);
               if (!trip) return "Belum dijadwalkan";
@@ -77,6 +84,18 @@ export default async function GuardianHomePage() {
                   </div>
                   <ServiceStatusPill status={child.student.service_status} />
                 </header>
+
+                <ParentLiveVideo
+                  childName={child.student.full_name}
+                  state={liveVideo.state}
+                  tripLabel={liveVideo.tripLabel}
+                  busLabel={liveVideo.busLabel}
+                  streamUrl={liveVideo.streamUrl}
+                  streamMimeType={liveVideo.streamMimeType}
+                  updatedAt={liveVideo.updatedAt}
+                  simulated={simulated}
+                  compact
+                />
 
                 <dl className="child-facts">
                   <div>
@@ -169,8 +188,8 @@ export default async function GuardianHomePage() {
       )}
 
       <Notice kind="info">
-        Portal ini tidak menampilkan menu internal, data anak wali lain, atau informasi operasional yang tidak
-        relevan. Tautan kamera tidak ditampilkan karena integrasi kamera belum tersedia.
+        Live Video mengikuti status anak di bus: akses dibuka setelah anak tercatat naik dan berakhir saat anak turun.
+        Kamera kabin belum terintegrasi, sehingga area video menampilkan status kamera — bukan siaran atau rekaman.
       </Notice>
     </>
   );

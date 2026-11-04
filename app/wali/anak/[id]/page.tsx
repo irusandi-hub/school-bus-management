@@ -2,9 +2,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Breadcrumbs, ConfigNotice, Notice, Pill, ServiceStatusPill } from "@/components/admin/ui";
+import { ParentLiveVideo } from "@/components/guardian/ParentLiveVideo";
+import { VideoAccessNotice } from "@/components/guardian/VideoAccessNotice";
 import { requireGuardian } from "@/lib/auth";
+import { isDevOpenAccess } from "@/lib/dev-open-access";
 import { createServerSupabase } from "@/lib/supabase/server";
-import { loadChildTrips, loadChildren, todayDate } from "@/lib/guardian/data";
+import { loadChildTrips, loadChildren, loadTodayStudentEvents, todayDate } from "@/lib/guardian/data";
+import { buildChildLiveVideo } from "@/lib/guardian/live-view";
 import type { TripEventRow } from "@/lib/types";
 import {
   formatDate,
@@ -38,6 +42,10 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
   const child = children.find((entry) => entry.student.id === id);
   if (!child) notFound();
 
+  const liveEvents = await loadTodayStudentEvents(supabase, [child]);
+  const liveVideo = buildChildLiveVideo(child, liveEvents);
+  const simulated = isDevOpenAccess();
+
   const routeIds = child.placements.map((placement) => placement.routeId);
   const [trips, eventsResult] = await Promise.all([
     loadChildTrips(supabase, routeIds, 15),
@@ -69,6 +77,28 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
       </section>
 
       {eventsResult.error && <Notice kind="error">Riwayat kehadiran belum dapat dimuat.</Notice>}
+
+      <section className="panel live-panel" aria-label={`Live video ${student.full_name}`}>
+        <header className="panel-head">
+          <div>
+            <h2 className="panel-title">Live video</h2>
+            <div className="panel-subtitle">Kamera bus · akses mengikuti status anak hari ini</div>
+          </div>
+        </header>
+        <div className="live-panel-body">
+          <ParentLiveVideo
+            childName={student.full_name}
+            state={liveVideo.state}
+            tripLabel={liveVideo.tripLabel}
+            busLabel={liveVideo.busLabel}
+            streamUrl={liveVideo.streamUrl}
+            streamMimeType={liveVideo.streamMimeType}
+            updatedAt={liveVideo.updatedAt}
+            simulated={simulated}
+          />
+          <VideoAccessNotice state={liveVideo.state} childName={student.full_name} />
+        </div>
+      </section>
 
       <div className="detail-grid">
         <section className="panel">
@@ -180,7 +210,8 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
           </ul>
         )}
         <p className="detail-footnote">
-          Posisi bus langsung belum tersedia. Tautan kamera tidak ditampilkan karena integrasi kamera belum aktif.
+          Posisi bus langsung belum tersedia. Status perjalanan berasal dari catatan pengemudi, dan akses Live Video
+          mengikuti status anak di bus — bukan posisi yang dilacak.
         </p>
       </section>
 

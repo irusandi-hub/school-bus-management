@@ -1,10 +1,13 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ConfigNotice, EmptyState, Notice, TripStatusPill } from "@/components/admin/ui";
+import { NavigationDestinationCard } from "@/components/driver/NavigationDestinationCard";
 import { Icon } from "@/components/ui/Icon";
 import { requireDriver } from "@/lib/auth";
+import { buildNavigationPlan } from "@/lib/driver/navigation";
 import { createServerSupabase } from "@/lib/supabase/server";
-import type { TripAssignmentRow } from "@/lib/types";
+import type { NavigationRosterEntry } from "@/lib/driver/navigation";
+import type { RouteStopRow, TripAssignmentRow } from "@/lib/types";
 import { formatDate, formatTime, routeDirectionLabel } from "@/lib/validation";
 
 export const metadata: Metadata = { title: "Tugas Hari Ini | Pengemudi" };
@@ -25,13 +28,68 @@ export default async function DriverHomePage() {
   const { data, error } = await supabase
     .from("trip_assignments")
     .select(
-      "id, service_date, routes(route_name, school_name, direction), buses(fleet_code, plate_number, capacity), trips(id, status, started_at, completed_at, arrived_at)",
+      "id, route_id, service_date, routes(route_name, school_name, direction), buses(fleet_code, plate_number, capacity), trips(id, status, started_at, completed_at, arrived_at)",
     )
     .eq("driver_id", access.driver.id)
     .eq("service_date", date)
     .order("service_date", { ascending: true });
 
   const assignments = (data ?? []) as unknown as TripAssignmentRow[];
+
+  // Data titik dan kehadiran untuk tombol navigasi pada setiap kartu tugas.
+  const routeIds = Array.from(new Set(assignments.map((assignment) => assignment.route_id).filter(Boolean)));
+  const tripIds = assignments.flatMap((assignment) => (assignment.trips ?? []).map((trip) => trip.id));
+  const emptyResult = Promise.resolve({ data: [] as unknown[], error: null });
+
+  const [stopsResult, rosterResult, eventsResult] = await Promise.all([
+    routeIds.length > 0
+      ? supabase
+          .from("route_stops")
+          .select("id, route_id, stop_order, stop_name, latitude, longitude, is_school")
+          .in("route_id", routeIds)
+          .order("stop_order", { ascending: true })
+      : emptyResult,
+    routeIds.length > 0
+      ? supabase
+          .from("student_route_stops")
+          .select("student_id, route_id, stop_id, students(full_name, home_address, pickup_notes)")
+          .in("route_id", routeIds)
+          .eq("active", true)
+      : emptyResult,
+    tripIds.length > 0
+      ? supabase
+          .from("trip_student_events")
+          .select("trip_id, student_id, event_type, occurred_at")
+          .in("trip_id", tripIds)
+      : emptyResult,
+  ]);
+
+  const stopsByRoute = new Map<string, RouteStopRow[]>();
+  for (const stop of (stopsResult.data ?? []) as unknown as (RouteStopRow & { route_id: string })[]) {
+    const list = stopsByRoute.get(stop.route_id) ?? [];
+    list.push(stop);
+    stopsByRoute.set(stop.route_id, list);
+  }
+
+  const rosterByRoute = new Map<string, NavigationRosterEntry[]>();
+  for (const entry of (rosterResult.data ?? []) as unknown as (NavigationRosterEntry & { route_id: string })[]) {
+    const list = rosterByRoute.get(entry.route_id) ?? [];
+    list.push(entry);
+    rosterByRoute.set(entry.route_id, list);
+  }
+
+  const eventsByTrip = new Map<string, { student_id: string; event_type: string; occurred_at: string }[]>();
+  for (const event of (eventsResult.data ?? []) as unknown as {
+    trip_id: string;
+    student_id: string;
+    event_type: string;
+    occurred_at: string;
+  }[]) {
+    const list = eventsByTrip.get(event.trip_id) ?? [];
+    list.push(event);
+    eventsByTrip.set(event.trip_id, list);
+  }
+
   const active = assignments.filter((assignment) => assignment.trips?.[0]?.status === "in_progress");
   const finished = assignments.filter((assignment) => assignment.trips?.[0]?.status === "completed");
   const nextTask = active[0] ?? assignments.find((assignment) => !assignment.trips?.[0]) ?? assignments[0];
@@ -97,6 +155,20 @@ export default async function DriverHomePage() {
             {assignments.map((assignment) => {
               const trip = assignment.trips?.[0];
               const isNext = assignment.id === nextTask?.id && trip?.status !== "completed";
+              const plan = buildNavigationPlan({
+                stops: stopsByRoute.get(assignment.route_id) ?? [],
+                roster: rosterByRoute.get(assignment.route_id) ?? [],
+                events: trip ? (eventsByTrip.get(trip.id) ?? []) : [],
+                trip: trip
+                  ? {
+                      status: trip.status,
+                      started_at: trip.started_at,
+                      arrived_at: trip.arrived_at,
+                      completed_at: trip.completed_at,
+                    }
+                  : null,
+                direction: assignment.routes?.direction ?? "morning",
+              });
               return (
                 <li className="task-card" key={assignment.id}>
                   <div className="task-card-head">
@@ -127,6 +199,8 @@ export default async function DriverHomePage() {
                     )}
                   </div>
 
+                  <NavigationDestinationCard plan={plan} compact />
+
                   <Link
                     className={`btn ${isNext ? "btn-primary" : "btn-secondary"} btn-lg`}
                     href={`/pengemudi/tugas/${assignment.id}`}
@@ -146,8 +220,8 @@ export default async function DriverHomePage() {
       </section>
 
       <Notice kind="info">
-        Menu administrasi, data pengemudi lain, dan data siswa di luar rute Anda tidak tersedia di area pengemudi.
-        Posisi GPS dan kamera belum aktif.
+        Tombol navigasi memakai koordinat titik jemput yang tersimpan dan membuka aplikasi peta di luar aplikasi ini.
+        Posisi bus dan kamera belum aktif, sehingga tidak ada pelacakan langsung pada halaman ini.
       </Notice>
     </>
   );
