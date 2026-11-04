@@ -114,10 +114,12 @@ export function ParentLiveVideo({
           {updatedAt ? `Diperbarui ${updatedAt}` : "Belum ada pembaruan"}
         </span>
         <span className="live-meta">{busLabel ?? "Bus belum ditetapkan"}</span>
-        <button className="btn btn-secondary btn-sm live-expand" type="button" onClick={() => setExpanded(true)}>
-          <Icon name="expand" size={14} />
-          Perbesar
-        </button>
+        {isLive && (
+          <button className="btn btn-secondary btn-sm live-expand" type="button" onClick={() => setExpanded(true)}>
+            <Icon name="expand" size={14} />
+            Perbesar
+          </button>
+        )}
       </footer>
 
       {expanded && (
