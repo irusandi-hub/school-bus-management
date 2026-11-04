@@ -2,8 +2,11 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
 import { Breadcrumbs, ConfigNotice, Notice, Pill, TripStatusPill } from "@/components/admin/ui";
+import { NavigationDestinationCard } from "@/components/driver/NavigationDestinationCard";
+import { NavigationStopList } from "@/components/driver/NavigationStopList";
 import { firstParam, noticeFromParams } from "@/lib/admin/query";
 import { requireDriver } from "@/lib/auth";
+import { buildNavigationPlan } from "@/lib/driver/navigation";
 import { SAFETY_CHECKS } from "@/lib/driver/trip-end";
 import { createServerSupabase } from "@/lib/supabase/server";
 import type { RouteStopRow, TripEventRow } from "@/lib/types";
@@ -20,6 +23,7 @@ export const metadata: Metadata = { title: "Detail Tugas | Pengemudi" };
 type RosterEntry = {
   id: string;
   student_id: string;
+  stop_id: string;
   direction: string;
   route_stops: { stop_name: string; stop_order: number } | null;
   students: {
@@ -95,7 +99,7 @@ export default async function DriverTaskPage({
     supabase
       .from("student_route_stops")
       .select(
-        "id, student_id, direction, route_stops(stop_name, stop_order), students(full_name, admissions_number, home_address, pickup_notes)",
+        "id, student_id, stop_id, direction, route_stops(stop_name, stop_order), students(full_name, admissions_number, home_address, pickup_notes)",
       )
       .eq("route_id", routeId)
       .eq("direction", direction)
@@ -119,6 +123,29 @@ export default async function DriverTaskPage({
   for (const event of events) {
     if (!latestEvent.has(event.student_id)) latestEvent.set(event.student_id, event);
   }
+
+  const navigationPlan = buildNavigationPlan({
+    stops,
+    roster: roster.map((entry) => ({
+      student_id: entry.student_id,
+      stop_id: entry.stop_id,
+      students: entry.students,
+    })),
+    events: events.map((event) => ({
+      student_id: event.student_id,
+      event_type: event.event_type,
+      occurred_at: event.occurred_at,
+    })),
+    trip: trip
+      ? {
+          status: trip.status,
+          started_at: trip.started_at,
+          arrived_at: trip.arrived_at,
+          completed_at: trip.completed_at,
+        }
+      : null,
+    direction,
+  });
 
   const inProgress = trip?.status === "in_progress";
   const completed = trip?.status === "completed";
@@ -162,6 +189,8 @@ export default async function DriverTaskPage({
       {stopsResult.error && <Notice kind="error">Urutan titik jemput belum dapat dimuat.</Notice>}
       {eventsResult.error && <Notice kind="error">Status siswa belum dapat dimuat.</Notice>}
       {rosterResult.error && <Notice kind="error">Daftar siswa belum dapat dimuat.</Notice>}
+
+      <NavigationDestinationCard plan={navigationPlan} />
 
       <section className="panel task-actions">
         <header className="panel-head">
@@ -289,31 +318,12 @@ export default async function DriverTaskPage({
         <header className="panel-head">
           <div>
             <h2 className="panel-title">Urutan titik jemput</h2>
-            <div className="panel-subtitle">{stops.length} titik pada rute ini</div>
+            <div className="panel-subtitle">
+              {stops.length} titik pada rute ini · status dari catatan kehadiran, bukan GPS
+            </div>
           </div>
         </header>
-        {stops.length === 0 ? (
-          <div className="table-empty">
-            <strong>Belum ada titik jemput</strong>
-            <p>Admin Pusat belum menambahkan titik pada rute ini. Hubungi Admin Pusat sebelum memulai perjalanan.</p>
-          </div>
-        ) : (
-          <ol className="stop-timeline">
-            {stops.map((stop) => (
-              <li key={stop.id} className={stop.is_school ? "is-school" : undefined}>
-                <span className="stop-number" aria-hidden="true">
-                  {stop.stop_order}
-                </span>
-                <div>
-                  <strong>{stop.stop_name}</strong>
-                  <small>
-                    {stop.is_school ? "Gerbang sekolah" : "Titik jemput"} · {stop.latitude}, {stop.longitude}
-                  </small>
-                </div>
-              </li>
-            ))}
-          </ol>
-        )}
+        <NavigationStopList plan={navigationPlan} />
       </section>
 
       <section className="panel">
@@ -421,8 +431,8 @@ export default async function DriverTaskPage({
       </section>
 
       <Notice kind="info">
-        Lokasi bus langsung dan kamera belum tersedia. Halaman ini tidak menampilkan peta, posisi, atau tautan kamera
-        yang tidak benar-benar terhubung.
+        Navigasi membuka aplikasi peta dengan koordinat titik yang tersimpan. Posisi bus belum dilacak karena integrasi
+        GPS belum aktif, dan kembali dari aplikasi peta tidak mengubah status siswa atau menyelesaikan titik pemberhentian.
       </Notice>
     </>
   );

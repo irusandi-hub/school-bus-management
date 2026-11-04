@@ -12,6 +12,7 @@ export type Placement = {
 };
 
 export type TodayTrip = {
+  tripId: string | null;
   routeId: string;
   direction: string;
   status: string;
@@ -85,11 +86,18 @@ export async function loadChildren(supabase: ServerSupabase): Promise<ChildOverv
         todayTrips = ((assignmentRows ?? []) as unknown as {
           route_id: string;
           buses: { fleet_code: string; plate_number: string | null } | null;
-          trips: { status: string; started_at: string | null; arrived_at: string | null; completed_at: string | null }[];
+          trips: {
+            id: string;
+            status: string;
+            started_at: string | null;
+            arrived_at: string | null;
+            completed_at: string | null;
+          }[];
         }[]).map((row) => {
           const placement = placements.find((item) => item.routeId === row.route_id);
           const trip = row.trips?.[0];
           return {
+            tripId: trip?.id ?? null,
             routeId: row.route_id,
             direction: placement?.direction ?? "morning",
             status: trip?.status ?? "scheduled",
@@ -105,6 +113,59 @@ export async function loadChildren(supabase: ServerSupabase): Promise<ChildOverv
       return { student, placements, todayTrips };
     }),
   );
+}
+
+export type StudentTripEvent = {
+  tripId: string;
+  studentId: string;
+  eventType: string;
+  occurredAt: string;
+};
+
+export function liveEventKey(tripId: string, studentId: string) {
+  return `${tripId}:${studentId}`;
+}
+
+/**
+ * Catatan kehadiran terbaru per siswa pada perjalanan hari ini.
+ * Kunci peta memakai liveEventKey(tripId, studentId) agar setiap anak memakai
+ * perjalanannya sendiri, termasuk ketika satu akun memiliki beberapa anak.
+ */
+export async function loadTodayStudentEvents(
+  supabase: ServerSupabase,
+  children: ChildOverview[],
+): Promise<Map<string, StudentTripEvent>> {
+  const tripIds = Array.from(
+    new Set(children.flatMap((child) => child.todayTrips.map((trip) => trip.tripId)).filter(Boolean) as string[]),
+  );
+  const studentIds = children.map((child) => child.student.id);
+  const events = new Map<string, StudentTripEvent>();
+  if (tripIds.length === 0 || studentIds.length === 0) return events;
+
+  const { data } = await supabase
+    .from("trip_student_events")
+    .select("trip_id, student_id, event_type, occurred_at")
+    .in("trip_id", tripIds)
+    .in("student_id", studentIds)
+    .order("occurred_at", { ascending: false });
+
+  for (const row of (data ?? []) as unknown as {
+    trip_id: string;
+    student_id: string;
+    event_type: string;
+    occurred_at: string;
+  }[]) {
+    const key = liveEventKey(row.trip_id, row.student_id);
+    if (events.has(key)) continue;
+    events.set(key, {
+      tripId: row.trip_id,
+      studentId: row.student_id,
+      eventType: row.event_type,
+      occurredAt: row.occurred_at,
+    });
+  }
+
+  return events;
 }
 
 export type ChildTrip = {
