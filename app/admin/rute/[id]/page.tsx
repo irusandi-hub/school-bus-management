@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { RecordForm, type FieldDef } from "@/components/admin/RecordForm";
 import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
-import { ConfigNotice, EmptyRow, Notice, PageHeader, Pill } from "@/components/admin/ui";
+import { Breadcrumbs, ConfigNotice, EmptyRow, Notice, PageHeader, Pill } from "@/components/admin/ui";
 import { adminReadContext } from "@/lib/admin/read";
 import { firstParam, noticeFromParams } from "@/lib/admin/query";
 import type { RouteRow, RouteStopRow, StudentRouteStopRow } from "@/lib/types";
@@ -112,9 +112,13 @@ export default async function RouteDetailPage({
 
   return (
     <>
-      <div className="breadcrumb">
-        <Link href="/admin/rute">‹ Kembali ke Rute</Link>
-      </div>
+      <Breadcrumbs
+        items={[
+          { href: "/admin", label: "Ringkasan" },
+          { href: "/admin/rute", label: "Rute" },
+          { label: route.route_name },
+        ]}
+      />
 
       <PageHeader
         title={route.route_name}

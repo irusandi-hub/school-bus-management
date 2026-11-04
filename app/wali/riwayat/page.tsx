@@ -64,7 +64,7 @@ export default async function GuardianHistoryPage() {
           </div>
         </header>
         <div className="admin-table-wrap">
-          <table className="admin-table">
+          <table className="admin-table table-stack">
             <thead>
               <tr>
                 <th scope="col">Tanggal</th>
@@ -90,22 +90,22 @@ export default async function GuardianHistoryPage() {
               ) : (
                 rows.map(({ child, trip }) => (
                   <tr key={`${child.student.id}-${trip.id}`}>
-                    <td>{formatDate(trip.serviceDate)}</td>
-                    <td>
+                    <td data-label="Tanggal">{formatDate(trip.serviceDate)}</td>
+                    <td data-label="Anak">
                       <Link className="row-link" href={`/wali/anak/${child.student.id}`}>
                         {child.student.full_name}
                       </Link>
                     </td>
-                    <td>
+                    <td data-label="Rute">
                       <strong>{trip.routeName}</strong>
                       <small>
                         {trip.schoolName} · {routeDirectionLabel(trip.direction)}
                       </small>
                     </td>
-                    <td>
+                    <td data-label="Status">
                       <Pill tone={tripTone(trip.status)}>{tripStatusLabel(trip.status)}</Pill>
                     </td>
-                    <td>
+                    <td data-label="Waktu">
                       <small>Mulai {formatTime(trip.startedAt)}</small>
                       <small>Tiba {formatTime(trip.arrivedAt)}</small>
                     </td>

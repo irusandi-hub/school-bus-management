@@ -1,23 +1,53 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { Icon } from "@/components/ui/Icon";
+import { serviceStatusLabel, tripStatusLabel } from "@/lib/validation";
+
+export type Crumb = { href?: string; label: string };
+
+/** Remah roti bersama: satu pola untuk semua halaman detail. */
+export function Breadcrumbs({ items }: { items: Crumb[] }) {
+  return (
+    <nav className="crumbs" aria-label="Posisi halaman">
+      {items.map((item, index) => (
+        <span key={`${item.label}-${index}`} style={{ display: "contents" }}>
+          {index > 0 && <span className="crumb-sep" aria-hidden="true">/</span>}
+          {item.href ? (
+            <Link href={item.href}>{item.label}</Link>
+          ) : (
+            <span aria-current="page">{item.label}</span>
+          )}
+        </span>
+      ))}
+    </nav>
+  );
+}
 
 export function PageHeader({
   title,
   description,
   actions,
+  crumbs,
+  eyebrow,
 }: {
   title: string;
   description: string;
   actions?: ReactNode;
+  crumbs?: Crumb[];
+  eyebrow?: string;
 }) {
   return (
-    <header className="admin-page-head">
-      <div>
-        <h1>{title}</h1>
-        <p>{description}</p>
-      </div>
-      {actions && <div className="admin-page-actions">{actions}</div>}
-    </header>
+    <>
+      {crumbs && crumbs.length > 0 && <Breadcrumbs items={crumbs} />}
+      <header className="admin-page-head">
+        <div>
+          {eyebrow && <div className="eyebrow">{eyebrow}</div>}
+          <h1>{title}</h1>
+          <p>{description}</p>
+        </div>
+        {actions && <div className="admin-page-actions">{actions}</div>}
+      </header>
+    </>
   );
 }
 
@@ -45,6 +75,77 @@ export function Pill({
   return <span className={`pill ${tone}`}>{children}</span>;
 }
 
+/** Status perjalanan memakai satu pemetaan warna di seluruh area. */
+export function TripStatusPill({ status }: { status: string | null | undefined }) {
+  if (!status || status === "scheduled") return <Pill tone="neutral">Belum dimulai</Pill>;
+  const tone =
+    status === "completed" ? "success" : status === "in_progress" ? "info" : status === "cancelled" ? "danger" : "warning";
+  return <Pill tone={tone}>{tripStatusLabel(status)}</Pill>;
+}
+
+/** Status layanan siswa: aktif, jeda, dan berakhir dibedakan jelas. */
+export function ServiceStatusPill({ status }: { status: string }) {
+  const tone = status === "active" ? "success" : status === "paused" ? "warning" : "neutral";
+  return <Pill tone={tone}>{serviceStatusLabel(status)}</Pill>;
+}
+
+export function StatCard({
+  label,
+  value,
+  note,
+  icon,
+  tone,
+}: {
+  label: string;
+  value: ReactNode;
+  note?: string;
+  icon: string;
+  tone?: "default" | "live" | "wait" | "done";
+}) {
+  return (
+    <article className={`stat-card ${tone && tone !== "default" ? `tone-${tone}` : ""}`}>
+      <div className="stat-top">
+        <span>{label}</span>
+        <span className="stat-icon" aria-hidden="true">
+          <Icon name={icon} />
+        </span>
+      </div>
+      <div className="stat-value">{value}</div>
+      {note && <div className="stat-note">{note}</div>}
+    </article>
+  );
+}
+
+/** State kosong yang dipakai di luar tabel (panel, kartu, halaman). */
+export function EmptyState({
+  icon = "inbox",
+  title,
+  detail,
+  action,
+  tone = "default",
+}: {
+  icon?: string;
+  title: string;
+  detail?: string;
+  action?: { href: string; label: string };
+  tone?: "default" | "error";
+}) {
+  return (
+    <div className={`state-panel ${tone === "error" ? "error" : ""}`}>
+      <span className="state-icon" aria-hidden="true">
+        <Icon name={icon} size={22} />
+      </span>
+      <strong>{title}</strong>
+      {detail && <p>{detail}</p>}
+      {action && (
+        <Link className="btn btn-secondary btn-sm" href={action.href}>
+          {action.label}
+        </Link>
+      )}
+    </div>
+  );
+}
+
 /**
  * Search and filter are a plain GET form: they work without JavaScript, keep the URL
  * shareable and never mix client-side filtering with server-side pagination.
@@ -67,7 +168,7 @@ export function ListToolbar({
   return (
     <form className="list-toolbar" method="get" action={action}>
       <div className="list-search">
-        <span aria-hidden="true">⌕</span>
+        <Icon name="search" size={15} />
         <input type="search" name="q" defaultValue={q} placeholder={placeholder} aria-label={placeholder} />
       </div>
       {filters}
@@ -122,7 +223,7 @@ export function EmptyRow({
 }) {
   return (
     <tr>
-      <td colSpan={colSpan}>
+      <td colSpan={colSpan} data-label="">
         <div className="table-empty">
           <strong>{title}</strong>
           <p>{detail}</p>
@@ -136,12 +237,11 @@ export function ConfigNotice() {
   return (
     <main className="config-page">
       <section className="panel config-card">
-        <h1>Database belum dikonfigurasi</h1>
-        <p>
-          Modul Admin Pusat memerlukan koneksi Supabase. Hubungi pengelola sistem untuk mengisi variabel lingkungan
-          <code> NEXT_PUBLIC_SUPABASE_URL </code> dan <code>NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY</code>, lalu terapkan
-          migrasi yang tersedia di repository.
-        </p>
+        <EmptyState
+          icon="alert"
+          title="Database belum dikonfigurasi"
+          detail="Modul ini memerlukan koneksi Supabase. Hubungi pengelola sistem untuk mengisi NEXT_PUBLIC_SUPABASE_URL dan NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY, lalu terapkan migrasi yang tersedia di repository."
+        />
         <Link className="btn btn-primary" href="/">
           Kembali ke beranda
         </Link>

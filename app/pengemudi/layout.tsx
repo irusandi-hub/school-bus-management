@@ -1,11 +1,13 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ConfigNotice } from "@/components/admin/ui";
+import { BottomNav } from "@/components/ui/BottomNav";
+import { Icon } from "@/components/ui/Icon";
+import { driverBottomNav } from "@/components/ui/nav-config";
 import { requireDriver } from "@/lib/auth";
 import { signOutAction } from "@/lib/auth-actions";
 
 export const metadata: Metadata = { title: "Pengemudi | School Bus" };
-
 export const dynamic = "force-dynamic";
 
 export default async function DriverLayout({ children }: { children: React.ReactNode }) {
@@ -25,9 +27,10 @@ export default async function DriverLayout({ children }: { children: React.React
           </span>
         </Link>
         <div className="driver-account">
-          <span>{name}</span>
+          <span className="account-name">{name}</span>
           <form action={signOutAction}>
-            <button className="btn btn-ghost" type="submit">
+            <button className="btn btn-ghost btn-sm" type="submit">
+              <Icon name="logout" size={15} />
               Keluar
             </button>
           </form>
@@ -41,19 +44,7 @@ export default async function DriverLayout({ children }: { children: React.React
         <span>GPS &amp; kamera belum aktif</span>
       </footer>
 
-      <nav className="mobile-nav driver-nav" aria-label="Navigasi pengemudi">
-        <Link href="/pengemudi">
-          <span aria-hidden="true">▦</span>Tugas
-        </Link>
-        <Link href="/pengemudi/riwayat">
-          <span aria-hidden="true">◷</span>Riwayat
-        </Link>
-        <form action={signOutAction}>
-          <button type="submit">
-            <span aria-hidden="true">⇥</span>Keluar
-          </button>
-        </form>
-      </nav>
+      <BottomNav items={driverBottomNav} rootHref="/pengemudi" ariaLabel="Navigasi pengemudi" />
     </div>
   );
 }

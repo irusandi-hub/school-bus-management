@@ -44,6 +44,11 @@ export default async function OperatorAssignmentsPage() {
     bookedToday.add(assignment.bus_id);
   }
 
+  const availableDrivers = drivers.filter((driver) => !bookedToday.has(driver.id));
+  const availableBuses = buses.filter((bus) => !bookedToday.has(bus.id));
+  const busyDrivers = drivers.filter((driver) => bookedToday.has(driver.id));
+  const busyBuses = buses.filter((bus) => bookedToday.has(bus.id));
+
   const fields: FieldDef[] = [
     {
       name: "route_id",
@@ -126,7 +131,7 @@ export default async function OperatorAssignmentsPage() {
             </div>
           </header>
           <div className="admin-table-wrap">
-            <table className="admin-table">
+            <table className="admin-table table-stack">
               <thead>
                 <tr>
                   <th scope="col">Tanggal</th>
@@ -147,16 +152,16 @@ export default async function OperatorAssignmentsPage() {
                     const trip = assignment.trips?.[0];
                     return (
                       <tr key={assignment.id}>
-                        <td>{formatDate(assignment.service_date)}</td>
-                        <td>
+                        <td data-label="Tanggal">{formatDate(assignment.service_date)}</td>
+                        <td data-label="Rute">
                           <strong>{assignment.routes?.route_name ?? "Rute"}</strong>
                           <small>{assignment.routes?.school_name}</small>
                         </td>
-                        <td>
+                        <td data-label="Pengemudi & bus">
                           <strong>{assignment.drivers?.full_name ?? "—"}</strong>
                           <small>{assignment.buses?.fleet_code}</small>
                         </td>
-                        <td>
+                        <td data-label="Status">
                           <Pill tone={trip?.status === "in_progress" ? "info" : trip?.status === "completed" ? "success" : "neutral"}>
                             {trip ? tripStatusLabel(trip.status) : "Belum dimulai"}
                           </Pill>
@@ -178,6 +183,30 @@ export default async function OperatorAssignmentsPage() {
             </div>
           </header>
           <div className="form-body">
+            <div className="ops-note" style={{ marginBottom: 14 }}>
+              <strong>Ketersediaan hari ini</strong>
+              <div>
+                Pengemudi siap ditugaskan: <strong>{availableDrivers.length}</strong> dari {drivers.length} aktif.
+              </div>
+              <div>
+                Bus siap ditugaskan: <strong>{availableBuses.length}</strong> dari {buses.length} aktif.
+              </div>
+              {(busyDrivers.length > 0 || busyBuses.length > 0) && (
+                <div style={{ marginTop: 6 }}>
+                  Sudah terpakai hari ini:{" "}
+                  {[...busyDrivers.map((driver) => driver.full_name), ...busyBuses.map((bus) => `Bus ${bus.fleet_code}`)].join(
+                    ", ",
+                  )}
+                  . Pilih tanggal lain atau gunakan staf yang masih tersedia.
+                </div>
+              )}
+              {availableDrivers.length === 0 && drivers.length > 0 && (
+                <div style={{ marginTop: 6 }}>
+                  Semua pengemudi aktif sudah mendapat penugasan hari ini. Database akan menolak penugasan ganda pada
+                  tanggal yang sama.
+                </div>
+              )}
+            </div>
             <RecordForm
               action={saveOperatorAssignment}
               fields={fields}

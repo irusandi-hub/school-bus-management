@@ -1,8 +1,9 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { ConfigNotice, EmptyRow, Notice, PageHeader, Pill } from "@/components/admin/ui";
+import { ConfigNotice, EmptyState, Notice, PageHeader, Pill, StatCard } from "@/components/admin/ui";
+import { Icon } from "@/components/ui/Icon";
 import { operatorReadContext } from "@/lib/operator/read";
-import { formatDate, tripStatusLabel } from "@/lib/validation";
+import { formatDate, formatTime, routeDirectionLabel } from "@/lib/validation";
 
 export const metadata: Metadata = { title: "Pusat Operasi | Operator" };
 
@@ -36,12 +37,18 @@ export default async function OperatorOperationsPage() {
   ]);
 
   const rows = (assignmentsResult.data ?? []) as unknown as OperationRow[];
-  const stats = {
-    total: rows.length,
-    running: rows.filter((row) => row.trips?.some((trip) => trip.status === "in_progress")).length,
-    completed: rows.filter((row) => row.trips?.some((trip) => trip.status === "completed")).length,
-    waiting: rows.filter((row) => !row.trips?.length || row.trips.every((trip) => trip.status === "scheduled")).length,
-  };
+
+  const running = rows.filter((row) => row.trips?.some((trip) => trip.status === "in_progress"));
+  const completed = rows.filter(
+    (row) => row.trips?.length && row.trips.every((trip) => trip.status === "completed" || trip.status === "cancelled"),
+  );
+  const waiting = rows.filter((row) => !running.includes(row) && !completed.includes(row));
+
+  const columns = [
+    { key: "live", title: "Berlangsung", icon: "trip" as const, rows: running, empty: "Tidak ada perjalanan berjalan." },
+    { key: "wait", title: "Menunggu mulai", icon: "clock" as const, rows: waiting, empty: "Tidak ada tugas yang menunggu." },
+    { key: "done", title: "Selesai", icon: "check" as const, rows: completed, empty: "Belum ada perjalanan selesai hari ini." },
+  ];
 
   return (
     <>
@@ -49,50 +56,97 @@ export default async function OperatorOperationsPage() {
         title="Pusat operasi"
         description="Satu tampilan untuk mengendalikan penugasan hari ini, melihat kesiapan armada, dan membuka tindak lanjut operasional."
         actions={<Pill tone="info">{formatDate(date)}</Pill>}
+        eyebrow="OPERASIONAL HARIAN"
       />
 
       {assignmentsResult.error && <Notice kind="error">Data operasi hari ini belum dapat dimuat. Coba muat ulang halaman.</Notice>}
 
       <section className="stats" aria-label="Status operasi hari ini">
-        <article className="stat-card"><div className="stat-top"><span>Total penugasan</span><span className="stat-icon">☷</span></div><div className="stat-value">{stats.total}</div><div className="stat-note">Jadwal layanan hari ini</div></article>
-        <article className="stat-card"><div className="stat-top"><span>Berlangsung</span><span className="stat-icon">◉</span></div><div className="stat-value">{stats.running}</div><div className="stat-note">Perjalanan yang sedang aktif</div></article>
-        <article className="stat-card"><div className="stat-top"><span>Selesai</span><span className="stat-icon">✓</span></div><div className="stat-value">{stats.completed}</div><div className="stat-note">Perjalanan ditutup pengemudi</div></article>
-        <article className="stat-card"><div className="stat-top"><span>Menunggu mulai</span><span className="stat-icon">◷</span></div><div className="stat-value">{stats.waiting}</div><div className="stat-note">Belum ada perjalanan aktif</div></article>
+        <StatCard label="Total penugasan" value={rows.length} note="Jadwal layanan hari ini" icon="assignment" />
+        <StatCard label="Berlangsung" value={running.length} note="Perjalanan sedang aktif" icon="trip" tone="live" />
+        <StatCard label="Menunggu mulai" value={waiting.length} note="Belum dimulai pengemudi" icon="clock" tone="wait" />
+        <StatCard label="Selesai" value={completed.length} note="Ditutup pengemudi" icon="check" tone="done" />
       </section>
 
       <div className="quick-grid">
-        <Link className="quick-tile" href="/operator/penugasan"><span aria-hidden="true">☑</span><strong>Buat penugasan</strong><small>Atur rute, pengemudi, bus, dan tanggal</small></Link>
-        <Link className="quick-tile" href="/operator/perjalanan"><span aria-hidden="true">◷</span><strong>Lihat perjalanan</strong><small>Buka riwayat perjalanan armada</small></Link>
-        <Link className="quick-tile" href="/operator/bus"><span aria-hidden="true">▰</span><strong>Kesiapan armada</strong><small>{busesResult.count ?? 0} bus aktif tersedia</small></Link>
-        <Link className="quick-tile" href="/operator/pengemudi"><span aria-hidden="true">◍</span><strong>Kesiapan pengemudi</strong><small>{driversResult.count ?? 0} pengemudi aktif terdaftar</small></Link>
+        <Link className="quick-tile" href="/operator/penugasan">
+          <span aria-hidden="true"><Icon name="plus" /></span>
+          <strong>Buat penugasan</strong>
+          <small>Atur rute, pengemudi, bus, dan tanggal</small>
+        </Link>
+        <Link className="quick-tile" href="/operator/perjalanan">
+          <span aria-hidden="true"><Icon name="trip" /></span>
+          <strong>Riwayat perjalanan</strong>
+          <small>Catatan waktu mulai, tiba, dan selesai</small>
+        </Link>
+        <Link className="quick-tile" href="/operator/bus">
+          <span aria-hidden="true"><Icon name="bus" /></span>
+          <strong>Kesiapan armada</strong>
+          <small>{busesResult.count ?? 0} bus aktif · {driversResult.count ?? 0} pengemudi aktif</small>
+        </Link>
       </div>
 
-      <section className="panel">
-        <header className="panel-head">
-          <div><h2 className="panel-title">Papan penugasan hari ini</h2><div className="panel-subtitle">Status bersumber dari perjalanan yang dicatat pengemudi</div></div>
-          <Link className="btn btn-secondary" href="/operator/penugasan">Kelola penugasan</Link>
-        </header>
-        <div className="admin-table-wrap">
-          <table className="admin-table">
-            <thead><tr><th scope="col">Rute dan sekolah</th><th scope="col">Pengemudi</th><th scope="col">Bus</th><th scope="col">Status</th><th scope="col">Tindakan</th></tr></thead>
-            <tbody>
-              {rows.length === 0 ? <EmptyRow colSpan={5} title="Belum ada penugasan hari ini" detail="Buat penugasan untuk menampilkan rute, pengemudi, dan bus pada papan operasi." /> : rows.map((row) => {
-                const trip = row.trips?.[0];
-                const status = trip?.status ?? "scheduled";
-                return <tr key={row.id}>
-                  <td><strong>{row.routes?.route_name ?? "Rute belum tersedia"}</strong><small>{row.routes?.school_name ?? "Sekolah tidak tersedia"}</small></td>
-                  <td>{row.drivers?.full_name ?? "—"}</td>
-                  <td>{row.buses?.fleet_code ?? "—"}</td>
-                  <td><Pill tone={status === "in_progress" ? "info" : status === "completed" ? "success" : "neutral"}>{trip ? tripStatusLabel(status) : "Menunggu mulai"}</Pill></td>
-                  <td><Link className="row-link" href="/operator/perjalanan">Lihat perjalanan</Link></td>
-                </tr>;
-              })}
-            </tbody>
-          </table>
+      {rows.length === 0 ? (
+        <section className="panel">
+          <EmptyState
+            icon="inbox"
+            title="Belum ada penugasan untuk hari ini"
+            detail="Buat penugasan agar pengemudi menerima tugas dan perjalanan dapat dipantau dari papan ini."
+            action={{ href: "/operator/penugasan", label: "Buat penugasan" }}
+          />
+        </section>
+      ) : (
+        <div className="board-grid" aria-label="Papan penugasan hari ini">
+          {columns.map((column) => (
+            <section className={`board-column ${column.key}`} key={column.key}>
+              <header className="board-column-head">
+                <strong>
+                  <Icon name={column.icon} size={15} />
+                  {column.title}
+                </strong>
+                <span className="board-count">{column.rows.length}</span>
+              </header>
+              {column.rows.length === 0 ? (
+                <p className="board-empty">{column.empty}</p>
+              ) : (
+                <ul className="board-list">
+                  {column.rows.map((row) => {
+                    const trip = row.trips?.[0];
+                    return (
+                      <li className="board-item" key={row.id}>
+                        <strong>{row.routes?.route_name ?? "Rute belum tersedia"}</strong>
+                        <small>
+                          {row.routes?.school_name ?? "Sekolah tidak tersedia"} ·{" "}
+                          {routeDirectionLabel(row.routes?.direction ?? "")}
+                        </small>
+                        <small>
+                          {row.drivers?.full_name ?? "Pengemudi belum ditetapkan"} · Bus{" "}
+                          {row.buses?.fleet_code ?? "—"}
+                        </small>
+                        <small>
+                          {column.key === "live"
+                            ? `Mulai ${formatTime(trip?.started_at)}`
+                            : column.key === "done"
+                              ? `Selesai ${formatTime(trip?.completed_at)}`
+                              : "Menunggu pengemudi memulai"}
+                        </small>
+                        <Link href="/operator/perjalanan">
+                          Lihat perjalanan <Icon name="chevronRight" size={13} />
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </section>
+          ))}
         </div>
-      </section>
+      )}
 
-      <Notice kind="info">Posisi GPS langsung, estimasi kedatangan, dan kamera live belum diaktifkan. Halaman ini tidak membuat data lokasi atau status perjalanan palsu.</Notice>
+      <Notice kind="info">
+        Posisi GPS langsung, estimasi kedatangan, dan kamera live belum diaktifkan. Papan ini hanya memakai status
+        perjalanan yang dicatat pengemudi, tanpa membuat data lokasi atau status palsu.
+      </Notice>
     </>
   );
 }

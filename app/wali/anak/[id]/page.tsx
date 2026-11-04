@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { ConfigNotice, Notice, Pill } from "@/components/admin/ui";
+import { Breadcrumbs, ConfigNotice, Notice, Pill, ServiceStatusPill } from "@/components/admin/ui";
 import { requireGuardian } from "@/lib/auth";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { loadChildTrips, loadChildren, todayDate } from "@/lib/guardian/data";
@@ -54,9 +54,7 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
 
   return (
     <>
-      <div className="breadcrumb">
-        <Link href="/wali">‹ Kembali ke anak saya</Link>
-      </div>
+      <Breadcrumbs items={[{ href: "/wali", label: "Anak saya" }, { label: student.full_name }]} />
 
       <section className="child-detail-head">
         <span className="child-avatar child-avatar-lg" aria-hidden="true">
@@ -67,9 +65,7 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
           <h1>{student.full_name}</h1>
           <p>{student.schools?.name ?? "Sekolah belum ditetapkan"}</p>
         </div>
-        <Pill tone={student.service_status === "active" ? "success" : "warning"}>
-          {serviceStatusLabel(student.service_status)}
-        </Pill>
+        <ServiceStatusPill status={student.service_status} />
       </section>
 
       {eventsResult.error && <Notice kind="error">Riwayat kehadiran belum dapat dimuat.</Notice>}
@@ -197,7 +193,7 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
             </div>
           </header>
           <div className="admin-table-wrap">
-            <table className="admin-table admin-table-compact">
+            <table className="admin-table admin-table-compact table-stack">
               <thead>
                 <tr>
                   <th scope="col">Tanggal</th>
@@ -219,15 +215,15 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
                 ) : (
                   trips.map((trip) => (
                     <tr key={trip.id}>
-                      <td>{formatDate(trip.serviceDate)}</td>
-                      <td>
+                      <td data-label="Tanggal">{formatDate(trip.serviceDate)}</td>
+                      <td data-label="Rute">
                         <strong>{trip.routeName}</strong>
                         <small>{trip.direction === "morning" ? "Pagi" : "Sore"}</small>
                       </td>
-                      <td>
+                      <td data-label="Status">
                         <Pill tone={tripTone(trip.status)}>{tripStatusLabel(trip.status)}</Pill>
                       </td>
-                      <td>
+                      <td data-label="Waktu">
                         <small>Mulai {formatTime(trip.startedAt)}</small>
                         <small>Tiba {formatTime(trip.arrivedAt)}</small>
                       </td>

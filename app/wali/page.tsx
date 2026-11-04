@@ -1,10 +1,10 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { ConfigNotice, Notice, Pill } from "@/components/admin/ui";
+import { ConfigNotice, Notice, Pill, ServiceStatusPill } from "@/components/admin/ui";
 import { requireGuardian } from "@/lib/auth";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { loadChildren, todayDate } from "@/lib/guardian/data";
-import { formatDate, formatTime, routeDirectionLabel, serviceStatusLabel, tripStatusLabel } from "@/lib/validation";
+import { formatDate, formatTime, routeDirectionLabel, tripStatusLabel } from "@/lib/validation";
 
 export const metadata: Metadata = { title: "Anak Saya | Portal Wali" };
 
@@ -59,6 +59,12 @@ export default async function GuardianHomePage() {
                 : tripStatusLabel(primaryTrip.status)
               : null;
 
+            const directionState = (direction: string) => {
+              const trip = trips.find((entry) => entry.direction === direction);
+              if (!trip) return "Belum dijadwalkan";
+              return trip.status === "scheduled" ? "Belum dimulai" : tripStatusLabel(trip.status);
+            };
+
             return (
               <article className="child-card" key={child.student.id}>
                 <header className="child-card-head">
@@ -69,9 +75,7 @@ export default async function GuardianHomePage() {
                     <h2>{child.student.full_name}</h2>
                     <small>{child.student.admissions_number}</small>
                   </div>
-                  <Pill tone={child.student.service_status === "active" ? "success" : "warning"}>
-                    {serviceStatusLabel(child.student.service_status)}
-                  </Pill>
+                  <ServiceStatusPill status={child.student.service_status} />
                 </header>
 
                 <dl className="child-facts">
@@ -90,6 +94,17 @@ export default async function GuardianHomePage() {
                     </dd>
                   </div>
                 </dl>
+
+                <div className="child-status-strip" aria-label="Status perjalanan per arah">
+                  <div>
+                    <span>Perjalanan pagi</span>
+                    <strong>{directionState("morning")}</strong>
+                  </div>
+                  <div>
+                    <span>Perjalanan sore</span>
+                    <strong>{directionState("afternoon")}</strong>
+                  </div>
+                </div>
 
                 <div className="child-trip">
                   <div className="child-trip-head">

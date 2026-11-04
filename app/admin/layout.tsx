@@ -2,6 +2,10 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { ConfigNotice } from "@/components/admin/ui";
+import { BottomNav } from "@/components/ui/BottomNav";
+import { Icon } from "@/components/ui/Icon";
+import { MobileMenu } from "@/components/ui/MobileMenu";
+import { adminBottomNav, adminGroups } from "@/components/ui/nav-config";
 import { requireAdmin } from "@/lib/auth";
 import { signOutAction } from "@/lib/auth-actions";
 
@@ -40,7 +44,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </div>
 
         <div className="sidebar-bottom">
-          <span className="security-icon">✓</span>
+          <span className="security-icon">
+            <Icon name="shield" size={13} />
+          </span>
           <strong>Otorisasi dari database</strong>
           <p>Setiap perubahan diperiksa ulang oleh kebijakan akses database, bukan hanya oleh tampilan.</p>
         </div>
@@ -48,6 +54,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
       <main className="main">
         <header className="topbar">
+          <MobileMenu
+            groups={adminGroups}
+            rootHref="/admin"
+            areaLabel="Admin Pusat"
+            note="Menu ini menampilkan seluruh modul Admin Pusat. Data yang tampil mengikuti hak akses akun Anda."
+          />
           <div className="topbar-title">
             <div className="eyebrow">DAMMAM · PILOT</div>
             <div className="admin-topbar-role">Ruang kerja Admin Pusat</div>
@@ -61,6 +73,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             </span>
             <form action={signOutAction}>
               <button className="btn btn-ghost" type="submit">
+                <Icon name="logout" size={15} />
                 Keluar
               </button>
             </form>
@@ -70,28 +83,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         {children}
 
         <footer className="page-footer">
-          <span>School Bus Management</span>
-          <span>Data induk · operasional terbatas</span>
+          <span>School Bus Management · Admin Pusat</span>
+          <span>Data induk &amp; operasional · GPS dan kamera belum aktif</span>
         </footer>
       </main>
 
-      <nav className="mobile-nav" aria-label="Navigasi seluler Admin Pusat">
-        <Link href="/admin">
-          <span aria-hidden="true">▦</span>Ringkasan
-        </Link>
-        <Link href="/admin/siswa">
-          <span aria-hidden="true">♧</span>Siswa
-        </Link>
-        <Link href="/admin/wali">
-          <span aria-hidden="true">☎</span>Wali
-        </Link>
-        <Link href="/admin/rute">
-          <span aria-hidden="true">⇢</span>Rute
-        </Link>
-        <Link href="/admin/perjalanan">
-          <span aria-hidden="true">◷</span>Perjalanan
-        </Link>
-      </nav>
+      <BottomNav items={adminBottomNav} rootHref="/admin" ariaLabel="Navigasi seluler Admin Pusat" />
     </div>
   );
 }

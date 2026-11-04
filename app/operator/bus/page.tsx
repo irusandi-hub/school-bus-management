@@ -95,7 +95,7 @@ export default async function OperatorBusesPage({
             </div>
           </header>
           <div className="admin-table-wrap">
-            <table className="admin-table">
+            <table className="admin-table table-stack">
               <thead>
                 <tr>
                   <th scope="col">Armada</th>
@@ -114,15 +114,15 @@ export default async function OperatorBusesPage({
                 ) : (
                   buses.map((bus) => (
                     <tr key={bus.id}>
-                      <td>
+                      <td data-label="Armada">
                         <strong>{bus.fleet_code}</strong>
                         <small>{bus.plate_number ?? "Nomor polisi belum diisi"}{bus.model ? ` · ${bus.model}` : ""}</small>
                       </td>
-                      <td>{bus.capacity} kursi</td>
-                      <td>
+                      <td data-label="Kapasitas">{bus.capacity} kursi</td>
+                      <td data-label="Status">
                         <Pill tone={bus.active ? "success" : "neutral"}>{bus.active ? "Aktif" : "Nonaktif"}</Pill>
                       </td>
-                      <td>
+                      <td data-label="Tindakan">
                         <a className="row-link" href={`/operator/bus?edit=${bus.id}`}>
                           Ubah
                         </a>
