@@ -1,8 +1,10 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { buildNavigationPlan, navigationDestination } from "../lib/driver/navigation.ts";
+import { buildFullRoute, buildNavigationPlan, navigationDestination } from "../lib/driver/navigation.ts";
 import {
+  GOOGLE_MAPS_MAX_STOPS,
   buildDirectionsUrl,
+  buildMultiStopDirectionsUrl,
   formatCoordinates,
   googleMapsSearchUrl,
   hasValidCoordinates,
@@ -172,12 +174,191 @@ describe("status titik navigasi", () => {
   });
 });
 
+describe("rute lengkap satu tombol", () => {
+  const startedTrip = {
+    status: "in_progress",
+    started_at: "2026-11-04T06:00:00.000Z",
+    arrived_at: null,
+    completed_at: null,
+  };
+
+  it("memuat seluruh titik sebelum perjalanan dimulai dan belum mengunci urutan", () => {
+    const plan = buildNavigationPlan({ stops, roster, events: [], trip: null, direction: "morning" });
+    const route = buildFullRoute(plan, "morning");
+
+    assert.equal(route.locked, false);
+    assert.deepEqual(
+      route.activeStops.map((entry) => entry.stop.id),
+      ["stop-1", "stop-2", "stop-3"],
+    );
+    assert.equal(route.pendingStudents, 2);
+    assert.deepEqual(
+      route.mapStops.map((stop) => stop.id),
+      ["stop-1", "stop-2", "stop-3"],
+    );
+  });
+
+  it("melewati titik yang sudah selesai tanpa mengubah urutan titik lain", () => {
+    const plan = buildNavigationPlan({
+      stops,
+      roster,
+      events: [{ student_id: "s1", event_type: "boarded", occurred_at: "2026-11-04T06:10:00.000Z" }],
+      trip: startedTrip,
+      direction: "morning",
+    });
+    const route = buildFullRoute(plan, "morning");
+
+    assert.equal(route.locked, true);
+    assert.deepEqual(
+      route.stops.map((entry) => entry.stop.id),
+      ["stop-1", "stop-2", "stop-3"],
+    );
+    assert.equal(route.stops[0].skipReason, "Semua siswa sudah dicatat");
+    assert.deepEqual(
+      route.activeStops.map((entry) => entry.stop.id),
+      ["stop-2", "stop-3"],
+    );
+    // Sekolah tetap menjadi tujuan terakhir pada rute pagi.
+    assert.equal(route.destination?.id, "stop-3");
+    assert.equal(route.pendingStudents, 1);
+  });
+
+  it("melewati titik yang seluruh siswanya tidak ikut", () => {
+    const plan = buildNavigationPlan({
+      stops,
+      roster,
+      events: [{ student_id: "s1", event_type: "absent", occurred_at: "2026-11-04T06:10:00.000Z" }],
+      trip: startedTrip,
+      direction: "morning",
+    });
+    const route = buildFullRoute(plan, "morning");
+
+    assert.equal(route.stops[0].skipReason, "Dilewati · semua siswa tidak ikut");
+    assert.deepEqual(
+      route.activeStops.map((entry) => entry.stop.id),
+      ["stop-2", "stop-3"],
+    );
+    assert.equal(route.pendingStudents, 1);
+  });
+
+  it("memisahkan titik tanpa koordinat dan tidak mengirimnya", () => {
+    const plan = buildNavigationPlan({
+      stops: [stops[0], { ...stops[1], latitude: null, longitude: null }, stops[2]],
+      roster,
+      events: [],
+      trip: null,
+      direction: "morning",
+    });
+    const route = buildFullRoute(plan, "morning");
+
+    assert.deepEqual(
+      route.missingCoordinateStops.map((stop) => stop.id),
+      ["stop-2"],
+    );
+    assert.deepEqual(
+      route.mapStops.map((stop) => stop.id),
+      ["stop-1", "stop-3"],
+    );
+    assert.equal(buildMultiStopDirectionsUrl(route.missingCoordinateStops), null);
+  });
+
+  it("membatasi tautan peta tetapi mempertahankan titik terakhir", () => {
+    const many = Array.from({ length: 12 }, (_, index) => ({
+      id: `stop-${index + 1}`,
+      route_id: "r1",
+      stop_order: index + 1,
+      stop_name: `Titik ${index + 1}`,
+      latitude: 26.4 + index * 0.001,
+      longitude: 50.1 + index * 0.001,
+      is_school: false,
+    }));
+    const manyRoster = many.map((stop, index) => ({
+      student_id: `s${index + 1}`,
+      stop_id: stop.id,
+      students: { full_name: `Siswa ${index + 1}`, home_address: null, pickup_notes: null },
+    }));
+
+    const plan = buildNavigationPlan({ stops: many, roster: manyRoster, events: [], trip: null, direction: "morning" });
+    const route = buildFullRoute(plan, "morning", GOOGLE_MAPS_MAX_STOPS);
+
+    assert.equal(route.mapStops.length, GOOGLE_MAPS_MAX_STOPS);
+    assert.equal(route.destination?.id, "stop-12");
+    assert.equal(route.omittedStops.length, 8);
+    assert.deepEqual(
+      route.mapStops.map((stop) => stop.id),
+      ["stop-1", "stop-2", "stop-3", "stop-12"],
+    );
+    const url = buildMultiStopDirectionsUrl(route.mapStops);
+    assert.ok(url);
+    assert.ok(url?.includes("destination=26.41"));
+    // Tiga titik antara, ditambah tujuan akhir = empat titik pada satu tautan demo.
+    assert.equal((url?.match(/%7C/g) ?? []).length, 2);
+  });
+
+  it("memakai sekolah sebagai titik awal rute sore, bukan tujuan", () => {
+    const plan = buildNavigationPlan({ stops, roster, events: [], trip: null, direction: "afternoon" });
+    const route = buildFullRoute(plan, "afternoon");
+
+    assert.equal(route.stops[2].skipReason, "Titik awal rute sore");
+    assert.deepEqual(
+      route.activeStops.map((entry) => entry.stop.id),
+      ["stop-1", "stop-2"],
+    );
+    assert.equal(plan.origin.label, "Sekolah");
+  });
+
+  it("menutup navigasi setelah perjalanan selesai", () => {
+    const plan = buildNavigationPlan({
+      stops,
+      roster,
+      events: [],
+      trip: {
+        status: "completed",
+        started_at: "2026-11-04T06:00:00.000Z",
+        arrived_at: "2026-11-04T06:40:00.000Z",
+        completed_at: "2026-11-04T06:50:00.000Z",
+      },
+      direction: "morning",
+    });
+    const route = buildFullRoute(plan, "morning");
+
+    assert.equal(route.activeStops.length, 0);
+    assert.equal(route.mapStops.length, 0);
+    assert.equal(route.destination, null);
+    assert.ok(route.stops.every((entry) => entry.skipReason === "Perjalanan sudah selesai"));
+  });
+});
+
 describe("tautan navigasi eksternal", () => {
   it("membuat tautan Google Maps hanya dari koordinat tujuan", () => {
     const url = buildDirectionsUrl({ latitude: 26.4301, longitude: 50.0901 });
     assert.ok(url);
     assert.match(url ?? "", /^https:\/\/www\.google\.com\/maps\/dir\/\?/);
     assert.ok((url ?? "").includes("destination=26.4301%2C50.0901"));
+  });
+
+  it("mengirim beberapa titik sebagai satu rute sesuai urutan", () => {
+    const url = buildMultiStopDirectionsUrl(
+      [
+        { latitude: 26.4301, longitude: 50.0901 },
+        { latitude: 26.4152, longitude: 50.1023 },
+        { latitude: 26.4208, longitude: 50.0812 },
+      ],
+      { latitude: 26.41, longitude: 50.11 },
+    );
+
+    assert.ok(url);
+    assert.ok(url?.includes("origin=26.41%2C50.11"));
+    assert.ok(url?.includes("waypoints=26.4301%2C50.0901%7C26.4152%2C50.1023"));
+    assert.ok(url?.includes("destination=26.4208%2C50.0812"));
+  });
+
+  it("menolak rute kosong, lebih dari sepuluh titik, atau koordinat tidak lengkap", () => {
+    assert.equal(buildMultiStopDirectionsUrl([]), null);
+    assert.equal(buildMultiStopDirectionsUrl([{ latitude: null, longitude: 50 }]), null);
+    const tooMany = Array.from({ length: 5 }, () => ({ latitude: 26.4, longitude: 50.1 }));
+    assert.equal(buildMultiStopDirectionsUrl(tooMany), null);
+    assert.equal(GOOGLE_MAPS_MAX_STOPS, 4);
   });
 
   it("menolak koordinat kosong, bukan angka, dan di luar rentang", () => {

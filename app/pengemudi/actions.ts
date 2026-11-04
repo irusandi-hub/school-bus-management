@@ -45,7 +45,14 @@ async function driverActionContext(): Promise<DriverContext> {
 }
 
 function backTo(target: string, message: string, kind: "success" | "error" = "success"): never {
-  redirect(`${target}?jenis=${kind}&pesan=${encodeURIComponent(message)}`);
+  // Halaman operasional memakai ?tugas=<id>, jadi parameter pesan disambung dengan &.
+  const separator = target.includes("?") ? "&" : "?";
+  redirect(`${target}${separator}jenis=${kind}&pesan=${encodeURIComponent(message)}`);
+}
+
+/** Semua aksi kembali ke satu halaman operasional, bukan halaman detail terpisah. */
+function taskPage(assignmentId: string) {
+  return `/pengemudi?tugas=${encodeURIComponent(assignmentId)}`;
 }
 
 /** Confirms that the assignment really belongs to the signed-in driver before any write. */
@@ -63,7 +70,7 @@ async function ownedAssignment(ctx: Extract<DriverContext, { ok: true }>, assign
 export async function startTrip(formData: FormData) {
   const ctx = await driverActionContext();
   const assignmentId = readText(formData, "assignment_id");
-  const target = `/pengemudi/tugas/${assignmentId}`;
+  const target = taskPage(assignmentId);
   if (!ctx.ok) backTo(target, ctx.state.message, "error");
 
   const assignment = await ownedAssignment(ctx, assignmentId);
@@ -101,7 +108,6 @@ export async function startTrip(formData: FormData) {
 
   if (error) backTo(target, "Perjalanan belum dapat dimulai. Periksa koneksi lalu coba lagi.", "error");
 
-  revalidatePath(target);
   revalidatePath("/pengemudi");
   revalidatePath("/pengemudi/riwayat");
   backTo(target, "Perjalanan dimulai. Catat kehadiran siswa selama perjalanan.");
@@ -111,7 +117,7 @@ export async function confirmArrival(formData: FormData) {
   const ctx = await driverActionContext();
   const tripId = readText(formData, "trip_id");
   const assignmentId = readText(formData, "assignment_id");
-  const target = `/pengemudi/tugas/${assignmentId}`;
+  const target = taskPage(assignmentId);
   if (!ctx.ok) backTo(target, ctx.state.message, "error");
 
   const { data, error } = await ctx.supabase
@@ -126,7 +132,7 @@ export async function confirmArrival(formData: FormData) {
     backTo(target, "Konfirmasi tiba tidak dapat dicatat karena perjalanan ini sedang berlangsung.", "error");
   }
 
-  revalidatePath(target);
+  revalidatePath("/pengemudi");
   revalidatePath("/admin/perjalanan");
   backTo(target, "Tiba di sekolah tercatat. Lanjutkan penurunan siswa bila diperlukan.");
 }
@@ -140,7 +146,7 @@ export async function endTrip(formData: FormData) {
   const tripId = readText(formData, "trip_id");
   const assignmentId = readText(formData, "assignment_id");
   const acknowledged = readText(formData, "acknowledge_open");
-  const target = `/pengemudi/tugas/${assignmentId}`;
+  const target = taskPage(assignmentId);
   if (!ctx.ok) backTo(target, ctx.state.message, "error");
   if (!tripId) backTo(target, "Perjalanan tidak dikenali.", "error");
 
@@ -231,7 +237,6 @@ export async function endTrip(formData: FormData) {
     backTo(target, "Perjalanan ini sedang berlangsung dan tidak dapat diubah. Muat ulang halaman.", "error");
   }
 
-  revalidatePath(target);
   revalidatePath("/pengemudi");
   revalidatePath("/pengemudi/riwayat");
   revalidatePath("/admin/perjalanan");
@@ -247,7 +252,7 @@ export async function recordStudentEvent(formData: FormData) {
   const studentId = readText(formData, "student_id");
   const eventType = readText(formData, "event_type");
   const notes = readText(formData, "notes");
-  const target = `/pengemudi/tugas/${assignmentId}`;
+  const target = taskPage(assignmentId);
   if (!ctx.ok) backTo(target, ctx.state.message, "error");
 
   if (!eventTypes.includes(eventType)) backTo(target, "Jenis status siswa tidak dikenali.", "error");
@@ -291,6 +296,6 @@ export async function recordStudentEvent(formData: FormData) {
 
   if (error) backTo(target, "Status siswa belum tersimpan. Coba lagi.", "error");
 
-  revalidatePath(target);
+  revalidatePath("/pengemudi");
   backTo(target, "Status siswa tercatat pada perjalanan ini.");
 }
