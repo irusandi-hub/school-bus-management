@@ -1030,8 +1030,14 @@ svg{flex-shrink:0}
 .nav-stop-head strong{display:block;font:800 13px var(--font-display),sans-serif;color:var(--ink);overflow-wrap:anywhere}
 .nav-stop-head small{display:block;font-size:10.5px;color:var(--muted);margin-top:3px;line-height:1.5}
 .nav-stop-students{margin:0;font-size:11.5px;color:#4F4B43;line-height:1.6;overflow-wrap:anywhere}
-.nav-stop .nav-action{justify-items:start}
-.nav-stop .nav-action .btn{max-width:320px}
+.nav-stop-address{display:flex;flex-wrap:wrap;align-items:center;gap:5px 12px;margin-top:2px;padding-top:7px;border-top:1px dashed #EFECE4}
+.nav-stop-addr{display:flex;flex:1 1 100%;align-items:flex-start;gap:5px;margin:0;font-size:10.5px;line-height:1.5;color:#6F6A60;overflow-wrap:anywhere}
+.nav-stop-addr svg{flex-shrink:0;margin-top:2px;color:#9A948A}
+.nav-stop-coord{display:inline-flex;align-items:center;gap:5px;margin:0;font-size:10px;line-height:1.4;color:#8A857A;font-variant-numeric:tabular-nums}
+.nav-stop-coord.is-missing{color:#A3937A}
+.nav-stop-map{display:inline-flex;align-items:center;gap:5px;min-height:30px;padding:3px 8px;border:1px solid #E5E1D8;border-radius:7px;background:#FAF9F6;color:#5F6873;font-size:10px;font-weight:700;text-decoration:none}
+a.nav-stop-map:hover{background:#F1EFEA;border-color:#D8D3C9}
+.nav-stop-map.is-unavailable{color:#A39D92;background:transparent;border-color:transparent;padding-left:0;font-weight:600}
 
 /* ==========================================================================
    Live video wali
@@ -1099,7 +1105,6 @@ svg{flex-shrink:0}
   .nav-stop{padding:11px;grid-template-columns:26px minmax(0,1fr);gap:10px}
   .nav-stop-order{width:26px;height:26px;font-size:11px}
   .nav-stop-head{flex-direction:column;align-items:flex-start;gap:6px}
-  .nav-stop .nav-action .btn{max-width:none}
   .nav-compact{padding:11px}
   .live-panel-body{padding:13px 13px 15px;gap:11px}
   .live-head{padding:10px 11px;align-items:flex-start}
@@ -1149,11 +1154,13 @@ svg{flex-shrink:0}
 .route-summary div{background:#FAF8F3;border:1px solid #EFE9DC;border-radius:12px;padding:9px 11px;min-width:0}
 .route-summary span{display:block;font-size:9px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#8A7A5A}
 .route-summary strong{display:block;font:800 13px Manrope,sans-serif;margin-top:2px;overflow-wrap:anywhere}
-.route-cta{display:flex;align-items:center;gap:12px;min-height:72px;padding:13px 15px;border-radius:16px;background:linear-gradient(135deg,#FFD670,#FFC431);border:1px solid #F0CE7A;color:#2B2416;text-decoration:none;box-shadow:0 12px 24px #FFC43133}
-.route-cta strong{display:block;font:800 15px Manrope,sans-serif;letter-spacing:-.2px}
-.route-cta small{display:block;font-size:10.5px;line-height:1.45;color:#5C4712;margin-top:2px}
+.route-cta{display:flex;align-items:center;gap:13px;width:100%;min-height:88px;padding:15px 16px;border-radius:16px;background:linear-gradient(135deg,#FFD670,#FFC431);border:1px solid #F0CE7A;color:#2B2416;text-decoration:none;box-shadow:0 12px 24px #FFC43133}
+a.route-cta:hover{box-shadow:0 14px 28px #FFC4314D}
+.route-cta-copy{min-width:0;flex:1}
+.route-cta strong{display:block;font:800 16px Manrope,sans-serif;letter-spacing:-.25px}
+.route-cta small{display:block;font-size:11px;line-height:1.5;color:#5C4712;margin-top:3px}
 .route-cta > svg:last-child{margin-left:auto;flex-shrink:0}
-.route-cta-icon{width:44px;height:44px;border-radius:14px;background:#2B2416;color:#FFD670;display:grid;place-items:center;flex-shrink:0}
+.route-cta-icon{width:48px;height:48px;border-radius:14px;background:#2B2416;color:#FFD670;display:grid;place-items:center;flex-shrink:0}
 .route-cta-disabled{background:#F1EEE7;border-color:#E4DED2;color:#6B655A;box-shadow:none}
 .route-cta-disabled small{color:#6B655A}
 .route-cta-disabled .route-cta-icon{background:#E4DED2;color:#6B655A}
@@ -1226,7 +1233,8 @@ svg{flex-shrink:0}
   .ops-meta{grid-template-columns:repeat(4,minmax(0,1fr))}
   .route-card{padding:18px}
   .route-summary{grid-template-columns:repeat(4,minmax(0,1fr))}
-  .route-cta{min-height:80px}
+  .route-cta{min-height:92px;padding:16px 18px}
+  .route-cta strong{font-size:17px}
   .ops-student{grid-template-columns:34px minmax(0,1fr) auto;align-items:start;padding:13px}
   .ops-student-actions{grid-column:auto;justify-content:flex-end;max-width:320px}
   .ops-absent{width:auto}

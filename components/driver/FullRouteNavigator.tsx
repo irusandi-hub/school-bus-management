@@ -47,6 +47,40 @@ export function FullRouteNavigator({
         </p>
       </header>
 
+      {completed ? (
+        <p className="route-closed">
+          <Icon name="check" size={16} /> Perjalanan sudah ditutup. Navigasi rute tidak dibuka lagi.
+        </p>
+      ) : mapUrl ? (
+        <a className="route-cta" href={mapUrl} target="_blank" rel="noopener noreferrer">
+          <span className="route-cta-icon" aria-hidden="true">
+            <Icon name="navigation" size={26} />
+          </span>
+          <span className="route-cta-copy">
+            <strong>Buka Navigasi Rute</strong>
+            <small>
+              Buka aplikasi peta dan ikuti rute sesuai urutan pemberhentian yang telah ditentukan. Tujuan akhir tetap
+              dipertahankan.
+            </small>
+          </span>
+          <Icon name="arrowRight" size={20} />
+        </a>
+      ) : (
+        <div className="route-cta route-cta-disabled" role="status">
+          <span className="route-cta-icon" aria-hidden="true">
+            <Icon name="gpsOff" size={26} />
+          </span>
+          <span className="route-cta-copy">
+            <strong>Navigasi rute belum dapat dibuka</strong>
+            <small>
+              {activeCount === 0
+                ? "Tidak ada titik yang masih perlu dikunjungi."
+                : "Titik yang tersisa belum memiliki koordinat tersimpan."}
+            </small>
+          </span>
+        </div>
+      )}
+
       <div className="route-summary">
         <div>
           <span>Awal</span>
@@ -65,39 +99,6 @@ export function FullRouteNavigator({
           <strong>{route.pendingStudents}</strong>
         </div>
       </div>
-
-      {completed ? (
-        <p className="route-closed">
-          <Icon name="check" size={16} /> Perjalanan sudah ditutup. Navigasi rute tidak dibuka lagi.
-        </p>
-      ) : mapUrl ? (
-        <a className="route-cta" href={mapUrl} target="_blank" rel="noopener noreferrer">
-          <span className="route-cta-icon" aria-hidden="true">
-            <Icon name="navigation" size={24} />
-          </span>
-          <span>
-            <strong>Buka Rute Lengkap</strong>
-            <small>
-              {route.mapStops.length} titik · tujuan akhir dipertahankan · satu ketukan
-            </small>
-          </span>
-          <Icon name="arrowRight" size={20} />
-        </a>
-      ) : (
-        <div className="route-cta route-cta-disabled" role="status">
-          <span className="route-cta-icon" aria-hidden="true">
-            <Icon name="gpsOff" size={24} />
-          </span>
-          <span>
-            <strong>Rute belum dapat dibuka</strong>
-            <small>
-              {activeCount === 0
-                ? "Tidak ada titik yang masih perlu dikunjungi."
-                : "Titik yang tersisa belum memiliki koordinat tersimpan."}
-            </small>
-          </span>
-        </div>
-      )}
 
       {route.missingCoordinateStops.length > 0 && (
         <div className="route-warn" role="alert">
