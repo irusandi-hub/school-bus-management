@@ -68,7 +68,7 @@ export function StudentList({
               </small>
               {row.address && (
                 <small className="ops-student-addr">
-                  <Icon name="school" size={12} /> {row.address} <span className="ops-data-note">data induk</span>
+                  <Icon name="home" size={12} /> {row.address} <span className="ops-data-note">data induk</span>
                 </small>
               )}
               {row.issueNote && (
