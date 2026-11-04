@@ -9,7 +9,7 @@ Aplikasi manajemen transportasi bus sekolah untuk sekolah, operator bus, pengemu
 Halaman pertama adalah **Main Access Gate** dengan tiga kartu masuk (Admin & Operator, Pengemudi, Orang Tua/Wali). Kartu hanya pintu masuk: setelah autentikasi, peran dibaca dari `profiles.role` dan relasi organisasi di database, lalu pengguna diarahkan ke area miliknya. Area yang terpisah:
 
 - **Admin & Operator** (`/admin`, `/operator`): ringkasan, sekolah, siswa/wali, bus, pengemudi, rute, penugasan, perjalanan, laporan/audit. Operator hanya melihat dan mengelola organisasinya (CRUD bus/pengemudi/penugasan organisasi; rute dibaca saja), Admin Pusat mengelola seluruh platform.
-- **Pengemudi** (`/pengemudi`): tugas hari ini, manifest siswa per titik jemput, mulai/akhiri perjalanan, konfirmasi tiba, status siswa (sudah naik/turun/tidak ikut/kendala), riwayat perjalanan sendiri. Tanpa menu administrasi dan tanpa data pengemudi lain.
+- **Pengemudi** (`/pengemudi`): satu halaman operasional berisi profil/kendaraan/jadwal, satu tombol navigasi rute lengkap, daftar siswa dengan tindakan sesuai tahap, catatan tugas, serta pemeriksaan keselamatan dan tombol akhiri perjalanan. Riwayat perjalanan sendiri ada di `/pengemudi/riwayat`. Tanpa menu administrasi dan tanpa data pengemudi lain.
 - **Orang Tua/Wali** (`/wali`): kartu anak adaptif untuk satu/lebih anak, sekolah dan layanan, status perjalanan, detail penjemputan, riwayat perjalanan anak miliknya sendiri.
 
 Yang **belum** aktif dan sengaja tidak ditampilkan sebagai fitur berjalan:
@@ -79,8 +79,8 @@ Konfigurasi tambahan pada Supabase Dashboard → Authentication → URL Configur
 | `/admin/laporan` | profil `admin` | Rekap penggunaan layanan dan catatan audit |
 | `/operator` | profil `operator` + baris operator aktif | Ringkasan organisasi |
 | `/operator/{bus,pengemudi,siswa,penugasan,perjalanan,laporan}` | profil `operator` | Data organisasi miliknya; rute hanya baca |
-| `/pengemudi` | profil `driver` + baris pengemudi aktif | Tugas hari ini (hanya penugasan miliknya) |
-| `/pengemudi/tugas/[id]` | profil `driver` | Manifest, mulai/akhiri, konfirmasi tiba, status siswa |
+| `/pengemudi` | profil `driver` + baris pengemudi aktif | Satu halaman operasional: tugas hari ini, navigasi rute lengkap, daftar siswa, tindakan, keselamatan, akhiri perjalanan |
+| `/pengemudi/tugas/[id]` | profil `driver` | Dialihkan ke `/pengemudi?tugas=<id>` untuk tautan lama |
 | `/pengemudi/riwayat` | profil `driver` | Riwayat perjalanan miliknya |
 | `/wali` | profil `parent` | Hanya siswa milik wali yang masih aktif |
 | `/wali/anak/[id]` | profil `parent` | Detail anak, penjemputan, hari ini, perjalanan terakhir |
