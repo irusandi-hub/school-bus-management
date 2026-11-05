@@ -62,6 +62,28 @@ export function resolveLiveVideoAccess(input: {
   return state;
 }
 
+export type LivePlayback = { state: LiveVideoState; canPlay: boolean };
+
+/**
+ * Menentukan apa yang benar-benar boleh diputar oleh pemutar wali.
+ *
+ * Mode simulasi tidak boleh membuka siaran LIVE, meskipun data simulasi
+ * kebetulan menghasilkan state "live" dan ada URL stream yang valid. State
+ * "live" tanpa URL juga diturunkan menjadi "on-board-camera-off" agar judul,
+ * status, dan placeholder tetap konsisten.
+ */
+export function resolveLivePlayback(input: {
+  state: LiveVideoState;
+  streamUrl: string | null;
+  simulated: boolean;
+}): LivePlayback {
+  const canPlay = !input.simulated && Boolean(input.streamUrl) && input.state === "live";
+  return {
+    state: input.state === "live" && !canPlay ? "on-board-camera-off" : input.state,
+    canPlay,
+  };
+}
+
 export const LIVE_STATE_COPY: Record<
   LiveVideoState,
   { camera: string; title: string; detail: string; placeholder: string }

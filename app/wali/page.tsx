@@ -62,7 +62,7 @@ export default async function GuardianHomePage() {
       journey,
       placement,
       directionStatuses,
-      liveVideo: buildChildLiveVideo(child, liveEvents),
+      liveVideo: buildChildLiveVideo(child, liveEvents, { simulated }),
     };
   });
 

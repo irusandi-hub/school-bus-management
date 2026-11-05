@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
-import { LIVE_STATE_COPY, type LiveVideoState } from "@/lib/guardian/live";
+import { LIVE_STATE_COPY, resolveLivePlayback, type LiveVideoState } from "@/lib/guardian/live";
 import { CameraStatus } from "./CameraStatus";
 
 export type ParentLiveVideoProps = {
@@ -24,8 +24,10 @@ export type ParentLiveVideoProps = {
  * Pemutar Live Video wali.
  *
  * Komponen ini tidak pernah menampilkan indikator LIVE atau video dari data
- * simulasi: indikator hanya muncul ketika `state === "live"` dan URL siaran
- * benar-benar dikirim backend.
+ * simulasi: `resolveLivePlayback` menutup pemutaran ketika `simulated` aktif,
+ * ketika state bukan "live", atau ketika backend tidak mengirim URL siaran.
+ * State "live" yang tidak boleh diputar ditampilkan sebagai kamera belum
+ * terhubung agar teks placeholder tidak menyatakan siaran aktif.
  */
 export function ParentLiveVideo({
   childName,
@@ -40,10 +42,13 @@ export function ParentLiveVideo({
   presentation = "default",
 }: ParentLiveVideoProps) {
   const [expanded, setExpanded] = useState(false);
-  const copy = LIVE_STATE_COPY[state];
-  const isLive = state === "live" && Boolean(streamUrl);
+  const playback = resolveLivePlayback({ state, streamUrl, simulated });
+  const displayState = playback.state;
+  const isLive = playback.canPlay;
+  const copy = LIVE_STATE_COPY[displayState];
   const isGuardianCard = presentation === "guardian-card";
-  const placeholderIcon = state === "ended" ? "check" : state === "awaiting-boarding" ? "bus" : "cameraOff";
+  const placeholderIcon =
+    displayState === "ended" ? "check" : displayState === "awaiting-boarding" ? "bus" : "cameraOff";
 
   useEffect(() => {
     if (!expanded) return;
@@ -67,7 +72,7 @@ export function ParentLiveVideo({
       Peramban Anda tidak mendukung pemutaran video.
     </video>
   ) : (
-    <div className={`live-placeholder state-${state}`}>
+    <div className={`live-placeholder state-${displayState}`}>
       <span className="live-placeholder-icon" aria-hidden="true">
         <Icon name={placeholderIcon} size={26} />
       </span>
@@ -98,7 +103,7 @@ export function ParentLiveVideo({
               LIVE
             </span>
           ) : (
-            <CameraStatus state={state} />
+            <CameraStatus state={displayState} />
           )}
           {simulated && (
             <span className="live-demo" title="Data simulasi pengembangan, bukan siaran nyata">
@@ -149,7 +154,7 @@ export function ParentLiveVideo({
                   LIVE
                 </span>
               ) : (
-                <CameraStatus state={state} />
+                <CameraStatus state={displayState} />
               )}
               <button
                 className="btn btn-secondary btn-sm"
