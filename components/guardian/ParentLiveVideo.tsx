@@ -37,8 +37,11 @@ export function ParentLiveVideo({
   compact = false,
 }: ParentLiveVideoProps) {
   const [expanded, setExpanded] = useState(false);
-  const copy = LIVE_STATE_COPY[state];
-  const isLive = state === "live" && Boolean(streamUrl);
+  const [playback, setPlayback] = useState<{ url: string; expanded: boolean } | null>(null);
+  const canPlay = !simulated && state === "live" && Boolean(streamUrl);
+  const isLive = canPlay && playback?.url === streamUrl && playback.expanded === expanded;
+  const displayState = state === "live" && !isLive ? "on-board-camera-off" : state;
+  const copy = LIVE_STATE_COPY[displayState];
   const placeholderIcon = state === "ended" ? "check" : state === "awaiting-boarding" ? "bus" : "cameraOff";
 
   useEffect(() => {
@@ -57,8 +60,11 @@ export function ParentLiveVideo({
     };
   }, [expanded]);
 
-  const stage = isLive ? (
-    <video className="live-player" controls autoPlay muted playsInline preload="metadata">
+  const stage = canPlay ? (
+    <video key={`${streamUrl}:${expanded}`} className="live-player" controls autoPlay muted playsInline preload="metadata"
+      onPlaying={() => setPlayback({ url: streamUrl!, expanded })}
+      onWaiting={() => setPlayback(null)} onStalled={() => setPlayback(null)}
+      onPause={() => setPlayback(null)} onEnded={() => setPlayback(null)} onError={() => setPlayback(null)}>
       <source src={streamUrl ?? undefined} type={streamMimeType ?? undefined} />
       Peramban Anda tidak mendukung pemutaran video.
     </video>
@@ -97,7 +103,7 @@ export function ParentLiveVideo({
               LIVE
             </span>
           )}
-          <CameraStatus state={state} />
+          <CameraStatus state={displayState} />
           {simulated && (
             <span className="live-demo" title="Data simulasi pengembangan, bukan siaran nyata">
               Pratinjau
@@ -106,7 +112,7 @@ export function ParentLiveVideo({
         </div>
       </header>
 
-      <div className="live-stage">{stage}</div>
+      <div className="live-stage">{!expanded && stage}</div>
 
       <footer className="live-foot">
         <span className="live-meta">
@@ -139,7 +145,7 @@ export function ParentLiveVideo({
                   LIVE
                 </span>
               )}
-              <CameraStatus state={state} />
+              <CameraStatus state={displayState} />
               <button
                 className="btn btn-secondary btn-sm"
                 type="button"

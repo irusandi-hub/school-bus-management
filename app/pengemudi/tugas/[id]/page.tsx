@@ -1,3 +1,6 @@
+import { DriverBroadcastPanel } from "@/components/driver/DriverBroadcastPanel";
+import { cameraDemoEnabled } from "@/lib/camera/demo-policy";
+import { deploymentKind } from "@/lib/dev-open-access";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
@@ -191,6 +194,10 @@ export default async function DriverTaskPage({
       {rosterResult.error && <Notice kind="error">Daftar siswa belum dapat dimuat.</Notice>}
 
       <NavigationDestinationCard plan={navigationPlan} />
+
+      {cameraDemoEnabled(deploymentKind(), process.env.CAMERA_DEVICE_DEMO) && (
+        <DriverBroadcastPanel key={trip?.id ?? assignment.id} inProgress={inProgress} />
+      )}
 
       <section className="panel task-actions">
         <header className="panel-head">

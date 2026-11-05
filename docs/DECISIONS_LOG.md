@@ -226,3 +226,18 @@ Lihat `TECHNICAL_SPEC_REVIEW.md`, bagian 19 pada `MASTER_SPEC.md`, serta `OPERAT
   - Kondisi 2 (Preview, `DEV_OPEN_ACCESS=0`): `/admin`, `/operator`, `/pengemudi`, `/wali` menjawab `307` ke `/login?next=…`.
   - Kondisi 3 (Production, `VERCEL_ENV=production` + `DEV_OPEN_ACCESS=1`): keempat area `307` ke `/login`, gerbang akses menampilkan CTA masuk, tanpa pita mode pengembangan.
 - **Belum terverifikasi:** perilaku pada deployment Vercel sebenarnya (URL Preview terbaru) — lingkungan ini tidak memiliki akses ke pengaturan/deployment Vercel maupun kredensial proyek Supabase pengembangan.
+
+### Kamera HP — demo gratis yang diizinkan (2026-11-05)
+- **Status:** Pengembangan demo gratis disetujui pengguna; boleh satu bus/sumber. Tidak ada persetujuan layanan berbayar.
+- **Implementasi tahap awal:** uji perangkat satu publisher/satu viewer terisolasi di `/demo-kamera`, opt-in development/preview, signaling manual privat, STUN tanpa TURN/SFU. Ini pilihan teknis awal, bukan persetujuan arsitektur produksi.
+- **Batas:** kamera tidak dihubungkan ke identitas/data simulasi wali/pengemudi. Integrasi perjalanan tetap membutuhkan autentikasi dan pencabutan server yang teruji. Tidak mengaktifkan layanan provider atau deployment. Lihat `docs/CAMERA_PHONE_DEMO.md`.
+
+### Tombol siaran pengemudi — tahap uji perangkat (2026-11-05)
+- Pengguna meminta tombol siaran pada pengemudi. Ditambahkan panel opt-in di detail tugas berlangsung dengan persetujuan objek uji, tombol mulai/hentikan, preview lokal, dan signaling privat manual yang sudah ada.
+- Tidak membuat endpoint signaling publik, pemetaan stream ke identitas simulasi, akses wali otomatis, layanan berbayar, atau perubahan RLS. Flag server development/preview tetap wajib; produksi menutup fitur.
+- Ini kontrol uji perangkat pada UI pengemudi, bukan integrasi kamera operasional. Kamera tidak boleh dipakai dengan anak nyata sampai otorisasi/pencabutan server terverifikasi.
+
+### Pilihan sumber siaran pengemudi (2026-11-05)
+- Sesuai permintaan pengguna, panel menyediakan Kamera perangkat seluler (HP yang menjalankan aplikasi) dan Kamera bus.
+- Kamera bus hanya placeholder pengembangan berikutnya, dengan keterangan “Fitur ini memerlukan setting oleh operator layanan aplikasi.” Tombolnya nonaktif; tidak ada URL, kredensial, atau koneksi vendor ditambahkan.
+- Beralih sumber membongkar komponen kamera seluler dan menghapus konfirmasi pengujian; kembali ke seluler tidak memulai kamera otomatis. Batas development/preview dan signaling manual tetap berlaku.
