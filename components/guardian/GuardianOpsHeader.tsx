@@ -2,11 +2,11 @@ import { Icon } from "@/components/ui/Icon";
 import { formatDate } from "@/lib/validation";
 
 /**
- * Header satu halaman wali.
+ * Profil wali versi ringkas.
  *
- * Identitas akun dan ringkasan anak dibuat sekunder terhadap status perjalanan
- * anak di bawahnya, sehingga ponsel tidak dipenuhi header sebelum informasi
- * utama terlihat.
+ * Identitas akun sengaja dibuat sebagai informasi sekunder: satu strip kecil
+ * dengan avatar, nama, email, label akun, ringkasan hari ini, tanggal, dan satu
+ * catatan sumber status. Fokus layar pertama tetap pada status perjalanan anak.
  */
 export function GuardianOpsHeader({
   guardianName,
@@ -30,55 +30,49 @@ export function GuardianOpsHeader({
   const initial = (guardianName || "W").slice(0, 1).toUpperCase();
 
   return (
-    <section className="ops-head guardian-ops-head" aria-label="Profil wali dan ringkasan hari ini">
-      <div className="ops-head-top">
-        <span className="ops-avatar" aria-hidden="true">
+    <section className="guardian-profile" aria-label="Profil wali dan ringkasan hari ini">
+      <div className="guardian-profile-main">
+        <span className="guardian-profile-avatar" aria-hidden="true">
           {initial}
         </span>
-        <div className="ops-ident">
-          <strong>{guardianName || "Wali"}</strong>
+        <div className="guardian-profile-ident">
+          <div className="guardian-profile-name">
+            <strong>{guardianName || "Wali"}</strong>
+            <span className="guardian-account-tag">
+              <Icon name="shield" size={11} />
+              Akun wali
+            </span>
+          </div>
           <small>
             {email ?? "Email akun belum tersedia"}
             {phone ? ` · ${phone}` : ""}
           </small>
         </div>
-        <span className="guardian-account-tag">
-          <Icon name="shield" size={13} />
-          Akun wali
+      </div>
+
+      <div className="guardian-brief" aria-label="Ringkasan hari ini">
+        <span>
+          <strong>{childCount}</strong> Anak
+        </span>
+        <span>
+          <strong>{tripCount}</strong> Perjalanan
+        </span>
+        <span>
+          <strong>{onboardCount}</strong> Di bus
+        </span>
+        <span>
+          <strong>{waitingCount}</strong> Belum dijemput
         </span>
       </div>
 
-      <dl className="ops-meta">
-        <div>
-          <dt>Anak terhubung</dt>
-          <dd>{childCount}</dd>
-          <small>Layanan aktif pada akun ini</small>
-        </div>
-        <div>
-          <dt>Perjalanan hari ini</dt>
-          <dd>{tripCount}</dd>
-          <small>Dari penugasan yang tersimpan</small>
-        </div>
-        <div>
-          <dt>Di dalam bus</dt>
-          <dd>{onboardCount}</dd>
-          <small>Berdasarkan catatan pengemudi</small>
-        </div>
-        <div>
-          <dt>Belum dijemput</dt>
-          <dd>{waitingCount}</dd>
-          <small>Terjadwal atau belum dicatat naik</small>
-        </div>
-      </dl>
-
-      <div className="guardian-head-foot">
-        <span>
-          <Icon name="calendar" size={13} />
+      <div className="guardian-profile-foot">
+        <span className="guardian-profile-date">
+          <Icon name="calendar" size={12} />
           {formatDate(serviceDate)}
         </span>
         <span>
-          <Icon name="info" size={13} />
-          Status perjalanan berasal dari catatan pengemudi, bukan GPS.
+          <Icon name="info" size={12} />
+          Status dari catatan pengemudi, bukan GPS.
         </span>
       </div>
     </section>

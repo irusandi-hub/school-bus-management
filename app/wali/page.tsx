@@ -84,8 +84,6 @@ export default async function GuardianHomePage() {
 
   return (
     <>
-      <h1 className="ops-title">Portal orang tua/wali · hari ini</h1>
-
       <GuardianOpsHeader
         guardianName={guardianName}
         email={access.viewer.email}
@@ -97,32 +95,27 @@ export default async function GuardianHomePage() {
         waitingCount={waitingCount}
       />
 
-      {children.length === 0 ? (
-        <>
-          <section className="panel guardian-empty">
-            <EmptyState
-              icon="guardian"
-              title="Belum ada anak aktif yang terhubung"
-              detail="Portal wali hanya menampilkan siswa berstatus layanan aktif yang terhubung dengan akun ini. Hubungi Admin Pusat untuk memeriksa layanan atau penautan anak."
-            />
-          </section>
-          <Notice kind="info">
-            Halaman ini tidak menampilkan anak dari akun lain dan tidak memakai data contoh sebagai data nyata.
-          </Notice>
-        </>
-      ) : (
-        <>
-          <section className="guardian-children" aria-labelledby="guardian-children-title">
-            <div className="guardian-section-head">
-              <div>
-                <h2 id="guardian-children-title">Anak &amp; status perjalanan</h2>
-                <p>
-                  Semua anak dalam satu halaman. Status mengikuti catatan perjalanan pengemudi, bukan perkiraan posisi.
-                </p>
-              </div>
-              <Pill tone="info">{children.length} anak</Pill>
-            </div>
+      <section className="guardian-children" aria-labelledby="guardian-children-title">
+        <div className="guardian-section-head">
+          <h1 id="guardian-children-title">Status perjalanan</h1>
+          {children.length > 0 && <Pill tone="info">{children.length} anak</Pill>}
+        </div>
 
+        {children.length === 0 ? (
+          <>
+            <section className="panel guardian-empty">
+              <EmptyState
+                icon="guardian"
+                title="Belum ada anak aktif yang terhubung"
+                detail="Portal wali hanya menampilkan siswa berstatus layanan aktif yang terhubung dengan akun ini. Hubungi Admin Pusat untuk memeriksa layanan atau penautan anak."
+              />
+            </section>
+            <Notice kind="info">
+              Halaman ini tidak menampilkan anak dari akun lain dan tidak memakai data contoh sebagai data nyata.
+            </Notice>
+          </>
+        ) : (
+          <>
             <div className={`child-grid guardian-child-grid ${children.length === 1 ? "single" : ""}`}>
               {cards.map(({ child, trip, journey, placement, directionStatuses, liveVideo }) => (
                 <ChildOverviewCard
@@ -137,17 +130,17 @@ export default async function GuardianHomePage() {
                 />
               ))}
             </div>
-          </section>
 
-          <GuardianBusLocationPanel rows={locationRows} />
+            <GuardianBusLocationPanel rows={locationRows} />
 
-          <Notice kind="info">
-            Lokasi bus dan nama pengemudi belum dibagikan ke portal wali karena integrasi GPS dan kebijakan aksesnya
-            belum aktif. Kamera hanya dapat dibuka saat anak tercatat berada di bus; bila sumber kamera belum terhubung,
-            area kamera hanya menampilkan status — bukan siaran atau rekaman palsu.
-          </Notice>
-        </>
-      )}
+            <Notice kind="info">
+              Lokasi bus dan nama pengemudi belum dibagikan ke portal wali karena integrasi GPS dan kebijakan aksesnya
+              belum aktif. Kamera hanya ditampilkan saat anak tercatat berada di bus; bila sumber kamera belum
+              terhubung, area kamera hanya menampilkan status — bukan siaran atau rekaman palsu.
+            </Notice>
+          </>
+        )}
+      </section>
     </>
   );
 }
