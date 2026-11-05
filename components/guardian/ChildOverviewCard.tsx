@@ -3,7 +3,6 @@ import { Icon } from "@/components/ui/Icon";
 import { ParentLiveVideo } from "@/components/guardian/ParentLiveVideo";
 import type { ChildOverview, Placement, TodayTrip } from "@/lib/guardian/data";
 import type { ChildLiveVideoView } from "@/lib/guardian/live-view";
-import { LIVE_STATE_COPY } from "@/lib/guardian/live";
 import type { JourneyStatus, JourneyTone } from "@/lib/guardian/journey";
 import { formatTime, routeDirectionLabel } from "@/lib/validation";
 
@@ -14,10 +13,11 @@ type DirectionStatus = {
 };
 
 /**
- * Kartu anak dengan urutan prioritas: status perjalanan, kamera bila aksesnya
- * sah, lokasi bus, lalu informasi pendukung. Identitas dan sekolah tetap di
- * header kartu, sedangkan bus/rute/pengemudi/kamera diringkas dalam satu blok
- * pendukung agar tidak mengalahkan status.
+ * Kartu anak dengan urutan prioritas: status perjalanan, status kamera (siaran
+ * hanya bila aksesnya sah), lokasi bus, lalu informasi pendukung. Identitas dan
+ * sekolah tetap di header kartu, sedangkan bus/rute/pengemudi diringkas dalam
+ * satu blok pendukung agar tidak mengalahkan status. Kamera dan GPS masing-
+ * masing hanya punya satu blok di kartu ini.
  */
 export function ChildOverviewCard({
   child,
@@ -56,17 +56,20 @@ export function ChildOverviewCard({
     : "Titik jemput belum diatur";
   const direction = routeDirectionLabel(trip?.direction ?? placement?.direction ?? "");
   const updated = journey.updatedAt ? `Diperbarui ${formatTime(journey.updatedAt)}` : "Belum ada pembaruan";
-  const cameraOpenable = liveVideo.state === "on-board-camera-off" || liveVideo.state === "live";
   const cameraCopy =
     journey.key === "no-trip"
       ? "Belum ada perjalanan hari ini."
-      : liveVideo.state === "live"
-        ? "Siaran kamera bus tersedia."
-        : liveVideo.state === "on-board-camera-off"
-          ? "Anak di bus · kamera belum terhubung."
-          : liveVideo.state === "ended"
-            ? "Akses ditutup setelah anak turun."
-            : "Tersedia setelah anak tercatat naik bus.";
+      : liveVideo.state === "on-board-camera-off"
+        ? "Anak di bus · kamera belum terhubung."
+        : liveVideo.state === "ended"
+          ? "Akses ditutup setelah anak turun."
+          : "Tersedia setelah anak tercatat naik bus.";
+  const cameraBadge =
+    liveVideo.state === "on-board-camera-off"
+      ? "Belum tersedia"
+      : liveVideo.state === "ended"
+        ? "Nonaktif"
+        : "Belum aktif";
 
   return (
     <article className="child-card guardian-child" id={`anak-${student.id}`}>
@@ -123,32 +126,28 @@ export function ChildOverviewCard({
             compact
           />
         </div>
-      ) : cameraOpenable ? (
+      ) : (
         <div className="guardian-camera-feature" role="status">
           <span className="guardian-camera-feature-icon" aria-hidden="true">
-            <Icon name="camera" size={18} />
+            <Icon name="cameraOff" size={18} />
           </span>
           <div>
             <strong>Kamera bus</strong>
             <small>{cameraCopy}</small>
           </div>
-          <span className="guardian-camera-feature-state">Belum tersedia</span>
+          <span className="guardian-camera-feature-state">{cameraBadge}</span>
         </div>
-      ) : null}
+      )}
 
-      <a className="guardian-action-card" href={`#lokasi-${student.id}`}>
-        <span className="guardian-action-icon" aria-hidden="true">
+      <div className="guardian-location-inline" role="note">
+        <span className="guardian-location-inline-icon" aria-hidden="true">
           <Icon name="pin" size={16} />
         </span>
-        <span className="guardian-action-copy">
+        <span className="guardian-location-inline-copy">
           <strong>Lokasi bus</strong>
-          <small>GPS belum tersedia · tidak ada posisi aktual</small>
+          <small>GPS belum tersedia · belum ada posisi aktual</small>
         </span>
-        <span className="guardian-action-cta">
-          Lihat
-          <Icon name="chevronRight" size={13} />
-        </span>
-      </a>
+      </div>
 
       <div className="guardian-support" aria-label="Detail perjalanan">
         <div className="guardian-support-item">
@@ -173,14 +172,6 @@ export function ChildOverviewCard({
             <span>Pengemudi</span>
             <strong>{driver}</strong>
             <small>{driverDetail}</small>
-          </div>
-        </div>
-        <div className="guardian-support-item">
-          <Icon name={liveVideo.state === "live" ? "camera" : "cameraOff"} size={14} />
-          <div>
-            <span>Kamera</span>
-            <strong>{LIVE_STATE_COPY[liveVideo.state].camera}</strong>
-            <small>{cameraOpenable ? "Akses mengikuti status anak di bus" : "Tidak ada siaran aktif"}</small>
           </div>
         </div>
       </div>

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { ConfigNotice, EmptyState, Notice, Pill } from "@/components/admin/ui";
 import { ChildOverviewCard } from "@/components/guardian/ChildOverviewCard";
-import { GuardianBusLocationPanel, type GuardianLocationRow } from "@/components/guardian/GuardianBusLocationPanel";
 import { GuardianOpsHeader } from "@/components/guardian/GuardianOpsHeader";
 import { requireGuardian } from "@/lib/auth";
 import { isDevOpenAccess } from "@/lib/dev-open-access";
@@ -75,13 +74,6 @@ export default async function GuardianHomePage() {
   ).length;
   const tripCount = children.reduce((total, child) => total + child.todayTrips.length, 0);
 
-  const locationRows: GuardianLocationRow[] = cards.map(({ child, trip, placement }) => ({
-    id: child.student.id,
-    name: child.student.full_name,
-    busLabel: trip?.busCode ? `Bus ${trip.busCode}` : "Bus belum ditetapkan",
-    routeLabel: placement?.routeName ?? "Rute belum diatur",
-  }));
-
   return (
     <>
       <GuardianOpsHeader
@@ -130,14 +122,6 @@ export default async function GuardianHomePage() {
                 />
               ))}
             </div>
-
-            <GuardianBusLocationPanel rows={locationRows} />
-
-            <Notice kind="info">
-              Lokasi bus dan nama pengemudi belum dibagikan ke portal wali karena integrasi GPS dan kebijakan aksesnya
-              belum aktif. Kamera hanya ditampilkan saat anak tercatat berada di bus; bila sumber kamera belum
-              terhubung, area kamera hanya menampilkan status — bukan siaran atau rekaman palsu.
-            </Notice>
           </>
         )}
       </section>
