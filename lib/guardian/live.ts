@@ -68,8 +68,8 @@ export const LIVE_STATE_COPY: Record<
 > = {
   "awaiting-boarding": {
     camera: "Kamera belum aktif",
-    title: "Video belum dapat diakses",
-    detail: "Akses Live Video terbuka setelah pengemudi mencatat anak Anda naik bus.",
+    title: "Menunggu anak berada di dalam bus",
+    detail: "Akses kamera terbuka setelah pengemudi mencatat anak Anda naik bus.",
     placeholder: "Akses video mengikuti status kehadiran anak pada perjalanan hari ini.",
   },
   "on-board-camera-off": {
@@ -81,7 +81,7 @@ export const LIVE_STATE_COPY: Record<
   },
   ended: {
     camera: "Kamera nonaktif",
-    title: "Akses Live Video berakhir",
+    title: "Akses kamera telah berakhir",
     detail: "Anak Anda sudah turun dari bus atau perjalanan sudah selesai, sehingga akses siaran ditutup.",
     placeholder: "Tidak ada siaran aktif. Rekaman perjalanan tidak disimpan oleh aplikasi.",
   },

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ConfigNotice, EmptyState, Notice, Pill } from "@/components/admin/ui";
+import { ConfigNotice, EmptyState, Notice } from "@/components/admin/ui";
 import { ChildOverviewCard } from "@/components/guardian/ChildOverviewCard";
 import { GuardianOpsHeader } from "@/components/guardian/GuardianOpsHeader";
 import { requireGuardian } from "@/lib/auth";
@@ -39,10 +39,10 @@ export default async function GuardianHomePage() {
       child.placements[0] ??
       null;
 
-    const directionStatuses = child.placements.map((entry) => {
-      const directionTrip = child.todayTrips.find((row) => row.direction === entry.direction) ?? null;
+    const directionStatuses = ["morning", "afternoon"].map((direction) => {
+      const directionTrip = child.todayTrips.find((row) => row.direction === direction) ?? null;
       if (!directionTrip) {
-        return { direction: entry.direction, label: "Belum dijadwalkan", tone: "neutral" as const };
+        return { direction, label: "Belum dijadwalkan", tone: "neutral" as const };
       }
       const directionEvent = directionTrip.tripId
         ? liveEvents.get(liveEventKey(directionTrip.tripId, child.student.id)) ?? null
@@ -53,7 +53,7 @@ export default async function GuardianHomePage() {
           ? { event_type: directionEvent.eventType, occurred_at: directionEvent.occurredAt }
           : null,
       });
-      return { direction: entry.direction, label: status.label, tone: status.tone };
+      return { direction, label: status.label, tone: status.tone };
     });
 
     return {
@@ -88,10 +88,9 @@ export default async function GuardianHomePage() {
       />
 
       <section className="guardian-children" aria-labelledby="guardian-children-title">
-        <div className="guardian-section-head">
-          <h1 id="guardian-children-title">Status perjalanan</h1>
-          {children.length > 0 && <Pill tone="info">{children.length} anak</Pill>}
-        </div>
+        <h1 className="guardian-visually-hidden" id="guardian-children-title">
+          Status perjalanan anak
+        </h1>
 
         {children.length === 0 ? (
           <>

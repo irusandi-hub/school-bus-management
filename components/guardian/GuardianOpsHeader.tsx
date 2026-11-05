@@ -2,11 +2,11 @@ import { Icon } from "@/components/ui/Icon";
 import { formatDate } from "@/lib/validation";
 
 /**
- * Profil wali versi ringkas.
+ * Profil wali versi strip ringkas.
  *
- * Identitas akun sengaja dibuat sebagai informasi sekunder: satu strip kecil
- * dengan avatar, nama, email, label akun, ringkasan hari ini, tanggal, dan satu
- * catatan sumber status. Fokus layar pertama tetap pada status perjalanan anak.
+ * Identitas akun berada di kiri, tanggal layanan di kanan, dan ringkasan hari
+ * ini menjadi chip terpisah satu baris. Tidak ada panel statistik besar atau
+ * informasi per anak yang diulang di bagian atas halaman.
  */
 export function GuardianOpsHeader({
   guardianName,
@@ -30,51 +30,61 @@ export function GuardianOpsHeader({
   const initial = (guardianName || "W").slice(0, 1).toUpperCase();
 
   return (
-    <section className="guardian-profile" aria-label="Profil wali dan ringkasan hari ini">
-      <div className="guardian-profile-main">
-        <span className="guardian-profile-avatar" aria-hidden="true">
-          {initial}
-        </span>
-        <div className="guardian-profile-ident">
-          <div className="guardian-profile-name">
-            <strong>{guardianName || "Wali"}</strong>
-            <span className="guardian-account-tag">
-              <Icon name="shield" size={11} />
-              Akun wali
-            </span>
+    <>
+      <section className="guardian-profile" aria-label="Profil wali">
+        <div className="guardian-profile-main">
+          <span className="guardian-profile-avatar" aria-hidden="true">
+            {initial}
+          </span>
+          <div className="guardian-profile-ident">
+            <div className="guardian-profile-name">
+              <strong>{guardianName || "Wali"}</strong>
+              <span className="guardian-account-tag">Wali</span>
+            </div>
+            <small>
+              {email ?? "Email akun belum tersedia"}
+              {phone ? ` · ${phone}` : ""}
+            </small>
           </div>
-          <small>
-            {email ?? "Email akun belum tersedia"}
-            {phone ? ` · ${phone}` : ""}
-          </small>
         </div>
-      </div>
 
-      <div className="guardian-brief" aria-label="Ringkasan hari ini">
-        <span>
+        <div className="guardian-profile-date">
+          <span className="guardian-profile-date-icon" aria-hidden="true">
+            <Icon name="calendar" size={16} />
+          </span>
+          <span>
+            <strong>{formatDate(serviceDate)}</strong>
+            <small>Hari ini</small>
+          </span>
+        </div>
+      </section>
+
+      <div className="guardian-stat-chips" aria-label="Ringkasan hari ini">
+        <span className="guardian-stat-chip">
+          <span className="guardian-stat-chip-icon" aria-hidden="true">
+            <Icon name="users" size={15} />
+          </span>
           <strong>{childCount}</strong> Anak
         </span>
-        <span>
+        <span className="guardian-stat-chip">
+          <span className="guardian-stat-chip-icon" aria-hidden="true">
+            <Icon name="route" size={15} />
+          </span>
           <strong>{tripCount}</strong> Perjalanan
         </span>
-        <span>
+        <span className="guardian-stat-chip tone-bus">
+          <span className="guardian-stat-chip-icon" aria-hidden="true">
+            <Icon name="bus" size={15} />
+          </span>
           <strong>{onboardCount}</strong> Di bus
         </span>
-        <span>
+        <span className="guardian-stat-chip tone-wait">
+          <span className="guardian-stat-chip-icon" aria-hidden="true">
+            <Icon name="clock" size={15} />
+          </span>
           <strong>{waitingCount}</strong> Belum dijemput
         </span>
       </div>
-
-      <div className="guardian-profile-foot">
-        <span className="guardian-profile-date">
-          <Icon name="calendar" size={12} />
-          {formatDate(serviceDate)}
-        </span>
-        <span>
-          <Icon name="info" size={12} />
-          Status dari catatan pengemudi, bukan GPS.
-        </span>
-      </div>
-    </section>
+    </>
   );
 }

@@ -1,5 +1,5 @@
-import { ServiceStatusPill } from "@/components/admin/ui";
 import { Icon } from "@/components/ui/Icon";
+import { ChildBusLocationPanel } from "@/components/guardian/ChildBusLocationPanel";
 import { ParentLiveVideo } from "@/components/guardian/ParentLiveVideo";
 import type { ChildOverview, Placement, TodayTrip } from "@/lib/guardian/data";
 import type { ChildLiveVideoView } from "@/lib/guardian/live-view";
@@ -13,11 +13,14 @@ type DirectionStatus = {
 };
 
 /**
- * Kartu anak dengan urutan prioritas: status perjalanan, status kamera (siaran
- * hanya bila aksesnya sah), lokasi bus, lalu informasi pendukung. Identitas dan
- * sekolah tetap di header kartu, sedangkan bus/rute/pengemudi diringkas dalam
- * satu blok pendukung agar tidak mengalahkan status. Kamera dan GPS masing-
- * masing hanya punya satu blok di kartu ini.
+ * Kartu utama satu anak.
+ *
+ * Desktop/tablet memakai dua kolom: identitas dan detail perjalanan di kiri,
+ * kamera serta peta berukuran besar di kanan. Mobile menumpuk kolom kanan di
+ * bawah informasi anak tanpa mengecilkan kamera atau peta.
+ *
+ * Status GPS hanya berada di panel peta dan status kamera hanya berada di panel
+ * kamera. Tidak ada tautan menuju panel lain yang mengulang informasi tersebut.
  */
 export function ChildOverviewCard({
   child,
@@ -40,8 +43,8 @@ export function ChildOverviewCard({
   const school = student.schools?.name ?? "Sekolah belum ditetapkan";
   const bus = trip?.busCode ? `Bus ${trip.busCode}` : "Belum ditetapkan";
   const busDetail = trip?.plateNumber
-    ? `${trip.plateNumber}${trip.busCapacity ? ` · ${trip.busCapacity} kursi` : ""}`
-    : "Plat dan kapasitas belum tercatat";
+    ? `Pelat ${trip.plateNumber}${trip.busCapacity ? ` · ${trip.busCapacity} kursi` : ""}`
+    : "Nomor pelat dan kapasitas belum tercatat";
   const driver = trip
     ? trip.driverAssigned
       ? "Sudah ditugaskan"
@@ -55,65 +58,96 @@ export function ChildOverviewCard({
     ? `${placement.stopOrder}. ${placement.stopName}`
     : "Titik jemput belum diatur";
   const direction = routeDirectionLabel(trip?.direction ?? placement?.direction ?? "");
-  const updated = journey.updatedAt ? `Diperbarui ${formatTime(journey.updatedAt)}` : "Belum ada pembaruan";
-  const cameraCopy =
-    journey.key === "no-trip"
-      ? "Belum ada perjalanan hari ini."
-      : liveVideo.state === "on-board-camera-off"
-        ? "Anak di bus · kamera belum terhubung."
-        : liveVideo.state === "ended"
-          ? "Akses ditutup setelah anak turun."
-          : "Tersedia setelah anak tercatat naik bus.";
-  const cameraBadge =
-    liveVideo.state === "on-board-camera-off"
-      ? "Belum tersedia"
-      : liveVideo.state === "ended"
-        ? "Nonaktif"
-        : "Belum aktif";
+  const updated = journey.updatedAt
+    ? `Status diperbarui ${formatTime(journey.updatedAt)}`
+    : "Belum ada pembaruan status";
 
   return (
     <article className="child-card guardian-child" id={`anak-${student.id}`}>
-      <header className="child-card-head">
-        <span className="child-avatar" aria-hidden="true">
-          {student.full_name.slice(0, 1).toUpperCase()}
-        </span>
-        <div>
-          <h2>{student.full_name}</h2>
-          <small>
-            {student.admissions_number} · {school}
-          </small>
-        </div>
-        <ServiceStatusPill status={student.service_status} />
-      </header>
-
-      <div className={`guardian-journey tone-${journey.tone}`} role="status">
-        <span className="guardian-journey-icon" aria-hidden="true">
-          <Icon name={journey.icon} size={21} />
-        </span>
-        <div className="guardian-journey-copy">
-          <strong>{journey.label}</strong>
-          <p>{journey.detail}</p>
-          <span className="guardian-journey-time">
-            <Icon name="clock" size={12} />
-            {updated}
-          </span>
-        </div>
-      </div>
-
-      {directionStatuses.length > 1 && (
-        <div className="guardian-directions" aria-label="Status perjalanan per arah">
-          <span className="guardian-directions-label">Per arah</span>
-          {directionStatuses.map((status) => (
-            <span className={`guardian-direction tone-${status.tone}`} key={status.direction}>
-              <small>{routeDirectionLabel(status.direction)}</small>
-              <strong>{status.label}</strong>
+      <div className="guardian-child-layout">
+        <section className="guardian-child-info" aria-label={`Informasi perjalanan ${student.full_name}`}>
+          <header className="guardian-child-identity">
+            <span className="guardian-child-avatar" aria-hidden="true">
+              {student.full_name.slice(0, 1).toUpperCase()}
             </span>
-          ))}
-        </div>
-      )}
+            <div className="guardian-child-ident-copy">
+              <h2>{student.full_name}</h2>
+              <span className="guardian-child-nis">NIS: {student.admissions_number}</span>
+              <span className="guardian-child-school">
+                <Icon name="school" size={14} />
+                {school}
+              </span>
+            </div>
+          </header>
 
-      {liveVideo.state === "live" ? (
-        <div className="guardian-live-feature">
+          <div className={`guardian-journey tone-${journey.tone}`} role="status">
+            <span className="guardian-journey-icon" aria-hidden="true">
+              <Icon name={journey.icon} size={24} />
+            </span>
+            <div className="guardian-journey-copy">
+              <small className="guardian-journey-eyebrow">Status saat ini</small>
+              <strong>{journey.label}</strong>
+              <p>{journey.detail}</p>
+              <span className="guardian-journey-time">
+                <Icon name="clock" size={12} />
+                {updated}
+              </span>
+            </div>
+          </div>
+
+          <div className="guardian-directions" aria-label="Status keberangkatan pagi dan kepulangan">
+            {directionStatuses.map((status) => (
+              <div className={`guardian-direction tone-${status.tone}`} key={status.direction}>
+                <span className="guardian-direction-label">{routeDirectionLabel(status.direction)}</span>
+                <strong>{status.label}</strong>
+              </div>
+            ))}
+          </div>
+
+          <dl className="guardian-facts" aria-label="Detail perjalanan">
+            <div className="guardian-fact">
+              <dt>
+                <Icon name="bus" size={17} />
+                <span>Bus</span>
+              </dt>
+              <dd>
+                <strong>{bus}</strong>
+                <small>{busDetail}</small>
+              </dd>
+            </div>
+            <div className="guardian-fact">
+              <dt>
+                <Icon name="route" size={17} />
+                <span>Rute</span>
+              </dt>
+              <dd>
+                <strong>{route}</strong>
+                <small>{direction ? `Arah ${direction.toLowerCase()}` : "Arah belum tercatat"}</small>
+              </dd>
+            </div>
+            <div className="guardian-fact">
+              <dt>
+                <Icon name="pin" size={17} />
+                <span>Titik jemput</span>
+              </dt>
+              <dd>
+                <strong>{stop}</strong>
+              </dd>
+            </div>
+            <div className="guardian-fact">
+              <dt>
+                <Icon name="driver" size={17} />
+                <span>Pengemudi</span>
+              </dt>
+              <dd>
+                <strong>{driver}</strong>
+                <small>{driverDetail}</small>
+              </dd>
+            </div>
+          </dl>
+        </section>
+
+        <div className="guardian-child-feature">
           <ParentLiveVideo
             childName={student.full_name}
             state={liveVideo.state}
@@ -123,56 +157,9 @@ export function ChildOverviewCard({
             streamMimeType={liveVideo.streamMimeType}
             updatedAt={liveVideo.updatedAt}
             simulated={simulated}
-            compact
+            presentation="guardian-card"
           />
-        </div>
-      ) : (
-        <div className="guardian-camera-feature" role="status">
-          <span className="guardian-camera-feature-icon" aria-hidden="true">
-            <Icon name="cameraOff" size={18} />
-          </span>
-          <div>
-            <strong>Kamera bus</strong>
-            <small>{cameraCopy}</small>
-          </div>
-          <span className="guardian-camera-feature-state">{cameraBadge}</span>
-        </div>
-      )}
-
-      <div className="guardian-location-inline" role="note">
-        <span className="guardian-location-inline-icon" aria-hidden="true">
-          <Icon name="pin" size={16} />
-        </span>
-        <span className="guardian-location-inline-copy">
-          <strong>Lokasi bus</strong>
-          <small>GPS belum tersedia · belum ada posisi aktual</small>
-        </span>
-      </div>
-
-      <div className="guardian-support" aria-label="Detail perjalanan">
-        <div className="guardian-support-item">
-          <Icon name="bus" size={14} />
-          <div>
-            <span>Bus</span>
-            <strong>{bus}</strong>
-            <small>{busDetail}</small>
-          </div>
-        </div>
-        <div className="guardian-support-item">
-          <Icon name="route" size={14} />
-          <div>
-            <span>Rute &amp; titik</span>
-            <strong>{route}</strong>
-            <small>{direction ? `${direction} · ${stop}` : stop}</small>
-          </div>
-        </div>
-        <div className="guardian-support-item">
-          <Icon name="driver" size={14} />
-          <div>
-            <span>Pengemudi</span>
-            <strong>{driver}</strong>
-            <small>{driverDetail}</small>
-          </div>
+          <ChildBusLocationPanel childId={student.id} />
         </div>
       </div>
     </article>

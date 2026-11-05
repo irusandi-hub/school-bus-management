@@ -16,6 +16,8 @@ export type ParentLiveVideoProps = {
   updatedAt: string | null;
   simulated: boolean;
   compact?: boolean;
+  /** Tampilan besar di dalam kartu anak; metadata bus tidak diulang di footer. */
+  presentation?: "default" | "guardian-card";
 };
 
 /**
@@ -35,10 +37,12 @@ export function ParentLiveVideo({
   updatedAt,
   simulated,
   compact = false,
+  presentation = "default",
 }: ParentLiveVideoProps) {
   const [expanded, setExpanded] = useState(false);
   const copy = LIVE_STATE_COPY[state];
   const isLive = state === "live" && Boolean(streamUrl);
+  const isGuardianCard = presentation === "guardian-card";
   const placeholderIcon = state === "ended" ? "check" : state === "awaiting-boarding" ? "bus" : "cameraOff";
 
   useEffect(() => {
@@ -69,38 +73,36 @@ export function ParentLiveVideo({
       </span>
       <strong>{copy.title}</strong>
       <p>{copy.detail}</p>
-      <span className="live-signal">
-        <span className="live-signal-dot" aria-hidden="true" />
-        Tidak ada siaran
-      </span>
     </div>
   );
 
   return (
-    <section className={`live-video${compact ? " is-compact" : ""}`} aria-label={`Live video ${childName}`}>
+    <section
+      className={`live-video${compact ? " is-compact" : ""}${isGuardianCard ? " guardian-camera-panel" : ""}`}
+      aria-label={`Kamera bus ${childName}`}
+    >
       <header className="live-head">
         <div className="live-title">
           <span className="live-camera-icon" aria-hidden="true">
             <Icon name={isLive ? "camera" : "cameraOff"} size={16} />
           </span>
           <div>
-            <strong>Live video</strong>
-            <span>
-              {childName} · {tripLabel}
-            </span>
+            <strong>{isGuardianCard ? (busLabel ? `Kamera ${busLabel}` : "Kamera bus") : "Live video"}</strong>
+            <span>{isGuardianCard ? tripLabel : `${childName} · ${tripLabel}`}</span>
           </div>
         </div>
         <div className="live-badges">
-          {isLive && (
+          {isLive ? (
             <span className="live-badge">
               <span className="live-dot" aria-hidden="true" />
               LIVE
             </span>
+          ) : (
+            <CameraStatus state={state} />
           )}
-          <CameraStatus state={state} />
           {simulated && (
             <span className="live-demo" title="Data simulasi pengembangan, bukan siaran nyata">
-              Pratinjau
+              Data simulasi
             </span>
           )}
         </div>
@@ -108,19 +110,25 @@ export function ParentLiveVideo({
 
       <div className="live-stage">{stage}</div>
 
-      <footer className="live-foot">
-        <span className="live-meta">
-          <Icon name="clock" size={12} />
-          {updatedAt ? `Diperbarui ${updatedAt}` : "Belum ada pembaruan"}
-        </span>
-        <span className="live-meta">{busLabel ?? "Bus belum ditetapkan"}</span>
-        {isLive && (
-          <button className="btn btn-secondary btn-sm live-expand" type="button" onClick={() => setExpanded(true)}>
-            <Icon name="expand" size={14} />
-            Perbesar
-          </button>
-        )}
-      </footer>
+      {(!isGuardianCard || isLive) && (
+        <footer className="live-foot">
+          {!isGuardianCard && (
+            <>
+              <span className="live-meta">
+                <Icon name="clock" size={12} />
+                {updatedAt ? `Diperbarui ${updatedAt}` : "Belum ada pembaruan"}
+              </span>
+              <span className="live-meta">{busLabel ?? "Bus belum ditetapkan"}</span>
+            </>
+          )}
+          {isLive && (
+            <button className="btn btn-secondary btn-sm live-expand" type="button" onClick={() => setExpanded(true)}>
+              <Icon name="expand" size={14} />
+              Perbesar
+            </button>
+          )}
+        </footer>
+      )}
 
       {expanded && (
         <div
@@ -135,13 +143,14 @@ export function ParentLiveVideo({
               <span>{tripLabel}</span>
             </div>
             <div className="live-fullscreen-badges">
-              {isLive && (
+              {isLive ? (
                 <span className="live-badge">
                   <span className="live-dot" aria-hidden="true" />
                   LIVE
                 </span>
+              ) : (
+                <CameraStatus state={state} />
               )}
-              <CameraStatus state={state} />
               <button
                 className="btn btn-secondary btn-sm"
                 type="button"
