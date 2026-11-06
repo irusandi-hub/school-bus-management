@@ -283,6 +283,11 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
           <button className="btn btn-primary" type="submit" disabled={allStops.length === 0}>
             Simpan penempatan
           </button>
+          {allStops.length === 0 && (
+            <p className="form-note roster-form-note" role="status">
+              Penempatan dapat disimpan setelah Admin Pusat menambahkan titik jemput pada rute yang sesuai.
+            </p>
+          )}
         </form>
         <p className="detail-footnote">
           Satu siswa hanya memiliki satu titik aktif per arah. Memilih titik baru pada arah yang sama akan memindahkan

@@ -231,6 +231,14 @@ export default async function DriverOperationsPage({
   const canStart = !trip || trip.status === "scheduled";
   const canEndTrip = Boolean(trip?.arrived_at) && unrecorded.length === 0 && !rosterResult.error && !eventsResult.error;
   const issueNotes = studentRows.filter((row) => row.issueNote);
+  const cameraPublishingEnabled = process.env.NEXT_PUBLIC_TRIP_CAMERA_ENABLED === "1";
+  const cameraEnabled =
+    cameraPublishingEnabled || cameraDemoEnabled(deploymentKind(), process.env.CAMERA_DEVICE_DEMO);
+  const startReason = completed
+    ? "Perjalanan sudah selesai; perjalanan baru dibuat melalui penugasan pada tanggal lain."
+    : inProgress
+      ? "Perjalanan sedang berlangsung. Tombol mulai aktif kembali pada penugasan berikutnya."
+      : "Mulai perjalanan untuk membuka pencatatan siswa dan siaran kamera.";
 
   return (
     <>
@@ -282,7 +290,7 @@ export default async function DriverOperationsPage({
         totalStudents={studentRows.length}
         onboardStudents={onboard}
       >
-        {canStart && (
+        {canStart ? (
           <form action={startTrip} className="ops-start">
             <input type="hidden" name="assignment_id" value={selected.id} />
             <ConfirmSubmit
@@ -294,12 +302,22 @@ export default async function DriverOperationsPage({
             </ConfirmSubmit>
             <small>Rute di bawah dapat dilihat sebelum perjalanan dimulai.</small>
           </form>
+        ) : (
+          <div className="ops-start">
+            <button className="btn btn-secondary" type="button" disabled>
+              <Icon name="trip" size={16} /> Mulai perjalanan
+            </button>
+            <small>{startReason}</small>
+          </div>
         )}
       </DriverOpsHeader>
 
-      {inProgress && (process.env.NEXT_PUBLIC_TRIP_CAMERA_ENABLED === "1" || cameraDemoEnabled(deploymentKind(), process.env.CAMERA_DEVICE_DEMO)) && (
-        <DriverBroadcastPanel key={trip!.id} inProgress={inProgress} tripId={process.env.NEXT_PUBLIC_TRIP_CAMERA_ENABLED === "1" ? trip!.id : undefined} />
-      )}
+      <DriverBroadcastPanel
+        key={trip?.id ?? "no-trip"}
+        tripStatus={trip?.status ?? "scheduled"}
+        tripId={cameraPublishingEnabled ? trip?.id : undefined}
+        enabled={cameraEnabled}
+      />
 
       <FullRouteNavigator
         plan={plan}
@@ -388,20 +406,19 @@ export default async function DriverOperationsPage({
         </details>
       </section>
 
-      {(inProgress || completed) && (
-        <TripClosePanel
-          assignmentId={selected.id}
-          trip={trip}
-          canEndTrip={canEndTrip}
-          unrecordedNames={unrecorded.map((row) => row.name)}
-          unclearStudents={unclearStudents}
-          totalStudents={studentRows.length}
-        />
-      )}
+      <TripClosePanel
+        assignmentId={selected.id}
+        trip={trip}
+        canEndTrip={canEndTrip}
+        unrecordedNames={unrecorded.map((row) => row.name)}
+        unclearStudents={unclearStudents}
+        totalStudents={studentRows.length}
+      />
 
       <Notice kind="info">
-        Navigasi membuka satu rute berisi titik yang tersimpan. Posisi bus dan kamera belum aktif, dan kembali dari
-        aplikasi peta tidak mengubah status siswa atau menyelesaikan titik pemberhentian.
+        Navigasi membuka satu rute berisi titik yang tersimpan. Posisi bus belum dilacak karena GPS belum aktif.
+        Siaran kamera mengikuti status perjalanan pada panel kamera, dan kembali dari aplikasi peta tidak mengubah
+        status siswa atau menyelesaikan titik pemberhentian.
       </Notice>
     </>
   );

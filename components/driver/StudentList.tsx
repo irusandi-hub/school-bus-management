@@ -48,7 +48,13 @@ export function StudentList({
     <ol className="ops-students">
       {rows.map((row, index) => {
         const actions = studentActionSet({ direction, status: row.status, tripStatus, arrived });
-        const hasActions = actions.canBoard || actions.canDrop || actions.canAbsent;
+        const actionHint =
+          actions.hint ??
+          (!actions.canDrop
+            ? direction === "afternoon"
+              ? "Turun di titik aktif setelah siswa tercatat naik."
+              : "Turun di sekolah aktif setelah siswa tercatat naik dan kedatangan dikonfirmasi."
+            : null);
 
         return (
           <li className="ops-student" key={row.key} id={`siswa-${row.studentId}`}>
@@ -78,76 +84,94 @@ export function StudentList({
               )}
             </div>
 
-            {tripId && (
-              <div className="ops-student-actions">
-                {actions.canBoard && (
-                  <form action={recordStudentEvent}>
-                    <input type="hidden" name="trip_id" value={tripId} />
-                    <input type="hidden" name="assignment_id" value={assignmentId} />
-                    <input type="hidden" name="student_id" value={row.studentId} />
-                    <button className="ops-action board" type="submit" name="event_type" value="boarded">
-                      <Icon name="check" size={15} /> Naik
-                    </button>
-                  </form>
-                )}
+            <div className="ops-student-actions">
+              {actions.canBoard && tripId ? (
+                <form action={recordStudentEvent}>
+                  <input type="hidden" name="trip_id" value={tripId} />
+                  <input type="hidden" name="assignment_id" value={assignmentId} />
+                  <input type="hidden" name="student_id" value={row.studentId} />
+                  <button className="ops-action board" type="submit" name="event_type" value="boarded">
+                    <Icon name="check" size={15} /> Naik
+                  </button>
+                </form>
+              ) : (
+                <button className="ops-action board" type="button" disabled title={actionHint ?? undefined}>
+                  <Icon name="check" size={15} /> Naik
+                </button>
+              )}
 
-                {actions.canDrop && (
-                  <form action={recordStudentEvent}>
-                    <input type="hidden" name="trip_id" value={tripId} />
-                    <input type="hidden" name="assignment_id" value={assignmentId} />
-                    <input type="hidden" name="student_id" value={row.studentId} />
-                    <button className="ops-action drop" type="submit" name="event_type" value="dropped_off">
-                      <Icon name="arrowRight" size={15} /> {actions.dropLabel}
-                    </button>
-                  </form>
-                )}
+              {actions.canDrop && tripId ? (
+                <form action={recordStudentEvent}>
+                  <input type="hidden" name="trip_id" value={tripId} />
+                  <input type="hidden" name="assignment_id" value={assignmentId} />
+                  <input type="hidden" name="student_id" value={row.studentId} />
+                  <button className="ops-action drop" type="submit" name="event_type" value="dropped_off">
+                    <Icon name="arrowRight" size={15} /> {actions.dropLabel}
+                  </button>
+                </form>
+              ) : (
+                <button className="ops-action drop" type="button" disabled title={actionHint ?? undefined}>
+                  <Icon name="arrowRight" size={15} /> {actions.dropLabel}
+                </button>
+              )}
 
-                {actions.canAbsent && (
-                  <details className="ops-absent">
-                    <summary>Tidak ikut</summary>
-                    <div className="ops-absent-menu">
-                      <form action={recordStudentEvent}>
-                        <input type="hidden" name="trip_id" value={tripId} />
-                        <input type="hidden" name="assignment_id" value={assignmentId} />
-                        <input type="hidden" name="student_id" value={row.studentId} />
-                        <input type="hidden" name="event_type" value="absent" />
-                        {ABSENCE_REASONS.map((reason) => (
-                          <button key={reason.label} className="ops-action absent" type="submit" name="notes" value={reason.notes}>
-                            {reason.label}
-                          </button>
-                        ))}
-                      </form>
-                      <small>Dicatat sebagai tidak ikut bus, dengan alasan tersimpan pada catatan.</small>
-                    </div>
-                  </details>
-                )}
-
-                {tripStatus === "in_progress" && (
-                  <details className="ops-issue">
-                    <summary>Catat kendala</summary>
-                    <form className="ops-issue-form" action={recordStudentEvent}>
+              {actions.canAbsent && tripId ? (
+                <details className="ops-absent">
+                  <summary>Tidak ikut</summary>
+                  <div className="ops-absent-menu">
+                    <form action={recordStudentEvent}>
                       <input type="hidden" name="trip_id" value={tripId} />
                       <input type="hidden" name="assignment_id" value={assignmentId} />
                       <input type="hidden" name="student_id" value={row.studentId} />
-                      <input type="hidden" name="event_type" value="issue" />
-                      <textarea
-                        name="notes"
-                        rows={2}
-                        minLength={5}
-                        maxLength={300}
-                        required
-                        placeholder="Contoh: siswa tidak ada di titik jemput, orang tua memberi kabar."
-                      />
-                      <button className="btn btn-secondary btn-sm" type="submit">
-                        Simpan kendala
-                      </button>
+                      <input type="hidden" name="event_type" value="absent" />
+                      {ABSENCE_REASONS.map((reason) => (
+                        <button key={reason.label} className="ops-action absent" type="submit" name="notes" value={reason.notes}>
+                          {reason.label}
+                        </button>
+                      ))}
                     </form>
-                  </details>
-                )}
+                    <small>Dicatat sebagai tidak ikut bus, dengan alasan tersimpan pada catatan.</small>
+                  </div>
+                </details>
+              ) : (
+                <button className="ops-action absent" type="button" disabled title={actionHint ?? undefined}>
+                  Tidak ikut
+                </button>
+              )}
 
-                {!hasActions && actions.hint && <p className="ops-student-hint">{actions.hint}</p>}
-              </div>
-            )}
+              {tripStatus === "in_progress" && tripId ? (
+                <details className="ops-issue">
+                  <summary>Catat kendala</summary>
+                  <form className="ops-issue-form" action={recordStudentEvent}>
+                    <input type="hidden" name="trip_id" value={tripId} />
+                    <input type="hidden" name="assignment_id" value={assignmentId} />
+                    <input type="hidden" name="student_id" value={row.studentId} />
+                    <input type="hidden" name="event_type" value="issue" />
+                    <textarea
+                      name="notes"
+                      rows={2}
+                      minLength={5}
+                      maxLength={300}
+                      required
+                      placeholder="Contoh: siswa tidak ada di titik jemput, orang tua memberi kabar."
+                    />
+                    <button className="btn btn-secondary btn-sm" type="submit">
+                      Simpan kendala
+                    </button>
+                  </form>
+                </details>
+              ) : (
+                <button className="ops-action" type="button" disabled title={actionHint ?? undefined}>
+                  Catat kendala
+                </button>
+              )}
+
+              {(actionHint || !actions.canBoard || !actions.canDrop || !actions.canAbsent) && (
+                <p className="ops-student-hint">
+                  {actionHint ?? "Tombol yang tidak aktif belum sesuai dengan status atau tahap siswa saat ini."}
+                </p>
+              )}
+            </div>
           </li>
         );
       })}

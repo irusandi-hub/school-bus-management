@@ -95,7 +95,7 @@ export function ParentLiveVideo({
   return (
     <section
       className={`live-video${compact ? " is-compact" : ""}${isGuardianCard ? " guardian-camera-panel" : ""}`}
-      aria-label={`Kamera bus ${childName}`}
+      aria-label={`Kamera perjalanan ${childName}`}
     >
       <header className="live-head">
         <div className="live-title">
@@ -103,7 +103,7 @@ export function ParentLiveVideo({
             <Icon name={isLive ? "camera" : "cameraOff"} size={16} />
           </span>
           <div>
-            <strong>{isGuardianCard ? (busLabel ? `Kamera ${busLabel}` : "Kamera bus") : "Live video"}</strong>
+            <strong>{isGuardianCard ? (busLabel ? `Kamera perjalanan · ${busLabel}` : "Kamera perjalanan") : "Live video"}</strong>
             <span>{isGuardianCard ? tripLabel : `${childName} · ${tripLabel}`}</span>
           </div>
         </div>
@@ -127,25 +127,29 @@ export function ParentLiveVideo({
       {connection && <p role="status">{connection}</p>}
       <div className="live-stage">{stage}</div>
 
-      {(!isGuardianCard || isLive) && (
-        <footer className="live-foot">
-          {!isGuardianCard && (
-            <>
-              <span className="live-meta">
-                <Icon name="clock" size={12} />
-                {updatedAt ? `Diperbarui ${updatedAt}` : "Belum ada pembaruan"}
-              </span>
-              <span className="live-meta">{busLabel ?? "Bus belum ditetapkan"}</span>
-            </>
-          )}
-          {isLive && (
-            <button className="btn btn-secondary btn-sm live-expand" type="button" onClick={() => setExpanded(true)}>
-              <Icon name="expand" size={14} />
-              Perbesar
-            </button>
-          )}
-        </footer>
-      )}
+      <footer className="live-foot">
+        {!isGuardianCard ? (
+          <>
+            <span className="live-meta">
+              <Icon name="clock" size={12} />
+              {updatedAt ? `Diperbarui ${updatedAt}` : "Belum ada pembaruan"}
+            </span>
+            <span className="live-meta">{busLabel ?? "Bus belum ditetapkan"}</span>
+          </>
+        ) : (
+          !isLive && <span className="live-meta">Pembesaran aktif saat siaran tersedia</span>
+        )}
+        <button
+          className="btn btn-secondary btn-sm live-expand"
+          type="button"
+          disabled={!isLive}
+          title={isLive ? undefined : copy.detail}
+          onClick={() => setExpanded(true)}
+        >
+          <Icon name="expand" size={14} />
+          Perbesar
+        </button>
+      </footer>
 
       {expanded && (
         <div

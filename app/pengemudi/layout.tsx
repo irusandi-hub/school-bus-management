@@ -41,7 +41,7 @@ export default async function DriverLayout({ children }: { children: React.React
 
       <footer className="driver-foot">
         <span>Hanya tugas dan perjalanan milik akun ini</span>
-        <span>GPS &amp; kamera belum aktif</span>
+        <span>GPS belum aktif · kamera mengikuti status perjalanan</span>
       </footer>
 
       <BottomNav items={driverBottomNav} rootHref="/pengemudi" ariaLabel="Navigasi pengemudi" />

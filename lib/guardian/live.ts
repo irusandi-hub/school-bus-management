@@ -98,8 +98,8 @@ export const LIVE_STATE_COPY: Record<
     camera: "Kamera belum terhubung",
     title: "Kamera belum terhubung",
     detail:
-      "Anak Anda tercatat berada di bus. Kamera kabin belum terintegrasi, sehingga belum ada siaran yang dapat ditampilkan.",
-    placeholder: "Area ini akan menampilkan siaran kamera setelah integrasi kamera diaktifkan.",
+      "Anak Anda tercatat berada di bus. Siaran kamera belum terhubung untuk perjalanan ini, sehingga belum ada video yang dapat ditampilkan.",
+    placeholder: "Area ini akan menampilkan siaran setelah kamera perjalanan terhubung.",
   },
   ended: {
     camera: "Kamera nonaktif",
@@ -110,7 +110,7 @@ export const LIVE_STATE_COPY: Record<
   live: {
     camera: "Kamera terhubung",
     title: "Siaran langsung",
-    detail: "Siaran berasal dari kamera bus yang terhubung. Tidak ada rekaman yang disimpan oleh aplikasi.",
+    detail: "Siaran berasal dari kamera perjalanan pengemudi yang terhubung. Tidak ada rekaman yang disimpan oleh aplikasi.",
     placeholder: "",
   },
 };

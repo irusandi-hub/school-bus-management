@@ -117,7 +117,10 @@ export default async function SiswaPage({
       type: "select",
       required: true,
       defaultValue: editing?.school_id ?? "",
-      options: [{ value: "", label: "Pilih sekolah" }, ...schoolOptions],
+      options: [
+        { value: "", label: schoolOptions.length === 0 ? "Belum ada sekolah aktif" : "Pilih sekolah" },
+        ...schoolOptions,
+      ],
     },
     {
       name: "guardian_id",
@@ -126,7 +129,10 @@ export default async function SiswaPage({
       required: true,
       fullWidth: true,
       defaultValue: editing?.guardian_id ?? "",
-      options: [{ value: "", label: "Pilih wali" }, ...guardianOptions],
+      options: [
+        { value: "", label: guardianOptions.length === 0 ? "Belum ada wali aktif" : "Pilih wali" },
+        ...guardianOptions,
+      ],
       help: "Satu siswa hanya memiliki satu wali. Satu akun wali dapat terhubung ke beberapa siswa.",
     },
     {
@@ -290,37 +296,24 @@ export default async function SiswaPage({
             </div>
           </header>
           <div className="form-body">
-            {canCreate ? (
-              <RecordForm
-                key={editing?.id ?? "new"}
-                action={saveStudent}
-                fields={fields}
-                hidden={{ id: editing?.id ?? "" }}
-                submitLabel={editing ? "Simpan perubahan" : "Tambah siswa"}
-                note={
-                  editing
-                    ? "Status layanan tidak diubah dari formulir ini agar riwayat dan alasannya tetap tercatat."
-                    : "Siswa baru dibuat dengan status layanan aktif. Perubahan status dan alasannya dicatat pada riwayat."
-                }
-                secondary={editing ? { href: listHref(path, baseQuery), label: "Batal" } : undefined}
-              />
-            ) : (
-              <div className="form-unavailable">
-                <strong>Formulir belum dapat digunakan</strong>
-                <p>
-                  Siswa memerlukan satu sekolah dan satu wali yang sudah terdaftar. Lengkapi data tersebut terlebih
-                  dahulu agar relasi dan akses wali dapat ditetapkan dengan benar.
-                </p>
-                <div className="form-unavailable-links">
-                  <Link className="btn btn-secondary" href="/admin/sekolah">
-                    Kelola sekolah
-                  </Link>
-                  <Link className="btn btn-secondary" href="/admin/wali">
-                    Kelola email wali
-                  </Link>
-                </div>
-              </div>
-            )}
+            <RecordForm
+              key={editing?.id ?? "new"}
+              action={saveStudent}
+              fields={fields}
+              hidden={{ id: editing?.id ?? "" }}
+              submitLabel={editing ? "Simpan perubahan" : "Tambah siswa"}
+              disabledReason={
+                canCreate
+                  ? undefined
+                  : `Formulir aktif setelah ada ${schoolOptions.length === 0 ? "sekolah" : "wali"} aktif. Lengkapi data tersebut agar relasi siswa dan akses wali dapat ditetapkan dengan benar.`
+              }
+              note={
+                editing
+                  ? "Status layanan tidak diubah dari formulir ini agar riwayat dan alasannya tetap tercatat."
+                  : "Siswa baru dibuat dengan status layanan aktif. Perubahan status dan alasannya dicatat pada riwayat."
+              }
+              secondary={editing ? { href: listHref(path, baseQuery), label: "Batal" } : undefined}
+            />
           </div>
         </aside>
       </div>

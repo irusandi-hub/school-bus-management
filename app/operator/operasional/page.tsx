@@ -144,8 +144,9 @@ export default async function OperatorOperationsPage() {
       )}
 
       <Notice kind="info">
-        Posisi GPS langsung, estimasi kedatangan, dan kamera live belum diaktifkan. Papan ini hanya memakai status
-        perjalanan yang dicatat pengemudi, tanpa membuat data lokasi atau status palsu.
+        Posisi GPS langsung, estimasi kedatangan, dan kamera bus belum tersedia. Siaran kamera perjalanan tidak
+        ditampilkan di papan ini; papan hanya memakai status perjalanan yang dicatat pengemudi tanpa membuat data
+        lokasi atau status palsu.
       </Notice>
     </>
   );

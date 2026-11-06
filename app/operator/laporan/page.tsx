@@ -63,7 +63,7 @@ export default async function OperatorReportsPage() {
           <header className="panel-head"><div><h2 className="panel-title">Catatan penggunaan</h2><div className="panel-subtitle">Agar laporan tidak menyesatkan</div></div></header>
           <div className="audit-note">
             <p>Angka 0 berarti belum ada data pada organisasi Anda, bukan data contoh yang disembunyikan. Perjalanan hanya terhitung setelah pengemudi memulai tugas.</p>
-            <p>Posisi GPS dan kamera live belum tersedia. Ekspor CSV berisi data perjalanan yang benar-benar tersimpan, bukan lokasi atau rekaman yang belum terintegrasi.</p>
+            <p>Posisi GPS dan kamera bus belum tersedia. Siaran kamera perjalanan tidak ditampilkan di laporan dan tidak direkam; ekspor CSV hanya berisi data perjalanan yang benar-benar tersimpan.</p>
           </div>
         </section>
       </div>

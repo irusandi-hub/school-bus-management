@@ -30,15 +30,24 @@ type Props = {
   note?: string;
   secondary?: { href: string; label: string };
   confirmMessage?: string;
+  /** Menampilkan formulir tetap utuh, tetapi menonaktifkan semua kontrol. */
+  disabledReason?: string;
 };
 
-export function RecordForm({ action, fields, submitLabel, hidden, note, secondary, confirmMessage }: Props) {
+export function RecordForm({ action, fields, submitLabel, hidden, note, secondary, confirmMessage, disabledReason }: Props) {
   const [state, formAction, pending] = useActionState<ActionState, FormData>(action, idleState);
+  const formDisabled = Boolean(disabledReason);
 
   return (
-    <form action={formAction} className="record-form" noValidate>
+    <form action={formAction} className="record-form" noValidate aria-disabled={formDisabled || undefined}>
       {hidden &&
         Object.entries(hidden).map(([name, value]) => <input key={name} type="hidden" name={name} value={value} />)}
+
+      {disabledReason && (
+        <p className="form-alert warning" role="status">
+          {disabledReason}
+        </p>
+      )}
 
       <div className="record-grid">
         {fields.map((field) => {
@@ -52,7 +61,12 @@ export function RecordForm({ action, fields, submitLabel, hidden, note, secondar
             return (
               <div className="field field-wide" key={field.name}>
                 <label className="checkbox-field">
-                  <input type="checkbox" name={field.name} defaultChecked={Boolean(field.defaultValue)} />
+                  <input
+                    type="checkbox"
+                    name={field.name}
+                    defaultChecked={Boolean(field.defaultValue)}
+                    disabled={formDisabled}
+                  />
                   <span>{field.label}</span>
                 </label>
                 {field.help && (
@@ -83,6 +97,7 @@ export function RecordForm({ action, fields, submitLabel, hidden, note, secondar
                   rows={3}
                   required={field.required}
                   readOnly={field.readOnly}
+                  disabled={formDisabled}
                   placeholder={field.placeholder}
                   maxLength={field.maxLength}
                   defaultValue={(field.defaultValue as string | null) ?? ""}
@@ -94,6 +109,7 @@ export function RecordForm({ action, fields, submitLabel, hidden, note, secondar
                   id={field.name}
                   name={field.name}
                   required={field.required}
+                  disabled={formDisabled}
                   defaultValue={(field.defaultValue as string | null) ?? ""}
                   aria-invalid={error ? true : undefined}
                   aria-describedby={describedBy || undefined}
@@ -111,6 +127,7 @@ export function RecordForm({ action, fields, submitLabel, hidden, note, secondar
                   type={type}
                   required={field.required}
                   readOnly={field.readOnly}
+                  disabled={formDisabled}
                   placeholder={field.placeholder}
                   step={field.step ?? (type === "number" ? "any" : undefined)}
                   min={field.min}
@@ -159,7 +176,7 @@ export function RecordForm({ action, fields, submitLabel, hidden, note, secondar
         <button
           className="btn btn-primary"
           type="submit"
-          disabled={pending}
+          disabled={pending || formDisabled}
           onClick={(event) => {
             if (confirmMessage && !window.confirm(confirmMessage)) event.preventDefault();
           }}

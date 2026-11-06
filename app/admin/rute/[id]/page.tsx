@@ -250,6 +250,13 @@ export default async function RouteDetailPage({
           <button className="btn btn-primary" type="submit" disabled={students.length === 0 || stops.length === 0}>
             Tempatkan siswa
           </button>
+          {(students.length === 0 || stops.length === 0) && (
+            <p className="form-note roster-form-note" role="status">
+              {stops.length === 0
+                ? "Tambahkan minimal satu titik jemput sebelum menempatkan siswa pada rute ini."
+                : "Belum ada siswa aktif di sekolah tujuan rute ini. Tambahkan siswa terlebih dahulu melalui menu Data Siswa."}
+            </p>
+          )}
         </form>
 
         <div className="admin-table-wrap">

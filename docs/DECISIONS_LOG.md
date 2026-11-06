@@ -241,3 +241,10 @@ Lihat `TECHNICAL_SPEC_REVIEW.md`, bagian 19 pada `MASTER_SPEC.md`, serta `OPERAT
 - Sesuai permintaan pengguna, panel menyediakan Kamera perangkat seluler (HP yang menjalankan aplikasi) dan Kamera bus.
 - Kamera bus hanya placeholder pengembangan berikutnya, dengan keterangan “Fitur ini memerlukan setting oleh operator layanan aplikasi.” Tombolnya nonaktif; tidak ada URL, kredensial, atau koneksi vendor ditambahkan.
 - Beralih sumber membongkar komponen kamera seluler dan menghapus konfirmasi pengujian; kembali ke seluler tidak memulai kamera otomatis. Batas development/preview dan signaling manual tetap berlaku.
+
+### DEC-028 — Fitur selalu terlihat; status dan alasan yang berubah
+- **Tanggal:** 2026-11-06
+- **Status:** DISETUJUI UNTUK IMPLEMENTASI UI
+- **Keputusan:** Fitur yang sudah diimplementasikan tetap ditampilkan meskipun perjalanan, data, atau prasyaratnya belum siap. Status harus mengikuti kondisi aktual, kontrol tindakan tetap terlihat, dan kontrol yang dinonaktifkan wajib memiliki alasan yang dapat dipahami pengguna. Menampilkan fitur tidak mengubah otorisasi server/database, RLS, validasi perjalanan, atau aturan akses kamera.
+- **Penerapan:** Panel kamera, tindakan siswa, navigasi, penutupan perjalanan, pemutar wali, dan formulir Admin/Operator tidak lagi dihilangkan hanya karena status operasional atau prasyarat kosong. Formulir bersama memakai `disabledReason`; server tetap menolak tindakan yang tidak sah.
+- **Dampak pada dokumen/tes:** `app/pengemudi`, `components/driver`, `components/guardian`, `components/admin/RecordForm`, halaman Admin/Operator terkait, serta unit test status siaran dan tindakan siswa. Verifikasi harus mencakup kondisi belum tersedia, siap, berjalan, dan selesai.

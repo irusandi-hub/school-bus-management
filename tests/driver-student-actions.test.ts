@@ -3,7 +3,7 @@ import { describe, it } from "node:test";
 import { ABSENCE_REASONS, studentActionSet } from "../lib/driver/student-actions.ts";
 
 describe("tindakan siswa sesuai tahap perjalanan", () => {
-  it("belum menampilkan tindakan sebelum perjalanan dimulai", () => {
+  it("menonaktifkan tindakan sebelum perjalanan dimulai dan memberi alasan", () => {
     const actions = studentActionSet({ direction: "morning", status: null, tripStatus: "scheduled", arrived: false });
     assert.equal(actions.canBoard, false);
     assert.equal(actions.canDrop, false);
@@ -11,13 +11,13 @@ describe("tindakan siswa sesuai tahap perjalanan", () => {
     assert.match(actions.hint ?? "", /Mulai perjalanan/);
   });
 
-  it("tidak menampilkan tindakan setelah perjalanan selesai", () => {
+  it("menonaktifkan tindakan setelah perjalanan selesai dan memberi alasan", () => {
     const actions = studentActionSet({ direction: "morning", status: null, tripStatus: "completed", arrived: true });
     assert.equal(actions.canBoard || actions.canDrop || actions.canAbsent, false);
     assert.match(actions.hint ?? "", /tidak dapat diubah/);
   });
 
-  it("menampilkan naik dan tidak ikut untuk siswa yang belum dicatat", () => {
+  it("mengaktifkan naik dan tidak ikut untuk siswa yang belum dicatat", () => {
     const actions = studentActionSet({ direction: "morning", status: null, tripStatus: "in_progress", arrived: false });
     assert.equal(actions.canBoard, true);
     assert.equal(actions.canAbsent, true);
@@ -49,7 +49,7 @@ describe("tindakan siswa sesuai tahap perjalanan", () => {
     assert.equal(actions.dropLabel, "Turun di titik");
   });
 
-  it("menyembunyikan semua tindakan untuk status akhir", () => {
+  it("menonaktifkan semua tindakan untuk status akhir", () => {
     for (const status of ["absent", "dropped_off"]) {
       const actions = studentActionSet({ direction: "morning", status, tripStatus: "in_progress", arrived: true });
       assert.equal(actions.canBoard || actions.canDrop || actions.canAbsent, false);

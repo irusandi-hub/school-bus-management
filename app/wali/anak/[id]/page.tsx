@@ -8,6 +8,7 @@ import { requireGuardian } from "@/lib/auth";
 import { isDevOpenAccess } from "@/lib/dev-open-access";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { loadChildTrips, loadChildren, loadTodayStudentEvents, todayDate } from "@/lib/guardian/data";
+import { resolveLivePlayback } from "@/lib/guardian/live";
 import { buildChildLiveVideo } from "@/lib/guardian/live-view";
 import type { TripEventRow } from "@/lib/types";
 import {
@@ -45,6 +46,11 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
   const liveEvents = await loadTodayStudentEvents(supabase, [child]);
   const simulated = isDevOpenAccess();
   const liveVideo = buildChildLiveVideo(child, liveEvents, { simulated });
+  const livePlayback = resolveLivePlayback({
+    state: liveVideo.state,
+    streamUrl: liveVideo.streamUrl,
+    simulated,
+  });
 
   const routeIds = child.placements.map((placement) => placement.routeId);
   const [trips, eventsResult] = await Promise.all([
@@ -82,13 +88,15 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
         <header className="panel-head">
           <div>
             <h2 className="panel-title">Live video</h2>
-            <div className="panel-subtitle">Kamera bus · akses mengikuti status anak hari ini</div>
+            <div className="panel-subtitle">Kamera perjalanan · akses mengikuti status anak hari ini</div>
           </div>
         </header>
         <div className="live-panel-body">
           <ParentLiveVideo
             childName={student.full_name}
-            state={liveVideo.state}
+            tripId={liveVideo.tripId}
+            studentId={student.id}
+            state={livePlayback.state}
             tripLabel={liveVideo.tripLabel}
             busLabel={liveVideo.busLabel}
             streamUrl={liveVideo.streamUrl}
@@ -96,7 +104,7 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
             updatedAt={liveVideo.updatedAt}
             simulated={simulated}
           />
-          <VideoAccessNotice state={liveVideo.state} childName={student.full_name} />
+          <VideoAccessNotice state={livePlayback.state} childName={student.full_name} />
         </div>
       </section>
 
