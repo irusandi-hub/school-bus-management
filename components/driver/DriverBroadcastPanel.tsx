@@ -4,13 +4,15 @@ import { useState } from "react";
 import { TripCameraPublisher } from "./TripCameraPublisher";
 import { CameraDeviceDemo } from "@/components/camera/CameraDeviceDemo";
 import { resolveBroadcastState } from "@/lib/camera/broadcast";
+import { Icon } from "@/components/ui/Icon";
 
 /**
  * Panel siaran kamera pengemudi.
  *
  * Panel dan pilihan sumber selalu terlihat. Status perjalanan hanya
  * menonaktifkan tindakan siaran beserta alasannya; tidak menghapus fitur dari
- * halaman. Uji perangkat tetap terpisah dari siaran perjalanan untuk wali.
+ * halaman. Tampilan dibuat satu baris kendali agar tidak mendominasi area
+ * navigasi dan tindakan siswa.
  */
 export function DriverBroadcastPanel({
   tripStatus,
@@ -24,103 +26,75 @@ export function DriverBroadcastPanel({
   const [consent, setConsent] = useState(false);
   const [source, setSource] = useState<"mobile" | "bus">("mobile");
   const broadcast = resolveBroadcastState({ enabled, tripStatus });
+  const shortStatus =
+    source === "bus"
+      ? "Kamera bus belum terpasang."
+      : broadcast.phase === "active"
+        ? tripId
+          ? "Siap untuk perjalanan ini. Tidak direkam."
+          : "Mulai perjalanan untuk mengaktifkan."
+        : broadcast.phase === "scheduled"
+          ? "Tersedia saat perjalanan berlangsung."
+          : broadcast.phase === "unavailable"
+            ? "Belum tersedia untuk layanan ini."
+            : "Sudah ditutup untuk perjalanan ini.";
 
   return (
-    <section className="panel" aria-label="Siaran kamera pengemudi">
-      <header className="panel-head">
-        <div>
-          <h2 className="panel-title">Siaran kamera</h2>
-          <p className="panel-subtitle">{tripId ? "Siaran perjalanan aktif" : "Kamera perjalanan dan uji perangkat"}</p>
+    <section className={`panel broadcast-compact phase-${broadcast.phase}`} aria-label="Siaran kamera pengemudi">
+      <div className="broadcast-compact-head">
+        <span className="broadcast-compact-icon" aria-hidden="true">
+          <Icon name={broadcast.phase === "unavailable" ? "cameraOff" : "camera"} size={17} />
+        </span>
+        <div className="broadcast-compact-copy">
+          <strong>Siaran kamera</strong>
+          <span role="status">
+            <b>{source === "bus" ? "Kamera bus" : broadcast.title}</b> · {shortStatus}
+          </span>
+          <small className="broadcast-safety-inline">
+            <Icon name="alert" size={11} /> Jangan mengoperasikan HP saat mengemudi. Tidak direkam.
+          </small>
         </div>
-      </header>
-      <div className="form-body">
-        <p className="broadcast-intro">
-          Siapkan saat bus berhenti. Jangan mengoperasikan HP saat mengemudi. Siaran hanya untuk wali yang anaknya masih
-          di bus; tidak direkam.
-        </p>
-
-        <p className={`broadcast-state phase-${broadcast.phase}`} role="status">
-          <strong>{broadcast.title}</strong>
-          <span>{broadcast.detail}</span>
-        </p>
-
-        <fieldset className="broadcast-source">
-          <legend>Pilih sumber siaran</legend>
-          <label>
-            <input
-              type="radio"
-              name="broadcast-source"
-              value="mobile"
-              checked={source === "mobile"}
-              onChange={() => {
+        <div className="broadcast-compact-controls" title={broadcast.detail}>
+          <label className="broadcast-source-select">
+            <span className="driver-visually-hidden">Sumber siaran</span>
+            <select
+              value={source}
+              onChange={(event) => {
                 setConsent(false);
-                setSource("mobile");
+                setSource(event.target.value as "mobile" | "bus");
               }}
-            />
-            <span>
-              <strong>Kamera perangkat seluler</strong>
-              <small>Gunakan kamera HP yang sedang menjalankan aplikasi ini.</small>
-            </span>
+            >
+              <option value="mobile">Kamera HP</option>
+              <option value="bus">Kamera bus</option>
+            </select>
           </label>
-          <label>
-            <input
-              type="radio"
-              name="broadcast-source"
-              value="bus"
-              checked={source === "bus"}
-              onChange={() => {
-                setConsent(false);
-                setSource("bus");
-              }}
-            />
-            <span>
-              <strong>Kamera bus</strong>
-              <small>Perangkat kamera yang terpasang di bus.</small>
-            </span>
-          </label>
-        </fieldset>
-
-        {source === "bus" ? (
-          <div className="broadcast-unavailable" role="status">
-            <strong>Kamera bus belum tersedia</strong>
-            <p>Integrasi kamera bus belum terpasang pada layanan ini. Tidak ada kamera bus yang diaktifkan dari pilihan ini.</p>
-            <button className="btn btn-secondary" type="button" disabled>
-              Mulai siaran kamera bus
-            </button>
-            <small>Hubungi operator atau pengelola sistem bila kamera bus seharusnya sudah aktif.</small>
-          </div>
-        ) : broadcast.canPublish && tripId ? (
-          <TripCameraPublisher tripId={tripId} />
-        ) : broadcast.canPublish && enabled ? (
-          <>
-            <p className="broadcast-note">
-              Mode ini hanya menguji kamera perangkat. Kamera tidak ditautkan ke bus, siswa, atau perjalanan, dan wali
-              belum menerima video otomatis.
-            </p>
-            <label className="broadcast-consent">
-              <input type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} />
-              <span>Saya menguji perangkat sendiri, tanpa anak atau data pribadi di kamera.</span>
-            </label>
-            {consent ? (
-              <CameraDeviceDemo publisherOnly />
-            ) : (
-              <div className="broadcast-unavailable" role="status">
-                <strong>Persetujuan uji perangkat belum dicentang</strong>
-                <p>Centang persetujuan di atas untuk menampilkan kontrol siaran uji.</p>
-                <button className="btn btn-secondary" type="button" disabled>
-                  Mulai siaran uji
-                </button>
-              </div>
-            )}
-          </>
-        ) : (
-          <div className="broadcast-unavailable">
-            <button className="btn btn-secondary" type="button" disabled>
+          {source === "bus" ? (
+            <button className="btn btn-secondary btn-sm" type="button" disabled>
               Mulai siaran
             </button>
-            <small>Tombol aktif kembali saat perjalanan berlangsung.</small>
-          </div>
-        )}
+          ) : broadcast.canPublish && tripId ? (
+            <TripCameraPublisher tripId={tripId} />
+          ) : broadcast.canPublish && enabled ? (
+            <details className="broadcast-demo-compact">
+              <summary className="btn btn-secondary btn-sm">Uji kamera</summary>
+              <div className="broadcast-demo-body">
+                <label className="broadcast-consent">
+                  <input type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} />
+                  <span>Saya menguji perangkat sendiri, tanpa anak atau data pribadi di kamera.</span>
+                </label>
+                {consent ? (
+                  <CameraDeviceDemo publisherOnly />
+                ) : (
+                  <p className="broadcast-note">Centang persetujuan untuk menampilkan kontrol uji kamera.</p>
+                )}
+              </div>
+            </details>
+          ) : (
+            <button className="btn btn-secondary btn-sm" type="button" disabled>
+              Mulai siaran
+            </button>
+          )}
+        </div>
       </div>
     </section>
   );

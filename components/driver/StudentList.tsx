@@ -27,7 +27,8 @@ function statusTone(status: string | null) {
 
 /**
  * Daftar siswa pada halaman operasional, mengikuti urutan rute yang terkunci.
- * Hanya tindakan yang relevan dengan tahap perjalanan yang ditampilkan.
+ * Semua tindakan tetap terlihat; yang belum berlaku dinonaktifkan. Daftar
+ * memiliki area gulir sendiri agar tetap sejajar dengan panel navigasi.
  */
 export function StudentList({
   rows,
@@ -45,8 +46,9 @@ export function StudentList({
   arrived: boolean;
 }) {
   return (
-    <ol className="ops-students">
-      {rows.map((row, index) => {
+    <div className="ops-students-scroll">
+      <ol className="ops-students">
+        {rows.map((row, index) => {
         const actions = studentActionSet({ direction, status: row.status, tripStatus, arrived });
         const actionHint =
           actions.hint ??
@@ -57,7 +59,7 @@ export function StudentList({
             : null);
 
         return (
-          <li className="ops-student" key={row.key} id={`siswa-${row.studentId}`}>
+            <li className="ops-student" key={row.key} id={`siswa-${row.studentId}`}>
             <span className="ops-student-num" aria-label={`Urutan ${index + 1}`}>
               {String(index + 1).padStart(2, "0")}
             </span>
@@ -73,9 +75,12 @@ export function StudentList({
                 {row.admissionsNumber ? ` · ${row.admissionsNumber}` : ""}
               </small>
               {row.address && (
-                <small className="ops-student-addr">
-                  <Icon name="home" size={12} /> {row.address} <span className="ops-data-note">data induk</span>
-                </small>
+                <details className="ops-student-more">
+                  <summary>Alamat</summary>
+                  <small className="ops-student-addr">
+                    <Icon name="home" size={12} /> {row.address} <span className="ops-data-note">data induk</span>
+                  </small>
+                </details>
               )}
               {row.issueNote && (
                 <p className="ops-student-issue">
@@ -172,9 +177,10 @@ export function StudentList({
                 </p>
               )}
             </div>
-          </li>
-        );
-      })}
-    </ol>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
   );
 }
