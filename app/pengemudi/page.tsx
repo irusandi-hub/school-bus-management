@@ -3,10 +3,12 @@ import type { Metadata } from "next";
 import { ConfigNotice, EmptyState, Notice, Pill } from "@/components/admin/ui";
 import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
 import { DriverBroadcastPanel } from "@/components/driver/DriverBroadcastPanel";
-import { cameraDemoEnabled } from "@/lib/camera/demo-policy";
-import { deploymentKind } from "@/lib/dev-open-access";
+import { DriverMapPanel } from "@/components/driver/DriverMapPanel";
 import { DriverOpsHeader } from "@/components/driver/DriverOpsHeader";
 import { FullRouteNavigator } from "@/components/driver/FullRouteNavigator";
+import type { DriverMapStop } from "@/components/driver/DriverRouteMap";
+import { cameraDemoEnabled } from "@/lib/camera/demo-policy";
+import { deploymentKind } from "@/lib/dev-open-access";
 import { OpenSafetyCheckLink } from "@/components/driver/OpenSafetyCheckLink";
 import { StudentList, type StudentListRow } from "@/components/driver/StudentList";
 import { TripClosePanel } from "@/components/driver/TripClosePanel";
@@ -206,6 +208,17 @@ export default async function DriverOperationsPage({
   // Batas tautan mengikuti provider aktif, bukan angka yang ditulis ulang di halaman.
   const fullRoute = buildFullRoute(plan, direction, DEFAULT_NAVIGATION_PROVIDER.maxWaypoints + 1);
   const mapUrl = buildRouteDirectionsUrl(fullRoute.mapStops, plan.origin);
+  const mapStops: DriverMapStop[] = fullRoute.stops.map(({ stop, skipReason }) => ({
+    id: stop.id,
+    order: stop.order,
+    name: stop.name,
+    isSchool: stop.isSchool,
+    latitude: stop.latitude,
+    longitude: stop.longitude,
+    studentCount: stop.students.length,
+    skipped: Boolean(skipReason),
+    skipReason,
+  }));
 
   const studentRows: StudentListRow[] = roster.map((entry) => ({
     key: entry.id,
@@ -413,6 +426,8 @@ export default async function DriverOperationsPage({
             </div>
           </details>
         </section>
+
+        <DriverMapPanel stops={mapStops} />
       </div>
 
       <DriverBroadcastPanel

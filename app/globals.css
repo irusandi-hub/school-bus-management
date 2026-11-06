@@ -1309,6 +1309,46 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
 
 .ops-workspace{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.02fr);gap:8px;align-items:start;margin-bottom:8px}
 .ops-workspace>section{min-width:0;margin-bottom:0}
+
+/* Peta tampilan rute: baris baru setelah dua panel operasional. */
+.ops-map{grid-column:1/-1;display:flex;flex-direction:column;min-width:0;margin-bottom:0;border-radius:13px;overflow:hidden}
+.ops-map-head{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap;padding:8px 10px;border-bottom:1px solid #F3EEE4;min-width:0}
+.ops-map-heading{display:flex;align-items:center;gap:6px;min-width:0}
+.ops-map-icon{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:var(--brand-bg);color:#7A5100;flex-shrink:0}
+.ops-map-heading h2{font:800 11.5px Manrope,sans-serif;line-height:1.2;margin:0;color:var(--ink)}
+.ops-map-heading small{display:block;margin-top:1px;font-size:7.5px;line-height:1.3;color:var(--muted);overflow-wrap:anywhere}
+.ops-map-gps{display:inline-flex;align-items:center;gap:3px;border:1px solid #E8C77B;border-radius:999px;background:#FFF8E3;padding:3px 6px;font-size:7.5px;font-weight:800;line-height:1.2;color:#7A5100;flex-shrink:0}
+.ops-map-gps svg{flex-shrink:0}
+.ops-map-stage{position:relative;height:clamp(220px,32vw,300px);width:100%;max-width:100%;background:#E8EEE6;overflow:hidden}
+.ops-map-canvas{height:100%;width:100%;max-width:100%;background:#E8EEE6;position:relative;z-index:0;isolation:isolate;overflow:hidden}
+.ops-map-canvas.leaflet-container{font-family:'DM Sans',Arial,sans-serif;outline-offset:2px}
+.ops-map-status{position:absolute;inset:0;z-index:1100;display:grid;place-content:center;justify-items:center;gap:3px;padding:14px;text-align:center;background:#F7F9F6E8;color:#5B6B61;pointer-events:none;backdrop-filter:blur(1px)}
+.ops-map-status strong{font:800 10px Manrope,sans-serif;color:var(--ink)}
+.ops-map-status small{max-width:280px;font-size:8px;line-height:1.4}
+.ops-map-status.is-error{background:#FFF8E3F2;color:#7A6330}
+.ops-map-status.is-error strong{color:#7A5100}
+.ops-map-canvas .leaflet-control-attribution{max-width:calc(100% - 8px);padding:2px 4px;border-radius:4px 0 0 0;background:#FFFDF8D9;color:#5F5A50;font-size:7px;line-height:1.3;white-space:normal}
+.ops-map-canvas .leaflet-control-attribution a{color:#4D5F86}
+.ops-map-marker{display:grid;place-items:center;border:2px solid #8A6A24;border-radius:50%;background:#FFFDF8;color:#5D4308;box-shadow:0 2px 7px #2E554433;font:800 10px Manrope,sans-serif}
+.ops-map-marker span{display:block;line-height:1}
+.ops-map-marker.is-school{border-color:#2B2416;background:#FFD670;color:#2B2416}
+.ops-map-marker.is-skipped{border-color:#9C978D;background:#F3F1EC;color:#77726A;opacity:.75}
+.leaflet-tooltip.ops-map-tooltip{max-width:190px;padding:5px 7px;border:1px solid #E5DECF;border-radius:7px;background:#FFFDF9;box-shadow:0 5px 14px #2B24161A;color:#3B3428;white-space:normal;font-size:8px;line-height:1.3}
+.leaflet-tooltip.ops-map-tooltip::before{display:none}
+.ops-map-tooltip-copy strong,.ops-map-tooltip-copy small{display:block}
+.ops-map-tooltip-copy strong{font-size:8.5px;line-height:1.25}
+.ops-map-tooltip-copy small{margin-top:1px;font-size:7.5px;line-height:1.3;color:#7A7468}
+.ops-map-foot{display:flex;align-items:flex-start;justify-content:space-between;gap:4px 10px;flex-wrap:wrap;padding:5px 10px 6px;border-top:1px solid #F3EEE4;background:#FFFCF3;font-size:7.5px;line-height:1.35;color:#6B5A2A}
+.ops-map-foot strong{font-weight:800}
+.ops-map-missing{color:#8A5C00;font-weight:700}
+.ops-map-empty{height:180px;display:grid;place-content:center;justify-items:center;gap:3px;padding:12px;text-align:center;background:#F7F8F5;color:#6F6A60}
+.ops-map-empty strong{font-size:11px;color:var(--ink)}
+.ops-map-empty p{margin:0;font-size:8px;line-height:1.4}
+@media(max-width:759px){
+  .ops-map-head{padding:7px 8px;align-items:flex-start}
+  .ops-map-gps{white-space:normal;max-width:46%;text-align:right}
+  .ops-map-foot{padding:4px 8px 5px;font-size:7px}
+}
 .ops-nav-panel{padding:9px 8px;border-radius:13px}
 .ops-nav-panel .route-head-top{display:flex;align-items:center;justify-content:space-between;gap:5px}
 .ops-panel-eyebrow{display:inline-flex;align-items:center;gap:4px;font-size:7.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#7A6330}
