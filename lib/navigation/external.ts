@@ -27,7 +27,11 @@ export type ExternalNavigationProvider = {
   label: string;
   /** Keterangan singkat yang ditampilkan pada pilihan navigasi. */
   detail: string;
+  /** Jumlah titik antara yang didukung satu tautan rute provider ini. */
+  maxWaypoints: number;
   buildDirectionsUrl: (destination: NavigationDestination) => string | null;
+  /** Rute beberapa titik; provider yang belum mendukungnya boleh tidak mengisi. */
+  buildRouteUrl?: (stops: Coordinate[], origin?: Coordinate | null) => string | null;
 };
 
 /** Angka valid: bukan NaN/Infinity dan berada pada rentang koordinat bumi. */
@@ -54,6 +58,7 @@ export const GOOGLE_MAPS_PROVIDER: ExternalNavigationProvider = {
   id: "google-maps",
   label: "Google Maps",
   detail: "Membuka aplikasi peta bila tersedia, atau Google Maps di peramban.",
+  maxWaypoints: 3,
   buildDirectionsUrl: (destination) => {
     if (!hasValidCoordinates(destination)) return null;
     const params = new URLSearchParams({
@@ -63,6 +68,7 @@ export const GOOGLE_MAPS_PROVIDER: ExternalNavigationProvider = {
     });
     return `https://www.google.com/maps/dir/?${params.toString()}`;
   },
+  buildRouteUrl: (stops, origin) => buildMultiStopDirectionsUrl(stops, origin),
 };
 
 /**
@@ -89,6 +95,64 @@ export function buildDirectionsUrl(
   const provider = findNavigationProvider(providerId);
   if (!provider) return null;
   return provider.buildDirectionsUrl(destination);
+}
+
+/**
+ * Satu tautan rute lengkap dari provider aktif. Mengganti provider navigasi
+ * cukup dengan menambah entri di EXTERNAL_NAVIGATION_PROVIDERS; alur halaman
+ * pengemudi tidak perlu berubah.
+ */
+export function buildRouteDirectionsUrl(
+  stops: Coordinate[],
+  origin?: Coordinate | null,
+  providerId: NavigationProviderId = DEFAULT_NAVIGATION_PROVIDER.id,
+): string | null {
+  const provider = findNavigationProvider(providerId);
+  if (!provider?.buildRouteUrl) return null;
+  return provider.buildRouteUrl(stops, origin);
+}
+
+/**
+ * Batas rute demo pada satu tautan Google Maps: 3 titik antara + 1 tujuan.
+ *
+ * Google Maps sebenarnya menerima hingga 9 waypoint, tetapi hanya 3 yang
+ * diproses pada peramban ponsel. Untuk demo yang dijalankan dari ponsel, batas
+ * aman 3 waypoint dipakai dan titik yang tidak terkirim selalu disebutkan.
+ */
+export const GOOGLE_MAPS_MAX_WAYPOINTS = 3;
+/** Tujuan akhir tetap disertakan, sehingga satu tautan memuat maksimal 4 titik. */
+export const GOOGLE_MAPS_MAX_STOPS = GOOGLE_MAPS_MAX_WAYPOINTS + 1;
+
+/**
+ * Satu tautan rute melewati beberapa titik sesuai urutan yang diberikan.
+ * Hanya dibuat bila SEMUA titik punya koordinat valid dan jumlahnya masih dalam
+ * batas; pemanggil wajib menampilkan titik yang belum terkirim.
+ */
+export function buildMultiStopDirectionsUrl(
+  stops: Coordinate[],
+  origin?: Coordinate | null,
+): string | null {
+  if (stops.length === 0 || stops.length > GOOGLE_MAPS_MAX_STOPS) return null;
+  if (!stops.every(hasValidCoordinates)) return null;
+
+  const destination = stops[stops.length - 1];
+  const params = new URLSearchParams({
+    api: "1",
+    destination: `${destination.latitude},${destination.longitude}`,
+    travelmode: "driving",
+  });
+
+  if (origin && hasValidCoordinates(origin)) {
+    params.set("origin", `${origin.latitude},${origin.longitude}`);
+  }
+
+  const waypoints = stops
+    .slice(0, -1)
+    .map((stop) => `${stop.latitude},${stop.longitude}`)
+    .join("|");
+  if (waypoints) params.set("waypoints", waypoints);
+
+  return `https://www.google.com/maps/dir/?${params.toString()}`;
 }
 
 /** Google Maps menerima maksimal 9 titik perantara; pengemudi hanya butuh satu tujuan. */

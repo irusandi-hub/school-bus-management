@@ -43,8 +43,8 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
   if (!child) notFound();
 
   const liveEvents = await loadTodayStudentEvents(supabase, [child]);
-  const liveVideo = buildChildLiveVideo(child, liveEvents);
   const simulated = isDevOpenAccess();
+  const liveVideo = buildChildLiveVideo(child, liveEvents, { simulated });
 
   const routeIds = child.placements.map((placement) => placement.routeId);
   const [trips, eventsResult] = await Promise.all([

@@ -1,10 +1,10 @@
 # Review: demo siaran kamera HP pengemudi (bukan integrasi wali operasional)
 
-Base: feature/driver-navigation-parent-live-video
+Base: develop
 Head: feat/driver-phone-live-20261105
 
 ## Lingkup
-- Kontrol mulai/hentikan pada detail tugas pengemudi, dengan konfirmasi objek uji dan gate perjalanan.
+- Kontrol mulai/hentikan pada halaman operasional `/pengemudi`, hanya saat perjalanan `in_progress`, dengan konfirmasi objek uji dan gate perjalanan.
 - Pilihan kamera HP atau placeholder kamera bus yang membutuhkan setting operator.
 - getUserMedia video-only, RTCPeerConnection, addTrack, pertukaran offer/answer privat secara manual, penerimaan ontrack pada /demo-kamera.
 - Stop, unmount, pergantian sumber, background, kegagalan peer dan batas 10 menit melepas media.
@@ -20,4 +20,14 @@ Head: feat/driver-phone-live-20261105
 - Belum deploy. Jangan merge sebelum review; PR ini hanya demo pengujian perangkat, bukan fitur produksi selesai.
 
 ## Cara uji lokal
-Set CAMERA_DEVICE_DEMO=1 pada development yang menggunakan data simulasi. Buka detail tugas pengemudi, mulai perjalanan, pilih kamera seluler, konfirmasi objek uji, lalu Mulai siaran uji. Buka /demo-kamera pada browser lain dengan peran penonton. Tukar offer/answer secara privat dan tekan Sambungkan pada pengirim. Untuk HP gunakan HTTPS; jangan membuka kamera nyata melalui preview publik tanpa pengamanan akses. Produksi tetap tertutup.
+Set CAMERA_DEVICE_DEMO=1 pada development yang menggunakan data simulasi. Buka `/pengemudi`, mulai perjalanan, pilih kamera seluler, konfirmasi objek uji, lalu Mulai siaran uji. Buka /demo-kamera pada browser lain dengan peran penonton. Tukar offer/answer secara privat dan tekan Sambungkan pada pengirim. Untuk HP gunakan HTTPS; jangan membuka kamera nyata melalui preview publik tanpa pengamanan akses. Produksi tetap tertutup.
+
+## Revisi titik pemasangan PR #21 — 2026-11-06
+- Disinkronkan dengan develop `61b41f1`; halaman tugas lama tetap redirect ke `/pengemudi?tugas=<id>`.
+- Panel dipasang di `app/pengemudi/page.tsx`, hanya untuk tugas terpilih dengan status `in_progress` dan `cameraDemoEnabled(...)` aktif. Key perjalanan mereset state saat perjalanan berubah.
+- `ParentLiveVideo.tsx`, layout wali, dan CSS dipertahankan identik dengan develop. Tidak ada integrasi wali/signaling otomatis atau perubahan database, RLS, autentikasi, dan alur siswa dalam revisi ini.
+- Verifikasi aktual: 111 tes/27 suite lulus, `npm run typecheck` lulus, `npm run build` lulus.
+- Browser Chromium 390px: panel tidak ada saat scheduled, muncul setelah Mulai perjalanan; pilihan bus nonaktif; consent; offer/answer manual pada dua context dengan kamera sintetis menghasilkan playback WebRTC; Stop melepas media; URL lama redirect ke halaman operasional. Demo flag off dan runtime production menolak halaman demo (404) dan tidak menampilkan panel. Production memakai gate akses normal, bukan fixture database produksi.
+- Screenshot lokal diperiksa: `tmp/camera-browser/pr21-active.png`. Skrip lokal: `tmp/camera-browser/pr21-placement.cjs` (artefak lokal tidak dikomit).
+- Pengujian awal browser gagal karena pemeriksaan URL dilakukan sebelum redirect streaming selesai; setelah menunggu URL, pengujian ulang exit 0. Tidak ada perubahan aplikasi untuk kegagalan timing tes tersebut.
+- Belum diuji HP fisik, jaringan seluler, CI GitHub atau deployment Vercel. Tidak merge/deploy.

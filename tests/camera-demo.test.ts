@@ -19,3 +19,16 @@ describe("isolated camera device demo", () => {
     }
   });
 });
+
+// Guard the actual route placement as well as the policy: the legacy URL redirects.
+describe("driver camera route placement", () => {
+  it("mounts only on the operational page behind active-trip and demo gates", async () => {
+    const { readFile } = await import("node:fs/promises");
+    const page = await readFile(new URL("../app/pengemudi/page.tsx", import.meta.url), "utf8");
+    assert.match(page, /const inProgress = trip\?\.status === "in_progress"/);
+    assert.match(page, /inProgress && cameraDemoEnabled\(deploymentKind\(\), process\.env\.CAMERA_DEVICE_DEMO\) && \(\s*<DriverBroadcastPanel key=\{trip!\.id\} inProgress=\{inProgress\}/);
+    const legacy = await readFile(new URL("../app/pengemudi/tugas/[id]/page.tsx", import.meta.url), "utf8");
+    assert.match(legacy, /redirect\(`/);
+    assert.doesNotMatch(legacy, /DriverBroadcastPanel/);
+  });
+});

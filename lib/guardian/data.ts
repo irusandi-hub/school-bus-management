@@ -18,6 +18,9 @@ export type TodayTrip = {
   status: string;
   busCode: string | null;
   plateNumber: string | null;
+  busCapacity: number | null;
+  /** Penugasan sudah memiliki pengemudi; nama pengemudi tidak dibagikan ke portal wali. */
+  driverAssigned: boolean;
   startedAt: string | null;
   arrivedAt: string | null;
   completedAt: string | null;
@@ -78,14 +81,15 @@ export async function loadChildren(supabase: ServerSupabase): Promise<ChildOverv
         const { data: assignmentRows } = await supabase
           .from("trip_assignments")
           .select(
-            "route_id, service_date, buses(fleet_code, plate_number), trips(id, status, started_at, arrived_at, completed_at)",
+            "route_id, driver_id, service_date, buses(fleet_code, plate_number, capacity), trips(id, status, started_at, arrived_at, completed_at)",
           )
           .in("route_id", routeIds)
           .eq("service_date", today);
 
         todayTrips = ((assignmentRows ?? []) as unknown as {
           route_id: string;
-          buses: { fleet_code: string; plate_number: string | null } | null;
+          driver_id: string | null;
+          buses: { fleet_code: string; plate_number: string | null; capacity: number } | null;
           trips: {
             id: string;
             status: string;
@@ -103,6 +107,8 @@ export async function loadChildren(supabase: ServerSupabase): Promise<ChildOverv
             status: trip?.status ?? "scheduled",
             busCode: row.buses?.fleet_code ?? null,
             plateNumber: row.buses?.plate_number ?? null,
+            busCapacity: row.buses?.capacity ?? null,
+            driverAssigned: Boolean(row.driver_id),
             startedAt: trip?.started_at ?? null,
             arrivedAt: trip?.arrived_at ?? null,
             completedAt: trip?.completed_at ?? null,
@@ -130,6 +136,9 @@ export function liveEventKey(tripId: string, studentId: string) {
  * Catatan kehadiran terbaru per siswa pada perjalanan hari ini.
  * Kunci peta memakai liveEventKey(tripId, studentId) agar setiap anak memakai
  * perjalanannya sendiri, termasuk ketika satu akun memiliki beberapa anak.
+ *
+ * Hanya event kehadiran yang diambil. Event "issue" adalah catatan kendala dan
+ * tidak boleh menimpa status naik/turun anak atau membuka akses kamera.
  */
 export async function loadTodayStudentEvents(
   supabase: ServerSupabase,
@@ -147,6 +156,7 @@ export async function loadTodayStudentEvents(
     .select("trip_id, student_id, event_type, occurred_at")
     .in("trip_id", tripIds)
     .in("student_id", studentIds)
+    .in("event_type", ["boarded", "dropped_off", "absent"])
     .order("occurred_at", { ascending: false });
 
   for (const row of (data ?? []) as unknown as {

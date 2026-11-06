@@ -1,23 +1,69 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { ConfigNotice, EmptyState, Notice, TripStatusPill } from "@/components/admin/ui";
-import { NavigationDestinationCard } from "@/components/driver/NavigationDestinationCard";
+import { ConfigNotice, EmptyState, Notice, Pill } from "@/components/admin/ui";
+import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
+import { DriverBroadcastPanel } from "@/components/driver/DriverBroadcastPanel";
+import { cameraDemoEnabled } from "@/lib/camera/demo-policy";
+import { deploymentKind } from "@/lib/dev-open-access";
+import { DriverOpsHeader } from "@/components/driver/DriverOpsHeader";
+import { FullRouteNavigator } from "@/components/driver/FullRouteNavigator";
+import { StudentList, type StudentListRow } from "@/components/driver/StudentList";
+import { TripClosePanel } from "@/components/driver/TripClosePanel";
 import { Icon } from "@/components/ui/Icon";
+import { firstParam, noticeFromParams } from "@/lib/admin/query";
 import { requireDriver } from "@/lib/auth";
-import { buildNavigationPlan } from "@/lib/driver/navigation";
+import { buildFullRoute, buildNavigationPlan } from "@/lib/driver/navigation";
+import { DEFAULT_NAVIGATION_PROVIDER, buildRouteDirectionsUrl } from "@/lib/navigation/external";
 import { createServerSupabase } from "@/lib/supabase/server";
-import type { NavigationRosterEntry } from "@/lib/driver/navigation";
-import type { RouteStopRow, TripAssignmentRow } from "@/lib/types";
-import { formatDate, formatTime, routeDirectionLabel } from "@/lib/validation";
+import type { RouteStopRow, TripEventRow } from "@/lib/types";
+import { formatDate, formatDateTime, formatTime, routeDirectionLabel } from "@/lib/validation";
+import { startTrip } from "./actions";
 
-export const metadata: Metadata = { title: "Tugas Hari Ini | Pengemudi" };
+export const metadata: Metadata = { title: "Operasional Hari Ini | Pengemudi" };
 
 function today() {
   const now = new Date();
   return new Date(now.getTime() - now.getTimezoneOffset() * 60_000).toISOString().slice(0, 10);
 }
 
-export default async function DriverHomePage() {
+type RosterEntry = {
+  id: string;
+  student_id: string;
+  stop_id: string;
+  direction: string;
+  route_stops: { stop_name: string; stop_order: number } | null;
+  students: {
+    full_name: string;
+    admissions_number: string;
+    home_address: string | null;
+    pickup_notes: string | null;
+  } | null;
+};
+
+type AssignmentView = {
+  id: string;
+  route_id: string;
+  service_date: string;
+  routes: { id: string; route_name: string; school_name: string; direction: string } | null;
+  buses: { fleet_code: string; plate_number: string | null; capacity: number } | null;
+  trips: {
+    id: string;
+    status: string;
+    started_at: string | null;
+    arrived_at: string | null;
+    completed_at: string | null;
+    safety_checked_at?: string | null;
+    safety_check_notes?: string | null;
+    student_count_confirmed?: number | null;
+  }[];
+};
+
+export default async function DriverOperationsPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const query = await searchParams;
   const access = await requireDriver();
   if (access.status === "unconfigured") return <ConfigNotice />;
 
@@ -28,200 +74,334 @@ export default async function DriverHomePage() {
   const { data, error } = await supabase
     .from("trip_assignments")
     .select(
-      "id, route_id, service_date, routes(route_name, school_name, direction), buses(fleet_code, plate_number, capacity), trips(id, status, started_at, completed_at, arrived_at)",
+      "id, route_id, service_date, routes(id, route_name, school_name, direction), buses(fleet_code, plate_number, capacity), trips(id, status, started_at, arrived_at, completed_at, safety_checked_at, safety_check_notes, student_count_confirmed)",
     )
     .eq("driver_id", access.driver.id)
     .eq("service_date", date)
     .order("service_date", { ascending: true });
 
-  const assignments = (data ?? []) as unknown as TripAssignmentRow[];
+  const assignments = (data ?? []) as unknown as AssignmentView[];
+  const notice = noticeFromParams(query);
+  const requestedId = firstParam(query.tugas);
 
-  // Data titik dan kehadiran untuk tombol navigasi pada setiap kartu tugas.
-  const routeIds = Array.from(new Set(assignments.map((assignment) => assignment.route_id).filter(Boolean)));
-  const tripIds = assignments.flatMap((assignment) => (assignment.trips ?? []).map((trip) => trip.id));
-  const emptyResult = Promise.resolve({ data: [] as unknown[], error: null });
+  // Satu tugas aktif dipilih; tugas lain tetap terjangkau lewat pemilih ringkas.
+  const activeAssignment = assignments.find((assignment) => assignment.trips?.[0]?.status === "in_progress");
+  const scheduledAssignment = assignments.find((assignment) => assignment.trips?.[0]?.status === "scheduled");
+  const selected =
+    assignments.find((assignment) => assignment.id === requestedId) ??
+    activeAssignment ??
+    scheduledAssignment ??
+    assignments[0] ??
+    null;
 
-  const [stopsResult, rosterResult, eventsResult] = await Promise.all([
-    routeIds.length > 0
-      ? supabase
-          .from("route_stops")
-          .select("id, route_id, stop_order, stop_name, latitude, longitude, is_school")
-          .in("route_id", routeIds)
-          .order("stop_order", { ascending: true })
-      : emptyResult,
-    routeIds.length > 0
-      ? supabase
-          .from("student_route_stops")
-          .select("student_id, route_id, stop_id, students(full_name, home_address, pickup_notes)")
-          .in("route_id", routeIds)
-          .eq("active", true)
-      : emptyResult,
-    tripIds.length > 0
-      ? supabase
-          .from("trip_student_events")
-          .select("trip_id, student_id, event_type, occurred_at")
-          .in("trip_id", tripIds)
-      : emptyResult,
-  ]);
-
-  const stopsByRoute = new Map<string, RouteStopRow[]>();
-  for (const stop of (stopsResult.data ?? []) as unknown as (RouteStopRow & { route_id: string })[]) {
-    const list = stopsByRoute.get(stop.route_id) ?? [];
-    list.push(stop);
-    stopsByRoute.set(stop.route_id, list);
-  }
-
-  const rosterByRoute = new Map<string, NavigationRosterEntry[]>();
-  for (const entry of (rosterResult.data ?? []) as unknown as (NavigationRosterEntry & { route_id: string })[]) {
-    const list = rosterByRoute.get(entry.route_id) ?? [];
-    list.push(entry);
-    rosterByRoute.set(entry.route_id, list);
-  }
-
-  const eventsByTrip = new Map<string, { student_id: string; event_type: string; occurred_at: string }[]>();
-  for (const event of (eventsResult.data ?? []) as unknown as {
-    trip_id: string;
-    student_id: string;
-    event_type: string;
-    occurred_at: string;
-  }[]) {
-    const list = eventsByTrip.get(event.trip_id) ?? [];
-    list.push(event);
-    eventsByTrip.set(event.trip_id, list);
-  }
-
-  const active = assignments.filter((assignment) => assignment.trips?.[0]?.status === "in_progress");
-  const finished = assignments.filter((assignment) => assignment.trips?.[0]?.status === "completed");
-  const nextTask = active[0] ?? assignments.find((assignment) => !assignment.trips?.[0]) ?? assignments[0];
-
-  return (
-    <>
-      <section className="driver-hero-card">
-        <div>
-          <p className="eyebrow light">TUGAS HARI INI · {formatDate(date)}</p>
-          <h1>Selamat bertugas, {access.driver.full_name || "Pengemudi"}.</h1>
-          <p>
-            {assignments.length === 0
-              ? "Belum ada tugas untuk hari ini. Hubungi operator bila Anda seharusnya bertugas."
-              : `${assignments.length} tugas terjadwal. Buka tugas untuk melihat urutan titik jemput dan mencatat kehadiran siswa.`}
-          </p>
-        </div>
-        <div className="driver-hero-meta">
-          <span>Perjalanan berlangsung</span>
-          <strong>{active[0]?.routes?.route_name ?? "Tidak ada"}</strong>
-        </div>
-      </section>
-
-      {error && <Notice kind="error">Tugas hari ini belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
-
-      <section className="driver-summary" aria-label="Ringkasan tugas hari ini">
-        <div>
-          <span>Total tugas</span>
-          <strong>{assignments.length}</strong>
-          <small>Penugasan yang ditujukan kepada Anda</small>
-        </div>
-        <div>
-          <span>Berlangsung</span>
-          <strong>{active.length}</strong>
-          <small>Sedang dijalankan</small>
-        </div>
-        <div>
-          <span>Selesai</span>
-          <strong>{finished.length}</strong>
-          <small>Sudah ditutup</small>
-        </div>
-      </section>
-
-      <section className="panel driver-panel">
-        <header className="panel-head">
-          <div>
-            <h2 className="panel-title">Daftar tugas</h2>
-            <div className="panel-subtitle">Hanya penugasan yang ditujukan kepada Anda</div>
+  if (!selected) {
+    return (
+      <>
+        <section className="ops-head">
+          <div className="ops-head-top">
+            <span className="ops-avatar" aria-hidden="true">
+              {(access.driver.full_name || "P").slice(0, 1).toUpperCase()}
+            </span>
+            <div className="ops-ident">
+              <strong>{access.driver.full_name || "Pengemudi"}</strong>
+              <small>ID {access.driver.id.slice(0, 8).toUpperCase()} · Akun aktif</small>
+            </div>
           </div>
-          <span className="inline-meta">
-            <Icon name="clock" size={13} />
-            Status dari catatan perjalanan
-          </span>
-        </header>
-
-        {assignments.length === 0 ? (
+          <p className="ops-empty-copy">
+            Tidak ada penugasan untuk {formatDate(date)}. Hubungi operator bila Anda seharusnya bertugas.
+          </p>
+        </section>
+        {error && <Notice kind="error">Tugas hari ini belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
+        <section className="panel">
           <EmptyState
             icon="inbox"
             title="Belum ada tugas hari ini"
             detail="Tugas dibuat oleh Admin Pusat atau operator. Tidak ada jadwal contoh yang ditampilkan."
           />
-        ) : (
-          <ul className="task-card-grid">
-            {assignments.map((assignment) => {
-              const trip = assignment.trips?.[0];
-              const isNext = assignment.id === nextTask?.id && trip?.status !== "completed";
-              const plan = buildNavigationPlan({
-                stops: stopsByRoute.get(assignment.route_id) ?? [],
-                roster: rosterByRoute.get(assignment.route_id) ?? [],
-                events: trip ? (eventsByTrip.get(trip.id) ?? []) : [],
-                trip: trip
-                  ? {
-                      status: trip.status,
-                      started_at: trip.started_at,
-                      arrived_at: trip.arrived_at,
-                      completed_at: trip.completed_at,
-                    }
-                  : null,
-                direction: assignment.routes?.direction ?? "morning",
-              });
-              return (
-                <li className="task-card" key={assignment.id}>
-                  <div className="task-card-head">
-                    <div>
-                      <strong>{assignment.routes?.route_name ?? "Rute"}</strong>
-                      <small>
-                        {assignment.routes?.school_name} ·{" "}
-                        {routeDirectionLabel(assignment.routes?.direction ?? "")}
-                      </small>
-                    </div>
-                    <TripStatusPill status={trip?.status} />
-                  </div>
+        </section>
+        <p className="ops-foot-link">
+          <Link href="/pengemudi/riwayat">
+            <Icon name="trip" size={14} /> Lihat riwayat perjalanan
+          </Link>
+        </p>
+      </>
+    );
+  }
 
-                  <div className="task-card-meta">
-                    <span>
-                      <Icon name="bus" size={13} />
-                      {assignment.buses?.fleet_code ?? "Bus belum ditetapkan"}
-                    </span>
-                    <span>
-                      <Icon name="pin" size={13} />
-                      {assignment.buses?.capacity ?? 0} kursi
-                    </span>
-                    {trip?.started_at && (
-                      <span>
-                        <Icon name="clock" size={13} />
-                        Mulai {formatTime(trip.started_at)}
-                      </span>
-                    )}
-                  </div>
+  const routeId = selected.routes?.id ?? "";
+  const direction = selected.routes?.direction ?? "morning";
+  const trip = selected.trips?.[0] ?? null;
 
-                  <NavigationDestinationCard plan={plan} compact />
+  const emptyResult = Promise.resolve({ data: [] as unknown[], error: null });
+  const [stopsResult, rosterResult, eventsResult] = await Promise.all([
+    routeId
+      ? supabase
+          .from("route_stops")
+          .select("id, route_id, stop_order, stop_name, latitude, longitude, is_school")
+          .eq("route_id", routeId)
+          .order("stop_order", { ascending: true })
+      : emptyResult,
+    routeId
+      ? supabase
+          .from("student_route_stops")
+          .select(
+            "id, student_id, stop_id, direction, route_stops(stop_name, stop_order), students(full_name, admissions_number, home_address, pickup_notes)",
+          )
+          .eq("route_id", routeId)
+          .eq("direction", direction)
+          .eq("active", true)
+      : emptyResult,
+    trip
+      ? supabase
+          .from("trip_student_events")
+          .select("id, trip_id, student_id, event_type, occurred_at, notes")
+          .eq("trip_id", trip.id)
+          .order("occurred_at", { ascending: false })
+      : emptyResult,
+  ]);
 
-                  <Link
-                    className={`btn ${isNext ? "btn-primary" : "btn-secondary"} btn-lg`}
-                    href={`/pengemudi/tugas/${assignment.id}`}
-                  >
-                    <Icon name={trip?.status === "in_progress" ? "trip" : "arrowRight"} size={16} />
-                    {trip?.status === "in_progress"
-                      ? "Lanjutkan perjalanan"
-                      : trip?.status === "completed"
-                        ? "Lihat ringkasan tugas"
-                        : "Buka tugas"}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
+  const stops = (stopsResult.data ?? []) as unknown as RouteStopRow[];
+  const roster = ((rosterResult.data ?? []) as unknown as RosterEntry[]).sort(
+    (a, b) => (a.route_stops?.stop_order ?? 0) - (b.route_stops?.stop_order ?? 0),
+  );
+  const events = (eventsResult.data ?? []) as unknown as TripEventRow[];
+
+  // Catatan terbaru per siswa; kendala (issue) tidak menimpa status kehadiran.
+  const latestEvent = new Map<string, TripEventRow>();
+  const latestStatus = new Map<string, string>();
+  const latestIssue = new Map<string, string>();
+  for (const event of events) {
+    if (!latestEvent.has(event.student_id)) latestEvent.set(event.student_id, event);
+    if (event.event_type === "issue") {
+      if (event.notes && !latestIssue.has(event.student_id)) latestIssue.set(event.student_id, event.notes);
+      continue;
+    }
+    if (!latestStatus.has(event.student_id)) latestStatus.set(event.student_id, event.event_type);
+  }
+
+  const plan = buildNavigationPlan({
+    stops,
+    roster: roster.map((entry) => ({
+      student_id: entry.student_id,
+      stop_id: entry.stop_id,
+      students: entry.students,
+    })),
+    events: events.map((event) => ({
+      student_id: event.student_id,
+      event_type: event.event_type,
+      occurred_at: event.occurred_at,
+    })),
+    trip: trip
+      ? {
+          status: trip.status,
+          started_at: trip.started_at,
+          arrived_at: trip.arrived_at,
+          completed_at: trip.completed_at,
+        }
+      : null,
+    direction,
+  });
+
+  // Batas tautan mengikuti provider aktif, bukan angka yang ditulis ulang di halaman.
+  const fullRoute = buildFullRoute(plan, direction, DEFAULT_NAVIGATION_PROVIDER.maxWaypoints + 1);
+  const mapUrl = buildRouteDirectionsUrl(fullRoute.mapStops, plan.origin);
+
+  const studentRows: StudentListRow[] = roster.map((entry) => ({
+    key: entry.id,
+    studentId: entry.student_id,
+    name: entry.students?.full_name ?? "Siswa",
+    admissionsNumber: entry.students?.admissions_number ?? null,
+    stopOrder: entry.route_stops?.stop_order ?? 0,
+    stopName: entry.route_stops?.stop_name ?? "Titik jemput",
+    address: entry.students?.home_address ?? null,
+    status: latestStatus.get(entry.student_id) ?? null,
+    issueNote: latestIssue.get(entry.student_id) ?? null,
+  }));
+
+  const onboard = studentRows.filter((row) => row.status === "boarded").length;
+  const recorded = studentRows.filter((row) => latestEvent.has(row.studentId)).length;
+  const unrecorded = studentRows.filter((row) => !latestEvent.has(row.studentId));
+  const unclearStudents = studentRows.filter((row) => {
+    const status = latestEvent.get(row.studentId)?.event_type;
+    return !status || status === "boarded";
+  }).length;
+
+  const inProgress = trip?.status === "in_progress";
+  const completed = trip?.status === "completed";
+  const canStart = !trip || trip.status === "scheduled";
+  const canEndTrip = Boolean(trip?.arrived_at) && unrecorded.length === 0 && !rosterResult.error && !eventsResult.error;
+  const issueNotes = studentRows.filter((row) => row.issueNote);
+
+  return (
+    <>
+      <h1 className="ops-title">Operasional hari ini</h1>
+
+      {assignments.length > 1 && (
+        <nav className="ops-switch" aria-label="Pilih tugas hari ini">
+          <span>Pilih tugas</span>
+          {assignments.map((assignment) => {
+            const assignmentTrip = assignment.trips?.[0];
+            return (
+              <Link
+                key={assignment.id}
+                href={`/pengemudi?tugas=${assignment.id}`}
+                aria-current={assignment.id === selected.id ? "page" : undefined}
+              >
+                {assignment.routes?.route_name ?? "Rute"} · {routeDirectionLabel(assignment.routes?.direction ?? "")} ·{" "}
+                {assignmentTrip?.status === "in_progress"
+                  ? "Berlangsung"
+                  : assignmentTrip?.status === "completed"
+                    ? "Selesai"
+                    : "Dijadwalkan"}
+              </Link>
+            );
+          })}
+        </nav>
+      )}
+
+      {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
+      {error && <Notice kind="error">Tugas hari ini belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
+      {stopsResult.error && <Notice kind="error">Urutan titik jemput belum dapat dimuat.</Notice>}
+      {rosterResult.error && <Notice kind="error">Daftar siswa belum dapat dimuat.</Notice>}
+      {eventsResult.error && <Notice kind="error">Status siswa belum dapat dimuat.</Notice>}
+
+      <DriverOpsHeader
+        driverName={access.driver.full_name}
+        driverId={access.driver.id}
+        routeName={selected.routes?.route_name ?? "Rute"}
+        schoolName={selected.routes?.school_name ?? ""}
+        direction={direction}
+        serviceDate={selected.service_date}
+        tripStatus={trip?.status ?? "scheduled"}
+        startedAt={trip?.started_at ?? null}
+        arrivedAt={trip?.arrived_at ?? null}
+        completedAt={trip?.completed_at ?? null}
+        fleetCode={selected.buses?.fleet_code ?? ""}
+        plateNumber={selected.buses?.plate_number ?? null}
+        capacity={selected.buses?.capacity ?? 0}
+        totalStudents={studentRows.length}
+        onboardStudents={onboard}
+      >
+        {canStart && (
+          <form action={startTrip} className="ops-start">
+            <input type="hidden" name="assignment_id" value={selected.id} />
+            <ConfirmSubmit
+              className="btn btn-secondary"
+              message="Mulai perjalanan untuk tugas ini? Waktu mulai akan dicatat."
+              pendingLabel="Memulai…"
+            >
+              <Icon name="trip" size={16} /> Mulai perjalanan
+            </ConfirmSubmit>
+            <small>Rute di bawah dapat dilihat sebelum perjalanan dimulai.</small>
+          </form>
         )}
+      </DriverOpsHeader>
+
+      {inProgress && cameraDemoEnabled(deploymentKind(), process.env.CAMERA_DEVICE_DEMO) && (
+        <DriverBroadcastPanel key={trip!.id} inProgress={inProgress} />
+      )}
+
+      <FullRouteNavigator
+        plan={plan}
+        route={fullRoute}
+        mapUrl={mapUrl}
+        direction={direction}
+        tripStatus={trip?.status ?? "scheduled"}
+      />
+
+      <section className="panel ops-manifest" aria-label="Daftar siswa dan tindakan">
+        <header className="panel-head">
+          <div>
+            <h2 className="panel-title">Siswa &amp; tindakan</h2>
+            <div className="panel-subtitle">
+              Urutan mengikuti rute yang {plan.started ? "terkunci" : "ditetapkan sistem"} · satu tombol per siswa
+            </div>
+          </div>
+          <Pill tone={studentRows.length > 0 ? "info" : "warning"}>{studentRows.length} siswa</Pill>
+        </header>
+
+        {studentRows.length > 0 && (
+          <div className="manifest-progress">
+            <div className={`progress ${recorded === studentRows.length ? "done" : ""}`} aria-hidden="true">
+              <span
+                style={{ width: `${studentRows.length === 0 ? 0 : Math.round((recorded / studentRows.length) * 100)}%` }}
+              />
+            </div>
+            <span>
+              {recorded} dari {studentRows.length} siswa tercatat
+            </span>
+          </div>
+        )}
+
+        {studentRows.length === 0 ? (
+          <div className="table-empty">
+            <strong>Belum ada siswa pada rute ini</strong>
+            <p>
+              Admin Pusat belum menempatkan siswa pada titik rute ini. Jangan mencatat siswa yang tidak terdaftar.
+            </p>
+          </div>
+        ) : (
+          <StudentList
+            rows={studentRows}
+            tripId={trip?.id ?? null}
+            assignmentId={selected.id}
+            direction={direction}
+            tripStatus={trip?.status ?? "scheduled"}
+            arrived={Boolean(trip?.arrived_at)}
+          />
+        )}
+
+        <details className="ops-review">
+          <summary>
+            <span>
+              <Icon name="report" size={15} /> Catatan &amp; review tugas
+            </span>
+            <small>{issueNotes.length > 0 ? `${issueNotes.length} kendala tercatat` : "Belum ada kendala"}</small>
+          </summary>
+        <div className="ops-review-body">
+          {trip?.safety_check_notes && (
+            <p>
+              <strong>Catatan pemeriksaan:</strong> {trip.safety_check_notes}
+            </p>
+          )}
+          {issueNotes.length > 0 ? (
+            <ul>
+              {issueNotes.map((row) => (
+                <li key={row.key}>
+                  <strong>{row.name}</strong> — {row.issueNote}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>Belum ada catatan kendala pada perjalanan ini.</p>
+          )}
+          <p className="ops-review-meta">
+            {formatDate(selected.service_date)} · {routeDirectionLabel(direction)} · Bus{" "}
+            {selected.buses?.fleet_code ?? "—"}
+            {trip?.started_at ? ` · Mulai ${formatTime(trip.started_at)}` : ""}
+            {trip?.completed_at ? ` · Selesai ${formatDateTime(trip.completed_at)}` : ""}
+          </p>
+          <Link className="ops-review-link" href="/pengemudi/riwayat">
+            Riwayat perjalanan <Icon name="arrowRight" size={13} />
+          </Link>
+        </div>
+        </details>
       </section>
 
+      {(inProgress || completed) && (
+        <TripClosePanel
+          assignmentId={selected.id}
+          trip={trip}
+          canEndTrip={canEndTrip}
+          unrecordedNames={unrecorded.map((row) => row.name)}
+          unclearStudents={unclearStudents}
+          totalStudents={studentRows.length}
+        />
+      )}
+
       <Notice kind="info">
-        Tombol navigasi memakai koordinat titik jemput yang tersimpan dan membuka aplikasi peta di luar aplikasi ini.
-        Posisi bus dan kamera belum aktif, sehingga tidak ada pelacakan langsung pada halaman ini.
+        Navigasi membuka satu rute berisi titik yang tersimpan. Posisi bus dan kamera belum aktif, dan kembali dari
+        aplikasi peta tidak mengubah status siswa atau menyelesaikan titik pemberhentian.
       </Notice>
     </>
   );
