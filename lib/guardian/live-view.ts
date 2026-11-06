@@ -4,13 +4,17 @@
  * Dipakai server: status anak, perjalanan hari ini, dan sumber siaran hanya
  * dikirim ketika akses memang berlaku. URL siaran tidak pernah dibuat di sini;
  * nilainya berasal dari konfigurasi backend (lihat live-stream.ts).
+ *
+ * Pada mode simulasi, sumber siaran tidak pernah dibaca atau dikirim. Dengan
+ * begitu data contoh tidak dapat membuka siaran LIVE, meskipun konfigurasi
+ * stream kebetulan berisi kunci untuk siswa/perjalanan simulasi tersebut.
  */
 
-import type { ChildOverview, StudentTripEvent } from "@/lib/guardian/data";
-import { liveEventKey } from "@/lib/guardian/data";
-import { resolveLiveVideoAccess, selectLiveTrip, type LiveVideoState } from "@/lib/guardian/live";
-import { resolveLiveStreamSource } from "@/lib/guardian/live-stream";
-import { formatTime, routeDirectionLabel, tripStatusLabel } from "@/lib/validation";
+import type { ChildOverview, StudentTripEvent } from "./data.ts";
+import { liveEventKey } from "./data.ts";
+import { resolveLiveVideoAccess, selectLiveTrip, type LiveVideoState } from "./live.ts";
+import { resolveLiveStreamSource } from "./live-stream.ts";
+import { formatTime, routeDirectionLabel, tripStatusLabel } from "../validation.ts";
 
 export type ChildLiveVideoView = {
   state: LiveVideoState;
@@ -24,12 +28,14 @@ export type ChildLiveVideoView = {
 export function buildChildLiveVideo(
   child: ChildOverview,
   events: Map<string, StudentTripEvent>,
+  options: { simulated?: boolean } = {},
 ): ChildLiveVideoView {
   const trip = selectLiveTrip(child.todayTrips);
   const event = trip?.tripId ? events.get(liveEventKey(trip.tripId, child.student.id)) ?? null : null;
-  const stream = trip?.tripId
-    ? resolveLiveStreamSource({ studentId: child.student.id, tripId: trip.tripId })
-    : null;
+  const stream =
+    !options.simulated && trip?.tripId
+      ? resolveLiveStreamSource({ studentId: child.student.id, tripId: trip.tripId })
+      : null;
 
   const state = resolveLiveVideoAccess({
     trip: trip
