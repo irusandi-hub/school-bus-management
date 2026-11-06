@@ -7,6 +7,7 @@ import { cameraDemoEnabled } from "@/lib/camera/demo-policy";
 import { deploymentKind } from "@/lib/dev-open-access";
 import { DriverOpsHeader } from "@/components/driver/DriverOpsHeader";
 import { FullRouteNavigator } from "@/components/driver/FullRouteNavigator";
+import { OpenSafetyCheckLink } from "@/components/driver/OpenSafetyCheckLink";
 import { StudentList, type StudentListRow } from "@/components/driver/StudentList";
 import { TripClosePanel } from "@/components/driver/TripClosePanel";
 import { Icon } from "@/components/ui/Icon";
@@ -303,9 +304,7 @@ export default async function DriverOperationsPage({
           </form>
         ) : inProgress ? (
           <div className="ops-start">
-            <a className="btn ops-primary-action" href="#perjalanan-keselamatan">
-              <Icon name="shield" size={16} /> Akhiri perjalanan
-            </a>
+            <OpenSafetyCheckLink />
             <small>Lengkapi pemeriksaan keselamatan.</small>
           </div>
         ) : (
