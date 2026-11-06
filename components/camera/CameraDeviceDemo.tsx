@@ -54,7 +54,7 @@ export function CameraDeviceDemo({ publisherOnly = false }: { publisherOnly?: bo
   }, [stop]);
 
   const createPeer = () => {
-    if (!window.isSecureContext || !window.RTCPeerConnection) throw new Error("Gunakan HTTPS dan browser yang mendukung WebRTC.");
+    if (!window.isSecureContext || !window.RTCPeerConnection) throw new Error("Gunakan koneksi aman (HTTPS) dan browser yang mendukung panggilan video.");
     const pc = new RTCPeerConnection({ iceServers: [{ urls: "stun:stun.cloudflare.com:3478" }] });
     peer.current = pc;
     setActive(true);
@@ -62,7 +62,7 @@ export function CameraDeviceDemo({ publisherOnly = false }: { publisherOnly?: bo
     pc.onconnectionstatechange = () => {
       if (peer.current !== pc) return;
       if (["failed", "disconnected", "closed"].includes(pc.connectionState)) {
-        stop("Koneksi terputus. Kamera dihentikan. Buat kode baru; jaringan seluler tertentu memerlukan TURN yang belum tersedia.");
+        stop("Koneksi terputus. Kamera dihentikan. Buat kode baru; sebagian jaringan seluler belum mendukung koneksi ini.");
       } else if (pc.connectionState === "connected") {
         setStatus("Koneksi perangkat tersambung. LIVE hanya muncul setelah video diputar.");
       }
@@ -79,7 +79,7 @@ export function CameraDeviceDemo({ publisherOnly = false }: { publisherOnly?: bo
   const exportDescription = async (pc: RTCPeerConnection) => {
     // Non-trickle: pengguna cukup menukar satu paket SDP per arah.
     await new Promise<void>((resolve, reject) => {
-      const timeout = setTimeout(() => { cleanup(); reject(new Error("Pengumpulan jaringan melewati 15 detik. Coba lagi.")); }, 15000);
+      const timeout = setTimeout(() => { cleanup(); reject(new Error("Penyiapan koneksi melebihi 15 detik. Coba lagi.")); }, 15000);
       const changed = () => {
         if (pc.signalingState === "closed") { cleanup(); reject(new Error("Sesi sudah ditutup.")); }
         else if (pc.iceGatheringState === "complete") { cleanup(); resolve(); }
@@ -104,7 +104,7 @@ export function CameraDeviceDemo({ publisherOnly = false }: { publisherOnly?: bo
     try {
       if (action === "offer") {
         const pc = createPeer();
-        if (!navigator.mediaDevices?.getUserMedia) throw new Error("Kamera tidak tersedia. Gunakan HTTPS dan izinkan akses kamera.");
+        if (!navigator.mediaDevices?.getUserMedia) throw new Error("Kamera tidak tersedia. Gunakan koneksi aman (HTTPS) dan izinkan akses kamera.");
         const stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: { ideal: "environment" }, width: { ideal: 640 }, height: { ideal: 360 }, frameRate: { ideal: 15, max: 15 } } });
         if (generation.current !== version || peer.current !== pc) { stream.getTracks().forEach((track) => track.stop()); return; }
         media.current = stream;
@@ -112,18 +112,18 @@ export function CameraDeviceDemo({ publisherOnly = false }: { publisherOnly?: bo
         if (video.current) { video.current.srcObject = stream; void video.current.play().catch(() => {}); }
         await pc.setLocalDescription(await pc.createOffer());
         await exportDescription(pc);
-        setPhase("offered"); setStatus("Kamera lokal aktif, belum tersambung. Kirim kode offer secara privat ke penguji penonton.");
+        setPhase("offered"); setStatus("Kamera lokal aktif, belum tersambung. Kirim kode koneksi secara privat ke penguji penonton.");
       } else if (action === "answer") {
         const description = parseDemoDescription(input, "offer");
         const pc = createPeer();
         await pc.setRemoteDescription(description);
         await pc.setLocalDescription(await pc.createAnswer());
         await exportDescription(pc);
-        setPhase("answered"); setStatus("Kirim kode answer secara privat kembali ke pengirim kamera.");
+        setPhase("answered"); setStatus("Kirim kode balasan secara privat kembali ke pengirim kamera.");
       } else {
         const description = parseDemoDescription(input, "answer");
         const pc = peer.current;
-        if (!pc || pc.signalingState !== "have-local-offer") throw new Error("Mulai kamera dan buat offer baru dahulu.");
+        if (!pc || pc.signalingState !== "have-local-offer") throw new Error("Mulai kamera dan buat kode koneksi baru terlebih dahulu.");
         await pc.setRemoteDescription(description);
         setPhase("connected"); setStatus("Menghubungkan perangkat…"); setInput(""); setOutput("");
       }
@@ -135,7 +135,7 @@ export function CameraDeviceDemo({ publisherOnly = false }: { publisherOnly?: bo
   return <section aria-label={publisherOnly ? "Siaran uji pengemudi" : "Demo kamera perangkat"} style={{ maxWidth: 760, margin: "auto", padding: publisherOnly ? 16 : 24, minWidth: 0 }}>
     {publisherOnly ? <h3>Kamera HP · siaran uji</h3> : <h1>Demo kamera HP · satu sumber</h1>}
     <p><strong>Khusus pengujian perangkat, bukan kamera perjalanan atau akses wali.</strong> Gunakan objek uji; jangan arahkan kamera ke anak atau data pribadi.</p>
-    <p>Gratis tanpa akun penyedia: video langsung antarperangkat, STUN Cloudflare, tanpa TURN/SFU dan tanpa rekaman. Koneksi tidak dijamin pada semua jaringan. Kedua halaman harus tetap terbuka; pindah aplikasi/layar terkunci menghentikan sesi. Batas sesi 10 menit.</p>
+    <p>Video langsung antarperangkat tanpa akun layanan tambahan dan tanpa rekaman. Koneksi tidak dijamin pada semua jaringan. Kedua halaman harus tetap terbuka; pindah aplikasi atau mengunci layar menghentikan sesi. Batas sesi 10 menit.</p>
     {!publisherOnly && <label>Peran perangkat <select value={role} disabled={active || busy} onChange={(event) => { stop(); setRole(event.target.value as typeof role); }}>
       <option value="publisher">HP pengirim kamera</option><option value="viewer">Perangkat penonton</option>
     </select></label>}
@@ -143,18 +143,18 @@ export function CameraDeviceDemo({ publisherOnly = false }: { publisherOnly?: bo
     <p>{active && role === "publisher" ? "● Sesi kamera aktif — hentikan setelah pengujian." : ""} {playing && role === "viewer" ? "● LIVE · video sedang diputar" : ""}</p>
     <video ref={video} style={{ width: "100%", background: "#111", aspectRatio: "16/9" }} controls autoPlay muted playsInline
       onPlaying={() => setPlaying(true)} onWaiting={() => setPlaying(false)} onStalled={() => setPlaying(false)} onPause={() => setPlaying(false)} onEnded={() => stop("Video berakhir.")} onError={() => stop("Pemutaran video gagal.")} />
-    <p>1. Pengirim menekan Mulai, lalu menyalin offer. 2. Penonton menempel offer dan membuat answer. 3. Pengirim menempel answer dan menekan Sambungkan. Tukarkan kode lewat kanal privat pada perangkat lain agar halaman kamera tetap aktif.</p>
-    {role === "publisher" && phase === "idle" && <button disabled={busy} onClick={() => void run("offer")}>{publisherOnly ? "Mulai siaran uji" : "Mulai kamera & buat offer"}</button>}
+    <p>1. Pengirim menekan Mulai, lalu menyalin kode koneksi. 2. Penonton menempel kode koneksi dan membuat kode balasan. 3. Pengirim menempel kode balasan dan menekan Sambungkan. Tukarkan kode lewat kanal privat pada perangkat lain agar halaman kamera tetap aktif.</p>
+    {role === "publisher" && phase === "idle" && <button disabled={busy} onClick={() => void run("offer")}>{publisherOnly ? "Mulai siaran uji" : "Mulai kamera & buat kode"}</button>}
     {(role === "viewer" && phase === "idle" || role === "publisher" && phase === "offered") && <div>
-      <label htmlFor="signal-input">Kode {role === "viewer" ? "offer dari pengirim" : "answer dari penonton"}</label>
+      <label htmlFor="signal-input">Kode {role === "viewer" ? "koneksi dari pengirim" : "balasan dari penonton"}</label>
       <textarea id="signal-input" value={input} maxLength={MAX_SIGNAL_LENGTH} rows={4} style={{ width: "100%" }} autoComplete="off" spellCheck={false} onChange={(event) => setInput(event.target.value)} />
-      <button disabled={busy || !input.trim()} onClick={() => void run(role === "viewer" ? "answer" : "connect")}>{role === "viewer" ? "Buat answer" : "Sambungkan"}</button>
+      <button disabled={busy || !input.trim()} onClick={() => void run(role === "viewer" ? "answer" : "connect")}>{role === "viewer" ? "Buat kode balasan" : "Sambungkan"}</button>
     </div>}
-    {output && <div><label htmlFor="signal-output">Kode {role === "publisher" ? "offer" : "answer"} — rahasiakan, mengandung metadata jaringan</label>
+    {output && <div><label htmlFor="signal-output">Kode {role === "publisher" ? "koneksi" : "balasan"} — rahasiakan, hanya untuk penguji</label>
       <textarea id="signal-output" readOnly autoComplete="off" spellCheck={false} value={output} rows={5} style={{ width: "100%" }} onFocus={(event) => event.target.select()} />
       <button onClick={() => void navigator.clipboard?.writeText(output).then(() => setStatus("Kode disalin. Bagikan hanya kepada penguji yang diizinkan.")).catch(() => setStatus("Pilih dan salin kode secara manual."))}>Salin kode</button>
     </div>}
     <p><button disabled={!active && !busy} onClick={() => stop()}>{publisherOnly ? "Hentikan siaran" : "Hentikan / cabut koneksi"}</button></p>
-    <p>Hentikan menutup peer dan melepas kamera lokal. Penerima mendeteksi putusnya peer; waktu deteksi jaringan belum diukur. Ini bukan bukti pencabutan akses wali oleh server. Tidak ada kode/SDP dikirim ke server aplikasi atau disimpan aplikasi.</p>
+    <p>Hentikan menutup koneksi dan melepas kamera lokal. Perangkat penonton akan kehilangan koneksi saat siaran dihentikan. Ini bukan bukti pencabutan akses wali oleh server. Tidak ada kode koneksi yang dikirim ke server aplikasi atau disimpan aplikasi.</p>
   </section>;
 }

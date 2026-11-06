@@ -186,7 +186,8 @@ export default async function AdminHomePage() {
       </section>
 
       <Notice kind="info">
-        Posisi bus langsung (GPS), kamera di dalam bus, dan estimasi kedatangan belum tersedia. Halaman ini tidak
+        Posisi bus langsung (GPS) dan estimasi kedatangan belum tersedia. Kamera bus belum terintegrasi; kamera
+        perjalanan hanya dibuka pengemudi pada perjalanan aktif dan untuk wali yang berhak. Halaman ini tidak
         menampilkan lokasi atau status perjalanan yang tidak benar-benar tercatat di database.
       </Notice>
     </>

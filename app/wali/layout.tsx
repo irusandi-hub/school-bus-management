@@ -50,7 +50,7 @@ export default async function GuardianLayout({ children }: { children: React.Rea
 
       <footer className="page-footer">
         <span>School Bus Management · Portal Wali</span>
-        <span>Hanya anak yang terhubung dan aktif · GPS &amp; kamera belum aktif</span>
+        <span>Hanya anak yang terhubung dan aktif · GPS belum aktif</span>
       </footer>
 
       <BottomNav items={guardianBottomNav} rootHref="/wali" ariaLabel="Navigasi seluler wali" />

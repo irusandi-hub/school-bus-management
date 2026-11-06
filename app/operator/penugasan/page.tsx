@@ -211,6 +211,11 @@ export default async function OperatorAssignmentsPage() {
               action={saveOperatorAssignment}
               fields={fields}
               submitLabel="Simpan penugasan"
+              disabledReason={
+                ready
+                  ? undefined
+                  : "Penugasan dapat dibuat setelah ada satu rute aktif dari Admin Pusat, satu pengemudi, dan satu bus organisasi Anda. Lengkapi data tersebut terlebih dahulu."
+              }
               note="Penugasan tidak membuat perjalanan sebelum pengemudi memulainya dari area pengemudi."
             />
           </div>

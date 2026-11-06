@@ -77,9 +77,12 @@ export default async function ReportsPage() {
               <small>Rute dan penugasan dikelola Admin; perjalanan dijalankan pengemudi yang ditugaskan.</small>
             </li>
             <li>
-              <strong>GPS langsung &amp; kamera</strong>
+              <strong>GPS langsung &amp; kamera bus</strong>
               <span>—</span>
-              <small>Belum terintegrasi. Tidak ada lokasi atau tautan kamera yang dibuat-buat.</small>
+              <small>
+                GPS dan kamera bus belum terintegrasi. Siaran kamera perjalanan mengikuti status dan izin pengemudi,
+                bukan laporan yang dibuat-buat.
+              </small>
             </li>
             <li>
               <strong>Ekspor laporan</strong>

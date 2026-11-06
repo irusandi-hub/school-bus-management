@@ -158,15 +158,15 @@ export default function AccessGatePage() {
           <div>
             <strong>Yang belum tersedia</strong>
             <p>
-              Posisi bus langsung (GPS), kamera di dalam bus, dan integrasi perangkat belum aktif. Modul tersebut
-              tidak ditampilkan sebagai fitur yang berjalan dan tidak menggunakan data contoh.
+              Posisi bus langsung (GPS) dan kamera bus belum aktif. Kamera perjalanan hanya dibuka pengemudi selama
+              perjalanan aktif dan untuk wali yang berhak; tidak ada lokasi atau siaran contoh yang ditampilkan.
             </p>
           </div>
         </section>
 
         <footer className="gate-footer">
           <span>School Bus Management</span>
-          <span>Modul data &amp; perjalanan terbatas · GPS dan kamera belum aktif</span>
+          <span>Modul data &amp; perjalanan terbatas · GPS dan kamera bus belum aktif</span>
         </footer>
       </div>
     </main>

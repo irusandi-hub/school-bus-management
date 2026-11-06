@@ -107,8 +107,8 @@ export default async function TripsPage() {
       </section>
 
       <Notice kind="info">
-        Posisi GPS, kamera, dan integrasi perangkat belum tersedia. Halaman ini tidak menampilkan lokasi atau status
-        perangkat yang tidak benar-benar tercatat.
+        Posisi GPS dan kamera bus belum tersedia. Siaran kamera perjalanan dikelola pengemudi dan tidak ditampilkan di
+        halaman ini; halaman ini tidak menampilkan lokasi atau status perangkat yang tidak benar-benar tercatat.
       </Notice>
     </>
   );

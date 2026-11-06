@@ -23,6 +23,12 @@ describe("aturan mengakhiri perjalanan", () => {
     assert.match(result.problems[0], /belum berjalan atau sudah selesai/);
   });
 
+  it("menolak perjalanan yang sudah selesai", () => {
+    const result = evaluateTripEnd({ ...base, status: "completed" });
+    assert.equal(result.ok, false);
+    assert.match(result.problems[0], /belum berjalan atau sudah selesai/);
+  });
+
   it("menolak bila kedatangan di sekolah belum dikonfirmasi", () => {
     const result = evaluateTripEnd({ ...base, arrivedAt: null });
     assert.equal(result.ok, false);

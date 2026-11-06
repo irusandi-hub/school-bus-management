@@ -84,7 +84,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
         <footer className="page-footer">
           <span>School Bus Management · Admin Pusat</span>
-          <span>Data induk &amp; operasional · GPS dan kamera belum aktif</span>
+          <span>Data induk &amp; operasional · GPS belum aktif · kamera mengikuti perjalanan</span>
         </footer>
       </main>
 

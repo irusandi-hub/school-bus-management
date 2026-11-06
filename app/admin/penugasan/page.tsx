@@ -178,6 +178,11 @@ export default async function AssignmentsPage() {
               action={saveAssignment}
               fields={fields}
               submitLabel="Simpan penugasan"
+              disabledReason={
+                ready
+                  ? undefined
+                  : "Penugasan dapat dibuat setelah tersedia minimal satu rute aktif, satu pengemudi aktif, dan satu bus aktif. Lengkapi data tersebut terlebih dahulu."
+              }
               note="Pastikan pengemudi dan bus aktif. Penugasan tidak membuat data perjalanan sebelum pengemudi menekan Mulai perjalanan."
             />
           </div>

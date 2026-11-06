@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { ChildBusLocationPanel } from "@/components/guardian/ChildBusLocationPanel";
 import { ParentLiveVideo } from "@/components/guardian/ParentLiveVideo";
@@ -77,6 +78,10 @@ export function ChildOverviewCard({
                 <Icon name="school" size={14} />
                 {school}
               </span>
+              <Link className="guardian-child-detail" href={`/wali/anak/${student.id}`}>
+                Detail anak
+                <Icon name="arrowRight" size={13} />
+              </Link>
             </div>
           </header>
 

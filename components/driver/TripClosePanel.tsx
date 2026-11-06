@@ -35,6 +35,7 @@ export function TripClosePanel({
 }) {
   const inProgress = trip?.status === "in_progress";
   const completed = trip?.status === "completed";
+  const cancelled = trip?.status === "cancelled";
 
   return (
     <section className="panel ops-close" aria-label="Perjalanan dan keselamatan">
@@ -44,32 +45,39 @@ export function TripClosePanel({
           <div className="panel-subtitle">
             {completed
               ? "Perjalanan sudah ditutup dan tersimpan sebagai riwayat."
-              : "Catat semua siswa, lalu selesaikan pemeriksaan sebelum menutup perjalanan."}
+              : cancelled
+                ? "Perjalanan ini dibatalkan; tindakan mulai dan penutupan tidak tersedia."
+                : "Catat semua siswa, lalu selesaikan pemeriksaan sebelum menutup perjalanan."}
           </div>
         </div>
       </header>
 
       <div className="task-action-body">
-        {trip && trip.status !== "scheduled" && (
-          <dl className="task-times">
-            <div>
-              <dt>Mulai</dt>
-              <dd>{formatTime(trip.started_at)}</dd>
-            </div>
-            <div>
-              <dt>Tiba di sekolah</dt>
-              <dd>{trip.arrived_at ? formatTime(trip.arrived_at) : "Belum dikonfirmasi"}</dd>
-            </div>
-            <div>
-              <dt>Selesai</dt>
-              <dd>{trip.completed_at ? formatTime(trip.completed_at) : "—"}</dd>
-            </div>
-          </dl>
-        )}
+        <dl className="task-times">
+          <div>
+            <dt>Mulai</dt>
+            <dd>{trip?.started_at ? formatTime(trip.started_at) : "Belum dimulai"}</dd>
+          </div>
+          <div>
+            <dt>Tiba di sekolah</dt>
+            <dd>{trip?.arrived_at ? formatTime(trip.arrived_at) : "Belum dikonfirmasi"}</dd>
+          </div>
+          <div>
+            <dt>Selesai</dt>
+            <dd>{trip?.completed_at ? formatTime(trip.completed_at) : "—"}</dd>
+          </div>
+        </dl>
 
         {inProgress && trip && (
           <div className="task-action-row">
-            {!trip.arrived_at && (
+            {trip.arrived_at ? (
+              <div className="arrival-confirmed">
+                <button className="btn btn-secondary" type="button" disabled>
+                  Konfirmasi tiba di sekolah
+                </button>
+                <small>Kedatangan sudah dicatat pukul {formatTime(trip.arrived_at)}.</small>
+              </div>
+            ) : (
               <form action={confirmArrival}>
                 <input type="hidden" name="trip_id" value={trip.id} />
                 <input type="hidden" name="assignment_id" value={assignmentId} />
@@ -148,14 +156,48 @@ export function TripClosePanel({
         )}
 
         {completed && trip && (
-          <p className="task-completed">
-            Perjalanan sudah selesai pada {formatTime(trip.completed_at)}. Catatan kehadiran tersimpan sebagai riwayat
-            dan tidak dapat diubah lagi.
-            {trip.safety_checked_at && <> Pemeriksaan keselamatan dicatat {formatTime(trip.safety_checked_at)}</>}
-            {typeof trip.student_count_confirmed === "number" && (
-              <> untuk {trip.student_count_confirmed} siswa pada rute ini.</>
-            )}
-          </p>
+          <>
+            <p className="task-completed">
+              Perjalanan sudah selesai pada {formatTime(trip.completed_at)}. Catatan kehadiran tersimpan sebagai riwayat
+              dan tidak dapat diubah lagi.
+              {trip.safety_checked_at && <> Pemeriksaan keselamatan dicatat {formatTime(trip.safety_checked_at)}</>}
+              {typeof trip.student_count_confirmed === "number" && (
+                <> untuk {trip.student_count_confirmed} siswa pada rute ini.</>
+              )}
+            </p>
+            <div className="task-action-row task-action-row-ended">
+              <button className="btn btn-secondary" type="button" disabled>
+                Konfirmasi tiba di sekolah
+              </button>
+              <button className="btn btn-primary btn-lg" type="button" disabled>
+                Akhiri perjalanan
+              </button>
+              <p className="safety-blocked">
+                Kedua tindakan sudah ditutup karena perjalanan selesai. Perjalanan berikutnya mengikuti penugasan baru.
+              </p>
+            </div>
+          </>
+        )}
+
+        {!inProgress && !completed && (
+          <div className="task-action-row task-action-row-ended">
+            <button className="btn btn-secondary" type="button" disabled>
+              Konfirmasi tiba di sekolah
+            </button>
+            <button className="btn btn-primary btn-lg" type="button" disabled>
+              Akhiri perjalanan
+            </button>
+            <p className="safety-blocked">
+              {cancelled ? (
+                "Perjalanan dibatalkan. Tidak ada kedatangan atau penutupan yang dapat dicatat untuk perjalanan ini."
+              ) : (
+                <>
+                  Perjalanan belum dimulai. Tekan <strong>Mulai perjalanan</strong> di bagian atas sebelum mencatat
+                  kedatangan atau mengakhiri perjalanan.
+                </>
+              )}
+            </p>
+          </div>
         )}
       </div>
     </section>

@@ -159,6 +159,11 @@ export default async function RoutesPage({
               fields={fields}
               hidden={editing ? { id: editing.id } : undefined}
               submitLabel={editing ? "Simpan perubahan" : "Tambah rute"}
+              disabledReason={
+                schools.length === 0
+                  ? "Rute dapat dibuat setelah ada minimal satu sekolah aktif. Tambahkan sekolah terlebih dahulu; formulir ini tetap tersedia untuk ditinjau."
+                  : undefined
+              }
               secondary={editing ? { href: "/admin/rute", label: "Batalkan perubahan" } : undefined}
               note="Rute baru belum memiliki titik jemput. Buka halaman rute untuk menambahkan urutan titik dan menempatkan siswa."
             />

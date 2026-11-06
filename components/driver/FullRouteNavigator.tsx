@@ -48,9 +48,15 @@ export function FullRouteNavigator({
       </header>
 
       {completed ? (
-        <p className="route-closed">
-          <Icon name="check" size={16} /> Perjalanan sudah ditutup. Navigasi rute tidak dibuka lagi.
-        </p>
+        <button className="route-cta route-cta-disabled" type="button" disabled>
+          <span className="route-cta-icon" aria-hidden="true">
+            <Icon name="check" size={26} />
+          </span>
+          <span className="route-cta-copy">
+            <strong>Buka Navigasi Rute</strong>
+            <small>Perjalanan sudah selesai. Navigasi hanya tersedia selama perjalanan berlangsung.</small>
+          </span>
+        </button>
       ) : mapUrl ? (
         <a className="route-cta" href={mapUrl} target="_blank" rel="noopener noreferrer">
           <span className="route-cta-icon" aria-hidden="true">
@@ -66,19 +72,19 @@ export function FullRouteNavigator({
           <Icon name="arrowRight" size={20} />
         </a>
       ) : (
-        <div className="route-cta route-cta-disabled" role="status">
+        <button className="route-cta route-cta-disabled" type="button" disabled>
           <span className="route-cta-icon" aria-hidden="true">
             <Icon name="gpsOff" size={26} />
           </span>
           <span className="route-cta-copy">
-            <strong>Navigasi rute belum dapat dibuka</strong>
+            <strong>Buka Navigasi Rute</strong>
             <small>
               {activeCount === 0
-                ? "Tidak ada titik yang masih perlu dikunjungi."
-                : "Titik yang tersisa belum memiliki koordinat tersimpan."}
+                ? "Tidak ada titik yang masih perlu dikunjungi pada rute ini."
+                : "Titik yang tersisa belum memiliki koordinat tersimpan. Minta Admin Pusat melengkapi koordinat."}
             </small>
           </span>
-        </div>
+        </button>
       )}
 
       <div className="route-summary">

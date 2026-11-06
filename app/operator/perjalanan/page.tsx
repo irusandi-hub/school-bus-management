@@ -25,7 +25,7 @@ export default async function OperatorTripsPage() {
     <>
       <PageHeader
         title="Perjalanan armada Anda"
-        description="Hanya perjalanan yang memakai bus organisasi Anda yang ditampilkan. Posisi GPS dan kamera belum tersedia."
+        description="Hanya perjalanan yang memakai bus organisasi Anda yang ditampilkan. Posisi GPS dan kamera bus belum tersedia; kamera perjalanan tidak ditampilkan di sini."
         actions={<Pill tone={active > 0 ? "info" : "neutral"}>{active} berlangsung</Pill>}
       />
 
