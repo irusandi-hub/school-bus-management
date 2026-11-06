@@ -239,3 +239,9 @@ Ketentuan ini mengubah urutan implementasi, bukan standar keamanan produksi:
 - Seluruh pemeriksaan server/database dan autentikasi final tetap wajib dipulihkan sebelum rilis production.
 
 Catatan status: bagian README lain yang menyebut autentikasi wajib di semua area menggambarkan rancangan integrasi akhir, bukan perilaku yang harus dipaksakan selama tahap UI terbuka ini. README perlu diselaraskan lagi setelah implementasi mode development selesai.
+
+### Uji kamera HP gratis (terisolasi)
+
+Demo satu sumber/satu penonton tersedia secara opt-in pada development/preview: set `CAMERA_DEVICE_DEMO=1`, buka `/demo-kamera`. Signaling ditukar manual secara privat, video WebRTC langsung memakai STUN gratis, tanpa TURN/SFU/provider key. Ini **bukan integrasi kamera wali** dan tidak boleh dipakai dengan anak nyata. Produksi tetap 404. Petunjuk, batas jaringan dan checklist perangkat: [CAMERA_PHONE_DEMO](docs/CAMERA_PHONE_DEMO.md).
+
+Kontrol **Mulai/Hentikan siaran uji** tersedia pada halaman operasional `/pengemudi` untuk tugas terpilih yang sedang berlangsung bila `CAMERA_DEVICE_DEMO=1` di development/preview. Konfirmasi objek uji wajib; penonton masih menukar kode privat di `/demo-kamera`, bukan akses otomatis wali. Produksi tetap tidak menampilkan kontrol. Lihat `docs/CAMERA_PHONE_DEMO.md`.

@@ -2,6 +2,9 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { ConfigNotice, EmptyState, Notice, Pill } from "@/components/admin/ui";
 import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
+import { DriverBroadcastPanel } from "@/components/driver/DriverBroadcastPanel";
+import { cameraDemoEnabled } from "@/lib/camera/demo-policy";
+import { deploymentKind } from "@/lib/dev-open-access";
 import { DriverOpsHeader } from "@/components/driver/DriverOpsHeader";
 import { FullRouteNavigator } from "@/components/driver/FullRouteNavigator";
 import { StudentList, type StudentListRow } from "@/components/driver/StudentList";
@@ -293,6 +296,10 @@ export default async function DriverOperationsPage({
           </form>
         )}
       </DriverOpsHeader>
+
+      {inProgress && cameraDemoEnabled(deploymentKind(), process.env.CAMERA_DEVICE_DEMO) && (
+        <DriverBroadcastPanel key={trip!.id} inProgress={inProgress} />
+      )}
 
       <FullRouteNavigator
         plan={plan}
