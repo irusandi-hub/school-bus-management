@@ -150,6 +150,8 @@ export function ChildOverviewCard({
         <div className="guardian-child-feature">
           <ParentLiveVideo
             childName={student.full_name}
+            tripId={liveVideo.tripId}
+            studentId={student.id}
             state={liveVideo.state}
             tripLabel={liveVideo.tripLabel}
             busLabel={liveVideo.busLabel}

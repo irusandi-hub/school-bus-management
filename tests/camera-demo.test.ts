@@ -26,7 +26,8 @@ describe("driver camera route placement", () => {
     const { readFile } = await import("node:fs/promises");
     const page = await readFile(new URL("../app/pengemudi/page.tsx", import.meta.url), "utf8");
     assert.match(page, /const inProgress = trip\?\.status === "in_progress"/);
-    assert.match(page, /inProgress && cameraDemoEnabled\(deploymentKind\(\), process\.env\.CAMERA_DEVICE_DEMO\) && \(\s*<DriverBroadcastPanel key=\{trip!\.id\} inProgress=\{inProgress\}/);
+    assert.match(page, /inProgress && \(process.env.NEXT_PUBLIC_TRIP_CAMERA_ENABLED === "1" \|\| cameraDemoEnabled/);
+    assert.match(page, /tripId=\{process.env.NEXT_PUBLIC_TRIP_CAMERA_ENABLED === "1" \? trip!.id : undefined\}/);
     const legacy = await readFile(new URL("../app/pengemudi/tugas/[id]/page.tsx", import.meta.url), "utf8");
     assert.match(legacy, /redirect\(`/);
     assert.doesNotMatch(legacy, /DriverBroadcastPanel/);
