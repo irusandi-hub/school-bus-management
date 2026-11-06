@@ -18,6 +18,7 @@ import { formatTime, routeDirectionLabel, tripStatusLabel } from "../validation.
 
 export type ChildLiveVideoView = {
   state: LiveVideoState;
+  tripId?: string | null;
   tripLabel: string;
   busLabel: string | null;
   updatedAt: string | null;
@@ -60,6 +61,7 @@ export function buildChildLiveVideo(
 
   return {
     state,
+    tripId: options.simulated ? null : trip?.tripId,
     tripLabel,
     busLabel: trip?.busCode ? `Bus ${trip.busCode}` : null,
     updatedAt: updatedAt ? formatTime(updatedAt) : null,

@@ -297,8 +297,8 @@ export default async function DriverOperationsPage({
         )}
       </DriverOpsHeader>
 
-      {inProgress && cameraDemoEnabled(deploymentKind(), process.env.CAMERA_DEVICE_DEMO) && (
-        <DriverBroadcastPanel key={trip!.id} inProgress={inProgress} />
+      {inProgress && (process.env.NEXT_PUBLIC_TRIP_CAMERA_ENABLED === "1" || cameraDemoEnabled(deploymentKind(), process.env.CAMERA_DEVICE_DEMO)) && (
+        <DriverBroadcastPanel key={trip!.id} inProgress={inProgress} tripId={process.env.NEXT_PUBLIC_TRIP_CAMERA_ENABLED === "1" ? trip!.id : undefined} />
       )}
 
       <FullRouteNavigator

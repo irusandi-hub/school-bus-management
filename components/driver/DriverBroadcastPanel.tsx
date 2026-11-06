@@ -1,16 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { TripCameraPublisher } from "./TripCameraPublisher";
 import { CameraDeviceDemo } from "@/components/camera/CameraDeviceDemo";
 
 /** Opt-in device test only. Never publishes to a simulated trip or guardian. */
-export function DriverBroadcastPanel({ inProgress }: { inProgress: boolean }) {
+export function DriverBroadcastPanel({ inProgress, tripId }: { inProgress: boolean; tripId?: string }) {
   const [consent, setConsent] = useState(false);
   const [source, setSource] = useState<"mobile" | "bus">("mobile");
   return <section className="panel" aria-label="Siaran kamera pengemudi">
     <header className="panel-head"><div>
       <h2 className="panel-title">Siaran kamera</h2>
-      <p className="panel-subtitle">Uji perangkat · satu penonton · bukan siaran wali</p>
+      <p className="panel-subtitle">{tripId ? "Siaran perjalanan aktif" : "Uji perangkat · bukan siaran wali"}</p>
     </div></header>
     <div style={{ padding: 16 }}>
       <p>Siapkan saat bus berhenti. Jangan mengoperasikan HP saat mengemudi.</p>
@@ -25,7 +26,7 @@ export function DriverBroadcastPanel({ inProgress }: { inProgress: boolean }) {
           <span><strong>Kamera bus</strong><br /><small>Perangkat kamera yang terpasang di bus · pengembangan berikutnya.</small></span>
         </label>
       </fieldset>
-      {source === "bus" ? <div role="status" style={{ padding: 16, background: "var(--paper)", borderRadius: 12 }}>
+      {source === "mobile" && tripId && inProgress ? <TripCameraPublisher tripId={tripId} /> : source === "bus" ? <div role="status" style={{ padding: 16, background: "var(--paper)", borderRadius: 12 }}>
         <strong>Kamera bus belum tersedia</strong>
         <p>Fitur ini memerlukan setting oleh operator layanan aplikasi.</p>
         <p>Integrasi kamera bus disiapkan untuk pengembangan berikutnya. Tidak ada kamera yang diaktifkan dari pilihan ini.</p>
