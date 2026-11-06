@@ -235,15 +235,15 @@ export default async function DriverOperationsPage({
   const cameraEnabled =
     cameraPublishingEnabled || cameraDemoEnabled(deploymentKind(), process.env.CAMERA_DEVICE_DEMO);
   const startReason = completed
-    ? "Perjalanan sudah selesai; perjalanan baru dibuat melalui penugasan pada tanggal lain."
+    ? "Perjalanan sudah selesai."
     : inProgress
-      ? "Perjalanan sedang berlangsung. Tombol mulai aktif kembali pada penugasan berikutnya."
-      : "Mulai perjalanan untuk membuka pencatatan siswa dan siaran kamera.";
+      ? "Perjalanan sedang berlangsung."
+      : trip?.status === "cancelled"
+        ? "Perjalanan dibatalkan."
+        : "Mulai untuk membuka tindakan siswa dan kamera.";
 
   return (
     <>
-      <h1 className="ops-title">Operasional hari ini</h1>
-
       {assignments.length > 1 && (
         <nav className="ops-switch" aria-label="Pilih tugas hari ini">
           <span>Pilih tugas</span>
@@ -294,17 +294,23 @@ export default async function DriverOperationsPage({
           <form action={startTrip} className="ops-start">
             <input type="hidden" name="assignment_id" value={selected.id} />
             <ConfirmSubmit
-              className="btn btn-secondary"
+              className="btn ops-primary-action"
               message="Mulai perjalanan untuk tugas ini? Waktu mulai akan dicatat."
               pendingLabel="Memulai…"
             >
               <Icon name="trip" size={16} /> Mulai perjalanan
             </ConfirmSubmit>
-            <small>Rute di bawah dapat dilihat sebelum perjalanan dimulai.</small>
           </form>
+        ) : inProgress ? (
+          <div className="ops-start">
+            <a className="btn ops-primary-action" href="#perjalanan-keselamatan">
+              <Icon name="shield" size={16} /> Akhiri perjalanan
+            </a>
+            <small>Lengkapi pemeriksaan keselamatan.</small>
+          </div>
         ) : (
           <div className="ops-start">
-            <button className="btn btn-secondary" type="button" disabled>
+            <button className="btn ops-primary-action" type="button" disabled>
               <Icon name="trip" size={16} /> Mulai perjalanan
             </button>
             <small>{startReason}</small>
@@ -312,22 +318,25 @@ export default async function DriverOperationsPage({
         )}
       </DriverOpsHeader>
 
-      <DriverBroadcastPanel
-        key={trip?.id ?? "no-trip"}
-        tripStatus={trip?.status ?? "scheduled"}
-        tripId={cameraPublishingEnabled ? trip?.id : undefined}
-        enabled={cameraEnabled}
+      <TripClosePanel
+        assignmentId={selected.id}
+        trip={trip}
+        canEndTrip={canEndTrip}
+        unrecordedNames={unrecorded.map((row) => row.name)}
+        unclearStudents={unclearStudents}
+        totalStudents={studentRows.length}
       />
 
-      <FullRouteNavigator
-        plan={plan}
-        route={fullRoute}
-        mapUrl={mapUrl}
-        direction={direction}
-        tripStatus={trip?.status ?? "scheduled"}
-      />
+      <div className="ops-workspace">
+        <FullRouteNavigator
+          plan={plan}
+          route={fullRoute}
+          mapUrl={mapUrl}
+          direction={direction}
+          tripStatus={trip?.status ?? "scheduled"}
+        />
 
-      <section className="panel ops-manifest" aria-label="Daftar siswa dan tindakan">
+        <section className="panel ops-manifest" aria-label="Daftar siswa dan tindakan">
         <header className="panel-head">
           <div>
             <h2 className="panel-title">Siswa &amp; tindakan</h2>
@@ -369,57 +378,59 @@ export default async function DriverOperationsPage({
           />
         )}
 
-        <details className="ops-review">
-          <summary>
-            <span>
-              <Icon name="report" size={15} /> Catatan &amp; review tugas
-            </span>
-            <small>{issueNotes.length > 0 ? `${issueNotes.length} kendala tercatat` : "Belum ada kendala"}</small>
-          </summary>
-        <div className="ops-review-body">
-          {trip?.safety_check_notes && (
-            <p>
-              <strong>Catatan pemeriksaan:</strong> {trip.safety_check_notes}
-            </p>
-          )}
-          {issueNotes.length > 0 ? (
-            <ul>
-              {issueNotes.map((row) => (
-                <li key={row.key}>
-                  <strong>{row.name}</strong> — {row.issueNote}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>Belum ada catatan kendala pada perjalanan ini.</p>
-          )}
-          <p className="ops-review-meta">
-            {formatDate(selected.service_date)} · {routeDirectionLabel(direction)} · Bus{" "}
-            {selected.buses?.fleet_code ?? "—"}
-            {trip?.started_at ? ` · Mulai ${formatTime(trip.started_at)}` : ""}
-            {trip?.completed_at ? ` · Selesai ${formatDateTime(trip.completed_at)}` : ""}
-          </p>
-          <Link className="ops-review-link" href="/pengemudi/riwayat">
-            Riwayat perjalanan <Icon name="arrowRight" size={13} />
-          </Link>
-        </div>
-        </details>
-      </section>
+          <details className="ops-review">
+            <summary>
+              <span>
+                <Icon name="report" size={15} /> Catatan &amp; review tugas
+              </span>
+              <small>{issueNotes.length > 0 ? `${issueNotes.length} kendala tercatat` : "Belum ada kendala"}</small>
+            </summary>
+            <div className="ops-review-body">
+              {trip?.safety_check_notes && (
+                <p>
+                  <strong>Catatan pemeriksaan:</strong> {trip.safety_check_notes}
+                </p>
+              )}
+              {issueNotes.length > 0 ? (
+                <ul>
+                  {issueNotes.map((row) => (
+                    <li key={row.key}>
+                      <strong>{row.name}</strong> — {row.issueNote}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>Belum ada catatan kendala pada perjalanan ini.</p>
+              )}
+              <p className="ops-review-meta">
+                {formatDate(selected.service_date)} · {routeDirectionLabel(direction)} · Bus{" "}
+                {selected.buses?.fleet_code ?? "—"}
+                {trip?.started_at ? ` · Mulai ${formatTime(trip.started_at)}` : ""}
+                {trip?.completed_at ? ` · Selesai ${formatDateTime(trip.completed_at)}` : ""}
+              </p>
+              <Link className="ops-review-link" href="/pengemudi/riwayat">
+                Riwayat perjalanan <Icon name="arrowRight" size={13} />
+              </Link>
+            </div>
+          </details>
+        </section>
+      </div>
 
-      <TripClosePanel
-        assignmentId={selected.id}
-        trip={trip}
-        canEndTrip={canEndTrip}
-        unrecordedNames={unrecorded.map((row) => row.name)}
-        unclearStudents={unclearStudents}
-        totalStudents={studentRows.length}
+      <DriverBroadcastPanel
+        key={trip?.id ?? "no-trip"}
+        tripStatus={trip?.status ?? "scheduled"}
+        tripId={cameraPublishingEnabled ? trip?.id : undefined}
+        enabled={cameraEnabled}
       />
 
-      <Notice kind="info">
-        Navigasi membuka satu rute berisi titik yang tersimpan. Posisi bus belum dilacak karena GPS belum aktif.
-        Siaran kamera mengikuti status perjalanan pada panel kamera, dan kembali dari aplikasi peta tidak mengubah
-        status siswa atau menyelesaikan titik pemberhentian.
-      </Notice>
+      <details className="ops-side-notes">
+        <summary>Catatan navigasi, GPS, dan kamera</summary>
+        <p>
+          Navigasi membuka satu rute berisi titik yang tersimpan. Posisi bus belum dilacak karena GPS belum aktif.
+          Siaran kamera mengikuti status perjalanan pada panel kamera, dan kembali dari aplikasi peta tidak mengubah
+          status siswa atau menyelesaikan titik pemberhentian.
+        </p>
+      </details>
     </>
   );
 }

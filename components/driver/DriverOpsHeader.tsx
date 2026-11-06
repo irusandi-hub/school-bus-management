@@ -1,12 +1,14 @@
 import type { ReactNode } from "react";
 import { TripStatusPill } from "@/components/admin/ui";
+import { Icon } from "@/components/ui/Icon";
 import { formatDate, formatTime, routeDirectionLabel } from "@/lib/validation";
 
 /**
  * Header ringkas halaman operasional pengemudi.
  *
- * Profil, kendaraan, jadwal, dan hitungan siswa dibuat dalam dua tingkat agar
- * tetap terbaca pada ponsel tanpa memenuhi layar sebelum tombol navigasi.
+ * Identitas, kendaraan, jadwal, siswa, dan tugas tetap tersedia sebagai label
+ * sekunder. Area ini sengaja tidak memakai kartu metrik besar agar navigasi dan
+ * tindakan siswa menjadi pusat layar.
  */
 export function DriverOpsHeader({
   driverName,
@@ -55,46 +57,46 @@ export function DriverOpsHeader({
         <span className="ops-avatar" aria-hidden="true">
           {initial}
         </span>
-        <div className="ops-ident">
+        <div className="ops-ident" title={`ID ${shortId}`}>
           <strong>{driverName || "Pengemudi"}</strong>
           <small>
-            ID {shortId} · Akun aktif
+            ID {shortId} · {fleetCode || "Bus belum ditetapkan"}
           </small>
         </div>
-        <TripStatusPill status={tripStatus} />
+        <div className="ops-head-pills">
+          <TripStatusPill status={tripStatus} />
+          <span className="ops-head-count" title="Siswa di kendaraan dibanding total siswa pada rute">
+            <Icon name="users" size={13} />
+            {onboardStudents}/{totalStudents}
+          </span>
+        </div>
       </div>
 
-      <dl className="ops-meta">
-        <div>
-          <dt>Kendaraan</dt>
-          <dd>{fleetCode || "Belum ditetapkan"}</dd>
-          <small>
-            {plateNumber || "Plat belum tercatat"} · {capacity} kursi
+      <div className="ops-task-row">
+        <div className="ops-task-copy">
+          <span className="ops-task-kicker">
+            {routeDirectionLabel(direction)} · {kind} · {formatDate(serviceDate)}
+          </span>
+          <h1>{routeName || "Rute"}</h1>
+          <small title={schoolName || "Sekolah belum tercatat"}>
+            <Icon name="school" size={12} />
+            {schoolName || "Sekolah belum tercatat"}
           </small>
         </div>
-        <div>
-          <dt>Jadwal</dt>
-          <dd>{formatDate(serviceDate)}</dd>
-          <small>
-            {routeDirectionLabel(direction)} · {kind} · {started}
-            {ended}
-          </small>
-        </div>
-        <div>
-          <dt>Siswa di kendaraan</dt>
-          <dd>
-            {onboardStudents} / {totalStudents}
-          </dd>
-          <small>Diperbarui setiap status siswa dicatat</small>
-        </div>
-        <div>
-          <dt>Tugas</dt>
-          <dd>{routeName || "Rute"}</dd>
-          <small>{schoolName || "Sekolah belum tercatat"}</small>
-        </div>
-      </dl>
+        {children && <div className="ops-head-action">{children}</div>}
+      </div>
 
-      {children && <div className="ops-head-action">{children}</div>}
+      <p className="ops-meta-line">
+        <span>
+          <Icon name="bus" size={12} />
+          {plateNumber || "Plat belum tercatat"} · {capacity} kursi
+        </span>
+        <span>
+          <Icon name="clock" size={12} />
+          {started}
+          {ended}
+        </span>
+      </p>
     </section>
   );
 }

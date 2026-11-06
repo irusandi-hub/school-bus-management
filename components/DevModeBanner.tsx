@@ -16,7 +16,7 @@ export function DevModeBanner() {
   return (
     <div className="dev-mode-banner" role="status">
       <strong>Mode pengembangan · data simulasi · {devAccessEnvironmentLabel()}</strong>
-      <span>{DEV_OPEN_ACCESS_NOTICE}</span>
+      <span title={DEV_OPEN_ACCESS_NOTICE}>{DEV_OPEN_ACCESS_NOTICE}</span>
     </div>
   );
 }

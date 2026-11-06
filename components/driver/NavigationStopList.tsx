@@ -47,15 +47,13 @@ export function NavigationStopList({
 
             <div className="nav-stop-body">
               <div className="nav-stop-head">
-                <div>
-                  <strong>{stop.name}</strong>
-                  <small>
-                    {stop.isSchool ? "Gerbang sekolah" : "Titik jemput"} · {stop.order} dari {plan.stops.length}
-                    {stop.students.length > 0 ? ` · ${stop.students.length} siswa` : " · belum ada siswa"}
-                  </small>
-                </div>
+                <strong>{stop.name}</strong>
                 <Pill tone={STOP_STATUS_TONE[stop.status]}>{STOP_STATUS_LABEL[stop.status]}</Pill>
               </div>
+              <small className="nav-stop-meta">
+                {stop.isSchool ? "Gerbang sekolah" : "Titik jemput"} · {stop.order} dari {plan.stops.length}
+                {stop.students.length > 0 ? ` · ${stop.students.length} siswa` : " · belum ada siswa"}
+              </small>
 
               {stop.students.length > 0 && (
                 <p className="nav-stop-students">{stop.students.map((student) => student.name).join(", ")}</p>
@@ -63,33 +61,36 @@ export function NavigationStopList({
 
               {skipReason && <p className="nav-stop-skip">{skipReason}</p>}
 
-              <div className="nav-stop-address">
-                {stop.addresses.map((address) => (
-                  <p className="nav-stop-addr" key={address}>
-                    <Icon name="home" size={12} />
-                    <span>{address}</span>
+              <details className="nav-stop-more">
+                <summary>Alamat &amp; peta</summary>
+                <div className="nav-stop-address">
+                  {stop.addresses.map((address) => (
+                    <p className="nav-stop-addr" key={address}>
+                      <Icon name="home" size={12} />
+                      <span>{address}</span>
+                    </p>
+                  ))}
+                  <p className={`nav-stop-coord${coordinates ? "" : " is-missing"}`}>
+                    <Icon name={coordinates ? "pin" : "gpsOff"} size={12} />
+                    {coordinates ?? "Koordinat belum tersedia"}
                   </p>
-                ))}
-                <p className={`nav-stop-coord${coordinates ? "" : " is-missing"}`}>
-                  <Icon name={coordinates ? "pin" : "gpsOff"} size={12} />
-                  {coordinates ?? "Koordinat belum tersedia"}
-                </p>
-                {mapUrl ? (
-                  <a
-                    className="nav-stop-map"
-                    href={mapUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`Buka titik ${stop.order}, ${stop.name}, di aplikasi peta`}
-                  >
-                    <Icon name="navigation" size={12} /> Buka di aplikasi peta
-                  </a>
-                ) : (
-                  <span className="nav-stop-map is-unavailable">
-                    <Icon name="gpsOff" size={12} /> Peta titik ini belum tersedia
-                  </span>
-                )}
-              </div>
+                  {mapUrl ? (
+                    <a
+                      className="nav-stop-map"
+                      href={mapUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Buka titik ${stop.order}, ${stop.name}, di aplikasi peta`}
+                    >
+                      <Icon name="navigation" size={12} /> Buka di aplikasi peta
+                    </a>
+                  ) : (
+                    <span className="nav-stop-map is-unavailable">
+                      <Icon name="gpsOff" size={12} /> Peta titik ini belum tersedia
+                    </span>
+                  )}
+                </div>
+              </details>
             </div>
           </li>
         );
