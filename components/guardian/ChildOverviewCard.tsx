@@ -15,9 +15,9 @@ type DirectionStatus = {
 /**
  * Kartu utama satu anak.
  *
- * Desktop/tablet memakai dua kolom: identitas dan detail perjalanan di kiri,
- * kamera serta peta berukuran besar di kanan. Mobile menumpuk kolom kanan di
- * bawah informasi anak tanpa mengecilkan kamera atau peta.
+ * Semua viewport memakai dua kolom: identitas dan detail perjalanan di kiri,
+ * kamera di kanan atas dan peta di kanan bawah. Pada ponsel hanya metadata
+ * internal yang ditumpuk; kedua kolom utama tetap berdampingan.
  *
  * Status GPS hanya berada di panel peta dan status kamera hanya berada di panel
  * kamera. Tidak ada tautan menuju panel lain yang mengulang informasi tersebut.
