@@ -49,22 +49,56 @@ export default function LandingPage() {
       </div>
     </section>
 
-    <section className="sbm-refined-roles" aria-label="Fitur untuk setiap pengguna">
-      <div className="sbm-section-heading"><p className="sbm-eyebrow"><i/> SATU APLIKASI, TIGA PERAN</p><h2>Dirancang untuk setiap perjalanan</h2></div>
-      {roles.map((role) => <article className={`sbm-refined-role ${role.type}`} key={role.type}>
-        <span className="sbm-refined-role-icon"><RoleIcon type={role.type}/></span>
-        <div className="sbm-refined-role-main"><h3>{role.title}</h3><p>{role.description}</p></div>
-        <ul>{role.points.map((point) => <li key={point}>{point}</li>)}</ul>
-      </article>)}
+    <section className="sbm-feature-showcase" aria-label="Fitur utama aplikasi">
+      <div className="sbm-section-heading">
+        <p className="sbm-eyebrow"><i/> FITUR YANG MEMBANTU SETIAP HARI</p>
+        <h2>Lebih dari sekadar antar-jemput sekolah</h2>
+        <p className="sbm-section-lead">Informasi perjalanan, panduan kerja, dan pengelolaan armada tersusun dalam satu alur yang saling terhubung.</p>
+      </div>
+
+      <article className="sbm-parent-feature">
+        <div className="sbm-parent-feature-copy">
+          <span className="sbm-feature-label"><RoleIcon type="parent"/> UNTUK ORANG TUA / WALI</span>
+          <h3>Ketahui perjalanan anak, tanpa harus terus bertanya.</h3>
+          <p>Pantau informasi penting selama perjalanan sekolah dari satu halaman yang mudah dipahami.</p>
+          <ul className="sbm-feature-checks">
+            <li><strong>Lokasi bus</strong><span>Lihat posisi bus saat perangkat pengemudi terhubung.</span></li>
+            <li><strong>Status perjalanan</strong><span>Ketahui perkembangan perjalanan dan status antar-jemput.</span></li>
+            <li><strong>Kamera langsung</strong><span>Lihat tayangan kamera ketika perangkat dan akses kamera tersedia.</span></li>
+          </ul>
+        </div>
+        <div className="sbm-parent-feature-visual" aria-label="Ilustrasi informasi lokasi bus dan perjalanan">
+          <div className="sbm-parent-visual-top"><span><i/> PERJALANAN ANAK</span><b>PEMANTAUAN</b></div>
+          <div className="sbm-parent-visual-map">
+            <svg viewBox="0 0 420 180" role="img" aria-label="Ilustrasi rute bus sekolah"><path d="M-10 40 90 70 170 20 250 72 340 25 440 70M-10 140 85 110 165 155 250 105 335 150 440 110M70-20 110 80 65 200M230-20 205 70 260 190M370-20 325 75 380 190" stroke="#dce5df" strokeWidth="13" fill="none" strokeLinecap="round"/><path d="m42 112 75-22 72 29 79-35 78 20" stroke="#4d9abb" strokeWidth="4" fill="none" strokeLinecap="round"/><circle cx="42" cy="112" r="7" fill="#fff" stroke="#4d9abb" strokeWidth="3"/><circle cx="346" cy="104" r="7" fill="#fff" stroke="#d4a51d" strokeWidth="3"/><g transform="translate(176 71)"><rect x="0" y="0" width="49" height="25" rx="6" fill="#263d59"/><rect x="6" y="5" width="9" height="8" rx="1" fill="#dcecf5"/><rect x="18" y="5" width="9" height="8" rx="1" fill="#dcecf5"/><rect x="30" y="5" width="9" height="8" rx="1" fill="#dcecf5"/><circle cx="12" cy="26" r="4" fill="#263d59" stroke="#fff" strokeWidth="2"/><circle cx="38" cy="26" r="4" fill="#263d59" stroke="#fff" strokeWidth="2"/></g></svg>
+            <span className="sbm-map-tag">Lokasi bus</span>
+          </div>
+          <div className="sbm-parent-status-row"><span className="sbm-status-symbol">✓</span><span><strong>Status perjalanan</strong><small>Informasi diperbarui saat terhubung</small></span><b>TERPANTAU</b></div>
+          <div className="sbm-parent-camera-row"><span className="sbm-camera-symbol">▣</span><span><strong>Kamera bus</strong><small>Tayangan langsung saat tersedia</small></span><span className="sbm-camera-state">LIVE</span></div>
+        </div>
+      </article>
+
+      <div className="sbm-support-features">
+        <article className="sbm-support-feature driver">
+          <span className="sbm-support-icon"><RoleIcon type="driver"/></span>
+          <div><span className="sbm-support-kicker">UNTUK PENGEMUDI</span><h3>Rute dan tugas lebih terarah.</h3><p>Panduan titik jemput dan antar, urutan pemberhentian, informasi siswa, serta pembaruan status perjalanan dalam satu halaman operasional.</p></div>
+          <ul><li>Urutan titik perjalanan</li><li>Informasi kehadiran siswa</li><li>Panduan navigasi</li></ul>
+        </article>
+        <article className="sbm-support-feature operator">
+          <span className="sbm-support-icon"><RoleIcon type="operator"/></span>
+          <div><span className="sbm-support-kicker">UNTUK OPERATOR</span><h3>Operasional armada lebih tertata.</h3><p>Kelola data kendaraan dan pengemudi, susun rute, atur penugasan, serta pantau aktivitas perjalanan dari satu tempat.</p></div>
+          <ul><li>Data armada dan pengemudi</li><li>Rute dan titik pemberhentian</li><li>Penugasan perjalanan</li></ul>
+        </article>
+      </div>
     </section>
 
-    <section className="sbm-refined-assurance"><span aria-hidden="true">✓</span><p><strong>Informasi sesuai hak akses.</strong> Data anak, lokasi, dan video hanya ditampilkan kepada pengguna yang berwenang dan saat fitur tersedia.</p></section>
+    <section className="sbm-refined-assurance"><span aria-hidden="true">✓</span><p><strong>Akses sesuai kewenangan.</strong> Informasi anak dan perjalanan ditampilkan sesuai hak akses pengguna. Lokasi dan kamera bergantung pada koneksi serta ketersediaan perangkat.</p></section>
     <section className="sbm-login-section" aria-label="Masuk ke aplikasi">
       <div className="sbm-login-card">
-        <div className="sbm-login-heading"><div><span className="sbm-login-kicker">AKSES PENGGUNA</span><strong>Sign In</strong></div><span>Masuk untuk melanjutkan</span></div>
-        <label>Email atau username<input type="text" name="username" autoComplete="username" placeholder="Masukkan email atau username"/></label>
-        <label>Password<input type="password" name="password" autoComplete="current-password" placeholder="Masukkan password"/></label>
-        <Link href="/pilih-peran" className="sbm-login-submit">Sign In</Link>
+        <div className="sbm-login-heading"><div><span className="sbm-login-kicker">SUDAH MEMILIKI AKUN?</span><strong>Masuk</strong></div></div>
+        <label>Email atau username<input type="text" name="username" autoComplete="username" placeholder="Email atau username"/></label>
+        <label>Password<input type="password" name="password" autoComplete="current-password" placeholder="Password"/></label>
+        <Link href="/pilih-peran" className="sbm-login-submit">Sign In <span aria-hidden="true">→</span></Link>
         <p className="sbm-login-signup">Belum terdaftar? <Link href="/daftar">Sign Up</Link></p>
       </div>
     </section>
@@ -99,25 +133,102 @@ export default function LandingPage() {
       .sbm-login-signup{margin:15px 0 0;text-align:center;font-size:11px;color:#7a858b}
       .sbm-login-signup a{color:#8a6900;font-weight:800;text-decoration:none}
       @media(max-width:480px){.sbm-login-section{margin-bottom:34px;padding:22px 14px 0}.sbm-login-card{padding:20px 17px 17px}.sbm-login-heading{align-items:flex-start;flex-direction:column;gap:3px}}
-      .sbm-refined-roles{margin:56px 0 30px}
-      .sbm-section-heading{margin-bottom:17px}
-      .sbm-section-heading h2{font:800 clamp(21px,3vw,28px) Manrope,sans-serif;letter-spacing:-.8px;margin:7px 0 0;color:#243444}
-      .sbm-refined-role{display:grid;grid-template-columns:48px minmax(190px,1.1fr) minmax(240px,1fr);align-items:center;gap:18px;padding:18px 8px;border-bottom:1px solid #e9e3d1;background:transparent}
-      .sbm-refined-role:first-of-type{border-top:1px solid #e9e3d1}
-      .sbm-refined-role-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:12px;background:#fff0b5;color:#876500}
-      .sbm-refined-role-icon svg{width:24px;height:24px}
-      .sbm-refined-role h3{font:800 16px Manrope,sans-serif;margin:0 0 4px;color:#273746}
-      .sbm-refined-role p{font-size:13px;line-height:1.55;color:#6f7b82;margin:0}
-      .sbm-refined-role ul{display:flex;flex-wrap:wrap;gap:7px 15px;list-style:none;padding:0;margin:0}
-      .sbm-refined-role li{font-size:11px;color:#596971}
-      .sbm-refined-role li:before{content:"✓";color:#a27b00;font-weight:800;margin-right:6px}
-      .sbm-refined-role.driver .sbm-refined-role-icon{background:#e8f1f8;color:#316f9b}
-      .sbm-refined-role.operator .sbm-refined-role-icon{background:#e9eef0;color:#526b78}
-      .sbm-refined-assurance{display:flex;align-items:center;gap:12px;margin:30px 0 44px;padding:15px 17px;background:#fff9e8;border-radius:12px}
-      .sbm-refined-assurance>span{width:27px;height:27px;display:grid;place-items:center;flex:none;border-radius:50%;background:#f4d66e;color:#594400;font-weight:900}
-      .sbm-refined-assurance p{font-size:12px;line-height:1.55;color:#6f654b;margin:0}
-      .sbm-refined-assurance strong{color:#493b1c}
-      @media(max-width:760px){.sbm-auth-entry-card{align-items:flex-start;flex-direction:column}.sbm-auth-entry-actions{width:100%}.sbm-auth-entry-actions a{flex:1}.sbm-refined .sbm-hero{grid-template-columns:1fr}.sbm-refined .sbm-hero-visual{min-height:240px}.sbm-refined-role{grid-template-columns:42px 1fr;gap:10px 13px;padding:15px 2px}.sbm-refined-role ul{grid-column:2;gap:6px 12px}.sbm-refined .sbm-footer{gap:7px;flex-direction:column}}
+      .sbm-refined{--ref-yellow:#efc32d}
+      .sbm-refined .sbm-header{display:flex;align-items:center;justify-content:space-between}
+      .sbm-refined .sbm-hero{align-items:center}
+      .sbm-refined .sbm-hero-visual{background:#f8f0d5;border:0;box-shadow:none;border-radius:24px;min-height:300px}
+      .sbm-refined .sbm-visual-top{color:#705c26}
+      .sbm-refined .sbm-map-visual{max-height:300px}
+      .sbm-route-caption{position:absolute;left:22px;right:22px;bottom:18px;display:flex;align-items:center;gap:12px;padding:12px 14px;background:#fff;border-radius:13px;box-shadow:0 5px 18px #705c2612}
+      .sbm-route-caption .sbm-bus-symbol{width:38px;height:38px;display:grid;place-items:center;border-radius:11px;background:#fff0b5;color:#765a00;flex:none}
+      .sbm-route-caption svg{width:23px;height:23px}
+      .sbm-route-caption strong,.sbm-route-caption small{display:block}
+      .sbm-route-caption strong{font-size:13px;color:#243444}
+      .sbm-route-caption small{font-size:11px;color:#78838b;margin-top:3px}
+      .sbm-feature-showcase{width:min(calc(100% - 2 * clamp(20px,4vw,58px)),1324px);margin:42px auto 0}
+      .sbm-section-heading{max-width:680px;margin-bottom:18px}
+      .sbm-section-heading h2{font:800 clamp(22px,3vw,30px)/1.15 Manrope,sans-serif;letter-spacing:-.9px;margin:7px 0;color:#243444}
+      .sbm-section-lead{font-size:12px;line-height:1.6;color:#71808b;margin:0}
+      .sbm-parent-feature{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.88fr);gap:28px;align-items:center;padding:25px 28px;border:1px solid #eadcae;border-radius:18px;background:linear-gradient(115deg,#fff9e6,#fffef9 65%);box-shadow:0 10px 28px #9d79100d}
+      .sbm-feature-label{display:flex;align-items:center;gap:8px;color:#89680b;font-size:9px;font-weight:800;letter-spacing:.8px}
+      .sbm-feature-label svg{width:20px;height:20px}
+      .sbm-parent-feature h3{max-width:490px;margin:13px 0 8px;font:800 clamp(22px,2.7vw,32px)/1.14 Manrope,sans-serif;letter-spacing:-1px;color:#26364a}
+      .sbm-parent-feature-copy>p{max-width:460px;margin:0;color:#697785;font-size:12px;line-height:1.65}
+      .sbm-feature-checks{list-style:none;margin:19px 0 0;padding:0;display:grid;gap:12px}
+      .sbm-feature-checks li{display:grid;grid-template-columns:128px minmax(0,1fr);gap:8px;align-items:start;font-size:11px;line-height:1.5}
+      .sbm-feature-checks strong{color:#3a4651}
+      .sbm-feature-checks span{color:#73808a}
+      .sbm-parent-feature-visual{min-width:0;padding:13px;border:1px solid #eee3bd;border-radius:14px;background:#fff;box-shadow:0 8px 22px #705c260c}
+      .sbm-parent-visual-top{display:flex;justify-content:space-between;align-items:center;gap:8px;color:#3b4a58;font-size:8px;font-weight:800;letter-spacing:.6px}
+      .sbm-parent-visual-top span{display:flex;align-items:center;gap:6px}
+      .sbm-parent-visual-top i{width:6px;height:6px;border-radius:50%;background:#d4a51d}
+      .sbm-parent-visual-top>b{font-size:7px;color:#9a7b24;background:#fff6d9;border-radius:20px;padding:5px 7px}
+      .sbm-parent-visual-map{position:relative;height:160px;margin:11px 0 9px;overflow:hidden;border-radius:9px;background:#f4f7f2}
+      .sbm-parent-visual-map svg{width:100%;height:100%}
+      .sbm-map-tag{position:absolute;left:10px;bottom:9px;padding:5px 8px;border-radius:6px;background:#fff;color:#52636b;font-size:8px;font-weight:700;box-shadow:0 2px 7px #26374612}
+      .sbm-parent-status-row,.sbm-parent-camera-row{display:flex;align-items:center;gap:9px;padding:9px 2px;border-top:1px solid #f0eee6}
+      .sbm-status-symbol,.sbm-camera-symbol{width:27px;height:27px;display:grid;place-items:center;flex:none;border-radius:8px;background:#fff5d7;color:#92700e;font-size:13px;font-weight:800}
+      .sbm-camera-symbol{background:#edf4f8;color:#487c9e}
+      .sbm-parent-status-row>span:nth-child(2),.sbm-parent-camera-row>span:nth-child(2){min-width:0;flex:1}
+      .sbm-parent-status-row strong,.sbm-parent-camera-row strong{display:block;font-size:9px;color:#394957}
+      .sbm-parent-status-row small,.sbm-parent-camera-row small{display:block;margin-top:2px;font-size:8px;color:#82909a}
+      .sbm-parent-status-row>b{font-size:7px;color:#8b6d18;white-space:nowrap}
+      .sbm-camera-state{padding:4px 6px;border-radius:5px;background:#edf4f8;color:#477b9e;font-size:7px;font-weight:800}
+      .sbm-support-features{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:15px}
+      .sbm-support-feature{display:grid;grid-template-columns:38px minmax(0,1fr);gap:0 12px;padding:18px;border:1px solid #dce6ee;border-radius:14px;background:#fff}
+      .sbm-support-icon{grid-row:1 / span 2;width:36px;height:36px;display:grid;place-items:center;border-radius:10px;background:#eaf2f8;color:#367ca8}
+      .sbm-support-icon svg{width:22px;height:22px}
+      .sbm-support-feature.operator .sbm-support-icon{background:#edf1f2;color:#5c7480}
+      .sbm-support-kicker{font-size:8px;font-weight:800;letter-spacing:.7px;color:#64829a}
+      .sbm-support-feature.operator .sbm-support-kicker{color:#74848b}
+      .sbm-support-feature h3{margin:5px 0 5px;font:800 16px/1.25 Manrope,sans-serif;color:#2c3e50}
+      .sbm-support-feature p{margin:0;font-size:10px;line-height:1.6;color:#71808b}
+      .sbm-support-feature ul{grid-column:2;display:flex;flex-wrap:wrap;gap:6px 13px;list-style:none;padding:0;margin:12px 0 0}
+      .sbm-support-feature li{font-size:8px;color:#526575}
+      .sbm-support-feature li:before{content:"✓";margin-right:5px;color:#b18a1b;font-weight:900}
+      .sbm-refined-assurance{width:min(calc(100% - 2 * clamp(20px,4vw,58px)),1324px);display:flex;align-items:center;gap:10px;margin:17px auto 24px;padding:11px 14px;border:1px solid #eee5c9;border-radius:10px;background:#fffdf5}
+      .sbm-refined-assurance>span{width:22px;height:22px;display:grid;place-items:center;flex:none;border-radius:50%;background:#f8e8ad;color:#795d0d;font-size:11px;font-weight:900}
+      .sbm-refined-assurance p{font-size:9px;line-height:1.5;color:#786f58;margin:0}
+      .sbm-refined-assurance strong{color:#54451e}
+      .sbm-login-section{display:flex;justify-content:center;margin:8px 0 26px;padding:0 clamp(20px,4vw,58px)}
+      .sbm-login-card{width:min(100%,760px);display:grid;grid-template-columns:minmax(110px,.65fr) minmax(170px,1fr) minmax(145px,.85fr) 105px;align-items:center;gap:10px;padding:12px 14px;border:1px solid #e8e1cd;border-radius:12px;background:#fff;box-shadow:0 4px 14px #26374608}
+      .sbm-login-heading{margin:0}
+      .sbm-login-heading strong{display:block;font:800 16px Manrope,sans-serif;color:#263746}
+      .sbm-login-kicker{display:block;margin-bottom:3px;font-size:7px;font-weight:800;letter-spacing:.8px;color:#9a780e}
+      .sbm-login-card label{display:block;min-width:0;font-size:8px;font-weight:700;color:#687680}
+      .sbm-login-card input{display:block;width:100%;height:35px;margin-top:4px;padding:0 9px;border:1px solid #e5e3da;border-radius:7px;background:#fff;color:#263746;font-size:10px;font-family:inherit;outline:none;box-sizing:border-box}
+      .sbm-login-card input::placeholder{color:#a4aaad}
+      .sbm-login-card input:focus{border-color:#d2aa1d;box-shadow:0 0 0 2px #efc32d24}
+      .sbm-login-submit{display:flex;justify-content:center;align-items:center;gap:7px;width:100%;height:35px;border-radius:7px;background:#efc32d;color:#34290c;text-decoration:none;font-size:10px;font-weight:800;box-sizing:border-box;white-space:nowrap}
+      .sbm-login-submit:hover{filter:brightness(.97)}
+      .sbm-login-signup{grid-column:2 / -1;margin:0;text-align:right;font-size:8px;color:#7a858b}
+      .sbm-login-signup a{color:#8a6900;font-weight:800;text-decoration:none}
+      .sbm-refined .sbm-footer{padding:10px clamp(20px,4vw,58px) 14px;font-size:8px}
+      @media(max-width:760px){
+        .sbm-refined .sbm-hero{grid-template-columns:1fr}
+        .sbm-refined .sbm-hero-visual{min-height:240px}
+        .sbm-feature-showcase{width:calc(100% - 32px);margin-top:30px}
+        .sbm-parent-feature{grid-template-columns:1fr;gap:18px;padding:19px}
+        .sbm-parent-feature h3{font-size:25px}
+        .sbm-parent-feature-visual{max-width:520px;width:100%;margin:auto}
+        .sbm-support-features{grid-template-columns:1fr}
+        .sbm-refined-assurance{width:calc(100% - 32px)}
+        .sbm-login-section{padding:0 16px}
+        .sbm-login-card{max-width:480px;grid-template-columns:1fr 1fr;gap:10px;padding:13px}
+        .sbm-login-heading{grid-column:1 / -1}
+        .sbm-login-submit{grid-column:1 / -1}
+        .sbm-login-signup{grid-column:1 / -1;text-align:center}
+      }
+      @media(max-width:420px){
+        .sbm-parent-feature{padding:16px}
+        .sbm-feature-checks li{grid-template-columns:1fr;gap:1px}
+        .sbm-parent-visual-map{height:140px}
+        .sbm-support-feature{padding:14px;grid-template-columns:32px minmax(0,1fr);gap:0 9px}
+        .sbm-support-icon{width:31px;height:31px}
+        .sbm-support-feature ul{gap:6px 9px}
+        .sbm-login-card{grid-template-columns:1fr}
+        .sbm-login-heading,.sbm-login-submit,.sbm-login-signup{grid-column:1}
+      }
     `}</style>
   </main>;
 }
