@@ -12,9 +12,11 @@
   --lp-yellow-soft: #fbe6a2;
   --lp-line: #e8e5dc;
   --lp-radius: 26px;
+  --lp-gutter: clamp(16px, 4vw, 32px);
   background: #ffffff;
   color: var(--lp-ink);
   min-height: 100vh;
+  overflow-x: clip;
   font-family: "DM Sans", Arial, sans-serif;
 }
 
@@ -27,7 +29,7 @@
 .landing-shell {
   width: min(100%, 1180px);
   margin: 0 auto;
-  padding: 16px clamp(16px, 4vw, 32px) 40px;
+  padding: 16px var(--lp-gutter) 40px;
 }
 
 /* --- Header --- */
@@ -134,11 +136,19 @@
 
 /* --- Hero --- */
 .landing-hero {
+  position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: clamp(20px, 3vw, 36px);
-  align-items: center;
+  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+  gap: clamp(10px, 1.6vw, 36px);
+  align-items: start;
   padding: clamp(6px, 1.6vw, 18px) 0 clamp(26px, 4vw, 42px);
+  /* Visual hero menjulur melewati tepi kanan layar; wrapper ini memotongnya. */
+  margin-right: calc(-1 * var(--lp-gutter));
+  overflow: hidden;
+}
+
+.landing-hero-copy {
+  min-width: 0;
 }
 
 .landing-title {
@@ -228,25 +238,157 @@
   border-color: var(--lp-navy);
 }
 
-.landing-hero-media {
+/* Komposisi hero tanpa bingkai: latar gradien langit, ponsel dari kode,
+   lalu foto bus di depannya. Semua lapisan dekoratif (aria-hidden). */
+.landing-hero-visual {
   position: relative;
-  width: 100%;
-  aspect-ratio: 4 / 5;
-  max-height: 520px;
-  overflow: hidden;
-  border-radius: 22px;
-  background: linear-gradient(160deg, #f8f0da, #fbf6ea 58%, #f1e7cf);
+  min-height: 143vw; /* ~558px pada layar 390px */
+  justify-self: stretch;
 }
 
-/* Foto aslinya 1408x768 (11:6). Bingkai tetap 4:5, jadi sisi kiri/kanan
-   dipotong lewat object-fit: cover. Titik fokus 38% dipilih karena pusat
-   bus berada di sekitar 39% lebar gambar. */
-.landing-hero-media img {
+.landing-hero-visual::before {
+  content: "";
+  position: absolute;
+  inset: -8% -12% 12% -6%;
+  background: radial-gradient(
+    78% 62% at 86% 4%,
+    #d9ebff 0%,
+    #eef7ff 44%,
+    rgba(255, 255, 255, 0) 78%
+  );
+  pointer-events: none;
+}
+
+.landing-phone {
+  position: absolute;
+  top: 3%;
+  right: 6%;
+  height: 82%;
+  aspect-ratio: 9 / 19;
+  padding: 6px;
+  border-radius: 26px;
+  background: #16203a;
+  box-shadow: 0 24px 48px #101b3b2b;
+  transform: rotate(8deg);
+  transform-origin: 50% 42%;
+}
+
+.landing-phone-screen {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 21px;
+  background: #eef1f3;
+}
+
+.landing-phone-map {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.landing-phone-card {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  display: grid;
+  gap: 2px;
+  padding: 8px 9px;
+  border-radius: 10px;
+  background: #ffffffee;
+  box-shadow: 0 6px 14px #101b3b14;
+}
+
+.landing-phone-card-top {
+  top: 9%;
+}
+
+.landing-phone-card-bottom {
+  bottom: 8%;
+}
+
+.landing-phone-title {
+  color: var(--lp-navy);
+  font-family: Manrope, "DM Sans", Arial, sans-serif;
+  font-size: clamp(9px, 2.4vw, 12px);
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.landing-phone-meta {
+  overflow: hidden;
+  color: #6b7488;
+  font-size: clamp(6.5px, 1.75vw, 8.5px);
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.landing-phone-label {
+  color: #7b8397;
+  font-size: clamp(6.5px, 1.7vw, 8.5px);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.landing-phone-value {
+  color: var(--lp-navy);
+  font-family: Manrope, "DM Sans", Arial, sans-serif;
+  font-size: clamp(12px, 3.2vw, 16px);
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* Foto bus 1408x768 di depan ponsel, terpotong tepi kanan layar. Mask di
+   sisi kiri + bawah membuatnya menyatu dengan latar putih. */
+.landing-hero-bus {
+  position: absolute;
+  right: -30%;
+  bottom: -3%;
+  width: 150%;
+  height: 46%;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0, 0, 0, 0.45) 18%,
+    #000 48%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0, 0, 0, 0.45) 18%,
+    #000 48%
+  );
+}
+
+.landing-hero-bus-fade {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-image: linear-gradient(
+    to top,
+    transparent 0%,
+    rgba(0, 0, 0, 0.5) 16%,
+    #000 52%
+  );
+  mask-image: linear-gradient(
+    to top,
+    transparent 0%,
+    rgba(0, 0, 0, 0.5) 16%,
+    #000 52%
+  );
+}
+
+/* object-position 42% 58%: diukur dari foto, badan bus (kuning) berada di
+   sekitar x 10-70%, y 23-75%; titik ini menjaga bodi tetap dominan. */
+.landing-hero-bus img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 38% 55%;
+  object-position: 42% 58%;
 }
 
 /* --- Strip tiga fitur --- */
@@ -619,11 +761,29 @@
 /* --- Responsif --- */
 @media (min-width: 768px) {
   .landing-hero {
-    grid-template-columns: minmax(0, 0.94fr) minmax(0, 1.06fr);
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+    margin-right: 0;
+  }
+
+  .landing-hero-visual {
+    min-height: clamp(460px, 46vw, 570px);
+  }
+
+  .landing-phone {
+    top: 4%;
+    right: 8%;
+    height: 78%;
+  }
+
+  .landing-hero-bus {
+    right: -26%;
+    width: 132%;
+    height: 44%;
   }
 
   .landing-actions {
     flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
     gap: 14px;
   }
@@ -640,6 +800,36 @@
 }
 
 @media (max-width: 767px) {
+  /* Dua kolom tetap di ponsel: teks kiri, visual kanan yang menjulur ke tepi. */
+  .landing-title {
+    font-size: clamp(19px, 5.5vw, 30px);
+    letter-spacing: -0.9px;
+  }
+
+  .landing-lead {
+    max-width: none;
+    margin-top: 10px;
+    font-size: 11.5px;
+    line-height: 1.5;
+  }
+
+  .landing-actions {
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .landing-btn {
+    min-height: 40px;
+    padding: 0 10px;
+    gap: 6px;
+    font-size: 11px;
+  }
+
+  .landing-btn svg {
+    width: 13px;
+    height: 13px;
+  }
+
   .landing-role-body {
     padding-right: 34px;
   }

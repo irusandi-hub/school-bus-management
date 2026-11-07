@@ -419,15 +419,68 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="landing-hero-media" aria-hidden="true">
-            <Image
-              src={HERO_IMAGE.src}
-              alt=""
-              width={HERO_IMAGE.width}
-              height={HERO_IMAGE.height}
-              priority
-              sizes="(min-width: 768px) 50vw, 100vw"
-            />
+          <div className="landing-hero-visual" aria-hidden="true">
+            <div className="landing-phone">
+              <div className="landing-phone-screen">
+                <svg
+                  className="landing-phone-map"
+                  viewBox="0 0 200 400"
+                  fill="none"
+                  preserveAspectRatio="xMidYMid slice"
+                >
+                  <rect width="200" height="400" fill="#eef1f3" />
+                  <g stroke="#e2e7ea" strokeWidth="11" strokeLinecap="round">
+                    <path d="M-10 86h220M-10 206h220M-10 320h220M52 -10v420M142 -10v420" />
+                  </g>
+                  <g stroke="#ffffff" strokeWidth="4" strokeLinecap="round">
+                    <path d="M-10 86h220M-10 206h220M-10 320h220M52 -10v420M142 -10v420" />
+                  </g>
+                  <path
+                    d="M96 396c0-44-2-62 9-88 9-22 28-34 41-58 8-15 11-34 11-56"
+                    stroke="#2f7cf6"
+                    strokeWidth="7"
+                    strokeLinecap="round"
+                  />
+                  <g transform="translate(112 234) rotate(-38)">
+                    <rect
+                      x="-14"
+                      y="-9"
+                      width="28"
+                      height="18"
+                      rx="5"
+                      fill="#f6c51c"
+                      stroke="#ffffff"
+                      strokeWidth="2"
+                    />
+                    <circle cx="-7" cy="10" r="2.6" fill="#101b3b" />
+                    <circle cx="7" cy="10" r="2.6" fill="#101b3b" />
+                  </g>
+                  <circle cx="80" cy="332" r="14" fill="#2f7cf6" fillOpacity="0.16" />
+                  <circle cx="80" cy="332" r="6.5" fill="#2f7cf6" stroke="#ffffff" strokeWidth="3" />
+                </svg>
+                <div className="landing-phone-card landing-phone-card-top">
+                  <span className="landing-phone-title">Bus 04</span>
+                  <span className="landing-phone-meta">Dalam perjalanan • 5 mnt lagi</span>
+                </div>
+                <div className="landing-phone-card landing-phone-card-bottom">
+                  <span className="landing-phone-label">ETA</span>
+                  <span className="landing-phone-value">5 min</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="landing-hero-bus">
+              <div className="landing-hero-bus-fade">
+                <Image
+                  src={HERO_IMAGE.src}
+                  alt=""
+                  width={HERO_IMAGE.width}
+                  height={HERO_IMAGE.height}
+                  priority
+                  sizes="(min-width: 768px) 70vw, 150vw"
+                />
+              </div>
+            </div>
           </div>
         </section>
 
