@@ -32,30 +32,28 @@ export default function LandingPage() {
         <p className="sbm-eyebrow"><i/> TRANSPORTASI SEKOLAH</p>
         <h1>Perjalanan anak<br/>lebih <em>terpantau</em>,<br/>hati lebih tenang.</h1>
         <p className="sbm-lead">Informasi perjalanan anak, panduan pengemudi, dan pengelolaan bus sekolah dalam satu aplikasi yang mudah digunakan.</p>
+        <div className="sbm-hero-actions"><Link href="/pilih-peran" className="sbm-hero-primary">Mulai Sekarang <span>→</span></Link><a href="#peran" className="sbm-hero-secondary">Lihat Peran Pengguna <span>↓</span></a></div>
         <div className="sbm-hero-trust"><span><i/> Informasi lebih mudah dipahami</span><span><i/> Akses sesuai kewenangan</span></div>
       </div>
       <div className="sbm-hero-visual" role="img" aria-label="Ilustrasi bus sekolah pada rute perjalanan">
         <div className="sbm-visual-top"><span className="sbm-live-dot"/> PERJALANAN SEKOLAH</div>
-        <svg className="sbm-map-visual" viewBox="0 0 660 330" fill="none" aria-hidden="true">
-          <path d="M-20 75 160 25l120 64 125-42 120 56 160-45M-20 225l150-60 110 44 120-58 115 58 170-55M70-20l42 120-42 100 48 150M250-20l-35 120 45 105-20 150M470-20l-35 115 45 110-15 130M610-20l-55 130 65 90-35 150" stroke="#D7E2EC" strokeWidth="18" strokeLinecap="round"/>
-          <path d="m-10 142 135-38 110 54 105-42 110 43 145-40" stroke="#fff" strokeWidth="9" strokeLinecap="round"/>
-          <path d="m125 158 70-23 66 34 94-38 72 32 100-28" stroke="#2B83C6" strokeWidth="5" strokeLinecap="round"/>
-          <path d="m125 158 70-23 66 34 94-38 72 32 100-28" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="5 9"/>
-          <circle cx="125" cy="158" r="12" fill="#fff" stroke="#2B83C6" strokeWidth="5"/><circle cx="527" cy="135" r="12" fill="#fff" stroke="#2B83C6" strokeWidth="5"/>
-          <circle cx="329" cy="131" r="18" fill="#F5C32B" stroke="#fff" strokeWidth="6"/>
-          <g transform="translate(302 103)" fill="#14294A"><rect x="4" y="5" width="47" height="23" rx="5"/><path d="M10 2h31l7 7H7z"/><rect x="9" y="9" width="8" height="7" rx="1" fill="#DCEBFA"/><rect x="20" y="9" width="8" height="7" rx="1" fill="#DCEBFA"/><rect x="31" y="9" width="8" height="7" rx="1" fill="#DCEBFA"/><circle cx="15" cy="29" r="5" fill="#14294A" stroke="#fff" strokeWidth="2"/><circle cx="42" cy="29" r="5" fill="#14294A" stroke="#fff" strokeWidth="2"/></g>
-        </svg>
-        <div className="sbm-route-caption"><span className="sbm-bus-symbol"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="14" rx="3" stroke="currentColor" strokeWidth="1.8"/><path d="M6 7h12v5H6z" fill="currentColor" opacity=".2"/><path d="M5 15h14M7 20v-2m10 2v-2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg></span><span><strong>Rute perjalanan terencana</strong><small>Dari titik awal, penjemputan, hingga sekolah</small></span></div>
-      </div>
+        <img className="sbm-hero-photo" src="https://images.pexels.com/photos/5406428/pexels-photo-5406428.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="Bus sekolah kuning melintas di jalan perkotaan" loading="eager"/>
+        <div className="sbm-photo-shade" aria-hidden="true"/>
+        <div className="sbm-live-route-card">
+          <div className="sbm-live-route-head"><span><i/> RUTE PERJALANAN</span><b>TERENCANA</b></div>
+          <svg viewBox="0 0 280 92" fill="none" aria-hidden="true"><path d="M18 67 80 48l48 15 60-38 73 12" stroke="#dbe5eb" strokeWidth="13" strokeLinecap="round"/><path d="m18 67 62-19 48 15 60-38 73 12" stroke="#fff" strokeWidth="7" strokeLinecap="round"/><path d="m18 67 62-19 48 15 60-38 73 12" stroke="#2685bd" strokeWidth="3" strokeLinecap="round" strokeDasharray="5 5"/><circle cx="18" cy="67" r="6" fill="#fff" stroke="#2685bd" strokeWidth="3"/><circle cx="261" cy="38" r="6" fill="#fff" stroke="#2685bd" strokeWidth="3"/><rect x="139" y="30" width="25" height="15" rx="4" fill="#facc15" stroke="#fff" strokeWidth="2"/><path d="M144 34h5v4h-5zm8 0h5v4h-5z" fill="#17304e"/></svg>
+          <div className="sbm-live-route-foot"><span><strong>Perjalanan sekolah</strong><small>Lokasi dan status sesuai koneksi perangkat</small></span><span className="sbm-route-arrow">↗</span></div>
+        </div>/div>
     </section>
 
-    <section className="sbm-feature-showcase sbm-role-showcase" aria-label="Fitur berdasarkan jenis pengguna">
+    <section id="peran" className="sbm-feature-showcase sbm-role-showcase" aria-label="Fitur berdasarkan jenis pengguna">
       <div className="sbm-role-grid">
         <article className="sbm-role-card parent">
           <div className="sbm-role-card-top">
             <span className="sbm-role-icon"><RoleIcon type="parent"/></span>
             <span className="sbm-role-kicker">ORANG TUA / WALI</span>
           </div>
+          <div className="sbm-role-media sbm-parent-media" aria-hidden="true"><div className="sbm-mini-map"><span className="map-road road-a"/><span className="map-road road-b"/><span className="map-road road-c"/><i className="map-point point-a"/><i className="map-point point-b"/><b className="map-bus">BUS</b></div><div className="sbm-media-caption"><strong>Perjalanan anak</strong><small>Ringkasan lokasi dan status</small></div></div>
           <p>Lihat perjalanan anak dengan lebih tenang.</p>
           <ul>
             <li><span className="sbm-feature-mini-icon">✓</span><span className="sbm-feature-copy">Ketahui saat anak naik atau turun bus.</span></li>
@@ -70,6 +68,7 @@ export default function LandingPage() {
             <span className="sbm-role-icon"><RoleIcon type="driver"/></span>
             <span className="sbm-role-kicker">PENGEMUDI</span>
           </div>
+          <div className="sbm-role-media sbm-driver-media" aria-hidden="true"><img src="https://images.pexels.com/photos/5406428/pexels-photo-5406428.jpeg?auto=compress&cs=tinysrgb&w=900" alt="" loading="lazy"/><div className="sbm-media-glass"><span>URUTAN PERJALANAN</span><strong>Penjemputan → Sekolah</strong><small>Daftar titik tetap teratur</small></div></div>
           <p>Semua titik perjalanan tersusun jelas.</p>
           <ul>
             <li><span className="sbm-feature-mini-icon">↗</span><span className="sbm-feature-copy">Ikuti urutan titik jemput dan antar.</span></li>
@@ -84,6 +83,7 @@ export default function LandingPage() {
             <span className="sbm-role-icon"><RoleIcon type="operator"/></span>
             <span className="sbm-role-kicker">OPERATOR</span>
           </div>
+          <div className="sbm-role-media sbm-operator-media" aria-hidden="true"><img src="https://images.unsplash.com/photo-1642473358915-031ea57e3e3a?auto=format&fit=crop&w=1000&q=85" alt="" loading="lazy"/><div className="sbm-media-glass"><span>ARMADA SEKOLAH</span><strong>Data bus dan penugasan</strong><small>Ringkasan operasional</small></div></div>
           <p>Kelola bus dan pengemudi dengan lebih mudah.</p>
           <ul>
             <li><span className="sbm-feature-mini-icon">▣</span><span className="sbm-feature-copy">Lihat data dan kondisi bus.</span></li>
