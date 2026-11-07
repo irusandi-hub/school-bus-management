@@ -94,7 +94,7 @@ export default function LandingPage() {
           <div className="hero-notes"><span><b>✓</b> Informasi sesuai akses pengguna</span><span><b>✓</b> Dirancang untuk perjalanan sekolah</span></div>
         </div>
         <div className="hero-art">
-          <img src="https://images.pexels.com/photos/5406428/pexels-photo-5406428.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="Bus sekolah di jalan" fetchPriority="high"/>
+          <img src="https://theshadowgps.com/cdn/shop/articles/Best_GPS_Car_Tracking_Device.jpg?v=1762760262" alt="Bus sekolah di jalan" fetchPriority="high"/>
           <div className="hero-image-shade"/>
           <div className="hero-image-label"><span className="label-icon">⌖</span><span><b>Perjalanan lebih terarah</b><small>Informasi dalam satu aplikasi</small></span></div>
           <div className="hero-index"><b>01</b><span>TRANSPORTASI<br/>SEKOLAH</span></div>
