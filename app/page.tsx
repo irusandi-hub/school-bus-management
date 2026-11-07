@@ -101,15 +101,15 @@ export default function LandingPage() {
           <div className="sbm-route-art"><span>📍 Menuju titik jemput</span><i/><b>➤</b></div>
         </article>
         <article className="sbm-feature-card admin">
-          <div className="sbm-feature-icon">▤</div><span className="sbm-tag">Untuk Admin Pusat</span><h2>Kelola Data &amp; Laporan<br/>Secara Lengkap</h2>
-          <p>Pantau data sekolah, armada, pengemudi, operator, dan siswa.</p>
+          <div className="sbm-feature-icon">▤</div><span className="sbm-tag">Administrasi Terpusat</span><h2>Pengelolaan Data &amp; Laporan</h2>
+          <p>Kelola data induk, armada, pengguna, dan laporan operasional dalam satu area.</p>
           <ul><FeatureCheck>Manajemen sekolah, operator, siswa</FeatureCheck><FeatureCheck>Pengelolaan armada dan pengemudi</FeatureCheck><FeatureCheck>Laporan dan histori perjalanan</FeatureCheck></ul>
         </article>
       </section>
 
       <section className="sbm-security">
-        <div className="sbm-shield">✓</div><div className="sbm-security-copy"><span>KESELAMATAN ADALAH PRIORITAS</span><h2>Sistem Keamanan Berlapis</h2><p>Akses hanya untuk pihak yang berwenang. Data siswa dan perjalanan dilindungi sesuai sistem keamanan yang berlaku.</p></div>
-        <div className="sbm-security-points"><div>♙<small>Akses berdasarkan<br/>kewenangan akun</small></div><div>▣<small>Data terlindungi<br/>dan terenkripsi</small></div><div>◇<small>Privasi pengguna<br/>selalu terjaga</small></div></div>
+        <div className="sbm-shield">✓</div><div className="sbm-security-copy"><span>KESELAMATAN ADALAH PRIORITAS</span><h2>Sistem Keamanan Berlapis</h2><p>Akses aplikasi dibatasi sesuai kewenangan setiap akun. Data siswa dan perjalanan hanya tersedia bagi pihak yang berhak.</p></div>
+        <div className="sbm-security-points"><div>♙<small>Akses berdasarkan<br/>kewenangan akun</small></div><div>▣<small>Data dilindungi<br/>sesuai kebijakan akses</small></div><div>◇<small>Privasi pengguna<br/>selalu terjaga</small></div></div>
       </section>
 
       <section className="sbm-login-band">
