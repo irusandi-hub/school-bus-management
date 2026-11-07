@@ -90,7 +90,7 @@ export default function LandingPage() {
       .sbm-login-heading strong{font:800 19px Manrope,sans-serif;color:#263746}
       .sbm-login-heading span{font-size:11px;color:#7a858b}
       .sbm-login-card label{display:block;margin:0 0 12px;font-size:11px;font-weight:700;color:#52616a}
-      .sbm-login-card input{display:block;width:100%;height:42px;margin-top:6px;padding:0 12px;border:1px solid #e4e2d8;border-radius:8px;background:#fff;color:#263746;font:400 13px inherit;outline:none;box-sizing:border-box}
+      .sbm-login-card input{display:block;width:100%;height:42px;margin-top:6px;padding:0 12px;border:1px solid #e4e2d8;border-radius:8px;background:#fff;color:#263746;font-size:13px;font-family:inherit;outline:none;box-sizing:border-box}
       .sbm-login-card input:focus{border-color:#d2aa1d;box-shadow:0 0 0 3px #efc32d24}
       .sbm-login-submit{display:flex;justify-content:center;align-items:center;width:100%;height:43px;margin-top:17px;border-radius:8px;background:#efc32d;color:#34290c;text-decoration:none;font-size:13px;font-weight:800;box-sizing:border-box}
       .sbm-login-signup{margin:14px 0 0;text-align:center;font-size:11px;color:#7a858b}
