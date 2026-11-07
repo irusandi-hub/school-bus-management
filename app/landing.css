@@ -46,7 +46,7 @@
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
-  gap: clamp(10px, 1.6vw, 36px);
+  gap: clamp(8px, 1.6vw, 36px);
   align-items: start;
   padding: clamp(6px, 1.6vw, 18px) 0 clamp(26px, 4vw, 42px);
   /* Visual hero menjulur melewati tepi kanan layar; wrapper ini memotongnya. */
@@ -169,8 +169,8 @@
 .landing-phone {
   position: absolute;
   top: 3%;
-  right: 6%;
-  height: 82%;
+  right: 4%;
+  width: 78%;
   aspect-ratio: 9 / 19;
   padding: 6px;
   border-radius: 26px;
@@ -260,14 +260,14 @@
   -webkit-mask-image: linear-gradient(
     to right,
     transparent 0%,
-    rgba(0, 0, 0, 0.45) 18%,
-    #000 48%
+    rgba(0, 0, 0, 0.45) 24%,
+    #000 52%
   );
   mask-image: linear-gradient(
     to right,
     transparent 0%,
-    rgba(0, 0, 0, 0.45) 18%,
-    #000 48%
+    rgba(0, 0, 0, 0.45) 24%,
+    #000 52%
   );
 }
 
@@ -662,10 +662,12 @@
     min-height: clamp(460px, 46vw, 570px);
   }
 
+  /* Di layar lebar ponsel ditentukan tinggi agar tidak melampaui kolom. */
   .landing-phone {
     top: 4%;
-    right: 8%;
-    height: 78%;
+    right: 6%;
+    width: auto;
+    height: min(88%, 520px);
   }
 
   .landing-hero-bus {
@@ -695,7 +697,7 @@
 @media (max-width: 767px) {
   /* Dua kolom tetap di ponsel: teks kiri, visual kanan yang menjulur ke tepi. */
   .landing-title {
-    font-size: clamp(19px, 5.5vw, 30px);
+    font-size: clamp(18px, 5vw, 28px);
     letter-spacing: -0.9px;
   }
 
@@ -729,6 +731,13 @@
 }
 
 @media (max-width: 420px) {
+  /* Kolom teks di ponsel sempit: tombol dibuat lebih rapat agar tidak
+     melewati kolom visual. */
+  .landing-btn {
+    padding: 0 8px;
+    font-size: 10.5px;
+  }
+
   .landing-strip {
     padding: 14px 2px;
   }
