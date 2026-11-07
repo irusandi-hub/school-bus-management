@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { BrandLogo } from "@/components/brand-logo";
 import { PasswordForm } from "./password-form";
 import { getViewerState } from "@/lib/auth";
 import { signOutAction } from "@/lib/auth-actions";
@@ -47,7 +48,7 @@ export default async function KataSandiPage({
   return (
     <main className="auth-page">
       <section className="auth-card">
-        <div className="brand-mark">S</div>
+        <BrandLogo className="auth-logo" />
         <p className="eyebrow">AKTIVASI AKUN WALI</p>
         <h1>Buat kata sandi</h1>
         <p className="auth-copy">

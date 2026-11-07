@@ -1,6 +1,6 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import { AdminNav } from "@/components/admin/AdminNav";
+import { BrandLogo } from "@/components/brand-logo";
 import { ConfigNotice } from "@/components/admin/ui";
 import { BottomNav } from "@/components/ui/BottomNav";
 import { Icon } from "@/components/ui/Icon";
@@ -31,13 +31,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <div className="app-shell admin-shell">
       <aside className="sidebar">
-        <Link className="brand" href="/admin" aria-label="School Bus Admin Pusat">
-          <div className="brand-mark">S</div>
-          <div>
-            <div className="brand-name">School Bus</div>
-            <div className="brand-sub">Admin Pusat</div>
-          </div>
-        </Link>
+        <BrandLogo
+          href="/admin"
+          subtitle="Admin Pusat"
+          ariaLabel="School Bus Admin Pusat"
+          className="brand"
+        />
 
         <div className="nav-group">
           <AdminNav />

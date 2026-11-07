@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { BrandLogo } from "@/components/brand-logo";
 
 export const metadata: Metadata = { title: "Eksplorasi Sementara | School Bus Management" };
 
@@ -13,10 +14,7 @@ export default function ChooseRolePage() {
   return (
     <main className="sbm-role-explore">
       <section className="sbm-role-explore-card" aria-labelledby="explore-title">
-        <Link href="/" className="sbm-role-explore-brand" aria-label="Kembali ke beranda">
-          <span className="sbm-role-explore-mark">S</span>
-          <span>School Bus Management</span>
-        </Link>
+        <BrandLogo href="/" ariaLabel="Kembali ke beranda" className="sbm-role-explore-brand" />
         <h1 id="explore-title">Pilih tampilan pengguna</h1>
         <p className="sbm-role-explore-note">Pilih area yang ingin dibuka. Halaman ini hanya penghubung sementara selama pengembangan aplikasi.</p>
         <nav className="sbm-role-explore-actions" aria-label="Pilih tampilan untuk dieksplorasi">
@@ -29,8 +27,7 @@ export default function ChooseRolePage() {
       <style>{`
         .sbm-role-explore{min-height:100vh;display:grid;place-items:center;padding:22px;background:#f7f5ec}
         .sbm-role-explore-card{width:min(100%,410px);padding:26px;background:#fff;border:1px solid #eee5ca;border-radius:16px;box-shadow:0 12px 32px #4e42100a}
-        .sbm-role-explore-brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#33414a;font:800 12px Manrope,sans-serif;margin-bottom:24px}
-        .sbm-role-explore-mark{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:#edc32e;color:#3c310f;font:800 18px Manrope,sans-serif}
+        .sbm-role-explore-brand{margin-bottom:24px}
         .sbm-role-explore-card h1{font:800 21px Manrope,sans-serif;letter-spacing:-.5px;color:#263746;margin:0 0 8px}
         .sbm-role-explore-note{font-size:12px;line-height:1.65;color:#78838a;margin:0 0 20px}
         .sbm-role-explore-actions{display:grid;gap:8px}

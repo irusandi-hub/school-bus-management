@@ -1,5 +1,5 @@
-import Link from "next/link";
 import type { Metadata } from "next";
+import { BrandLogo } from "@/components/brand-logo";
 import { OperatorNav } from "@/components/operator/OperatorNav";
 import { ConfigNotice } from "@/components/admin/ui";
 import { BottomNav } from "@/components/ui/BottomNav";
@@ -28,13 +28,12 @@ export default async function OperatorLayout({ children }: { children: React.Rea
   return (
     <div className="app-shell admin-shell operator-shell">
       <aside className="sidebar">
-        <Link className="brand" href="/operator" aria-label="School Bus Operator">
-          <div className="brand-mark">S</div>
-          <div>
-            <div className="brand-name">School Bus</div>
-            <div className="brand-sub">Operator</div>
-          </div>
-        </Link>
+        <BrandLogo
+          href="/operator"
+          subtitle="Operator"
+          ariaLabel="School Bus Operator"
+          className="brand"
+        />
         <div className="org-chip" title={operator.name}>
           <span className="org-chip-dot" aria-hidden="true" />
           <div>

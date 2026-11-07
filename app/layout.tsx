@@ -5,6 +5,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "School Bus | Manajemen Transportasi Sekolah",
   description: "Dasbor operasional bus sekolah untuk admin, pengemudi, dan orang tua/wali.",
+  icons: {
+    icon: "/assets/landing/favicon.svg",
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

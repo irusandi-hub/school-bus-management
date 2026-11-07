@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { BrandLogo } from "@/components/brand-logo";
 import "./landing.css";
 
 const HERO_IMAGE = {
@@ -13,9 +14,6 @@ export const metadata: Metadata = {
   title: "School Bus Management | Perjalanan Sekolah Terpantau",
   description:
     "Pantau perjalanan anak, bantu pengemudi menjalankan rute, dan kelola armada bus sekolah dalam satu aplikasi.",
-  icons: {
-    icon: "/assets/landing/favicon.svg",
-  },
 };
 
 const STRIP_ITEMS = [
@@ -310,31 +308,12 @@ const ROLE_CARDS = [
   },
 ];
 
-function Brand() {
-  return (
-    <div className="landing-brand">
-      <span className="landing-brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 40 34" fill="none">
-          <rect x="3" y="4" width="34" height="22" rx="6" fill="currentColor" />
-          <path d="M7.5 8h7v6h-7zM17.5 8h7v6h-7zM27.5 8h5v6h-5z" fill="#FFFFFF" />
-          <path d="M7.5 17h7v5h-7zM17.5 17h7v5h-7zM27.5 17h5v5h-5z" fill="#FFFFFF" />
-          <circle cx="11" cy="28" r="4" fill="#101B3B" />
-          <circle cx="29" cy="28" r="4" fill="#101B3B" />
-        </svg>
-      </span>
-      <span className="landing-brand-word">
-        School<span>Bus</span>
-      </span>
-    </div>
-  );
-}
-
 export default function LandingPage() {
   return (
     <div className="landing">
       <div className="landing-shell">
         <header className="landing-header">
-          <Brand />
+          <BrandLogo size="lg" />
         </header>
 
         <section className="landing-hero" aria-labelledby="landing-title">
