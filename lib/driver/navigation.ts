@@ -134,8 +134,6 @@ export function buildNavigationPlan(input: {
   const started = Boolean(trip && trip.status !== "scheduled" && trip.started_at);
   const completed = trip?.status === "completed";
 
-  const recordedStudents = new Set(events.map((event) => event.student_id));
-
   // Status kehadiran memakai catatan terbaru per siswa. Catatan "issue" adalah
   // keterangan kendala, bukan status kehadiran, sehingga tidak menimpa status.
   const latestStatus = new Map<string, string>();
@@ -195,13 +193,17 @@ export function buildNavigationPlan(input: {
   } else if (started) {
     for (const stop of planned) {
       if (stop.isSchool) {
-        if (trip?.arrived_at) stop.status = "arrived";
+        if (input.direction === "afternoon") stop.status = "done";
+        else if (trip?.arrived_at) stop.status = "arrived";
         continue;
       }
-      const entries = studentsByStop.get(stop.id) ?? [];
-      const allRecorded =
-        entries.length > 0 && entries.every((entry) => recordedStudents.has(entry.student_id));
-      if (allRecorded) stop.status = "done";
+      // Arah perjalanan menentukan kapan siswa dianggap selesai: pagi cukup
+      // naik, sore baru selesai setelah turun. Titik tanpa siswa tidak selesai
+      // hanya karena tidak ada event.
+      const allFinal =
+        stop.students.length > 0 &&
+        stop.students.every((student) => !isStudentPending(student.status, input.direction));
+      if (allFinal) stop.status = "done";
     }
 
     const next = planned.find((stop) => stop.status === "waiting");

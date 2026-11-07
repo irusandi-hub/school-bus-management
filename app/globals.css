@@ -1481,10 +1481,7 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
 .ops-switch>span{font-size:8px}
 
 @media(max-width:759px){
-  /* Pita pengembangan global cukup satu baris ringkas di area pengemudi. */
-  body:has(.driver-app) .dev-mode-banner{padding:4px 10px;gap:0 8px;flex-wrap:nowrap;align-items:center;font-size:8px;line-height:1.3}
-  body:has(.driver-app) .dev-mode-banner strong{font-size:8px;white-space:nowrap;flex:0 0 auto}
-  body:has(.driver-app) .dev-mode-banner span{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:8px}
+  body:has(.driver-app) .dev-mode-banner{padding:3px 10px;font-size:8px}
   .driver-head{padding:10px 12px}
   .driver-main{padding:0 10px 10px}
   .driver-app .ops-head{margin-bottom:7px}
@@ -1745,4 +1742,410 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
   .guardian-fact{grid-template-columns:88px minmax(0,1fr)}
 }
 
+/* ==========================================================================
+   Pengemudi terpadu: progres, next stop, dua kolom, dan satu layar operasional
+   ========================================================================== */
+.ops-sync-status{position:relative;height:0;overflow:visible;margin:0;padding:0;z-index:35}
+.ops-sync-status .is-online{display:none}
+.ops-sync-status .is-offline{position:fixed;left:50%;bottom:calc(48px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:70;width:min(92vw,430px);padding:7px 10px;border:1px solid #E9C6A8;border-radius:8px;background:#FFF4E8;color:#7A4A12;box-shadow:0 8px 22px #2B24161F;font-size:9px;line-height:1.4;text-align:center}
 
+.driver-ops{display:flex;flex-direction:column;min-height:0;gap:7px}
+.driver-app{height:100dvh;min-height:100dvh;padding-bottom:0;display:flex;flex-direction:column;overflow:hidden}
+.driver-head{flex:0 0 auto;max-width:none;width:100%;padding:8px 20px;min-height:42px}
+.driver-main{flex:1 1 auto;min-height:0;max-width:1180px;width:100%;margin:0 auto;padding:0 20px 8px;display:flex;flex-direction:column}
+.driver-main>.driver-ops{flex:1 1 auto}
+.driver-foot{flex:0 0 auto;padding:8px 20px 7px;font-size:9px}
+
+/* Header: identitas, tugas, arah, dan papan progres dalam satu blok. */
+.driver-app .ops-head{flex:0 0 auto;margin:0;padding:8px 10px;border-radius:13px;box-shadow:0 6px 14px #FFC4311A}
+.driver-app .ops-head-top{gap:6px;flex-wrap:nowrap;min-height:26px}
+.driver-app .ops-avatar{width:27px;height:27px;border-radius:8px;font-size:12px}
+.driver-app .ops-ident strong{font-size:12.5px;line-height:1.15}
+.driver-app .ops-ident small{font-size:7.5px;line-height:1.25;margin-top:0}
+.ops-head-pills .pill{font-size:7px;padding:2px 5px}
+.driver-app .ops-task-row{margin-top:4px;gap:6px;align-items:flex-end}
+.ops-task-kicker{font-size:6.8px;line-height:1.2;letter-spacing:.045em}
+.ops-task-copy h1{font-size:13.5px;line-height:1.15;margin:1px 0}
+.ops-task-copy small{font-size:7.5px;line-height:1.25;gap:3px}
+.driver-app .ops-head-action{max-width:48%}
+.driver-app .ops-start{gap:2px}
+.driver-app .ops-start small{display:none}
+.ops-primary-action{min-height:31px;padding:0 7px;font-size:8.5px;border-radius:7px;gap:4px}
+.ops-primary-action svg{width:12px;height:12px}
+.ops-meta-line{margin:4px 0 0;font-size:6.8px;line-height:1.25;gap:1px 7px}
+.ops-meta-line svg{width:10px;height:10px}
+
+.ops-progress{display:grid;gap:3px;margin-top:5px;min-width:0}
+.ops-progress-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px}
+.ops-progress-cell{min-width:0;padding:3px 4px 2px;border:1px solid #E9DECB;border-radius:6px;background:#FFFDF8}
+.ops-progress-cell span{display:block;font-size:6.2px;font-weight:800;letter-spacing:.035em;line-height:1.15;text-transform:uppercase;color:#7C6A43;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ops-progress-cell strong{display:block;margin-top:1px;font:800 12.5px Manrope,sans-serif;line-height:1;color:var(--ink)}
+.ops-progress-cell.tone-done{border-color:#CBE5D6;background:#F1F9F4}
+.ops-progress-cell.tone-done span,.ops-progress-cell.tone-done strong{color:#1F6D48}
+.ops-progress-cell.tone-waiting{border-color:#EFD7B1;background:#FFF8EA}
+.ops-progress-cell.tone-waiting span,.ops-progress-cell.tone-waiting strong{color:#8A5C00}
+.ops-progress-cell.tone-onboard{border-color:#CFE0EA;background:#F2F7FA}
+.ops-progress-cell.tone-onboard span,.ops-progress-cell.tone-onboard strong{color:#2C6078}
+.ops-progress-track{height:3px;overflow:hidden;border-radius:999px;background:#EFE4CF}
+.ops-progress-track span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#B88418,#2F8A5D);transition:width .25s ease}
+.ops-progress-line{display:flex;align-items:center;gap:1px 7px;flex-wrap:wrap;margin:0;font-size:6.3px;line-height:1.2;color:#6F6A5E}
+.ops-progress-line span{white-space:nowrap}
+.ops-progress-line b{font-weight:800;color:#4F4B43}
+.ops-progress-skip{color:#8A8170;min-width:0;overflow:hidden;text-overflow:ellipsis}
+
+/* Navigasi + next stop di kolom kiri. */
+.ops-workspace{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr);gap:7px;align-items:stretch;margin:0}
+.ops-workspace>section{min-width:0;margin-bottom:0}
+.ops-left{display:flex;flex-direction:column;gap:6px;min-width:0;min-height:0}
+.ops-left>.ops-nav-panel{flex:0 0 auto;min-width:0;margin:0;padding:7px;border-radius:12px}
+.ops-left>.ops-map{grid-column:auto;flex:1 1 auto;min-width:0;min-height:95px;margin:0;border-radius:12px}
+.ops-nav-panel .route-head-top{gap:3px}
+.ops-panel-eyebrow{font-size:6.5px;gap:3px}
+.ops-nav-panel .route-direction{font-size:6.2px;padding:1px 4px}
+.ops-nav-panel .route-head h2{font-size:12px;margin:2px 0 1px;line-height:1.1}
+.ops-panel-count{font-size:7px;margin-top:0}
+.ops-nav-panel .route-lock{font-size:6.8px;line-height:1.2;margin-top:1px;gap:3px}
+.ops-nav-panel .route-cta{min-height:37px;padding:4px 6px;gap:5px;border-radius:8px;box-shadow:0 4px 8px #FFC4311F;margin-top:5px}
+.ops-nav-panel .route-cta-icon{width:24px;height:24px;border-radius:7px}
+.ops-nav-panel .route-cta-icon svg{width:14px;height:14px}
+.ops-nav-panel .route-cta strong{font-size:9.5px;line-height:1.1}
+.ops-nav-panel .route-cta small{font-size:6.8px;line-height:1.15;margin-top:1px}
+.ops-nav-panel .route-cta>svg:last-child{width:11px;height:11px}
+.ops-nav-panel .route-stops,.ops-nav-panel .route-note{margin-top:3px}
+.ops-nav-panel .route-stops>summary,.ops-nav-panel .route-note>summary{min-height:22px;font-size:7px}
+.ops-nav-panel .route-warn{margin-top:4px;padding:4px 5px}
+.ops-nav-panel .route-warn summary{font-size:6.8px}
+.ops-nav-panel .route-warn p{font-size:6.5px}
+
+.ops-next{min-width:0;margin:5px 0 0;padding:5px 6px;border:1px solid #E8DCC5;border-radius:8px;background:#FFFDF8}
+.ops-next.is-active{border-color:#E8C77B;background:linear-gradient(135deg,#FFF8E3,#FFFDF8);box-shadow:inset 3px 0 0 #FFC431}
+.ops-next.is-complete{border-color:#D8E5DB;background:#F6FAF7}
+.ops-next.is-closed{border-color:#E6D3C5;background:#FFF7F1}
+.ops-next-eyebrow{display:flex;align-items:center;gap:3px;font-size:6.3px;font-weight:800;letter-spacing:.07em;line-height:1.2;text-transform:uppercase;color:#8A5C00}
+.ops-next-eyebrow svg{flex-shrink:0}
+.ops-next-heading{display:flex;align-items:baseline;gap:4px;flex-wrap:wrap;margin-top:2px}
+.ops-next-heading strong{min-width:0;font:800 10.5px Manrope,sans-serif;line-height:1.2;color:var(--ink);overflow-wrap:anywhere}
+.ops-next-heading span{font-size:6.5px;font-weight:700;line-height:1.2;color:#7B6C50;white-space:nowrap}
+.ops-next-place{display:flex;align-items:flex-start;gap:3px;margin:2px 0 0;font-size:7px;line-height:1.3;color:#5F5A50;overflow-wrap:anywhere}
+.ops-next-place svg{flex-shrink:0;margin-top:1px}
+.ops-next-place span{overflow-wrap:anywhere}
+.ops-next-state{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin:2px 0 0;font-size:6.5px;line-height:1.2;color:#7A6330}
+.ops-next-state>span:first-child{font-weight:800;color:#8A5C00}
+.ops-next-gps{display:inline-flex;align-items:center;gap:2px;color:#8A857A;font-weight:600}
+.ops-next-gps svg{flex-shrink:0}
+.ops-next-empty strong{display:block;font:800 9.5px Manrope,sans-serif;line-height:1.2;color:#285E43}
+.ops-next-empty p{margin:2px 0 0;font-size:6.8px;line-height:1.3;color:#6F6A60}
+
+/* Peta mengikuti kolom kiri, bukan baris penuh. */
+.ops-left>.ops-map .ops-map-head{padding:5px 6px;gap:3px}
+.ops-left>.ops-map .ops-map-icon{width:21px;height:21px;border-radius:6px}
+.ops-left>.ops-map .ops-map-icon svg{width:12px;height:12px}
+.ops-left>.ops-map .ops-map-heading{gap:4px}
+.ops-left>.ops-map .ops-map-heading h2{font-size:9px}
+.ops-left>.ops-map .ops-map-heading small{font-size:6.2px;line-height:1.2}
+.ops-left>.ops-map .ops-map-gps{font-size:6.1px;padding:2px 4px;max-width:48%;text-align:right;line-height:1.15}
+.ops-left>.ops-map .ops-map-stage{flex:1 1 auto;height:auto;min-height:65px}
+.ops-left>.ops-map .ops-map-foot{padding:3px 5px 4px;font-size:6.1px;line-height:1.2}
+.ops-left>.ops-map .ops-map-status{padding:6px;gap:1px}
+.ops-left>.ops-map .ops-map-status strong{font-size:7.5px}
+.ops-left>.ops-map .ops-map-status small{font-size:6.2px}
+.ops-left>.ops-map .ops-map-empty{height:auto;min-height:85px;padding:6px}
+.ops-left>.ops-map .ops-map-empty strong{font-size:8px}
+.ops-left>.ops-map .ops-map-empty p{font-size:6.5px}
+
+/* Panel siswa: tinggi grid, hanya daftar yang bergulir. */
+.ops-manifest{height:100%;max-height:100%;min-height:0;display:flex;flex-direction:column;overflow:hidden;border-radius:12px}
+.ops-manifest .panel-head{flex:0 0 auto;padding:7px 7px 5px;gap:4px;align-items:flex-start}
+.ops-manifest .panel-title{font-size:10.5px;line-height:1.15}
+.ops-manifest .panel-subtitle{font-size:6.6px;line-height:1.2;margin-top:1px}
+.ops-manifest .panel-head .pill{font-size:6.3px;padding:1px 4px}
+.ops-students-scroll{flex:1 1 auto;min-height:0;max-height:none;overflow-y:auto;overscroll-behavior:contain;padding:0 6px 2px;scrollbar-width:thin}
+.ops-workspace .ops-student{grid-template-columns:19px minmax(0,1fr);gap:4px;padding:5px 1px}
+.ops-workspace .ops-student-num{width:19px;height:19px;border-radius:5px;font-size:6.8px}
+.ops-workspace .ops-student-title strong{font-size:9px;line-height:1.2}
+.ops-workspace .ops-student-title .pill{font-size:5.8px;padding:1px 3px;line-height:1.15}
+.ops-workspace .ops-student-addr{font-size:6.6px;line-height:1.2;margin-top:1px}
+.ops-workspace .ops-student-more summary{font-size:6.3px;min-height:18px}
+.ops-workspace .ops-student-actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:3px;margin-top:3px}
+.ops-workspace .ops-action,.ops-workspace .ops-absent summary{min-height:31px;border-radius:6px;font-size:7.5px;line-height:1.05;padding:2px 2px;gap:2px}
+.ops-workspace .ops-action svg{width:9px;height:9px}
+.ops-workspace .ops-issue summary{min-height:22px;font-size:6.6px}
+.ops-workspace .ops-student-hint{font-size:6.1px;line-height:1.2;margin-top:1px}
+.ops-workspace .ops-student-issue{font-size:6.4px;line-height:1.2;margin-top:2px}
+.ops-manifest .ops-review>summary{padding:5px 7px;min-height:27px}
+.ops-manifest .ops-review>summary span{font-size:7.5px}
+.ops-manifest .ops-review>summary small{font-size:6.4px}
+.ops-manifest .ops-review-body{font-size:7px;padding:0 7px 7px}
+.ops-manifest .ops-review-link{font-size:6.8px;min-height:24px}
+.ops-manifest .table-empty{padding:12px 8px}
+.ops-manifest .table-empty strong{font-size:8.5px}
+.ops-manifest .table-empty p{font-size:7px}
+
+/* Panel penutupan tetap ringkas dan tersedia. */
+.driver-ops .ops-close{flex:0 0 auto;margin:0;border-radius:10px}
+.driver-ops .ops-close-details>summary{padding:4px 8px;min-height:31px;gap:5px}
+.driver-ops .ops-close-icon{width:22px;height:22px;border-radius:6px}
+.driver-ops .ops-close-icon svg{width:13px;height:13px}
+.driver-ops .ops-close-summary strong{font-size:8.5px}
+.driver-ops .ops-close-summary small{font-size:6.6px}
+.driver-ops .ops-close-flag{font-size:6px;padding:2px 4px}
+.driver-ops .ops-close-open{font-size:6.5px}
+
+/* Kamera tetap terlihat di bawah grid; layar penuh memakai overlay tanpa
+   mengubah izin, sumber, atau mekanisme siaran yang sudah ada. */
+.driver-ops .broadcast-compact{flex:0 0 auto;margin:0;border-radius:10px}
+.broadcast-expand{display:inline-flex;align-items:center;justify-content:center;gap:3px;min-height:24px;padding:0 5px;border:1px solid var(--line);border-radius:5px;background:#FFFDF8;color:#6B5A2A;font:700 6.8px 'DM Sans',Arial,sans-serif;white-space:nowrap;cursor:pointer}
+.broadcast-expand:hover{background:#FFF4D8;color:#6B4A00}
+.broadcast-expanded-stage{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;gap:10px;padding:max(12px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom));background:#0B1210F5;color:#fff;overflow:hidden}
+.broadcast-compact.is-expanded{position:fixed;inset:0;z-index:201;padding:0;border:0;border-radius:0;background:transparent;overflow:hidden}
+.broadcast-compact.is-expanded .broadcast-compact-head{position:absolute;top:0;left:0;right:0;z-index:2;min-height:44px;padding:8px 12px;background:#101915F2;border-bottom:1px solid #FFFFFF1F;color:#fff}
+.broadcast-compact.is-expanded .broadcast-compact-icon{background:#FFFFFF14;color:#FFC431}
+.broadcast-compact.is-expanded .broadcast-compact-copy strong{color:#fff;font-size:10px}
+.broadcast-compact.is-expanded .broadcast-compact-copy span{color:#D5DED9;font-size:8px}
+.broadcast-compact.is-expanded .broadcast-compact-copy small{display:none}
+.broadcast-compact.is-expanded .broadcast-compact-controls{display:none}
+.broadcast-compact.is-expanded .broadcast-expanded-stage{padding-top:64px}
+.broadcast-expanded-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex:0 0 auto;color:#fff;font:800 13px Manrope,sans-serif}
+.broadcast-expanded-bar>span{display:flex;align-items:center;gap:7px}
+.broadcast-expanded-close{display:inline-flex;align-items:center;gap:4px;min-height:34px;background:#FFFFFF14;border-color:#FFFFFF38;color:#fff}
+.broadcast-expanded-placeholder{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:20px;border:1px solid #FFFFFF1F;border-radius:12px;background:radial-gradient(circle at 50% 25%,#1D2A24,#0B1210);text-align:center}
+.broadcast-expanded-icon{width:62px;height:62px;border-radius:18px;display:grid;place-items:center;background:#FFFFFF10;color:#FFC431}
+.broadcast-expanded-placeholder strong{font:800 15px Manrope,sans-serif;color:#fff}
+.broadcast-expanded-placeholder p{max-width:420px;margin:0;font-size:10px;line-height:1.5;color:#D5DED9}
+.broadcast-expanded-placeholder small{font-size:8px;line-height:1.4;color:#AEBAB4}
+.driver-ops .broadcast-compact-head{padding:4px 7px;gap:4px;min-height:35px}
+.driver-ops .broadcast-compact-icon{width:22px;height:22px;border-radius:6px}
+.driver-ops .broadcast-compact-icon svg{width:14px;height:14px}
+.driver-ops .broadcast-compact-copy strong{font-size:8.5px}
+.driver-ops .broadcast-compact-copy span{font-size:6.7px;line-height:1.2;margin-top:0}
+.driver-ops .broadcast-safety-inline{font-size:5.9px;line-height:1.15;margin-top:1px}
+.driver-ops .broadcast-source-select select{font-size:6.8px;padding:3px 2px;max-width:64px;border-radius:5px}
+.driver-ops .broadcast-compact-controls{gap:3px}
+.driver-ops .broadcast-compact-controls>.btn{min-height:24px;padding:0 5px;font-size:6.8px;border-radius:5px}
+.driver-ops .broadcast-consent-inline{font-size:6.2px}
+.driver-ops .broadcast-consent-inline input{width:11px;height:11px}
+.driver-ops .broadcast-publisher-status{font-size:6.2px}
+.driver-ops .ops-side-notes{display:none}
+
+/* Pita pengembangan global satu baris ringkas, termasuk desktop, agar tinggi
+   aplikasi tetap satu viewport. */
+body:has(.driver-app) .dev-mode-banner{height:20px;max-height:20px;padding:3px 12px;gap:0 8px;flex-wrap:nowrap;align-items:center;overflow:hidden;font-size:8.5px;line-height:1.2}
+body:has(.driver-app) .dev-mode-banner strong{font-size:8.5px;white-space:nowrap;flex:0 0 auto}
+body:has(.driver-app) .dev-mode-banner span{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:8.5px}
+body:has(.dev-mode-banner) .driver-app{height:calc(100dvh - 20px);min-height:0}
+
+@media(max-width:759px){
+  .driver-app{padding-bottom:calc(38px + env(safe-area-inset-bottom))}
+  .driver-head{min-height:30px;padding:4px 8px;max-width:none}
+  .driver-brand{gap:6px}
+  .driver-mark{width:24px;height:24px;border-radius:7px;font-size:12px}
+  .driver-brand strong{font-size:10.5px}
+  .driver-brand small{display:none}
+  .driver-account{gap:4px}
+  .driver-account .account-name{display:none}
+  .driver-account .btn{font-size:7px;padding:2px 5px;min-height:22px;border-radius:5px;gap:2px}
+  .driver-account .btn svg{width:10px;height:10px}
+  .driver-main{padding:0 6px 4px;max-width:none}
+  .driver-ops{gap:4px}
+  .driver-app .ops-head{padding:5px 7px;border-radius:10px;box-shadow:0 4px 10px #FFC43114}
+  .driver-app .ops-head-top{min-height:22px;gap:4px}
+  .driver-app .ops-avatar{width:22px;height:22px;border-radius:6px;font-size:10px}
+  .driver-app .ops-ident strong{font-size:11px}
+  .driver-app .ops-ident small{font-size:6.5px}
+  .ops-head-pills .pill{font-size:6.2px;padding:1px 4px}
+  .driver-app .ops-task-row{margin-top:3px;gap:4px}
+  .ops-task-kicker{font-size:7.2px}
+  .ops-task-copy h1{font-size:13px;margin:0}
+  .ops-task-copy small{font-size:7.8px}
+  .driver-app .ops-head-action{max-width:48%}
+  .ops-primary-action{min-height:29px;font-size:8.2px;padding:0 6px;border-radius:6px}
+  .ops-primary-action svg{width:11px;height:11px}
+  .ops-meta-line{font-size:6.8px;gap:0 6px;margin-top:3px}
+  .ops-meta-line svg{width:9px;height:9px}
+  .ops-progress{margin-top:4px;gap:2px}
+  .ops-progress-grid{gap:2px}
+  .ops-progress-cell{padding:2px 3px 1px;border-radius:5px}
+  .ops-progress-cell span{font-size:6.8px;letter-spacing:.02em}
+  .ops-progress-cell strong{font-size:12px}
+  .ops-progress-track{height:2px}
+  .ops-progress-line{font-size:6.6px;gap:0 5px;line-height:1.2}
+  .driver-ops .ops-close{border-radius:8px}
+  .driver-ops .ops-close-details>summary{padding:3px 6px;min-height:28px;gap:4px}
+  .driver-ops .ops-close-icon{width:19px;height:19px;border-radius:5px}
+  .driver-ops .ops-close-summary strong{font-size:8px}
+  .driver-ops .ops-close-summary small{font-size:6.5px}
+  .driver-ops .ops-close-flag{max-width:34%;font-size:6px;padding:1px 3px}
+  .driver-ops .ops-close-open{display:none}
+  .ops-workspace{gap:4px;min-height:0}
+  .ops-left{gap:4px;min-height:0}
+  .ops-left>.ops-nav-panel{padding:5px;border-radius:9px;max-height:calc(100% - 74px);overflow-y:auto}
+  .ops-panel-eyebrow{font-size:6.8px}
+  .ops-nav-panel .route-direction{font-size:6.2px;padding:1px 3px}
+  .ops-nav-panel .route-head h2{font-size:11.5px}
+  .ops-panel-count{font-size:7.2px}
+  .ops-nav-panel .route-lock{font-size:6.8px;margin-top:0}
+  .ops-nav-panel .route-lock svg{width:9px;height:9px}
+  .ops-nav-panel .route-cta{min-height:34px;padding:3px 5px;margin-top:4px;gap:4px;border-radius:7px}
+  .ops-nav-panel .route-cta-icon{width:22px;height:22px;border-radius:6px}
+  .ops-nav-panel .route-cta-icon svg{width:13px;height:13px}
+  .ops-nav-panel .route-cta strong{font-size:9.2px}
+  .ops-nav-panel .route-cta small{font-size:6.8px}
+  .ops-nav-panel .route-cta>svg:last-child{width:10px;height:10px}
+  .ops-nav-panel .route-stops>summary,.ops-nav-panel .route-note>summary{min-height:21px;font-size:7px}
+  .ops-nav-panel .route-note{display:none}
+  .ops-next{margin-top:4px;padding:4px 5px;border-radius:7px}
+  .ops-next-eyebrow{font-size:6.4px;gap:2px}
+  .ops-next-eyebrow svg{width:9px;height:9px}
+  .ops-next-heading{margin-top:1px;gap:2px}
+  .ops-next-heading strong{font-size:8px;line-height:1.15;letter-spacing:-.01em}
+  .ops-next-heading span{font-size:6.4px}
+  .ops-next-place{font-size:7px;margin-top:1px;gap:2px;line-height:1.2}
+  .ops-next-place svg{width:9px;height:9px}
+  .ops-next-state{font-size:6.4px;margin-top:1px;gap:3px}
+  .ops-next-gps{display:none}
+  .ops-next-empty strong{font-size:9px}
+  .ops-next-empty p{font-size:6.8px}
+  .ops-left>.ops-map{border-radius:9px;min-height:70px}
+  .ops-left>.ops-map .ops-map-head{padding:3px 4px;gap:2px}
+  .ops-left>.ops-map .ops-map-icon{width:18px;height:18px;border-radius:4px}
+  .ops-left>.ops-map .ops-map-icon svg{width:10px;height:10px}
+  .ops-left>.ops-map .ops-map-heading h2{font-size:8.5px}
+  .ops-left>.ops-map .ops-map-heading small{display:none}
+  .ops-left>.ops-map .ops-map-gps{font-size:6px;padding:1px 3px;max-width:47%}
+  .ops-left>.ops-map .ops-map-stage{min-height:60px}
+  .ops-left>.ops-map .ops-map-foot{display:none}
+  .ops-left>.ops-map .ops-map-status strong{font-size:7px}
+  .ops-left>.ops-map .ops-map-status small{font-size:6px}
+  .ops-left>.ops-map .ops-map-empty{min-height:60px}
+  .ops-left>.ops-map .ops-map-empty strong{font-size:7.5px}
+  .ops-left>.ops-map .ops-map-empty p{font-size:6.2px}
+  .ops-manifest{border-radius:9px}
+  .ops-manifest .panel-head{padding:6px 6px 4px;gap:2px}
+  .ops-manifest .panel-title{font-size:9.5px}
+  .ops-manifest .panel-subtitle{font-size:6.4px;margin-top:0}
+  .ops-manifest .panel-head .pill{font-size:6px;padding:1px 3px}
+  .ops-students-scroll{padding:0 4px 1px}
+  .ops-workspace .ops-student{grid-template-columns:18px minmax(0,1fr);gap:3px;padding:4px 0}
+  .ops-workspace .ops-student-num{width:18px;height:18px;border-radius:4px;font-size:6.4px}
+  .ops-workspace .ops-student-title strong{font-size:9px;line-height:1.15}
+  .ops-workspace .ops-student-title .pill{font-size:5.8px;padding:1px 2px}
+  .ops-workspace .ops-student-addr{font-size:6.8px;line-height:1.2;margin-top:1px;gap:2px}
+  .ops-workspace .ops-student-addr svg{width:8px;height:8px}
+  .ops-workspace .ops-student-actions{gap:2px;margin-top:2px}
+  .ops-workspace .ops-action,.ops-workspace .ops-absent summary{min-height:29px;font-size:7.2px;border-radius:5px;padding:1px}
+  .ops-workspace .ops-action svg{width:9px;height:9px}
+  .ops-workspace .ops-absent summary::after{margin-left:2px}
+  .ops-workspace .ops-issue summary{min-height:21px;font-size:6.4px}
+  .ops-workspace .ops-student-hint{font-size:6.2px}
+  .ops-workspace .ops-student-issue{font-size:6.2px}
+  .ops-manifest .ops-review>summary{padding:4px 5px;min-height:24px}
+  .ops-manifest .ops-review>summary span{font-size:7px}
+  .ops-manifest .ops-review>summary small{font-size:6.2px}
+  .driver-ops .broadcast-compact-head{padding:3px 5px;gap:3px;min-height:31px}
+  .driver-ops .broadcast-compact-icon{width:19px;height:19px;border-radius:4px}
+  .driver-ops .broadcast-compact-icon svg{width:12px;height:12px}
+  .driver-ops .broadcast-compact-copy strong{font-size:8px}
+  .driver-ops .broadcast-compact-copy span{font-size:6.4px}
+  .driver-ops .broadcast-safety-inline{display:none}
+  .driver-ops .broadcast-source-select select{font-size:6.4px;max-width:58px;padding:2px 1px}
+  .driver-ops .broadcast-compact-controls>.btn{min-height:23px;font-size:6.4px;padding:0 4px}
+  .driver-ops .broadcast-expand{min-height:23px;padding:0 4px}
+  .driver-ops .broadcast-expand span{display:none}
+  .broadcast-expanded-bar{font-size:12px}
+  .broadcast-expanded-placeholder{padding:14px}
+  .broadcast-expanded-placeholder strong{font-size:13px}
+  .broadcast-expanded-placeholder p{font-size:9px}
+  .driver-ops .broadcast-consent-inline{font-size:5.8px}
+  .driver-ops .broadcast-consent-inline input{width:9px;height:9px}
+  .driver-ops .broadcast-publisher-status{font-size:5.8px}
+  .driver-ops .broadcast-demo-compact>summary{min-height:24px;font-size:6.4px;padding:0 4px}
+  .driver-app .mobile-nav{min-height:38px;height:38px;padding:2px 4px calc(2px + env(safe-area-inset-bottom));border-top-color:#E9E3D8;overflow:hidden}
+  .driver-app .mobile-nav a{min-height:32px;height:32px;font-size:7px;gap:1px;padding:1px 4px;align-content:center}
+  .driver-app .mobile-nav svg{width:14px;height:14px}
+  .driver-foot{display:none}
+  .driver-app .ops-switch{margin:0;gap:3px;min-height:0}
+  .driver-app .ops-switch>span{font-size:5.5px}
+  .driver-app .ops-switch a{font-size:6px;min-height:22px;padding:2px 5px}
+  .driver-app .notice{font-size:6.5px;padding:5px 7px;margin:0}
+}
+
+@media(min-width:760px){
+  .driver-app .ops-head{padding:10px 12px}
+  .driver-app .ops-avatar{width:32px;height:32px;font-size:14px}
+  .driver-app .ops-ident strong{font-size:14px}
+  .driver-app .ops-ident small{font-size:8.5px}
+  .ops-head-pills .pill{font-size:8px;padding:3px 6px}
+  .ops-task-kicker{font-size:7.5px}
+  .ops-task-copy h1{font-size:16px}
+  .ops-task-copy small{font-size:8.5px}
+  .ops-primary-action{min-height:35px;font-size:9.5px;padding:0 9px}
+  .ops-meta-line{font-size:7.5px}
+  .ops-progress-cell{padding:4px 6px 3px;border-radius:7px}
+  .ops-progress-cell span{font-size:6.8px}
+  .ops-progress-cell strong{font-size:14px}
+  .ops-progress-line{font-size:7px;gap:0 9px}
+  .ops-workspace{gap:10px}
+  .ops-left{gap:8px}
+  .ops-left>.ops-nav-panel{padding:9px;border-radius:12px}
+  .ops-panel-eyebrow{font-size:7.5px}
+  .ops-nav-panel .route-head h2{font-size:14px}
+  .ops-panel-count{font-size:8px}
+  .ops-nav-panel .route-lock{font-size:7.8px}
+  .ops-nav-panel .route-cta{min-height:44px;padding:6px 8px;margin-top:6px}
+  .ops-nav-panel .route-cta-icon{width:28px;height:28px}
+  .ops-nav-panel .route-cta strong{font-size:11px}
+  .ops-nav-panel .route-cta small{font-size:8px}
+  .ops-next{margin-top:6px;padding:7px 8px;border-radius:9px}
+  .ops-next-eyebrow{font-size:7.2px}
+  .ops-next-heading strong{font-size:12px}
+  .ops-next-heading span{font-size:7.5px}
+  .ops-next-place{font-size:8px}
+  .ops-next-state{font-size:7px}
+  .ops-next-empty strong{font-size:11px}
+  .ops-next-empty p{font-size:7.8px}
+  .ops-left>.ops-map .ops-map-head{padding:7px 8px}
+  .ops-left>.ops-map .ops-map-icon{width:25px;height:25px}
+  .ops-left>.ops-map .ops-map-heading h2{font-size:10.5px}
+  .ops-left>.ops-map .ops-map-heading small{font-size:7px}
+  .ops-left>.ops-map .ops-map-gps{font-size:7px;padding:2px 5px}
+  .ops-left>.ops-map .ops-map-foot{font-size:7px;padding:4px 7px 5px}
+  .ops-manifest .panel-head{padding:9px 9px 6px}
+  .ops-manifest .panel-title{font-size:12px}
+  .ops-manifest .panel-subtitle{font-size:7.5px}
+  .ops-manifest .panel-head .pill{font-size:7px}
+  .ops-workspace .ops-student{padding:6px 2px}
+  .ops-workspace .ops-student-title strong{font-size:10px}
+  .ops-workspace .ops-student-addr{font-size:7.5px}
+  .ops-workspace .ops-action,.ops-workspace .ops-absent summary{min-height:34px;font-size:8.5px}
+  .ops-manifest .ops-review>summary{padding:6px 8px}
+  .driver-ops .ops-close-details>summary{padding:5px 9px;min-height:34px}
+  .driver-ops .broadcast-compact-head{padding:5px 9px;min-height:39px}
+  .driver-ops .broadcast-compact-copy strong{font-size:9.5px}
+  .driver-ops .broadcast-compact-copy span{font-size:7.5px}
+  .driver-ops .broadcast-safety-inline{font-size:6.5px}
+  .driver-head{min-height:50px;padding:10px 20px}
+  .driver-foot{display:flex}
+}
+
+@media(min-width:760px) and (max-height:850px){
+  .ops-left>.ops-map .ops-map-foot{display:none}
+  .ops-left>.ops-nav-panel{padding:7px}
+  .ops-nav-panel .route-cta{min-height:38px;padding:4px 6px;margin-top:4px}
+  .ops-nav-panel .route-stops{margin-top:2px}
+  .ops-nav-panel .route-stops>summary{min-height:18px}
+  .ops-nav-panel .ops-next{margin-top:4px;padding:4px 6px}
+}
+
+@media(min-width:1000px){
+  .ops-workspace{grid-template-columns:minmax(0,1.04fr) minmax(0,.96fr)}
+  .driver-app .ops-head{padding:11px 14px}
+  .ops-progress-grid{gap:5px}
+  .ops-progress-cell{padding:5px 8px 4px}
+  .ops-progress-cell span{font-size:7px}
+  .ops-progress-cell strong{font-size:15px}
+  .ops-progress-line{font-size:7.4px}
+  .ops-next{padding:8px 9px}
+  .ops-manifest .panel-title{font-size:13px}
+  .ops-workspace .ops-student-title strong{font-size:11px}
+  .ops-workspace .ops-action,.ops-workspace .ops-absent summary{min-height:36px;font-size:9px}
+}
