@@ -33,7 +33,6 @@ export default function LandingPage() {
         <h1>Perjalanan anak<br/>lebih <em>terpantau</em>,<br/>hati lebih tenang.</h1>
         <p className="sbm-lead">Informasi perjalanan anak, panduan pengemudi, dan pengelolaan bus sekolah dalam satu aplikasi yang mudah digunakan.</p>
         <div className="sbm-hero-trust"><span><i/> Informasi lebih mudah dipahami</span><span><i/> Akses sesuai kewenangan</span></div>
-        <div className="sbm-auth-card" aria-label="Akses akun"><div><strong>Mulai gunakan aplikasi</strong><small>Masuk ke akun Anda atau buat akun baru.</small></div><div className="sbm-auth-actions"><Link href="/login" className="sbm-auth-signin">Sign In</Link><Link href="/daftar" className="sbm-auth-signup">Sign Up</Link></div></div>
       </div>
       <div className="sbm-hero-visual" role="img" aria-label="Ilustrasi bus sekolah pada rute perjalanan">
         <div className="sbm-visual-top"><span className="sbm-live-dot"/> PERJALANAN SEKOLAH</div>
@@ -60,6 +59,15 @@ export default function LandingPage() {
     </section>
 
     <section className="sbm-refined-assurance"><span aria-hidden="true">✓</span><p><strong>Informasi sesuai hak akses.</strong> Data anak, lokasi, dan video hanya ditampilkan kepada pengguna yang berwenang dan saat fitur tersedia.</p></section>
+    <section className="sbm-login-section" aria-label="Masuk ke aplikasi">
+      <div className="sbm-login-card">
+        <div className="sbm-login-heading"><strong>Sign In</strong><span>Masuk untuk melanjutkan</span></div>
+        <label>Email atau username<input type="text" name="username" autoComplete="username" placeholder="Masukkan email atau username"/></label>
+        <label>Password<input type="password" name="password" autoComplete="current-password" placeholder="Masukkan password"/></label>
+        <Link href="/pilih-peran" className="sbm-login-submit">Sign In</Link>
+        <p className="sbm-login-signup">Belum terdaftar? <Link href="/daftar">Sign Up</Link></p>
+      </div>
+    </section>
     <footer className="sbm-footer"><span>© 2026 School Bus Management</span><span>Transportasi sekolah · Dammam, Saudi Arabia</span></footer>
     <style>{`
       .sbm-refined{--ref-yellow:#efc32d}
@@ -76,15 +84,17 @@ export default function LandingPage() {
       .sbm-route-caption strong,.sbm-route-caption small{display:block}
       .sbm-route-caption strong{font-size:13px;color:#243444}
       .sbm-route-caption small{font-size:11px;color:#78838b;margin-top:3px}
-      .sbm-auth-card{display:flex;align-items:center;justify-content:space-between;gap:18px;max-width:440px;margin-top:24px;padding:15px 16px;background:#fff;border:1px solid #eee5c9;border-radius:14px;box-shadow:0 8px 24px #2737460a}
-      .sbm-auth-card strong,.sbm-auth-card small{display:block}
-      .sbm-auth-card strong{font-size:13px;color:#293b48}
-      .sbm-auth-card small{font-size:11px;color:#78848b;margin-top:4px}
-      .sbm-auth-actions{display:flex;gap:7px;flex:none}
-      .sbm-auth-actions a{padding:9px 13px;border-radius:8px;text-decoration:none;font-size:12px;font-weight:800}
-      .sbm-auth-signin{background:#efc32d;color:#34290c}
-      .sbm-auth-signup{border:1px solid #e5dfce;color:#42515a}
-      @media(max-width:480px){.sbm-auth-card{align-items:flex-start;flex-direction:column}.sbm-auth-actions{width:100%}.sbm-auth-actions a{flex:1;text-align:center}}
+      .sbm-login-section{display:flex;justify-content:center;margin:8px 0 58px;padding:0 18px}
+      .sbm-login-card{width:min(100%,390px);padding:22px;background:#fff;border:1px solid #eee5c9;border-radius:15px;box-shadow:0 9px 28px #2737460b}
+      .sbm-login-heading{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:17px}
+      .sbm-login-heading strong{font:800 19px Manrope,sans-serif;color:#263746}
+      .sbm-login-heading span{font-size:11px;color:#7a858b}
+      .sbm-login-card label{display:block;margin:0 0 12px;font-size:11px;font-weight:700;color:#52616a}
+      .sbm-login-card input{display:block;width:100%;height:42px;margin-top:6px;padding:0 12px;border:1px solid #e4e2d8;border-radius:8px;background:#fff;color:#263746;font:400 13px inherit;outline:none;box-sizing:border-box}
+      .sbm-login-card input:focus{border-color:#d2aa1d;box-shadow:0 0 0 3px #efc32d24}
+      .sbm-login-submit{display:flex;justify-content:center;align-items:center;width:100%;height:43px;margin-top:17px;border-radius:8px;background:#efc32d;color:#34290c;text-decoration:none;font-size:13px;font-weight:800;box-sizing:border-box}
+      .sbm-login-signup{margin:14px 0 0;text-align:center;font-size:11px;color:#7a858b}
+      .sbm-login-signup a{color:#8a6900;font-weight:800;text-decoration:none}
       .sbm-refined-roles{margin:56px 0 30px}
       .sbm-section-heading{margin-bottom:17px}
       .sbm-section-heading h2{font:800 clamp(21px,3vw,28px) Manrope,sans-serif;letter-spacing:-.8px;margin:7px 0 0;color:#243444}
