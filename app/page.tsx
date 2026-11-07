@@ -44,6 +44,7 @@ export default function LandingPage() {
           <svg viewBox="0 0 280 92" fill="none" aria-hidden="true"><path d="M18 67 80 48l48 15 60-38 73 12" stroke="#dbe5eb" strokeWidth="13" strokeLinecap="round"/><path d="m18 67 62-19 48 15 60-38 73 12" stroke="#fff" strokeWidth="7" strokeLinecap="round"/><path d="m18 67 62-19 48 15 60-38 73 12" stroke="#2685bd" strokeWidth="3" strokeLinecap="round" strokeDasharray="5 5"/><circle cx="18" cy="67" r="6" fill="#fff" stroke="#2685bd" strokeWidth="3"/><circle cx="261" cy="38" r="6" fill="#fff" stroke="#2685bd" strokeWidth="3"/><rect x="139" y="30" width="25" height="15" rx="4" fill="#facc15" stroke="#fff" strokeWidth="2"/><path d="M144 34h5v4h-5zm8 0h5v4h-5z" fill="#17304e"/></svg>
           <div className="sbm-live-route-foot"><span><strong>Perjalanan sekolah</strong><small>Lokasi dan status sesuai koneksi perangkat</small></span><span className="sbm-route-arrow">↗</span></div>
         </div>
+      </div>
     </section>
 
     <section id="peran" className="sbm-feature-showcase sbm-role-showcase" aria-label="Fitur berdasarkan jenis pengguna">
