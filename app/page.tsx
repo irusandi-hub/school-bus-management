@@ -69,11 +69,14 @@ export default function LandingPage() {
         </div>
         <div className="sbm-parent-feature-visual" aria-label="Ilustrasi informasi lokasi bus dan perjalanan">
           <div className="sbm-parent-visual-top"><span><i/> PERJALANAN ANAK</span><b>PEMANTAUAN</b></div>
-          <div className="sbm-parent-visual-map">
-            <svg viewBox="0 0 420 180" role="img" aria-label="Ilustrasi rute bus sekolah"><path d="M-10 40 90 70 170 20 250 72 340 25 440 70M-10 140 85 110 165 155 250 105 335 150 440 110M70-20 110 80 65 200M230-20 205 70 260 190M370-20 325 75 380 190" stroke="#dce5df" strokeWidth="13" fill="none" strokeLinecap="round"/><path d="m42 112 75-22 72 29 79-35 78 20" stroke="#4d9abb" strokeWidth="4" fill="none" strokeLinecap="round"/><circle cx="42" cy="112" r="7" fill="#fff" stroke="#4d9abb" strokeWidth="3"/><circle cx="346" cy="104" r="7" fill="#fff" stroke="#d4a51d" strokeWidth="3"/><g transform="translate(176 71)"><rect x="0" y="0" width="49" height="25" rx="6" fill="#263d59"/><rect x="6" y="5" width="9" height="8" rx="1" fill="#dcecf5"/><rect x="18" y="5" width="9" height="8" rx="1" fill="#dcecf5"/><rect x="30" y="5" width="9" height="8" rx="1" fill="#dcecf5"/><circle cx="12" cy="26" r="4" fill="#263d59" stroke="#fff" strokeWidth="2"/><circle cx="38" cy="26" r="4" fill="#263d59" stroke="#fff" strokeWidth="2"/></g></svg>
-            <span className="sbm-map-tag">Lokasi bus</span>
+          <div className="sbm-parent-journey">
+            <div className="sbm-journey-head"><span>PERKEMBANGAN PERJALANAN</span><b>HARI INI</b></div>
+            <div className="sbm-journey-line">
+              <div className="sbm-journey-step complete"><i>✓</i><span><strong>Bus berangkat</strong><small>Perjalanan dimulai</small></span></div>
+              <div className="sbm-journey-step current"><i><span/></i><span><strong>Dalam perjalanan</strong><small>Status dapat dipantau</small></span></div>
+              <div className="sbm-journey-step"><i>3</i><span><strong>Tiba di sekolah</strong><small>Menunggu konfirmasi</small></span></div>
+            </div>
           </div>
-          <div className="sbm-parent-status-row"><span className="sbm-status-symbol">✓</span><span><strong>Status perjalanan</strong><small>Informasi diperbarui saat terhubung</small></span><b>TERPANTAU</b></div>
           <div className="sbm-parent-camera-row"><span className="sbm-camera-symbol">▣</span><span><strong>Kamera bus</strong><small>Tayangan langsung saat tersedia</small></span><span className="sbm-camera-state">LIVE</span></div>
         </div>
       </article>
@@ -163,9 +166,19 @@ export default function LandingPage() {
       .sbm-parent-visual-top span{display:flex;align-items:center;gap:6px}
       .sbm-parent-visual-top i{width:6px;height:6px;border-radius:50%;background:#d4a51d}
       .sbm-parent-visual-top>b{font-size:7px;color:#9a7b24;background:#fff6d9;border-radius:20px;padding:5px 7px}
-      .sbm-parent-visual-map{position:relative;height:160px;margin:11px 0 9px;overflow:hidden;border-radius:9px;background:#f4f7f2}
-      .sbm-parent-visual-map svg{width:100%;height:100%}
-      .sbm-map-tag{position:absolute;left:10px;bottom:9px;padding:5px 8px;border-radius:6px;background:#fff;color:#52636b;font-size:8px;font-weight:700;box-shadow:0 2px 7px #26374612}
+      .sbm-parent-journey{margin:11px 0 9px;padding:14px 12px 11px;border-radius:9px;background:#f7f8f5}
+      .sbm-journey-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:14px;color:#718078;font-size:7px;font-weight:800;letter-spacing:.55px}
+      .sbm-journey-head b{padding:4px 6px;border-radius:5px;background:#fff0bd;color:#8c6a0d;font-size:7px}
+      .sbm-journey-line{display:grid;gap:0}
+      .sbm-journey-step{position:relative;display:flex;align-items:flex-start;gap:9px;min-height:43px;color:#98a29b}
+      .sbm-journey-step:not(:last-child):before{position:absolute;content:"";left:9px;top:20px;bottom:-1px;width:2px;background:#dfe5dc}
+      .sbm-journey-step i{position:relative;z-index:1;display:grid;place-items:center;width:19px;height:19px;flex:none;border:1px solid #d8dfd7;border-radius:50%;background:#fff;color:#8c9a8e;font-size:8px;font-style:normal;font-weight:800}
+      .sbm-journey-step.complete i{border-color:#a9c8a8;background:#e8f2e5;color:#548452}
+      .sbm-journey-step.current i{border:2px solid #d9b12a;background:#fff8df}
+      .sbm-journey-step.current i span{width:5px;height:5px;border-radius:50%;background:#c18e12}
+      .sbm-journey-step strong,.sbm-journey-step small{display:block}
+      .sbm-journey-step strong{padding-top:2px;font-size:9px;color:#46564d}
+      .sbm-journey-step small{margin-top:2px;font-size:8px;color:#87928a}
       .sbm-parent-status-row,.sbm-parent-camera-row{display:flex;align-items:center;gap:9px;padding:9px 2px;border-top:1px solid #f0eee6}
       .sbm-status-symbol,.sbm-camera-symbol{width:27px;height:27px;display:grid;place-items:center;flex:none;border-radius:8px;background:#fff5d7;color:#92700e;font-size:13px;font-weight:800}
       .sbm-camera-symbol{background:#edf4f8;color:#487c9e}
@@ -222,7 +235,6 @@ export default function LandingPage() {
       @media(max-width:420px){
         .sbm-parent-feature{padding:16px}
         .sbm-feature-checks li{grid-template-columns:1fr;gap:1px}
-        .sbm-parent-visual-map{height:140px}
         .sbm-support-feature{padding:14px;grid-template-columns:32px minmax(0,1fr);gap:0 9px}
         .sbm-support-icon{width:31px;height:31px}
         .sbm-support-feature ul{gap:6px 9px}
