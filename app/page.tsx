@@ -50,12 +50,6 @@ export default function LandingPage() {
     </section>
 
     <section className="sbm-feature-showcase sbm-role-showcase" aria-label="Fitur berdasarkan jenis pengguna">
-      <div className="sbm-section-heading">
-        <p className="sbm-eyebrow"><i/> FITUR APLIKASI</p>
-        <h2>Semua kebutuhan, sesuai peran.</h2>
-        <p className="sbm-section-lead">Setiap pengguna mendapat informasi dan alat kerja yang memang dibutuhkan.</p>
-      </div>
-
       <div className="sbm-role-grid">
         <article className="sbm-role-card parent">
           <div className="sbm-role-card-top">
