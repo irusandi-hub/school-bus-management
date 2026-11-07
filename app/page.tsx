@@ -76,9 +76,9 @@ export default function LandingPage() {
             <Link href="/pilih-peran" className="sbm-secondary">Lihat lebih detail <b>→</b></Link>
           </div>
           <div className="sbm-ops-preview">
-            <strong>Pusat Operasi</strong><div className="sbm-preview-stats"><span>Berlangsung<b>12</b></span><span>Menunggu<b>5</b></span><span>Selesai<b>8</b></span></div>
+            <strong>Pusat Operasi</strong><div className="sbm-preview-stats"><span>Berlangsung<b>—</b></span><span>Menunggu<b>—</b></span><span>Selesai<b>—</b></span></div>
             <div className="sbm-preview-map"><i/><i/><i/><b>⌖</b></div>
-            <small>Perjalanan aktif</small><div className="sbm-preview-row">SB-001 <span>Rute A</span><b>Berlangsung</b></div><div className="sbm-preview-row">SB-002 <span>Rute B</span><b>Menunggu</b></div>
+            <small>Perjalanan aktif</small><div className="sbm-preview-row">Armada <span>Rute</span><b>Status</b></div><div className="sbm-preview-row">Penugasan <span>Rute</span><b>Status</b></div>
           </div>
         </article>
 
@@ -89,7 +89,7 @@ export default function LandingPage() {
             <ul><FeatureCheck>Lihat status perjalanan anak</FeatureCheck><FeatureCheck>Pantau posisi bus (jika tersedia)</FeatureCheck><FeatureCheck>Akses video langsung (jika tersedia)</FeatureCheck><FeatureCheck>Riwayat perjalanan &amp; kehadiran</FeatureCheck></ul>
             <Link href="/pilih-peran" className="sbm-secondary yellow">Lihat lebih detail <b>→</b></Link>
           </div>
-          <div className="sbm-parent-phone"><div className="sbm-parent-notch"/><strong>Anak Saya</strong><div className="sbm-child-line"><i/> <span>Ahmad Fauzi<small>Kelas 3A</small></span></div><label>● Dalam Perjalanan</label><div className="sbm-parent-video">▶<small>Live Video · Jika tersedia</small></div></div>
+          <div className="sbm-parent-phone"><div className="sbm-parent-notch"/><strong>Anak Saya</strong><div className="sbm-child-line"><i/> <span>Informasi siswa<small>Data terdaftar</small></span></div><label>● Dalam Perjalanan</label><div className="sbm-parent-video">▶<small>Live Video · Jika tersedia</small></div></div>
         </article>
       </section>
 
