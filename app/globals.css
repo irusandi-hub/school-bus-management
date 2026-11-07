@@ -2451,3 +2451,92 @@ body:has(.dev-mode-banner) .driver-app{height:calc(100dvh - 20px);min-height:0}
  .sbm-chooser-card .sbm-role-detail{font-size:8px}
  .sbm-role-features{grid-template-columns:1fr}
 }
+
+/* Landing v4 — editorial product showcase and single sign-in entry */
+.sbm-landing-v4{background:#f5f8fc;color:#152844}
+.sbm-landing-v4 .sbm-header{min-height:58px;padding:11px clamp(20px,4vw,58px);justify-content:flex-start}
+.sbm-landing-v4 .sbm-nav{display:none}
+.sbm-landing-v4 .sbm-hero{min-height:275px;padding-top:14px;padding-bottom:18px;grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);gap:28px}
+.sbm-landing-v4 .sbm-hero h1{font-size:clamp(32px,3.5vw,47px);line-height:1.07;letter-spacing:-1.7px}
+.sbm-landing-v4 .sbm-lead{font-size:12px;line-height:1.62;max-width:490px}
+.sbm-hero-trust{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:15px}
+.sbm-hero-trust span{display:flex;align-items:center;gap:6px;color:#63748c;font-size:9px;font-weight:700}
+.sbm-hero-trust i{width:6px;height:6px;border-radius:50%;background:#299b78}
+.sbm-landing-v4 .sbm-hero-visual{height:260px;border-radius:16px}
+.sbm-landing-v4 .sbm-role-grid{gap:13px}
+.sbm-landing-v4 .sbm-role-card{position:relative;padding:15px 16px 16px;min-width:0;border-radius:15px;border:1px solid #dce6f0;box-shadow:0 9px 24px #1838580b;transition:transform .2s,box-shadow .2s}
+.sbm-landing-v4 .sbm-role-card:hover{transform:translateY(-3px);box-shadow:0 16px 30px #18385816}
+.sbm-landing-v4 .sbm-role-card.operator{border-top:3px solid #d4a21b;background:linear-gradient(155deg,#fff 65%,#fffaf0)}
+.sbm-landing-v4 .sbm-role-card.driver{border-top:3px solid #3786c5;background:linear-gradient(155deg,#fff 65%,#f1f7fd)}
+.sbm-landing-v4 .sbm-role-card.wali{border-top:3px solid #329b78;background:linear-gradient(155deg,#fff 65%,#f0f8f4)}
+.sbm-landing-v4 .sbm-role-card-head{margin-bottom:7px}
+.sbm-landing-v4 .sbm-role-icon{width:32px;height:32px;border-radius:9px}
+.sbm-landing-v4 .sbm-role-icon svg{width:20px;height:20px}
+.sbm-landing-v4 .sbm-role-kicker{font-size:8px;letter-spacing:.75px}
+.sbm-landing-v4 .sbm-role-card h2{font-size:19px;margin-bottom:5px}
+.sbm-landing-v4 .sbm-role-description{font-size:9px;line-height:1.5;min-height:40px;margin-bottom:9px;color:#596b83}
+.sbm-role-visual{position:relative;width:100%;height:116px;overflow:hidden;border:1px solid #e1e9f1;border-radius:10px;background:#f4f7fa;margin:0 0 10px;padding:9px 10px}
+.sbm-role-visual:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 20%,#ffffff45 50%,transparent 75%);transform:translateX(-100%);animation:sbm-sheen 8s ease-in-out infinite}
+@keyframes sbm-sheen{0%,65%{transform:translateX(-100%)}85%,100%{transform:translateX(100%)}}
+.operator-visual{background:linear-gradient(135deg,#f5f7fa,#eef3f7)}
+.driver-visual{background:linear-gradient(135deg,#f0f6fc,#eaf2fa)}
+.parent-visual{background:linear-gradient(135deg,#f0f7f3,#eaf4ef)}
+.mini-top{display:flex;justify-content:space-between;gap:5px;color:#63748a;font-size:7px;font-weight:800;letter-spacing:.5px}
+.mini-top b{font-size:7px;color:#248765;white-space:nowrap}
+.mini-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:10px}
+.mini-stats div{background:#fff;border:1px solid #e6edf3;border-radius:6px;padding:5px 7px;min-width:0}
+.mini-stats strong{display:block;font:800 15px Manrope,Arial,sans-serif;color:#1d3552}
+.mini-stats small{display:block;font-size:7px;color:#77869a;margin-top:1px}
+.mini-chart{height:23px;display:flex;align-items:end;gap:5px;margin:7px 3px 0}
+.mini-chart i{display:block;flex:1;border-radius:3px 3px 0 0;background:#8db4d2;height:40%}
+.mini-chart i:nth-child(3n){height:80%;background:#4388bd}.mini-chart i:nth-child(4n){height:60%}.mini-chart i:nth-child(5n){height:95%;background:#d5ad42}
+.mini-foot{position:absolute;left:10px;right:10px;bottom:7px;display:flex;justify-content:space-between;color:#73839a;font-size:7px;font-weight:700}
+.mini-route{display:grid;grid-template-columns:17px minmax(0,1fr);column-gap:7px;row-gap:1px;margin-top:8px}
+.mini-route>div{display:flex;flex-direction:column;gap:1px;padding-bottom:3px}
+.mini-route strong{font-size:8px;color:#2b405c}.mini-route small{font-size:7px;color:#75859a}
+.route-node{grid-column:1;grid-row:auto;width:16px;height:16px;display:grid;place-items:center;border:1px solid #8ea8c0;background:#fff;border-radius:50%;font-size:7px;color:#426789;font-weight:800}
+.route-node.done{background:#2d9874;color:#fff;border-color:#2d9874}
+.route-node.current{background:#327fb8;color:#fff;border-color:#327fb8}
+.parent-screen{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
+.parent-map{height:49px;position:relative;overflow:hidden;border:1px solid #dce7e1;border-radius:6px;background:repeating-linear-gradient(35deg,#e3ece7 0 7px,#f7faf8 7px 13px)}
+.parent-map:before{content:"";position:absolute;left:10%;top:54%;width:90%;height:3px;border-radius:3px;background:#4196bd;transform:rotate(-18deg)}
+.parent-map span{position:absolute;z-index:1;left:49%;top:31%;width:9px;height:9px;border:2px solid #fff;border-radius:50%;background:#248d70;box-shadow:0 0 0 3px #248d7030}
+.parent-map i{position:absolute;right:13%;top:16%;width:7px;height:7px;border-radius:50%;background:#e5b73a;border:2px solid #fff}
+.parent-map b{position:absolute;left:13%;bottom:13%;width:7px;height:7px;border-radius:50%;background:#4389bd;border:2px solid #fff}
+.parent-info{padding:4px 0;display:flex;flex-direction:column;gap:4px}
+.parent-info strong{font-size:8px;color:#2b405c}.parent-info small{font-size:7px;color:#78889a}
+.parent-progress{height:4px;border-radius:4px;background:#dfe9e3;overflow:hidden;margin-top:3px}
+.parent-progress i{display:block;width:66%;height:100%;background:#329b78}
+.mini-chips{display:flex;gap:5px;margin-top:5px}
+.mini-chips span{background:#fff;border:1px solid #e2ebe5;border-radius:5px;padding:3px 5px;color:#607b6e;font-size:6px;white-space:nowrap}
+.sbm-landing-v4 .sbm-role-card ul{gap:5px;margin-top:0}
+.sbm-landing-v4 .sbm-role-card li{font-size:8px;line-height:1.4;color:#40536c}
+.sbm-landing-v4 .sbm-role-card li span{width:13px;height:13px;background:#e8f3ed;color:#24845e}
+.sbm-security-v4{width:min(calc(100% - 2 * clamp(22px,4vw,58px)),1324px);margin:13px auto 0;padding:13px 16px;border:1px solid #dce7f1;border-radius:13px;background:linear-gradient(110deg,#edf4fa,#f8fafc);box-shadow:0 7px 20px #19395708}
+.sbm-security-v4-head{display:flex;align-items:center;gap:11px}
+.sbm-security-v4-head>div{min-width:0}
+.sbm-security-v4 .sbm-security-icon{width:34px;height:34px;background:#fff;color:#2876a6;border:1px solid #e2eaf1}
+.sbm-security-v4 .sbm-security-icon svg{width:22px;height:22px}
+.sbm-security-v4 strong{display:block;font-size:10px;color:#1c3553}
+.sbm-security-v4 p{margin:3px 0 0;font-size:8px;line-height:1.45;color:#64758b}
+.sbm-security-v4-points{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:11px}
+.sbm-security-v4-points>div{display:flex;align-items:center;gap:8px;min-width:0;padding:8px 9px;background:#ffffffb8;border:1px solid #e4ebf2;border-radius:8px}
+.sbm-security-v4-points b{font:800 11px Manrope,Arial,sans-serif;color:#8ba1b6}
+.sbm-security-v4-points span{min-width:0}
+.sbm-security-v4-points strong{font-size:8px}
+.sbm-security-v4-points small{display:block;margin-top:2px;font-size:7px;line-height:1.35;color:#73839a}
+.sbm-login-card{width:min(calc(100% - 2 * clamp(22px,4vw,58px)),1324px);margin:12px auto 0;padding:15px 19px;display:flex;align-items:center;justify-content:space-between;gap:20px;border:1px solid #e2eaf2;border-radius:13px;background:#fff;box-shadow:0 9px 24px #1838580a}
+.sbm-login-card-copy{min-width:0}
+.sbm-login-card-copy .sbm-eyebrow{margin:0 0 5px;font-size:8px}
+.sbm-login-card-copy h2{margin:0;font:800 17px/1.2 Manrope,Arial,sans-serif;letter-spacing:-.4px;color:#172944}
+.sbm-login-card-copy>p:last-child{margin:4px 0 0;font-size:9px;line-height:1.45;color:#66768c}
+.sbm-login-card-action{display:flex;align-items:center;justify-content:space-between;gap:28px;min-width:225px;padding:11px 14px;border-radius:9px;background:#172e4c;color:#fff;text-decoration:none;transition:background .2s,transform .2s}
+.sbm-login-card-action:hover{background:#245e8b;transform:translateY(-2px)}
+.sbm-login-card-action b{display:block;font-size:12px}
+.sbm-login-card-action small{display:block;margin-top:3px;font-size:8px;color:#d4dfeb}
+.sbm-login-card-action>strong{font-size:19px;color:#f4c644}
+.sbm-landing-v4 .sbm-footer{padding-top:9px;padding-bottom:11px}
+@media(min-width:1000px) and (min-height:760px){.sbm-landing-v4 .sbm-hero{min-height:270px}.sbm-role-visual{height:116px}}
+@media(max-width:900px){.sbm-landing-v4 .sbm-hero{grid-template-columns:1fr;gap:15px}.sbm-landing-v4 .sbm-hero-visual{height:220px}.sbm-landing-v4 .sbm-role-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.sbm-landing-v4 .sbm-role-card{padding:11px}.sbm-role-visual{height:105px}.sbm-landing-v4 .sbm-role-description{min-height:56px}.sbm-security-v4-points{gap:6px}}
+@media(max-width:680px){.sbm-landing-v4 .sbm-header{padding:10px 16px}.sbm-landing-v4 .sbm-hero{padding:17px 16px 13px}.sbm-landing-v4 .sbm-hero h1{font-size:clamp(29px,8vw,36px)}.sbm-landing-v4 .sbm-hero-visual{height:195px}.sbm-landing-v4 .sbm-role-grid{grid-template-columns:1fr;padding:0 16px;gap:10px}.sbm-landing-v4 .sbm-role-card{padding:14px}.sbm-landing-v4 .sbm-role-description{min-height:0;font-size:9px}.sbm-role-visual{height:116px}.sbm-landing-v4 .sbm-role-card li{font-size:9px}.sbm-security-v4{width:calc(100% - 32px);padding:12px;margin-top:11px}.sbm-security-v4-points{grid-template-columns:1fr}.sbm-security-v4-points>div{padding:7px}.sbm-security-v4-points small{font-size:8px}.sbm-login-card{width:calc(100% - 32px);margin-top:10px;padding:13px;display:grid;gap:10px}.sbm-login-card-copy h2{font-size:16px}.sbm-login-card-action{min-width:0;width:100%}.sbm-landing-v4 .sbm-footer{padding:10px 16px 14px;font-size:7px}}
+@media(max-width:380px){.sbm-role-visual{height:108px}.sbm-landing-v4 .sbm-hero h1{font-size:29px}.sbm-landing-v4 .sbm-role-card{padding:12px}}
