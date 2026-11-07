@@ -26,7 +26,7 @@ const roles = [
 
 export default function LandingPage() {
   return <main className="sbm-landing sbm-landing-v4 sbm-refined">
-    <header className="sbm-header"><Brand/></header>
+    <header className="sbm-header"><Brand/><a href="#peran" className="sbm-mobile-menu" aria-label="Lihat pilihan pengguna"><span/><span/><span/></a></header>
     <section className="sbm-hero">
       <div className="sbm-hero-copy">
         <p className="sbm-eyebrow"><i/> TRANSPORTASI SEKOLAH</p>
@@ -68,7 +68,7 @@ export default function LandingPage() {
             <span className="sbm-role-icon"><RoleIcon type="driver"/></span>
             <span className="sbm-role-kicker">PENGEMUDI</span>
           </div>
-          <div className="sbm-role-media sbm-driver-media" aria-hidden="true"><img src="https://images.pexels.com/photos/5406428/pexels-photo-5406428.jpeg?auto=compress&cs=tinysrgb&w=900" alt="" loading="lazy"/><div className="sbm-media-glass"><span>URUTAN PERJALANAN</span><strong>Penjemputan → Sekolah</strong><small>Daftar titik tetap teratur</small></div></div>
+          <div className="sbm-role-media sbm-driver-media" aria-hidden="true"><img src="https://upload.wikimedia.org/wikipedia/commons/9/9f/2011_Blue_Bird_Vision_dashboard.jpg" alt="" loading="lazy"/><div className="sbm-media-glass"><span>URUTAN PERJALANAN</span><strong>Penjemputan → Sekolah</strong><small>Daftar titik tetap teratur</small></div></div>
           <p>Semua titik perjalanan tersusun jelas.</p>
           <ul>
             <li><span className="sbm-feature-mini-icon">↗</span><span className="sbm-feature-copy">Ikuti urutan titik jemput dan antar.</span></li>
