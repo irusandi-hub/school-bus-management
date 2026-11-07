@@ -103,7 +103,7 @@ export default function LandingPage() {
       .sbm-refined-assurance>span{width:27px;height:27px;display:grid;place-items:center;flex:none;border-radius:50%;background:#f4d66e;color:#594400;font-weight:900}
       .sbm-refined-assurance p{font-size:12px;line-height:1.55;color:#6f654b;margin:0}
       .sbm-refined-assurance strong{color:#493b1c}
-      @media(max-width:760px){.sbm-refined .sbm-hero{grid-template-columns:1fr}.sbm-refined .sbm-hero-visual{min-height:240px}.sbm-refined-role{grid-template-columns:42px 1fr;gap:10px 13px;padding:15px 2px}.sbm-refined-role ul{grid-column:2;gap:6px 12px}.sbm-refined .sbm-footer{gap:7px;flex-direction:column}}
+      @media(max-width:760px){.sbm-auth-entry-card{align-items:flex-start;flex-direction:column}.sbm-auth-entry-actions{width:100%}.sbm-auth-entry-actions a{flex:1}.sbm-refined .sbm-hero{grid-template-columns:1fr}.sbm-refined .sbm-hero-visual{min-height:240px}.sbm-refined-role{grid-template-columns:42px 1fr;gap:10px 13px;padding:15px 2px}.sbm-refined-role ul{grid-column:2;gap:6px 12px}.sbm-refined .sbm-footer{gap:7px;flex-direction:column}}
     `}</style>
   </main>;
 }
