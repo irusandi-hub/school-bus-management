@@ -19,9 +19,9 @@ function RoleIcon({ type }: { type: "parent" | "driver" | "operator" }) {
 }
 
 const roles = [
-  { type: "parent" as const, title: "Orang Tua", description: "Pantau kabar perjalanan, lokasi bus, dan video saat tersedia.", points: ["Status perjalanan anak", "Lokasi bus saat terhubung", "Tampilan video saat diizinkan"] },
-  { type: "driver" as const, title: "Pengemudi", description: "Jalankan perjalanan dengan urutan rute dan informasi siswa yang jelas.", points: ["Panduan titik jemput dan antar", "Informasi serta kehadiran siswa", "Pembaruan status perjalanan"] },
-  { type: "operator" as const, title: "Operator", description: "Atur armada, pengemudi, rute, dan penugasan perjalanan.", points: ["Data armada dan pengemudi", "Rute serta penugasan", "Pemantauan operasional"] },
+  { type: "parent" as const, title: "Orang Tua", description: "Ketahui perkembangan perjalanan anak, dengan akses informasi yang tetap terbatas.", points: ["Status naik, turun, dan perjalanan", "Lokasi bus saat GPS terhubung", "Kamera mengikuti status perjalanan"] },
+  { type: "driver" as const, title: "Pengemudi", description: "Jalankan tugas dengan rute terarah, catatan siswa, dan pemeriksaan keselamatan.", points: ["Checklist pemeriksaan keselamatan", "Pemeriksaan siswa sebelum perjalanan ditutup", "Urutan titik dan navigasi"] },
+  { type: "operator" as const, title: "Operator", description: "Kelola armada dan pengemudi, susun penugasan, serta pantau perjalanan.", points: ["Data dan status armada", "Data pengemudi dan penugasan", "Ringkasan serta riwayat perjalanan"] },
 ];
 
 export default function LandingPage() {
@@ -59,16 +59,18 @@ export default function LandingPage() {
       <article className="sbm-parent-feature">
         <div className="sbm-parent-feature-copy">
           <span className="sbm-feature-label"><RoleIcon type="parent"/> UNTUK ORANG TUA / WALI</span>
-          <h3>Ketahui perjalanan anak, tanpa harus terus bertanya.</h3>
-          <p>Pantau informasi penting selama perjalanan sekolah dari satu halaman yang mudah dipahami.</p>
+          <h3>Ketahui perjalanan anak, dengan privasi yang tetap dijaga.</h3>
+          <p>Informasi perjalanan anak tersaji dalam satu halaman, sehingga orang tua dapat mengikuti perjalanan tanpa harus terus menghubungi pengemudi.</p>
           <ul className="sbm-feature-checks">
-            <li><strong>Lokasi bus</strong><span>Lihat posisi bus saat perangkat pengemudi terhubung.</span></li>
-            <li><strong>Status perjalanan</strong><span>Ketahui perkembangan perjalanan dan status antar-jemput.</span></li>
-            <li><strong>Kamera langsung</strong><span>Lihat tayangan kamera ketika perangkat dan akses kamera tersedia.</span></li>
+            <li><strong>Status anak</strong><span>Ketahui catatan naik, turun, tidak ikut bus, dan perkembangan perjalanan.</span></li>
+            <li><strong>Lokasi bus</strong><span>Lihat posisi pengemudi saat GPS perangkat terhubung dan mengirim lokasi.</span></li>
+            <li><strong>Kamera terbatas</strong><span>Akses tayangan mengikuti status anak selama perjalanan; bukan pemantauan sepanjang hari.</span></li>
+            <li><strong>Akses pribadi</strong><span>Informasi anak hanya ditampilkan kepada akun wali yang terhubung dan terverifikasi.</span></li>
+            <li><strong>Beberapa anak</strong><span>Pantau anak-anak yang terdaftar melalui satu akun wali.</span></li>
           </ul>
         </div>
         <div className="sbm-parent-feature-visual" aria-label="Ilustrasi informasi lokasi bus dan perjalanan">
-          <div className="sbm-parent-visual-top"><span><i/> PERJALANAN ANAK</span><b>PEMANTAUAN</b></div>
+          <div className="sbm-parent-visual-top"><span><i/> CONTOH PERJALANAN</span><b>STATUS ANAK</b></div>
           <div className="sbm-parent-journey">
             <div className="sbm-journey-head"><span>PERKEMBANGAN PERJALANAN</span><b>HARI INI</b></div>
             <div className="sbm-journey-line">
@@ -77,25 +79,25 @@ export default function LandingPage() {
               <div className="sbm-journey-step"><i>3</i><span><strong>Tiba di sekolah</strong><small>Menunggu konfirmasi</small></span></div>
             </div>
           </div>
-          <div className="sbm-parent-camera-row"><span className="sbm-camera-symbol">▣</span><span><strong>Kamera bus</strong><small>Tayangan langsung saat tersedia</small></span><span className="sbm-camera-state">LIVE</span></div>
+          <div className="sbm-parent-camera-row"><span className="sbm-camera-symbol">▣</span><span><strong>Kamera perjalanan</strong><small>Akses mengikuti status naik hingga turun</small></span><span className="sbm-camera-state">TERBATAS</span></div>
         </div>
       </article>
 
       <div className="sbm-support-features">
         <article className="sbm-support-feature driver">
           <span className="sbm-support-icon"><RoleIcon type="driver"/></span>
-          <div><span className="sbm-support-kicker">UNTUK PENGEMUDI</span><h3>Rute dan tugas lebih terarah.</h3><p>Panduan titik jemput dan antar, urutan pemberhentian, informasi siswa, serta pembaruan status perjalanan dalam satu halaman operasional.</p></div>
-          <ul><li>Urutan titik perjalanan</li><li>Informasi kehadiran siswa</li><li>Panduan navigasi</li></ul>
+          <div><span className="sbm-support-kicker">UNTUK PENGEMUDI</span><h3>Perjalanan terarah, siswa lebih terperiksa.</h3><p>Pengemudi mendapat urutan titik, informasi siswa, dan catatan perjalanan. Sebelum menutup tugas, sistem meminta pemeriksaan keselamatan dan status seluruh siswa.</p></div>
+          <ul><li>Checklist kondisi kendaraan</li><li>Periksa jumlah dan siswa tertinggal</li><li>Catat naik, turun, dan ketidakhadiran</li><li>Navigasi titik jemput dan antar</li></ul>
         </article>
         <article className="sbm-support-feature operator">
           <span className="sbm-support-icon"><RoleIcon type="operator"/></span>
-          <div><span className="sbm-support-kicker">UNTUK OPERATOR</span><h3>Operasional armada lebih tertata.</h3><p>Kelola data kendaraan dan pengemudi, susun rute, atur penugasan, serta pantau aktivitas perjalanan dari satu tempat.</p></div>
-          <ul><li>Data armada dan pengemudi</li><li>Rute dan titik pemberhentian</li><li>Penugasan perjalanan</li></ul>
+          <div><span className="sbm-support-kicker">UNTUK OPERATOR</span><h3>Armada dan perjalanan dalam satu kendali.</h3><p>Kelola data kendaraan dan pengemudi, atur penugasan tanpa benturan, lalu ikuti status serta riwayat perjalanan dalam satu tempat.</p></div>
+          <ul><li>Data dan status kendaraan</li><li>Data pengemudi dan SIM</li><li>Penugasan dengan cek benturan</li><li>Status dan riwayat perjalanan</li></ul>
         </article>
       </div>
     </section>
 
-    <section className="sbm-refined-assurance"><span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2.8 19 5.5v5.7c0 4.6-2.8 7.8-7 10-4.2-2.2-7-5.4-7-10V5.5l7-2.7Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/><path d="m8.5 12 2.3 2.3 4.8-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg></span><p><strong>Perlindungan dan akses terbatas.</strong> Informasi anak dan perjalanan ditampilkan sesuai hak akses pengguna. Lokasi dan kamera bergantung pada koneksi serta ketersediaan perangkat.</p></section>
+    <section className="sbm-refined-assurance"><span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2.8 19 5.5v5.7c0 4.6-2.8 7.8-7 10-4.2-2.2-7-5.4-7-10V5.5l7-2.7Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/><path d="m8.5 12 2.3 2.3 4.8-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg></span><p><strong>Keselamatan dan privasi tetap diperhatikan.</strong> Akses informasi anak dibatasi untuk wali yang berhak. Tayangan kamera mengikuti status perjalanan anak; lokasi dan kamera aktif saat perangkat serta koneksi tersedia.</p></section>
     <section className="sbm-login-section" aria-label="Masuk ke aplikasi">
       <div className="sbm-login-card">
         <div className="sbm-login-heading"><div><span className="sbm-login-kicker">SUDAH MEMILIKI AKUN?</span><strong>Masuk</strong></div></div>
