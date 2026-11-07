@@ -2540,3 +2540,48 @@ body:has(.dev-mode-banner) .driver-app{height:calc(100dvh - 20px);min-height:0}
 @media(max-width:900px){.sbm-landing-v4 .sbm-hero{grid-template-columns:1fr;gap:15px}.sbm-landing-v4 .sbm-hero-visual{height:220px}.sbm-landing-v4 .sbm-role-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.sbm-landing-v4 .sbm-role-card{padding:11px}.sbm-role-visual{height:105px}.sbm-landing-v4 .sbm-role-description{min-height:56px}.sbm-security-v4-points{gap:6px}}
 @media(max-width:680px){.sbm-landing-v4 .sbm-header{padding:10px 16px}.sbm-landing-v4 .sbm-hero{padding:17px 16px 13px}.sbm-landing-v4 .sbm-hero h1{font-size:clamp(29px,8vw,36px)}.sbm-landing-v4 .sbm-hero-visual{height:195px}.sbm-landing-v4 .sbm-role-grid{grid-template-columns:1fr;padding:0 16px;gap:10px}.sbm-landing-v4 .sbm-role-card{padding:14px}.sbm-landing-v4 .sbm-role-description{min-height:0;font-size:9px}.sbm-role-visual{height:116px}.sbm-landing-v4 .sbm-role-card li{font-size:9px}.sbm-security-v4{width:calc(100% - 32px);padding:12px;margin-top:11px}.sbm-security-v4-points{grid-template-columns:1fr}.sbm-security-v4-points>div{padding:7px}.sbm-security-v4-points small{font-size:8px}.sbm-login-card{width:calc(100% - 32px);margin-top:10px;padding:13px;display:grid;gap:10px}.sbm-login-card-copy h2{font-size:16px}.sbm-login-card-action{min-width:0;width:100%}.sbm-landing-v4 .sbm-footer{padding:10px 16px 14px;font-size:7px}}
 @media(max-width:380px){.sbm-role-visual{height:108px}.sbm-landing-v4 .sbm-hero h1{font-size:29px}.sbm-landing-v4 .sbm-role-card{padding:12px}}
+
+
+/* Landing v5 — parent-first, school-bus yellow identity, plain-language hierarchy */
+.sbm-landing-v4{background:#fffdf6;color:#26364a}
+.sbm-landing-v4 .sbm-header{background:#fffdf6}
+.sbm-landing-v4 .sbm-mark{background:#f5c52e;color:#182b45;box-shadow:0 3px 10px #d4a91c26}
+.sbm-landing-v4 .sbm-brand{color:#1c304d}
+.sbm-landing-v4 .sbm-hero{position:relative}
+.sbm-landing-v4 .sbm-hero-copy{position:relative}
+.sbm-landing-v4 .sbm-eyebrow{color:#8a6b1d}
+.sbm-landing-v4 .sbm-eyebrow i{background:#e8b91e}
+.sbm-landing-v4 .sbm-hero h1 em{color:#bd8c05}
+.sbm-landing-v4 .sbm-hero-trust i{background:#d7a817}
+.sbm-landing-v4 .sbm-hero-visual{background:#f7edc9;border:1px solid #eadba7}
+.sbm-landing-v4 .sbm-visual-top{color:#715b25}
+.sbm-landing-v4 .sbm-visual-live{background:#fff7dc;color:#896a13}
+.sbm-landing-v4 .sbm-role-card.wali{order:1;border:1px solid #e9d58e;border-top:4px solid #e4b51f;background:linear-gradient(150deg,#fffef9 35%,#fff5cf);box-shadow:0 10px 26px #b98c1b16}
+.sbm-landing-v4 .sbm-role-card.driver{order:2;border:1px solid #d8e5f1;border-top:4px solid #3986bf;background:linear-gradient(150deg,#fff 35%,#edf5fc)}
+.sbm-landing-v4 .sbm-role-card.operator{order:3;border:1px solid #dce4e8;border-top:4px solid #607d8b;background:linear-gradient(150deg,#fff 35%,#f1f5f6)}
+.sbm-landing-v4 .sbm-role-card.wali .sbm-role-icon{background:#ffedaa;color:#8c6800}
+.sbm-landing-v4 .sbm-role-card.driver .sbm-role-icon{background:#e4f0fa;color:#286c9f}
+.sbm-landing-v4 .sbm-role-card.operator .sbm-role-icon{background:#e8eef1;color:#526b78}
+.sbm-landing-v4 .sbm-role-card.wali .sbm-role-kicker{color:#987516}
+.sbm-landing-v4 .sbm-role-card.driver .sbm-role-kicker{color:#477b9e}
+.sbm-landing-v4 .sbm-role-card.operator .sbm-role-kicker{color:#657b86}
+.sbm-landing-v4 .parent-visual{background:linear-gradient(135deg,#fff9df,#fff0b8);border-color:#eadb9f}
+.sbm-landing-v4 .driver-visual{background:linear-gradient(135deg,#f0f6fc,#e7f1fa);border-color:#d9e6f0}
+.sbm-landing-v4 .operator-visual{background:linear-gradient(135deg,#f2f6f7,#eaf0f2);border-color:#dce5e8}
+.sbm-landing-v4 .sbm-role-card.wali li span{background:#ffedaa;color:#8d6b0b}
+.sbm-landing-v4 .sbm-role-card.driver li span{background:#e4f0fa;color:#286c9f}
+.sbm-landing-v4 .sbm-role-card.operator li span{background:#e8eef1;color:#526b78}
+.sbm-landing-v4 .sbm-security-v4{border-color:#eadcae;background:linear-gradient(110deg,#fff6d9,#fffdf6)}
+.sbm-landing-v4 .sbm-security-v4 .sbm-security-icon{color:#8c6a0a;border-color:#f0dfaa;background:#fff}
+.sbm-landing-v4 .sbm-security-v4 strong{color:#4b3d1c}
+.sbm-landing-v4 .sbm-login-card{border-color:#eadcae;background:linear-gradient(110deg,#fffdf7,#fff7dc)}
+.sbm-landing-v4 .sbm-login-card-copy .sbm-eyebrow{color:#8a6b1d}
+.sbm-landing-v4 .sbm-login-card-action{background:#263b57}
+.sbm-landing-v4 .sbm-login-card-action:hover{background:#395775}
+.sbm-landing-v4 .sbm-login-card-action>strong{color:#f5c52e}
+@media(min-width:901px){
+ .sbm-landing-v4 .sbm-role-card.wali{transform:translateY(-4px)}
+}
+@media(max-width:900px){
+ .sbm-landing-v4 .sbm-role-card.wali{transform:none}
+}
