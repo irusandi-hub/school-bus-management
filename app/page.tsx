@@ -26,14 +26,14 @@ const roles = [
 
 export default function LandingPage() {
   return <main className="sbm-landing sbm-landing-v4 sbm-refined">
-    <header className="sbm-header"><Brand/><Link href="/pilih-peran" className="sbm-header-entry">Jelajahi aplikasi <span aria-hidden="true">→</span></Link></header>
+    <header className="sbm-header"><Brand/></header>
     <section className="sbm-hero">
       <div className="sbm-hero-copy">
         <p className="sbm-eyebrow"><i/> TRANSPORTASI SEKOLAH</p>
         <h1>Perjalanan anak<br/>lebih <em>terpantau</em>,<br/>hati lebih tenang.</h1>
         <p className="sbm-lead">Informasi perjalanan anak, panduan pengemudi, dan pengelolaan bus sekolah dalam satu aplikasi yang mudah digunakan.</p>
         <div className="sbm-hero-trust"><span><i/> Informasi lebih mudah dipahami</span><span><i/> Akses sesuai kewenangan</span></div>
-        <Link href="/pilih-peran" className="sbm-primary-entry">Jelajahi tampilan aplikasi <span aria-hidden="true">→</span></Link>
+        <div className="sbm-auth-card" aria-label="Akses akun"><div><strong>Mulai gunakan aplikasi</strong><small>Masuk ke akun Anda atau buat akun baru.</small></div><div className="sbm-auth-actions"><Link href="/login" className="sbm-auth-signin">Sign In</Link><Link href="/daftar" className="sbm-auth-signup">Sign Up</Link></div></div>
       </div>
       <div className="sbm-hero-visual" role="img" aria-label="Ilustrasi bus sekolah pada rute perjalanan">
         <div className="sbm-visual-top"><span className="sbm-live-dot"/> PERJALANAN SEKOLAH</div>
@@ -76,7 +76,15 @@ export default function LandingPage() {
       .sbm-route-caption strong,.sbm-route-caption small{display:block}
       .sbm-route-caption strong{font-size:13px;color:#243444}
       .sbm-route-caption small{font-size:11px;color:#78838b;margin-top:3px}
-      .sbm-primary-entry{display:inline-flex;align-items:center;margin-top:22px;padding:12px 17px;border-radius:10px;background:#edc12b;color:#33280c;text-decoration:none;font-size:13px;font-weight:800}
+      .sbm-auth-card{display:flex;align-items:center;justify-content:space-between;gap:18px;max-width:440px;margin-top:24px;padding:15px 16px;background:#fff;border:1px solid #eee5c9;border-radius:14px;box-shadow:0 8px 24px #2737460a}
+      .sbm-auth-card strong,.sbm-auth-card small{display:block}
+      .sbm-auth-card strong{font-size:13px;color:#293b48}
+      .sbm-auth-card small{font-size:11px;color:#78848b;margin-top:4px}
+      .sbm-auth-actions{display:flex;gap:7px;flex:none}
+      .sbm-auth-actions a{padding:9px 13px;border-radius:8px;text-decoration:none;font-size:12px;font-weight:800}
+      .sbm-auth-signin{background:#efc32d;color:#34290c}
+      .sbm-auth-signup{border:1px solid #e5dfce;color:#42515a}
+      @media(max-width:480px){.sbm-auth-card{align-items:flex-start;flex-direction:column}.sbm-auth-actions{width:100%}.sbm-auth-actions a{flex:1;text-align:center}}
       .sbm-refined-roles{margin:56px 0 30px}
       .sbm-section-heading{margin-bottom:17px}
       .sbm-section-heading h2{font:800 clamp(21px,3vw,28px) Manrope,sans-serif;letter-spacing:-.8px;margin:7px 0 0;color:#243444}
