@@ -1,0 +1,292 @@
+npm notice run school-bus-management@0.1.0 test
+npm notice run node --test --experimental-strip-types tests/*.test.ts
+(node:15843) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/driver-scroll-fix/tests/camera-demo.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/driver-scroll-fix/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+▶ isolated camera device demo
+  ✔ requires explicit opt-in on recognized non-production only (1.4543ms)
+  ✔ accepts video descriptions only for the expected role (0.703792ms)
+✔ isolated camera device demo (39.348375ms)
+▶ status panel siaran kamera
+  ✔ menjelaskan fitur yang belum diaktifkan tanpa menyembunyikan panel (7.281447ms)
+  ✔ menonaktifkan siaran sebelum perjalanan dimulai (0.308195ms)
+  ✔ membuka siaran hanya ketika perjalanan aktif (0.167471ms)
+  ✔ menutup siaran setelah perjalanan selesai atau dibatalkan (0.204531ms)
+✔ status panel siaran kamera (8.571741ms)
+▶ driver camera route placement
+  ✔ always mounts the panel and only passes a trip id when publishing is enabled (19.212057ms)
+✔ driver camera route placement (19.750028ms)
+(node:15854) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/driver-scroll-fix/tests/dev-open-access.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/driver-scroll-fix/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+▶ deploymentKind
+  ✔ mengenali Vercel Preview meski NODE_ENV=production (1.611663ms)
+  ✔ mengenali produksi dari penanda Vercel maupun penanda lain (0.647506ms)
+  ✔ menganggap lingkungan asing tidak dikenal (0.548682ms)
+✔ deploymentKind (5.9198ms)
+▶ isDevOpenAccess
+  ✔ membuka mode di Vercel Preview tanpa variabel tambahan (0.91247ms)
+  ✔ membuka mode pada pengembangan lokal (0.426575ms)
+  ✔ tetap membuka Preview yang masih memakai penanda preview eksplisit (0.324894ms)
+  ✔ menutup mode di Preview bila sakelar darurat dimatikan (0.471659ms)
+  ✔ menutup mode pada produksi, sekalipun flag aktif terpasang (1.001806ms)
+  ✔ menutup mode bila lingkungan tidak dikenali (fail-closed) (0.368777ms)
+✔ isDevOpenAccess (4.260278ms)
+(node:15861) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/driver-scroll-fix/tests/dev-simulation.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/driver-scroll-fix/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+▶ klien simulasi pengembangan
+  ✔ menyelesaikan relasi bersarang seperti siswa → sekolah dan wali (4.921891ms)
+  ✔ menghitung baris terfilter tanpa mengembalikan data pada mode head (0.901189ms)
+  ✔ mendukung pencarian or/ilike dan filter null (1.380933ms)
+  ✔ menolak duplikasi nilai unik dengan kode galat yang dipetakan aplikasi (1.208491ms)
+  ✔ memperbarui baris yang dituju dan menyimpan riwayat status layanan (11.713234ms)
+  ✔ menyelesaikan relasi satu-ke-banyak trips pada penugasan (0.850194ms)
+  ✔ tidak menggandakan pengemudi atau bus pada satu tanggal layanan (2.272504ms)
+  ✔ menyisakan minimal satu pengemudi dan satu bus aktif untuk penugasan hari ini (1.706269ms)
+  ✔ mengurutkan, membatasi, dan mengambil satu baris seperti klien asli (1.126048ms)
+  ✔ menyimpan perubahan agar terlihat oleh request berikutnya (2.359998ms)
+  ✔ menolak proses autentikasi dengan pesan yang jujur (0.767741ms)
+✔ klien simulasi pengembangan (32.744902ms)
+(node:15868) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/driver-scroll-fix/tests/driver-device-location.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/driver-scroll-fix/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+▶ validasi GPS HP
+  ✔ menerima koordinat, akurasi, dan waktu yang sah (1.465261ms)
+  ✔ menolak koordinat di luar rentang dan nilai bukan angka (0.838833ms)
+  ✔ menolak akurasi lemah dan sampel lama (0.321669ms)
+  ✔ menolak waktu di masa depan yang tidak masuk akal (0.449267ms)
+✔ validasi GPS HP (4.828777ms)
+(node:15875) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/driver-scroll-fix/tests/driver-navigation.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/driver-scroll-fix/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+▶ status titik navigasi
+  ✔ menandai semua titik menunggu sebelum perjalanan dimulai (1.943481ms)
+  ✔ menandai titik berikutnya setelah siswa pada titik sebelumnya dicatat (0.359369ms)
+  ✔ pengantaran tetap menunggu setelah siswa naik dan selesai setelah turun (0.378786ms)
+  ✔ tidak memakai catatan kendala sebagai status kehadiran (0.224237ms)
+  ✔ menandai tiba di sekolah hanya setelah kedatangan dikonfirmasi (0.277727ms)
+  ✔ menutup semua titik ketika perjalanan selesai (0.336227ms)
+  ✔ memakai sekolah sebagai lokasi awal pada rute sore (0.218026ms)
+  ✔ tidak mengarang lokasi awal ketika data garasi tidak ada (0.361023ms)
+  ✔ menandai titik tanpa koordinat dan tidak memberi URL navigasi (0.440761ms)
+✔ status titik navigasi (6.288857ms)
+▶ rute lengkap satu tombol
+  ✔ memuat seluruh titik sebelum perjalanan dimulai dan belum mengunci urutan (0.626408ms)
+  ✔ melewati titik yang sudah selesai tanpa mengubah urutan titik lain (0.25247ms)
+  ✔ melewati titik yang seluruh siswanya tidak ikut (0.309726ms)
+  ✔ memisahkan titik tanpa koordinat dan tidak mengirimnya (0.366163ms)
+  ✔ membatasi tautan peta tetapi mempertahankan titik terakhir (52.650369ms)
+  ✔ memakai sekolah sebagai titik awal rute sore, bukan tujuan (0.35435ms)
+  ✔ menutup navigasi setelah perjalanan selesai (0.211715ms)
+✔ rute lengkap satu tombol (55.346181ms)
+▶ tautan navigasi eksternal
+  ✔ membuat tautan Google Maps hanya dari koordinat tujuan (0.283879ms)
+  ✔ mengirim beberapa titik sebagai satu rute sesuai urutan (0.222845ms)
+  ✔ menolak rute kosong, lebih dari sepuluh titik, atau koordinat tidak lengkap (0.218106ms)
+  ✔ menolak koordinat kosong, bukan angka, dan di luar rentang (0.167722ms)
+✔ tautan navigasi eksternal (1.147308ms)
+(node:15882) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/driver-scroll-fix/tests/driver-student-actions.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/driver-scroll-fix/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+▶ tindakan siswa sesuai tahap perjalanan
+  ✔ menonaktifkan tindakan sebelum perjalanan dimulai dan memberi alasan (1.113525ms)
+  ✔ menonaktifkan tindakan setelah perjalanan selesai dan memberi alasan (0.202277ms)
+  ✔ mengaktifkan naik dan tidak ikut untuk siswa yang belum dicatat (0.197458ms)
+  ✔ tidak menawarkan turun sebelum siswa tercatat naik (0.184754ms)
+  ✔ pagi: hanya menawarkan turun di sekolah setelah kedatangan dicatat (0.226633ms)
+  ✔ sore: menawarkan turun di titik untuk siswa yang sudah naik (0.158485ms)
+  ✔ menonaktifkan semua tindakan untuk status akhir (1.424213ms)
+  ✔ menyediakan alasan tidak ikut termasuk diantar orang tua (1.231936ms)
+✔ tindakan siswa sesuai tahap perjalanan (6.663605ms)
+(node:15889) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/driver-scroll-fix/tests/driver-student-order.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/driver-scroll-fix/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+▶ urutan siswa mengikuti rute
+  ✔ mengurutkan per stop_order, bukan urutan query atau nama (10.52503ms)
+  ✔ mengelompokkan stop_id yang sama dan stabil di dalam kelompok (74.670026ms)
+  ✔ memakai nomor induk numerik sebagai kunci stabil, bukan nama (2.183088ms)
+  ✔ mengikuti stop_order terbaru setelah rute diubah (0.459005ms)
+  ✔ tidak mengubah array masukan (0.322611ms)
+✔ urutan siswa mengikuti rute (91.465661ms)
+(node:15896) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/driver-scroll-fix/tests/driver-trip-end.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/driver-scroll-fix/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+▶ aturan mengakhiri perjalanan
+  ✔ menolak perjalanan yang belum berjalan (2.068584ms)
+  ✔ menolak perjalanan yang sudah selesai (0.449408ms)
+  ✔ menolak bila kedatangan di sekolah belum dikonfirmasi (0.323854ms)
+  ✔ menolak bila masih ada siswa tanpa catatan status (1.344104ms)
+  ✔ menolak bila pemeriksaan keselamatan belum lengkap (0.324045ms)
+  ✔ menerima perjalanan yang lengkap dan menyimpan catatan (0.232363ms)
+  ✔ mengosongkan catatan yang hanya berisi spasi (0.339764ms)
+  ✔ menghitung siswa yang belum tercatat tanpa duplikasi (0.210441ms)
+✔ aturan mengakhiri perjalanan (85.093318ms)
+(node:15938) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/driver-scroll-fix/tests/driver-trip-progress.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/driver-scroll-fix/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+▶ papan progres perjalanan
+  ✔ menghitung 30 siswa penjemputan tanpa mencampur tidak ikut sebagai sudah dijemput (4.617844ms)
+  ✔ memindahkan satu siswa dari belum dijemput ke sudah dijemput (0.542921ms)
+  ✔ menghitung pengantaran: 18 sudah diantar dan 12 masih di kendaraan (0.25733ms)
+  ✔ mengurangi sudah diantar, belum diantar, dan di kendaraan setelah satu siswa turun (0.389726ms)
+  ✔ membedakan status per arah tanpa menambah arti status baru (0.204742ms)
+  ✔ memakai perjalanan yang ditutup lebih awal sebagai tidak memerlukan tindakan (0.175197ms)
+✔ papan progres perjalanan (7.858292ms)
+▶ pemberhentian berikutnya
+  ✔ memilih titik pertama sesuai stop_order, melewati siswa selesai dan tidak ikut (1.403826ms)
+  ✔ berpindah ke titik berikutnya setelah dua siswa pada titik 7 dicatat (0.422408ms)
+  ✔ memakai stop_id, bukan alamat yang mirip, untuk menggabungkan siswa (1.082396ms)
+  ✔ memberi alamat kosong tetap tampil sebagai tujuan tanpa mengarang jarak (0.559904ms)
+  ✔ tidak memakai titik sekolah sebagai pemberhentian berikutnya (0.430522ms)
+  ✔ menampilkan pesan selesai ketika semua siswa punya hasil akhir (0.441975ms)
+  ✔ tidak menampilkan tujuan setelah perjalanan dibatalkan atau selesai lebih awal (0.23561ms)
+  ✔ mengubah tujuan setelah satu siswa turun pada pengantaran (0.351074ms)
+✔ pemberhentian berikutnya (5.545482ms)
+▶ status terbaru dan event berulang
+  ✔ memakai event terbaru dan tidak menghitung event berulang dua kali (8.315323ms)
+  ✔ mengabaikan event lama yang datang setelah event lebih baru (0.259804ms)
+✔ status terbaru dan event berulang (78.914296ms)
+(node:15947) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/driver-scroll-fix/tests/guardian-driver-location.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/driver-scroll-fix/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+▶ tampilan lokasi GPS pengemudi untuk wali
+  ✔ menampilkan marker hanya ketika sampel baru dan perjalanan aktif (91.689458ms)
+  ✔ mempertahankan waktu terakhir tetapi menyembunyikan koordinat lama (0.619284ms)
+  ✔ menandai koneksi terputus tanpa menghapus lokasi yang masih baru (0.598024ms)
+  ✔ membedakan belum ada perjalanan, perjalanan terjadwal, dan perjalanan selesai (0.513887ms)
+  ✔ menampilkan status offline, memuat, dan belum tersedia secara terpisah (0.334273ms)
+  ✔ menolak koordinat tidak valid dan sampel dari masa depan yang terlalu jauh (0.77846ms)
+  ✔ tidak menampilkan lokasi ketika payload sudah menyatakan tidak baru (0.462612ms)
+✔ tampilan lokasi GPS pengemudi untuk wali (97.418452ms)
+(node:15954) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/driver-scroll-fix/tests/guardian-journey.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/driver-scroll-fix/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+▶ status perjalanan wali
+  ✔ tidak mengarang status ketika belum ada perjalanan (1.324768ms)
+  ✔ membedakan perjalanan terjadwal dan yang sudah berjalan tanpa catatan siswa (0.266377ms)
+  ✔ menampilkan anak di dalam bus hanya setelah catatan naik pada perjalanan berlangsung (0.401337ms)
+  ✔ memakai arah perjalanan untuk konteks naik dan turun (0.191186ms)
+  ✔ menandai ketidakhadiran dan perjalanan yang sudah tiba (1.773905ms)
+  ✔ tidak menyimpulkan kehadiran dari perjalanan yang selesai (0.180356ms)
+  ✔ menandai data yang tidak konsisten alih-alih menebak (0.174034ms)
+✔ status perjalanan wali (5.973961ms)
+(node:15967) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/driver-scroll-fix/tests/guardian-live-video.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/driver-scroll-fix/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+▶ status akses Live Video
+  ✔ belum memberikan akses ketika perjalanan belum dimulai (2.269689ms)
+  ✔ menutup akses ketika anak tercatat turun atau tidak ikut (0.537421ms)
+  ✔ membuka akses ketika anak berada di bus, tetapi kamera tetap belum terhubung (0.244255ms)
+  ✔ hanya menampilkan state live ketika sumber siaran tersedia (0.178653ms)
+  ✔ tidak pernah menampilkan live untuk anak yang sudah turun walau stream tersedia (0.153888ms)
+  ✔ memilih perjalanan berlangsung lebih dulu, lalu selesai, lalu terjadwal (0.222574ms)
+✔ status akses Live Video (6.418358ms)
+▶ presentasi pemutar simulasi
+  ✔ tidak pernah memutar LIVE ketika mode simulasi aktif (1.486269ms)
+  ✔ hanya memutar LIVE ketika stream tersedia dan bukan simulasi (0.23643ms)
+  ✔ tidak menyatakan LIVE ketika URL stream tidak tersedia (0.460387ms)
+  ✔ mempertahankan state non-live apa adanya (0.985798ms)
+✔ presentasi pemutar simulasi (3.873116ms)
+▶ sumber live pada view-model wali
+  ✔ tidak membaca atau mengirim stream pada mode simulasi (83.624962ms)
+✔ sumber live pada view-model wali (84.463765ms)
+▶ kontrak sumber siaran
+  ✔ mengabaikan konfigurasi yang tidak valid atau bukan HTTPS (1.108596ms)
+  ✔ tidak menemukan sumber untuk siswa atau perjalanan lain (0.35899ms)
+  ✔ menolak sumber yang sudah kedaluwarsa (0.218087ms)
+  ✔ mengembalikan sumber yang valid untuk siswa dan perjalanan yang cocok (0.186959ms)
+✔ kontrak sumber siaran (2.363663ms)
+(node:15974) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/driver-scroll-fix/tests/operator-assignment.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/driver-scroll-fix/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+▶ aturan penugasan operator
+  ✔ mengizinkan kombinasi pengemudi dan bus yang belum dipakai pada tanggal itu (1.373931ms)
+  ✔ menolak pengemudi yang sudah ditugaskan pada tanggal yang sama (0.260996ms)
+  ✔ menolak bus yang sudah dipakai pada tanggal yang sama (0.25757ms)
+  ✔ tidak menolak penugasan yang sama pada tanggal berbeda (0.257279ms)
+  ✔ mengizinkan penugasan pertama saat belum ada jadwal pada tanggal itu (0.238766ms)
+✔ aturan penugasan operator (4.5831ms)
+(node:15981) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/driver-scroll-fix/tests/trip-camera.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/driver-scroll-fix/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ viewer sends ready and automatically answers offer; revoke closes peer/channel (388.1247ms)
+✔ publisher discovers sessions and automatically offers on viewer ready (186.869239ms)
+✔ independent watchdog closes media even when heartbeat RPC never resolves (191.032996ms)
+✔ dispose during async initialization does not create late peers or UI callbacks (133.335673ms)
+(node:15988) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///workspace/driver-scroll-fix/tests/validation.test.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /workspace/driver-scroll-fix/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+▶ email handling
+  ✔ normalizes surrounding spaces and casing (72.525371ms)
+  ✔ accepts ordinary addresses and rejects malformed ones (0.520431ms)
+✔ email handling (75.37014ms)
+▶ school and operator codes
+  ✔ uppercases and converts spaces to separators (0.467852ms)
+  ✔ drops characters that are not allowed in a code (0.224148ms)
+✔ school and operator codes (1.108507ms)
+▶ student identifiers
+  ✔ accepts alphanumeric admissions numbers (1.205086ms)
+  ✔ rejects values that are too short or contain separators not allowed by the schema (0.234017ms)
+✔ student identifiers (1.746955ms)
+▶ phone validation
+  ✔ accepts international style numbers (0.313294ms)
+  ✔ rejects letters and empty input (0.572717ms)
+✔ phone validation (1.173656ms)
+▶ coordinate parsing
+  ✔ returns null for empty input so both coordinates can stay empty (1.380762ms)
+  ✔ accepts a comma decimal separator and rounds to six decimals (0.251208ms)
+  ✔ rejects values outside the valid range (0.141944ms)
+  ✔ rejects non numeric input (0.116377ms)
+✔ coordinate parsing (2.196582ms)
+▶ search sanitization
+  ✔ removes PostgREST filter syntax before it reaches the query (0.288959ms)
+  ✔ keeps ordinary search text and limits its length (0.146734ms)
+✔ search sanitization (0.621147ms)
+▶ service status
+  ✔ recognises only the supported statuses (0.186878ms)
+  ✔ maps statuses to Indonesian labels (0.18773ms)
+✔ service status (0.567286ms)
+▶ length validation
+  ✔ returns a message only when the value is outside the range (0.309677ms)
+✔ length validation (0.430682ms)
+▶ date formatting
+  ✔ formats date-only values without shifting the day (19.486658ms)
+  ✔ renders a dash for missing or invalid values (0.282927ms)
+✔ date formatting (19.989936ms)
+▶ post-login redirect safety
+  ✔ keeps internal paths (0.414392ms)
+  ✔ rejects absolute and protocol-relative URLs (0.144329ms)
+  ✔ maps each database role to its own area (0.197658ms)
+  ✔ never carries a post-login destination into another role's area (0.216734ms)
+  ✔ keeps a destination inside the role's own area (0.179895ms)
+✔ post-login redirect safety (1.640797ms)
+▶ operational labels
+  ✔ labels route directions (0.193801ms)
+  ✔ labels trip statuses without inventing an active trip (0.219028ms)
+  ✔ labels student events (0.152614ms)
+  ✔ formats time and handles empty values (0.439128ms)
+✔ operational labels (1.237765ms)
+ℹ tests 154
+ℹ suites 34
+ℹ pass 154
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10223.766026

@@ -2168,7 +2168,9 @@ body:has(.dev-mode-banner) .driver-app{height:calc(100dvh - 20px);min-height:0}
 .ops-nav-panel{position:relative}
 .ops-nav-panel .route-stops[open]{position:absolute;inset:4px;z-index:45;display:flex;flex-direction:column;min-height:0;margin:0;padding:5px 6px;border:1px solid #E9DECB;border-radius:9px;background:#FFFDF8;box-shadow:0 10px 24px #2B24161F;overflow:hidden}
 .ops-nav-panel .route-stops[open]>summary{flex:0 0 auto;padding:0 1px 4px;border-bottom:1px solid #F3EEE4;margin:0}
-.ops-nav-panel .route-stops[open] .route-stops-scroll{flex:1 1 auto;min-height:0;max-height:none;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;touch-action:pan-y;padding-right:3px;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+/* Posisi eksplisit membatasi daftar meski isi <details> dibungkus oleh browser,
+   sehingga flex pada <details> tidak membatasi tinggi anak secara langsung. */
+.ops-nav-panel .route-stops[open] .route-stops-scroll{position:absolute;inset:31px 6px 5px;min-height:0;max-height:none;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;touch-action:pan-y;padding-right:3px;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
 
 /* Peta wali: memakai stage yang sama, hanya marker HP pengemudi. */
 .guardian-map-stage.is-live{padding:0;background:#E8EEE6}
@@ -2190,5 +2192,6 @@ body:has(.dev-mode-banner) .driver-app{height:calc(100dvh - 20px);min-height:0}
   .ops-map-locate svg{width:11px;height:11px}
   .ops-map-locate-notice{left:4px;right:32px;bottom:4px;font-size:6.2px;padding:3px 4px}
   .ops-nav-panel .route-stops[open]{inset:3px;padding:4px 5px}
+  .ops-nav-panel .route-stops[open] .route-stops-scroll{inset:30px 5px 4px}
   .guardian-live-map-status{left:5px;bottom:5px;font-size:7px}
 }

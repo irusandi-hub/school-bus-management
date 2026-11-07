@@ -1,0 +1,68 @@
+npm notice run school-bus-management@0.1.0 build
+npm notice run next build
+   ▲ Next.js 15.5.28
+
+   Creating an optimized production build ...
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (114kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (268kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+ ✓ Compiled successfully in 31.0s
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/6) ...
+   Generating static pages (1/6)
+   Generating static pages (2/6)
+   Generating static pages (4/6)
+ ✓ Generating static pages (6/6)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ƒ /                                      190 B         106 kB
+├ ○ /_not-found                            139 B         103 kB
+├ ƒ /admin                                 188 B         106 kB
+├ ƒ /admin/bus                           1.55 kB         108 kB
+├ ƒ /admin/laporan                         190 B         106 kB
+├ ƒ /admin/operator                      1.55 kB         108 kB
+├ ƒ /admin/pengemudi                     1.55 kB         108 kB
+├ ƒ /admin/penugasan                     1.41 kB         108 kB
+├ ƒ /admin/perjalanan                      190 B         106 kB
+├ ƒ /admin/rute                          1.39 kB         108 kB
+├ ƒ /admin/rute/[id]                     1.55 kB         108 kB
+├ ƒ /admin/sekolah                       1.55 kB         108 kB
+├ ƒ /admin/siswa                         1.39 kB         108 kB
+├ ƒ /admin/siswa/[id]                    1.55 kB         108 kB
+├ ƒ /admin/wali                          1.55 kB         108 kB
+├ ƒ /akun/kata-sandi                     1.07 kB         107 kB
+├ ƒ /api/wali/lokasi                       139 B         103 kB
+├ ƒ /auth/callback                         139 B         103 kB
+├ ○ /daftar                                 1 kB         107 kB
+├ ƒ /demo-kamera                         3.42 kB         106 kB
+├ ƒ /login                               1.09 kB         107 kB
+├ ƒ /operator                              188 B         106 kB
+├ ƒ /operator/bus                        1.41 kB         108 kB
+├ ƒ /operator/laporan                      188 B         106 kB
+├ ƒ /operator/laporan/export               139 B         103 kB
+├ ƒ /operator/operasional                  188 B         106 kB
+├ ƒ /operator/pengemudi                  1.41 kB         108 kB
+├ ƒ /operator/penugasan                  1.41 kB         108 kB
+├ ƒ /operator/perjalanan                   190 B         106 kB
+├ ƒ /operator/rute                         188 B         106 kB
+├ ƒ /operator/rute/[id]                    188 B         106 kB
+├ ƒ /operator/siswa                        190 B         106 kB
+├ ƒ /pengemudi                             12 kB         186 kB
+├ ƒ /pengemudi/riwayat                     190 B         106 kB
+├ ƒ /pengemudi/tugas/[id]                  139 B         103 kB
+├ ƒ /tanpa-akses                           190 B         106 kB
+├ ƒ /wali                                3.08 kB         182 kB
+├ ƒ /wali/anak/[id]                        184 B         179 kB
+└ ƒ /wali/riwayat                          188 B         106 kB
++ First Load JS shared by all             103 kB
+  ├ chunks/1255-dc3ddf72a1dc71a7.js      46.6 kB
+  ├ chunks/4bd1b696-f785427dddbba9fb.js  54.2 kB
+  └ other shared chunks (total)          1.98 kB
+
+
+ƒ Middleware                             94.2 kB
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
