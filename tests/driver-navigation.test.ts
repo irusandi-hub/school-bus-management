@@ -92,6 +92,66 @@ describe("status titik navigasi", () => {
     assert.equal(navigationDestination(plan)?.name, "Perumahan Timur");
   });
 
+  it("pengantaran tetap menunggu setelah siswa naik dan selesai setelah turun", () => {
+    const boarded = buildNavigationPlan({
+      stops,
+      roster,
+      events: [{ student_id: "s1", event_type: "boarded", occurred_at: "2026-11-04T13:10:00.000Z" }],
+      trip: {
+        status: "in_progress",
+        started_at: "2026-11-04T13:00:00.000Z",
+        arrived_at: null,
+        completed_at: null,
+      },
+      direction: "afternoon",
+    });
+    assert.deepEqual(
+      boarded.stops.map((stop) => stop.status),
+      ["heading", "waiting", "done"],
+    );
+    assert.equal(boarded.target?.id, "stop-1");
+
+    const dropped = buildNavigationPlan({
+      stops,
+      roster,
+      events: [
+        { student_id: "s1", event_type: "boarded", occurred_at: "2026-11-04T13:10:00.000Z" },
+        { student_id: "s1", event_type: "dropped_off", occurred_at: "2026-11-04T13:20:00.000Z" },
+      ],
+      trip: {
+        status: "in_progress",
+        started_at: "2026-11-04T13:00:00.000Z",
+        arrived_at: null,
+        completed_at: null,
+      },
+      direction: "afternoon",
+    });
+    assert.equal(dropped.stops[0].status, "done");
+    assert.equal(dropped.target?.id, "stop-2");
+  });
+
+  it("tidak memakai catatan kendala sebagai status kehadiran", () => {
+    const plan = buildNavigationPlan({
+      stops,
+      roster,
+      events: [
+        { student_id: "s1", event_type: "boarded", occurred_at: "2026-11-04T06:10:00.000Z" },
+        { student_id: "s1", event_type: "issue", occurred_at: "2026-11-04T06:15:00.000Z" },
+      ],
+      trip: {
+        status: "in_progress",
+        started_at: "2026-11-04T06:00:00.000Z",
+        arrived_at: null,
+        completed_at: null,
+      },
+      direction: "morning",
+    });
+
+    assert.equal(plan.stops[0].students[0].status, "boarded");
+    assert.equal(plan.stops[0].students[0].hasIssue, true);
+    assert.equal(plan.stops[0].status, "done");
+  });
+
   it("menandai tiba di sekolah hanya setelah kedatangan dikonfirmasi", () => {
     const plan = buildNavigationPlan({
       stops,

@@ -1,14 +1,150 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
+import { GuardianDriverMap } from "@/components/guardian/GuardianDriverMap";
+import {
+  resolveGuardianLocationView,
+  type GuardianLocationPayload,
+} from "@/lib/guardian/driver-location";
+
+const POLL_INTERVAL_MS = 2_000;
+
+function iconForState(state: string) {
+  if (state === "live") return "pin" as const;
+  if (state === "ended") return "check" as const;
+  if (state === "scheduled") return "clock" as const;
+  if (state === "loading" || state === "stale") return "refresh" as const;
+  return "gpsOff" as const;
+}
 
 /**
  * Panel lokasi milik satu anak.
  *
- * Sumber GPS aktual belum terhubung dan policy baca `bus_locations` untuk wali
- * belum ada. Karena itu panel ini hanya menampilkan placeholder peta yang jujur:
- * tidak ada marker, rute, atau posisi bus yang dibuat-buat.
+ * Sumbernya GPS HP pengemudi pada perjalanan anak tersebut. Polling 2 detik
+ * hanya membaca RPC yang sudah memeriksa relasi wali di server; tidak ada
+ * channel atau broadcast lokasi. Marker dihapus ketika sampel sudah lama agar
+ * posisi lama tidak tampil sebagai posisi terkini.
  */
-export function ChildBusLocationPanel({ childId }: { childId: string }) {
+export function ChildBusLocationPanel({
+  childId,
+  tripId,
+  initialTripStatus,
+}: {
+  childId: string;
+  tripId: string | null;
+  initialTripStatus: string | null;
+}) {
   const titleId = `guardian-map-title-${childId}`;
+  const finalStatus = initialTripStatus === "completed" || initialTripStatus === "cancelled";
+  const [payload, setPayload] = useState<GuardianLocationPayload | null>(null);
+  const [loading, setLoading] = useState(Boolean(tripId) && !finalStatus);
+  const [connectionError, setConnectionError] = useState(false);
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(Date.now()), 5_000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!tripId || finalStatus) {
+      setLoading(false);
+      return;
+    }
+
+    let stopped = false;
+    let inFlight = false;
+    let timer: number | undefined;
+    let controller: AbortController | undefined;
+
+    function schedule() {
+      if (stopped) return;
+      window.clearTimeout(timer);
+      timer = window.setTimeout(load, POLL_INTERVAL_MS);
+    }
+
+    async function load() {
+      if (stopped || inFlight) return;
+      if (document.visibilityState === "hidden") {
+        schedule();
+        return;
+      }
+
+      inFlight = true;
+      controller = new AbortController();
+
+      try {
+        const response = await fetch(`/api/wali/lokasi?trip_id=${encodeURIComponent(tripId as string)}`, {
+          cache: "no-store",
+          signal: controller.signal,
+        });
+
+        if (response.status === 403 || response.status === 404) {
+          stopped = true;
+          setPayload(null);
+          setConnectionError(false);
+          return;
+        }
+        if (!response.ok) throw new Error("Location request failed");
+
+        const data = (await response.json()) as GuardianLocationPayload;
+        if (stopped) return;
+        setPayload(data);
+        setConnectionError(false);
+        if (data.tripStatus === "completed" || data.tripStatus === "cancelled") {
+          stopped = true;
+          return;
+        }
+      } catch (error) {
+        if (!stopped && (error as Error).name !== "AbortError") setConnectionError(true);
+      } finally {
+        inFlight = false;
+        if (!stopped) {
+          setLoading(false);
+          schedule();
+        } else {
+          setLoading(false);
+        }
+      }
+    }
+
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") {
+        window.clearTimeout(timer);
+        void load();
+      }
+    };
+    const onOnline = () => {
+      setConnectionError(false);
+      window.clearTimeout(timer);
+      void load();
+    };
+    const onOffline = () => setConnectionError(true);
+
+    void load();
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("online", onOnline);
+    window.addEventListener("offline", onOffline);
+
+    return () => {
+      stopped = true;
+      window.clearTimeout(timer);
+      controller?.abort();
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("online", onOnline);
+      window.removeEventListener("offline", onOffline);
+    };
+  }, [tripId, finalStatus]);
+
+  const view = resolveGuardianLocationView({
+    tripId,
+    tripStatus: initialTripStatus,
+    payload,
+    loading,
+    connectionError,
+    now,
+  });
 
   return (
     <section className="guardian-map-panel" aria-labelledby={titleId}>
@@ -17,36 +153,42 @@ export function ChildBusLocationPanel({ childId }: { childId: string }) {
           <span className="guardian-map-title-icon" aria-hidden="true">
             <Icon name="pin" size={15} />
           </span>
-          <strong id={titleId}>Lokasi bus</strong>
+          <strong id={titleId}>Lokasi pengemudi</strong>
         </div>
-        <span className="guardian-map-updated">
-          <Icon name="refresh" size={12} />
-          Belum ada pembaruan
+        <span className={`guardian-map-updated is-${view.state}`} role="status">
+          <Icon name={iconForState(view.state)} size={12} />
+          {view.updatedLabel}
         </span>
       </header>
 
-      <div
-        className="guardian-map-stage"
-        role="img"
-        aria-label="Peta lokasi bus belum tersedia karena GPS belum terhubung"
-      >
-        <div className="map-canvas guardian-map-canvas" aria-hidden="true">
-          <span className="road r1" />
-          <span className="road r2" />
-          <span className="road r3" />
-          <span className="road r4" />
-          <span className="road r5" />
-          <span className="road r6" />
-        </div>
+      <div className={`guardian-map-stage is-${view.state}`}>
+        {view.location ? (
+          <GuardianDriverMap point={view.location} />
+        ) : (
+          <>
+            <div className="map-canvas guardian-map-canvas" aria-hidden="true">
+              <span className="road r1" />
+              <span className="road r2" />
+              <span className="road r3" />
+              <span className="road r4" />
+              <span className="road r5" />
+              <span className="road r6" />
+            </div>
 
-        <div className="guardian-map-placeholder">
-          <span className="guardian-map-placeholder-icon" aria-hidden="true">
-            <Icon name="gpsOff" size={22} />
-          </span>
-          <strong>GPS belum terhubung</strong>
-          <p>Posisi bus belum tersedia.</p>
-          <small>Lokasi akan mengikuti perangkat GPS bus setelah integrasi aktif.</small>
-        </div>
+            <div className="guardian-map-placeholder">
+              <span className="guardian-map-placeholder-icon" aria-hidden="true">
+                <Icon name={iconForState(view.state)} size={22} />
+              </span>
+              <strong>{view.title}</strong>
+              <p>{view.detail}</p>
+              <small>
+                {view.state === "ended"
+                  ? "Lokasi tidak disimpan sebagai riwayat."
+                  : "Hanya posisi HP pengemudi; bukan posisi bus atau perkiraan."}
+              </small>
+            </div>
+          </>
+        )}
       </div>
     </section>
   );

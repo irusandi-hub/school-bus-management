@@ -25,6 +25,7 @@ export function DriverBroadcastPanel({
 }) {
   const [consent, setConsent] = useState(false);
   const [source, setSource] = useState<"mobile" | "bus">("mobile");
+  const [expanded, setExpanded] = useState(false);
   const broadcast = resolveBroadcastState({ enabled, tripStatus });
   const shortStatus =
     source === "bus"
@@ -40,7 +41,12 @@ export function DriverBroadcastPanel({
             : "Sudah ditutup untuk perjalanan ini.";
 
   return (
-    <section className={`panel broadcast-compact phase-${broadcast.phase}`} aria-label="Siaran kamera pengemudi">
+    <section
+      className={`panel broadcast-compact phase-${broadcast.phase}${expanded ? " is-expanded" : ""}`}
+      aria-label="Siaran kamera pengemudi"
+      role={expanded ? "dialog" : undefined}
+      aria-modal={expanded ? true : undefined}
+    >
       <div className="broadcast-compact-head">
         <span className="broadcast-compact-icon" aria-hidden="true">
           <Icon name={broadcast.phase === "unavailable" ? "cameraOff" : "camera"} size={17} />
@@ -55,6 +61,16 @@ export function DriverBroadcastPanel({
           </small>
         </div>
         <div className="broadcast-compact-controls" title={broadcast.detail}>
+          <button
+            className="broadcast-expand"
+            type="button"
+            onClick={() => setExpanded(true)}
+            aria-label="Buka layar penuh kamera"
+            title="Layar penuh kamera"
+          >
+            <Icon name="expand" size={13} />
+            <span>Layar penuh</span>
+          </button>
           <label className="broadcast-source-select">
             <span className="driver-visually-hidden">Sumber siaran</span>
             <select
@@ -96,6 +112,37 @@ export function DriverBroadcastPanel({
           )}
         </div>
       </div>
+      {expanded && (
+        <div className="broadcast-expanded-stage">
+          <div className="broadcast-expanded-bar">
+            <span>
+              <Icon name="camera" size={18} /> Pratinjau kamera
+            </span>
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm broadcast-expanded-close"
+              onClick={() => setExpanded(false)}
+              aria-label="Tutup layar penuh kamera"
+            >
+              <Icon name="close" size={14} /> Tutup
+            </button>
+          </div>
+          <div className="broadcast-expanded-placeholder" role="status">
+            <span className="broadcast-expanded-icon" aria-hidden="true">
+              <Icon name={broadcast.phase === "unavailable" ? "cameraOff" : "camera"} size={34} />
+            </span>
+            <strong>Pratinjau layar penuh</strong>
+            <p>
+              {source === "bus"
+                ? "Kamera bus belum terpasang. Pratinjau tersedia setelah perangkat kamera bus terhubung."
+                : broadcast.phase === "active"
+                  ? "Gunakan kontrol siaran di panel kamera untuk mengaktifkan video. Pratinjau ini tidak merekam."
+                  : "Video tampil di sini saat siaran kamera aktif. Tidak ada rekaman."}
+            </p>
+            <small>Status: {shortStatus}</small>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

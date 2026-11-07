@@ -1,14 +1,15 @@
 import type { ReactNode } from "react";
 import { TripStatusPill } from "@/components/admin/ui";
 import { Icon } from "@/components/ui/Icon";
+import type { TripProgress } from "@/lib/driver/trip-progress";
 import { formatDate, formatTime, routeDirectionLabel } from "@/lib/validation";
 
 /**
  * Header ringkas halaman operasional pengemudi.
  *
- * Identitas, kendaraan, jadwal, siswa, dan tugas tetap tersedia sebagai label
- * sekunder. Area ini sengaja tidak memakai kartu metrik besar agar navigasi dan
- * tindakan siswa menjadi pusat layar.
+ * Profil, kendaraan, waktu, arah perjalanan, dan papan progres berada pada satu
+ * blok agar pengemudi tidak perlu menghitung status siswa sendiri. Papan progres
+ * memakai hasil turunan yang sama dengan jumlah siswa di kendaraan dan next stop.
  */
 export function DriverOpsHeader({
   driverName,
@@ -24,8 +25,7 @@ export function DriverOpsHeader({
   fleetCode,
   plateNumber,
   capacity,
-  totalStudents,
-  onboardStudents,
+  progress,
   children,
 }: {
   driverName: string;
@@ -41,8 +41,7 @@ export function DriverOpsHeader({
   fleetCode: string;
   plateNumber: string | null;
   capacity: number;
-  totalStudents: number;
-  onboardStudents: number;
+  progress: TripProgress;
   children?: ReactNode;
 }) {
   const initial = (driverName || "P").slice(0, 1).toUpperCase();
@@ -52,7 +51,7 @@ export function DriverOpsHeader({
   const ended = completedAt ? ` · Selesai ${formatTime(completedAt)}` : arrivedAt ? ` · Tiba ${formatTime(arrivedAt)}` : "";
 
   return (
-    <section className="ops-head" aria-label="Profil pengemudi dan tugas hari ini">
+    <section className="ops-head" aria-label="Profil pengemudi, tugas, dan progres perjalanan">
       <div className="ops-head-top">
         <span className="ops-avatar" aria-hidden="true">
           {initial}
@@ -65,10 +64,6 @@ export function DriverOpsHeader({
         </div>
         <div className="ops-head-pills">
           <TripStatusPill status={tripStatus} />
-          <span className="ops-head-count" title="Siswa di kendaraan dibanding total siswa pada rute">
-            <Icon name="users" size={13} />
-            {onboardStudents}/{totalStudents}
-          </span>
         </div>
       </div>
 
@@ -84,6 +79,51 @@ export function DriverOpsHeader({
           </small>
         </div>
         {children && <div className="ops-head-action">{children}</div>}
+      </div>
+
+      <div className="ops-progress" aria-live="polite" aria-label={`Progres ${progress.kindLabel.toLowerCase()}`}>
+        <div className="ops-progress-grid">
+          <div className="ops-progress-cell tone-total">
+            <span>Total</span>
+            <strong>{progress.total}</strong>
+          </div>
+          <div className="ops-progress-cell tone-done">
+            <span>{progress.doneLabel}</span>
+            <strong>{progress.done}</strong>
+          </div>
+          <div className="ops-progress-cell tone-waiting">
+            <span>{progress.waitingLabel}</span>
+            <strong>{progress.waiting}</strong>
+          </div>
+          <div className="ops-progress-cell tone-onboard">
+            <span>Di kendaraan</span>
+            <strong>{progress.onboard}</strong>
+          </div>
+        </div>
+        <div
+          className="ops-progress-track"
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={progress.percent}
+          aria-label={`${progress.processed} dari ${progress.total} siswa sudah diproses`}
+        >
+          <span style={{ width: `${progress.percent}%` }} />
+        </div>
+        <p className="ops-progress-line">
+          <span>
+            <b>{progress.processed}</b>/{progress.total} diproses
+          </span>
+          <span>
+            <b>{progress.needsAction}</b> perlu tindakan
+          </span>
+          <span className="ops-progress-skip">
+            <b>{progress.absent}</b> tidak ikut
+            {progress.absent > 0 && (
+              <> · {progress.noShow} tidak hadir · {progress.notRiding} tidak ikut bus</>
+            )}
+          </span>
+        </p>
       </div>
 
       <p className="ops-meta-line">

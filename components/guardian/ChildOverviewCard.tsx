@@ -166,7 +166,11 @@ export function ChildOverviewCard({
             simulated={simulated}
             presentation="guardian-card"
           />
-          <ChildBusLocationPanel childId={student.id} />
+          <ChildBusLocationPanel
+            childId={student.id}
+            tripId={trip?.tripId ?? null}
+            initialTripStatus={trip?.status ?? null}
+          />
         </div>
       </div>
     </article>

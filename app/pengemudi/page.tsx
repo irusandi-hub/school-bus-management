@@ -2,11 +2,15 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { ConfigNotice, EmptyState, Notice, Pill } from "@/components/admin/ui";
 import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
+import { DriverAutoRefresh } from "@/components/driver/DriverAutoRefresh";
 import { DriverBroadcastPanel } from "@/components/driver/DriverBroadcastPanel";
-import { cameraDemoEnabled } from "@/lib/camera/demo-policy";
-import { deploymentKind } from "@/lib/dev-open-access";
+import { DriverMapPanel } from "@/components/driver/DriverMapPanel";
 import { DriverOpsHeader } from "@/components/driver/DriverOpsHeader";
 import { FullRouteNavigator } from "@/components/driver/FullRouteNavigator";
+import type { DriverMapStop } from "@/components/driver/DriverRouteMap";
+import { cameraDemoEnabled } from "@/lib/camera/demo-policy";
+import { compareStudentsByRouteOrder } from "@/lib/driver/student-order";
+import { deploymentKind } from "@/lib/dev-open-access";
 import { OpenSafetyCheckLink } from "@/components/driver/OpenSafetyCheckLink";
 import { StudentList, type StudentListRow } from "@/components/driver/StudentList";
 import { TripClosePanel } from "@/components/driver/TripClosePanel";
@@ -14,6 +18,12 @@ import { Icon } from "@/components/ui/Icon";
 import { firstParam, noticeFromParams } from "@/lib/admin/query";
 import { requireDriver } from "@/lib/auth";
 import { buildFullRoute, buildNavigationPlan } from "@/lib/driver/navigation";
+import {
+  buildNextStop,
+  buildTripProgress,
+  resolveStudentTripStates,
+  type ProgressStudent,
+} from "@/lib/driver/trip-progress";
 import { DEFAULT_NAVIGATION_PROVIDER, buildRouteDirectionsUrl } from "@/lib/navigation/external";
 import { createServerSupabase } from "@/lib/supabase/server";
 import type { RouteStopRow, TripEventRow } from "@/lib/types";
@@ -162,23 +172,29 @@ export default async function DriverOperationsPage({
   ]);
 
   const stops = (stopsResult.data ?? []) as unknown as RouteStopRow[];
-  const roster = ((rosterResult.data ?? []) as unknown as RosterEntry[]).sort(
-    (a, b) => (a.route_stops?.stop_order ?? 0) - (b.route_stops?.stop_order ?? 0),
+  const roster = ((rosterResult.data ?? []) as unknown as RosterEntry[]).sort((a, b) =>
+    compareStudentsByRouteOrder(
+      {
+        stopOrder: a.route_stops?.stop_order ?? 0,
+        admissionsNumber: a.students?.admissions_number ?? null,
+      },
+      {
+        stopOrder: b.route_stops?.stop_order ?? 0,
+        admissionsNumber: b.students?.admissions_number ?? null,
+      },
+    ),
   );
   const events = (eventsResult.data ?? []) as unknown as TripEventRow[];
 
-  // Catatan terbaru per siswa; kendala (issue) tidak menimpa status kehadiran.
-  const latestEvent = new Map<string, TripEventRow>();
-  const latestStatus = new Map<string, string>();
-  const latestIssue = new Map<string, string>();
-  for (const event of events) {
-    if (!latestEvent.has(event.student_id)) latestEvent.set(event.student_id, event);
-    if (event.event_type === "issue") {
-      if (event.notes && !latestIssue.has(event.student_id)) latestIssue.set(event.student_id, event.notes);
-      continue;
-    }
-    if (!latestStatus.has(event.student_id)) latestStatus.set(event.student_id, event.event_type);
-  }
+  // Satu pembacaan status untuk papan progres, jumlah di kendaraan, dan next stop.
+  const tripStates = resolveStudentTripStates(
+    events.map((event) => ({
+      student_id: event.student_id,
+      event_type: event.event_type,
+      occurred_at: event.occurred_at,
+      notes: event.notes,
+    })),
+  );
 
   const plan = buildNavigationPlan({
     stops,
@@ -206,24 +222,58 @@ export default async function DriverOperationsPage({
   // Batas tautan mengikuti provider aktif, bukan angka yang ditulis ulang di halaman.
   const fullRoute = buildFullRoute(plan, direction, DEFAULT_NAVIGATION_PROVIDER.maxWaypoints + 1);
   const mapUrl = buildRouteDirectionsUrl(fullRoute.mapStops, plan.origin);
-
-  const studentRows: StudentListRow[] = roster.map((entry) => ({
-    key: entry.id,
-    studentId: entry.student_id,
-    name: entry.students?.full_name ?? "Siswa",
-    admissionsNumber: entry.students?.admissions_number ?? null,
-    stopOrder: entry.route_stops?.stop_order ?? 0,
-    stopName: entry.route_stops?.stop_name ?? "Titik jemput",
-    address: entry.students?.home_address ?? null,
-    status: latestStatus.get(entry.student_id) ?? null,
-    issueNote: latestIssue.get(entry.student_id) ?? null,
+  const mapStops: DriverMapStop[] = fullRoute.stops.map(({ stop, skipReason }) => ({
+    id: stop.id,
+    order: stop.order,
+    name: stop.name,
+    isSchool: stop.isSchool,
+    latitude: stop.latitude,
+    longitude: stop.longitude,
+    studentCount: stop.students.length,
+    skipped: Boolean(skipReason),
+    skipReason,
   }));
 
-  const onboard = studentRows.filter((row) => row.status === "boarded").length;
-  const recorded = studentRows.filter((row) => latestEvent.has(row.studentId)).length;
-  const unrecorded = studentRows.filter((row) => !latestEvent.has(row.studentId));
+  const progressStudents: ProgressStudent[] = roster.map((entry) => {
+    const state = tripStates.get(entry.student_id);
+    return {
+      id: entry.student_id,
+      name: entry.students?.full_name ?? "Siswa",
+      stopId: entry.stop_id,
+      stopOrder: entry.route_stops?.stop_order ?? 0,
+      stopName: entry.route_stops?.stop_name ?? "Titik jemput",
+      address: entry.students?.home_address ?? null,
+      status: state?.status ?? null,
+      statusNotes: state?.statusNotes ?? null,
+    };
+  });
+
+  const studentRows: StudentListRow[] = roster.map((entry) => {
+    const state = tripStates.get(entry.student_id);
+    return {
+      key: entry.id,
+      studentId: entry.student_id,
+      name: entry.students?.full_name ?? "Siswa",
+      admissionsNumber: entry.students?.admissions_number ?? null,
+      stopOrder: entry.route_stops?.stop_order ?? 0,
+      stopName: entry.route_stops?.stop_name ?? "Titik jemput",
+      address: entry.students?.home_address ?? null,
+      status: state?.status ?? null,
+      issueNote: state?.issueNote ?? null,
+    };
+  });
+
+  const tripStatus = trip?.status ?? "scheduled";
+  const progress = buildTripProgress({ students: progressStudents, direction, tripStatus });
+  const nextStop = buildNextStop({
+    stops,
+    students: progressStudents,
+    direction,
+    tripStatus,
+  });
+  const unrecorded = studentRows.filter((row) => !tripStates.get(row.studentId)?.hasAnyEvent);
   const unclearStudents = studentRows.filter((row) => {
-    const status = latestEvent.get(row.studentId)?.event_type;
+    const status = tripStates.get(row.studentId)?.status;
     return !status || status === "boarded";
   }).length;
 
@@ -244,7 +294,7 @@ export default async function DriverOperationsPage({
         : "Mulai untuk membuka tindakan siswa dan kamera.";
 
   return (
-    <>
+    <div className="driver-ops">
       {assignments.length > 1 && (
         <nav className="ops-switch" aria-label="Pilih tugas hari ini">
           <span>Pilih tugas</span>
@@ -274,6 +324,8 @@ export default async function DriverOperationsPage({
       {rosterResult.error && <Notice kind="error">Daftar siswa belum dapat dimuat.</Notice>}
       {eventsResult.error && <Notice kind="error">Status siswa belum dapat dimuat.</Notice>}
 
+      <DriverAutoRefresh active={inProgress} />
+
       <DriverOpsHeader
         driverName={access.driver.full_name}
         driverId={access.driver.id}
@@ -281,15 +333,14 @@ export default async function DriverOperationsPage({
         schoolName={selected.routes?.school_name ?? ""}
         direction={direction}
         serviceDate={selected.service_date}
-        tripStatus={trip?.status ?? "scheduled"}
+        tripStatus={tripStatus}
         startedAt={trip?.started_at ?? null}
         arrivedAt={trip?.arrived_at ?? null}
         completedAt={trip?.completed_at ?? null}
         fleetCode={selected.buses?.fleet_code ?? ""}
         plateNumber={selected.buses?.plate_number ?? null}
         capacity={selected.buses?.capacity ?? 0}
-        totalStudents={studentRows.length}
-        onboardStudents={onboard}
+        progress={progress}
       >
         {canStart ? (
           <form action={startTrip} className="ops-start">
@@ -327,13 +378,17 @@ export default async function DriverOperationsPage({
       />
 
       <div className="ops-workspace">
-        <FullRouteNavigator
-          plan={plan}
-          route={fullRoute}
-          mapUrl={mapUrl}
-          direction={direction}
-          tripStatus={trip?.status ?? "scheduled"}
-        />
+        <div className="ops-left">
+          <FullRouteNavigator
+            plan={plan}
+            route={fullRoute}
+            mapUrl={mapUrl}
+            direction={direction}
+            tripStatus={tripStatus}
+            nextStop={nextStop}
+          />
+          <DriverMapPanel stops={mapStops} active={inProgress} tripId={trip?.id ?? null} />
+        </div>
 
         <section className="panel ops-manifest" aria-label="Daftar siswa dan tindakan">
         <header className="panel-head">
@@ -345,19 +400,6 @@ export default async function DriverOperationsPage({
           </div>
           <Pill tone={studentRows.length > 0 ? "info" : "warning"}>{studentRows.length} siswa</Pill>
         </header>
-
-        {studentRows.length > 0 && (
-          <div className="manifest-progress">
-            <div className={`progress ${recorded === studentRows.length ? "done" : ""}`} aria-hidden="true">
-              <span
-                style={{ width: `${studentRows.length === 0 ? 0 : Math.round((recorded / studentRows.length) * 100)}%` }}
-              />
-            </div>
-            <span>
-              {recorded} dari {studentRows.length} siswa tercatat
-            </span>
-          </div>
-        )}
 
         {studentRows.length === 0 ? (
           <div className="table-empty">
@@ -372,7 +414,7 @@ export default async function DriverOperationsPage({
             tripId={trip?.id ?? null}
             assignmentId={selected.id}
             direction={direction}
-            tripStatus={trip?.status ?? "scheduled"}
+            tripStatus={tripStatus}
             arrived={Boolean(trip?.arrived_at)}
           />
         )}
@@ -425,11 +467,11 @@ export default async function DriverOperationsPage({
       <details className="ops-side-notes">
         <summary>Catatan navigasi, GPS, dan kamera</summary>
         <p>
-          Navigasi membuka satu rute berisi titik yang tersimpan. Posisi bus belum dilacak karena GPS belum aktif.
-          Siaran kamera mengikuti status perjalanan pada panel kamera, dan kembali dari aplikasi peta tidak mengubah
-          status siswa atau menyelesaikan titik pemberhentian.
+          Navigasi membuka satu rute berisi titik yang tersimpan. Selama perjalanan aktif, posisi HP pengemudi dibagikan
+          ke wali yang berhak dan hanya lokasi terbaru yang disimpan. Siaran kamera mengikuti status perjalanan pada
+          panel kamera, dan kembali dari aplikasi peta tidak mengubah status siswa atau menyelesaikan titik pemberhentian.
         </p>
       </details>
-    </>
+    </div>
   );
 }

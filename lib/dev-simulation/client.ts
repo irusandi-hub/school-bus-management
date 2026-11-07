@@ -1,4 +1,4 @@
-import { DEV_VIEWER } from "../dev-open-access.ts";
+import { DEV_DRIVER_RECORD, DEV_VIEWER } from "../dev-open-access.ts";
 import { createSimulationTables, type SimRow, type SimTables } from "./data.ts";
 
 /**
@@ -359,17 +359,21 @@ function nextSimId() {
  * sungguhan: tanpa ini setiap request memakai salinan baru dan hasil tambah/ubah dari
  * Server Action langsung hilang sebelum halaman berikutnya dibaca.
  */
-let sharedTables: SimTables | null = null;
+const sharedSimulation = globalThis as typeof globalThis & {
+  __schoolBusSimulationTables?: SimTables;
+};
 
 function simulationTables(): SimTables {
-  sharedTables ??= createSimulationTables();
-  return sharedTables;
+  // Next.js dapat memuat modul ini sekali per bundle route. Simpan di globalThis
+  // agar aksi pengemudi dan route wali membaca tabel proses yang sama.
+  sharedSimulation.__schoolBusSimulationTables ??= createSimulationTables();
+  return sharedSimulation.__schoolBusSimulationTables;
 }
 
 /** Mengembalikan dataset simulasi ke kondisi awal; dipakai pengujian dan restart server. */
 export function resetSimulationData() {
-  sharedTables = createSimulationTables();
-  return sharedTables;
+  sharedSimulation.__schoolBusSimulationTables = createSimulationTables();
+  return sharedSimulation.__schoolBusSimulationTables;
 }
 
 export function createSimulationClient() {
@@ -389,6 +393,104 @@ export function createSimulationClient() {
      * Fungsi lain mengembalikan galat eksplisit, bukan sukses palsu.
      */
     async rpc(name: string, args: Record<string, unknown> = {}): Promise<{ data: unknown; error: SimError }> {
+      if (name === "driver_publish_trip_location") {
+        const tripId = String(args.p_trip_id ?? "");
+        const trip = tables.trips.find((row) => row.id === tripId);
+        const assignment = tables.trip_assignments.find((row) => row.id === trip?.assignment_id);
+        if (!trip || assignment?.driver_id !== DEV_DRIVER_RECORD.id || trip.status !== "in_progress") {
+          return { data: null, error: { code: "42501", message: "Perjalanan tidak aktif untuk pengemudi ini." } };
+        }
+
+        const latitude = Number(args.p_latitude);
+        const longitude = Number(args.p_longitude);
+        const accuracy = Number(args.p_accuracy);
+        const recordedAt = new Date(String(args.p_recorded_at ?? ""));
+        if (
+          !Number.isFinite(latitude) ||
+          Math.abs(latitude) > 90 ||
+          !Number.isFinite(longitude) ||
+          Math.abs(longitude) > 180 ||
+          !Number.isFinite(accuracy) ||
+          accuracy < 0 ||
+          accuracy > 100 ||
+          Number.isNaN(recordedAt.getTime()) ||
+          Math.abs(Date.now() - recordedAt.getTime()) > 30_000
+        ) {
+          return { data: null, error: { code: "22023", message: "Lokasi tidak valid." } };
+        }
+
+        const existing = tables.trip_live_locations.find((row) => row.trip_id === tripId);
+        if (existing) {
+          const previous = new Date(String(existing.recorded_at)).getTime();
+          if (recordedAt.getTime() <= previous + 1_500) {
+            return { data: [{ recorded_at: existing.recorded_at }], error: null };
+          }
+          existing.driver_id = DEV_DRIVER_RECORD.id;
+          existing.latitude = latitude;
+          existing.longitude = longitude;
+          existing.accuracy_meters = accuracy;
+          existing.recorded_at = recordedAt.toISOString();
+          existing.updated_at = new Date().toISOString();
+        } else {
+          tables.trip_live_locations.push({
+            trip_id: tripId,
+            driver_id: DEV_DRIVER_RECORD.id,
+            latitude,
+            longitude,
+            accuracy_meters: accuracy,
+            recorded_at: recordedAt.toISOString(),
+            updated_at: new Date().toISOString(),
+          });
+        }
+        return { data: [{ recorded_at: recordedAt.toISOString() }], error: null };
+      }
+
+      if (name === "guardian_trip_location") {
+        const tripId = String(args.p_trip_id ?? "");
+        const trip = tables.trips.find((row) => row.id === tripId);
+        const assignment = tables.trip_assignments.find((row) => row.id === trip?.assignment_id);
+        const route = tables.routes.find((row) => row.id === assignment?.route_id);
+        const guardian = tables.guardians.find(
+          (row) => row.profile_id === DEV_VIEWER.parent.userId && row.active,
+        );
+        const placement = tables.student_route_stops.find((row) => {
+          if (!guardian || row.route_id !== assignment?.route_id || !row.active || row.direction !== route?.direction) {
+            return false;
+          }
+          const student = tables.students.find((entry) => entry.id === row.student_id);
+          return student?.guardian_id === guardian.id && student?.service_status === "active";
+        });
+
+        if (!trip || !assignment || !route || !guardian || !placement) {
+          return { data: null, error: { code: "42501", message: "Akses lokasi ditolak." } };
+        }
+
+        const location = tables.trip_live_locations.find((row) => row.trip_id === tripId);
+        const recordedAt = location ? new Date(String(location.recorded_at)) : null;
+        const fresh = Boolean(
+          location &&
+            trip.status === "in_progress" &&
+            recordedAt &&
+            !Number.isNaN(recordedAt.getTime()) &&
+            Date.now() - recordedAt.getTime() <= 30_000,
+        );
+
+        return {
+          data: [
+            {
+              trip_id: trip.id,
+              trip_status: trip.status,
+              latitude: fresh ? location?.latitude ?? null : null,
+              longitude: fresh ? location?.longitude ?? null : null,
+              accuracy_meters: fresh ? location?.accuracy_meters ?? null : null,
+              recorded_at: location?.recorded_at ?? null,
+              is_fresh: fresh,
+            },
+          ],
+          error: null,
+        };
+      }
+
       if (name === "set_student_service_status") {
         const status = String(args.p_status ?? "");
         if (!SERVICE_STATUSES.has(status)) {
