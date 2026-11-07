@@ -1,6 +1,13 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import "./landing.css";
+
+const HERO_IMAGE = {
+  src: "/assets/landing/hero-bus.webp",
+  width: 1408,
+  height: 768,
+};
 
 export const metadata: Metadata = {
   title: "School Bus Management | Perjalanan Sekolah Terpantau",
@@ -95,6 +102,7 @@ const ROLE_CARDS = [
     id: "parent",
     title: "Untuk Orang Tua",
     description: "Pantau perjalanan anak secara langsung, kapan saja.",
+    image: { src: "/assets/landing/role-orang-tua.webp", width: 1376, height: 768 },
     badge: (
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <circle cx="9.2" cy="8.4" r="3.3" stroke="currentColor" strokeWidth="1.8" />
@@ -166,6 +174,7 @@ const ROLE_CARDS = [
     id: "driver",
     title: "Untuk Pengemudi",
     description: "Dapatkan tugas dan navigasi rute dengan mudah.",
+    image: { src: "/assets/landing/role-pengemudi.webp", width: 1408, height: 768 },
     badge: (
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="1.8" />
@@ -241,6 +250,7 @@ const ROLE_CARDS = [
     id: "operator",
     title: "Untuk Operator",
     description: "Kelola armada, pengemudi, dan jadwal perjalanan.",
+    image: { src: "/assets/landing/role-operator.webp", width: 1408, height: 768 },
     badge: (
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <circle cx="12" cy="12" r="3.2" stroke="currentColor" strokeWidth="1.8" />
@@ -409,7 +419,16 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="landing-hero-media" aria-hidden="true" />
+          <div className="landing-hero-media" aria-hidden="true">
+            <Image
+              src={HERO_IMAGE.src}
+              alt=""
+              width={HERO_IMAGE.width}
+              height={HERO_IMAGE.height}
+              priority
+              sizes="(min-width: 768px) 50vw, 100vw"
+            />
+          </div>
         </section>
 
         <section id="how-it-works" className="landing-strip" aria-label="Keunggulan layanan">
@@ -424,7 +443,16 @@ export default function LandingPage() {
         <section className="landing-roles" aria-label="Pilihan peran pengguna">
           {ROLE_CARDS.map((role) => (
             <article className={`landing-role landing-role-${role.id}`} key={role.id}>
-              <div className="landing-role-media" aria-hidden="true" />
+              <div className="landing-role-media" aria-hidden="true">
+                <Image
+                  src={role.image.src}
+                  alt=""
+                  width={role.image.width}
+                  height={role.image.height}
+                  loading="lazy"
+                  sizes="(min-width: 768px) 22vw, 38vw"
+                />
+              </div>
               <div className="landing-role-body">
                 <div className="landing-role-head">
                   <span className="landing-role-badge" aria-hidden="true">
