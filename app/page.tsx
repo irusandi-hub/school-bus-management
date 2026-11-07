@@ -18,11 +18,6 @@ export const metadata: Metadata = {
   },
 };
 
-const HOME_LINKS = [
-  { label: "Buka pilihan peran", href: "/pilih-peran" },
-  { label: "Masuk", href: "/pilih-peran" },
-];
-
 const STRIP_ITEMS = [
   {
     label: (
@@ -317,11 +312,7 @@ const ROLE_CARDS = [
 
 function Brand() {
   return (
-    <Link
-      href="/pilih-peran"
-      className="landing-brand"
-      aria-label="School Bus Management, halaman pemilihan peran"
-    >
+    <div className="landing-brand">
       <span className="landing-brand-mark" aria-hidden="true">
         <svg viewBox="0 0 40 34" fill="none">
           <rect x="3" y="4" width="34" height="22" rx="6" fill="currentColor" />
@@ -334,7 +325,7 @@ function Brand() {
       <span className="landing-brand-word">
         School<span>Bus</span>
       </span>
-    </Link>
+    </div>
   );
 }
 
@@ -344,25 +335,6 @@ export default function LandingPage() {
       <div className="landing-shell">
         <header className="landing-header">
           <Brand />
-          <details className="landing-menu">
-            <summary aria-label="Buka menu navigasi">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path
-                  d="M4 7h16M4 12h16M4 17h16"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </summary>
-            <div className="landing-menu-panel">
-              {HOME_LINKS.map((link) => (
-                <Link key={link.label} href={link.href}>
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-          </details>
         </header>
 
         <section className="landing-hero" aria-labelledby="landing-title">
@@ -397,7 +369,7 @@ export default function LandingPage() {
               informasi yang akurat.
             </p>
             <div className="landing-actions">
-              <Link href="/pilih-peran" className="landing-btn landing-btn-primary">
+              <a href="#masuk-akun" className="landing-btn landing-btn-primary">
                 Mulai Sekarang
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <path
@@ -408,7 +380,7 @@ export default function LandingPage() {
                     strokeLinejoin="round"
                   />
                 </svg>
-              </Link>
+              </a>
               <a href="#how-it-works" className="landing-btn landing-btn-outline">
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <circle cx="12" cy="12" r="9.4" stroke="currentColor" strokeWidth="1.7" />
@@ -522,11 +494,7 @@ export default function LandingPage() {
                   ))}
                 </div>
               </div>
-              <Link
-                href="/pilih-peran"
-                className="landing-role-arrow"
-                aria-label={`Buka pilihan peran untuk ${role.title}`}
-              >
+              <span className="landing-role-arrow" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <path
                     d="M4.5 12h14M13 6.2l5.8 5.8L13 17.8"
@@ -536,12 +504,12 @@ export default function LandingPage() {
                     strokeLinejoin="round"
                   />
                 </svg>
-              </Link>
+              </span>
             </article>
           ))}
         </section>
 
-        <section className="landing-cta" aria-labelledby="landing-cta-title">
+        <section id="masuk-akun" className="landing-cta" aria-labelledby="landing-cta-title">
           <div className="landing-cta-top" aria-hidden="true">
             <span className="landing-cta-line" />
             <span className="landing-cta-badge">
@@ -613,7 +581,6 @@ export default function LandingPage() {
         </section>
 
         <footer className="landing-footer">
-          <Brand />
           <div className="landing-footer-meta">
             <span>© 2026 School Bus Management</span>
             <span>Dammam, Saudi Arabia</span>
