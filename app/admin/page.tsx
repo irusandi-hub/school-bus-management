@@ -46,7 +46,7 @@ export default async function AdminHomePage() {
 
   return (
     <>
-      <PageHeader title="Ringkasan" actions={<Pill tone="info">{formatDate(date)}</Pill>} />
+      <PageHeader title="Ringkasan" description="Data operasional platform." actions={<Pill tone="info">{formatDate(date)}</Pill>} />
       <section className="stats" aria-label="Data aktif">
         <StatCard label="Sekolah aktif" value={schoolRows.count ?? 0} icon="school" />
         <StatCard label="Operator aktif" value={operatorRows.count ?? 0} icon="operator" />
