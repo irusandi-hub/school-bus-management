@@ -18,41 +18,44 @@ function Icon({ type }: { type: string }) {
 
 export default function ChooseRolePage() {
   return <main className="sbm-chooser sbm-chooser-compact">
-    <header className="sbm-header">
-      <Link href="/" className="sbm-brand"><span className="sbm-mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><rect x="4" y="5" width="24" height="19" rx="4" fill="currentColor"/><path d="M7.5 9h17v8h-17z" fill="#fff"/><circle cx="10" cy="25" r="2.5" fill="#142044"/><circle cx="22" cy="25" r="2.5" fill="#142044"/></svg></span><span>School Bus<br/>Management</span></Link>
-      <Link href="/" className="sbm-back">← Kembali</Link>
-    </header>
-    <section className="sbm-chooser-compact-body" aria-labelledby="explore-title">
+    <section className="sbm-chooser-card" aria-labelledby="explore-title">
+      <Link href="/" className="sbm-chooser-brand"><span className="sbm-mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><rect x="4" y="5" width="24" height="19" rx="4" fill="currentColor"/><path d="M7.5 9h17v8h-17z" fill="#fff"/><circle cx="10" cy="25" r="2.5" fill="#142044"/><circle cx="22" cy="25" r="2.5" fill="#142044"/></svg></span><span>School Bus Management</span></Link>
       <div className="sbm-chooser-compact-copy">
-        <h1 id="explore-title">Jelajahi tampilan pengguna</h1>
-        <p>Pilih salah satu untuk melihat contoh area aplikasi. Ini hanya akses eksplorasi sementara sebelum proses masuk akun (autentikasi) diterapkan.</p>
+        <h1 id="explore-title">Pilih tampilan pengguna</h1>
+        <p>Mode eksplorasi sementara untuk melihat pengembangan area aplikasi sebelum proses masuk akun tersedia.</p>
       </div>
       <nav className="sbm-chooser-links" aria-label="Pilih tampilan pengguna">
         {roles.map((role) => <Link href={role.href} className={`sbm-chooser-link ${role.tone}`} key={role.href}>
           <span className="sbm-chooser-link-icon"><Icon type={role.icon}/></span>
-          <span className="sbm-chooser-link-copy"><strong>{role.title}</strong><small>{role.detail}</small></span>
+          <span className="sbm-chooser-link-copy"><strong>{role.title}</strong></span>
           <span className="sbm-chooser-link-arrow" aria-hidden="true">→</span>
         </Link>)}
       </nav>
+      <p className="sbm-chooser-note">Akses ini hanya untuk peninjauan tampilan, bukan akses akun pengguna.</p>
+      <Link href="/" className="sbm-chooser-back">← Kembali ke halaman utama</Link>
     </section>
     <style>{`
-      .sbm-chooser-compact{min-height:100vh}
-      .sbm-chooser-compact .sbm-chooser-compact-body{width:min(760px,calc(100% - 36px));margin:70px auto 90px}
-      .sbm-chooser-compact-copy{margin-bottom:20px}
-      .sbm-chooser-compact-copy h1{font:800 clamp(22px,4vw,30px) Manrope,sans-serif;letter-spacing:-.8px;color:#243444;margin:0 0 8px}
-      .sbm-chooser-compact-copy p{max-width:620px;font-size:13px;line-height:1.65;color:#738087;margin:0}
+      .sbm-chooser-compact{min-height:100vh;display:grid;place-items:center;padding:28px 18px;background:#f7f6f1}
+      .sbm-chooser-card{width:min(440px,100%);padding:26px;background:#fff;border:1px solid #ece6d6;border-radius:18px;box-shadow:0 16px 44px #2637460d}
+      .sbm-chooser-brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#263746;font-size:13px;font-weight:800;margin-bottom:27px}
+      .sbm-chooser-brand .sbm-mark{width:34px;height:34px}
+      .sbm-chooser-brand svg{width:34px;height:34px}
+      .sbm-chooser-compact-copy{margin-bottom:18px}
+      .sbm-chooser-compact-copy h1{font:800 22px Manrope,sans-serif;letter-spacing:-.6px;color:#243444;margin:0 0 8px}
+      .sbm-chooser-compact-copy p{font-size:12px;line-height:1.6;color:#78848b;margin:0}
       .sbm-chooser-links{display:grid;gap:8px}
-      .sbm-chooser-link{display:flex;align-items:center;gap:14px;padding:13px 15px;background:#fff;border:1px solid #e9e3d1;border-radius:12px;text-decoration:none;transition:border-color .15s,transform .15s}
-      .sbm-chooser-link:hover{border-color:#e2bd43;transform:translateY(-1px)}
-      .sbm-chooser-link-icon{width:38px;height:38px;display:grid;place-items:center;flex:none;border-radius:10px;background:#fff0b5;color:#876500}
-      .sbm-chooser-link-icon svg{width:22px;height:22px}
+      .sbm-chooser-link{display:flex;align-items:center;gap:12px;padding:11px 12px;background:#fff;border:1px solid #e9e3d1;border-radius:10px;text-decoration:none}
+      .sbm-chooser-link:hover{border-color:#e2bd43}
+      .sbm-chooser-link-icon{width:34px;height:34px;display:grid;place-items:center;flex:none;border-radius:9px;background:#fff0b5;color:#876500}
+      .sbm-chooser-link-icon svg{width:20px;height:20px}
       .sbm-chooser-link-copy{display:grid;gap:3px;min-width:0}
-      .sbm-chooser-link-copy strong{font:800 14px Manrope,sans-serif;color:#263746}
-      .sbm-chooser-link-copy small{font-size:11px;line-height:1.45;color:#78848b}
-      .sbm-chooser-link-arrow{margin-left:auto;color:#987400;font-size:20px}
+      .sbm-chooser-link-copy strong{font:800 13px Manrope,sans-serif;color:#263746}
+      .sbm-chooser-link-arrow{margin-left:auto;color:#987400;font-size:18px}
       .sbm-chooser-link.driver .sbm-chooser-link-icon{background:#e8f1f8;color:#316f9b}
       .sbm-chooser-link.operator .sbm-chooser-link-icon{background:#e9eef0;color:#526b78}
-      @media(max-width:600px){.sbm-chooser-compact .sbm-chooser-compact-body{margin:48px auto 60px}.sbm-chooser-link{padding:11px 12px;gap:11px}}
+      .sbm-chooser-note{margin:16px 0 0;padding-top:13px;border-top:1px solid #f0ede5;font-size:10px;line-height:1.5;color:#8a9296}
+      .sbm-chooser-back{display:inline-block;margin-top:16px;color:#76601e;font-size:11px;font-weight:700;text-decoration:none}
+      @media(max-width:420px){.sbm-chooser-card{padding:21px}.sbm-chooser-compact-copy h1{font-size:20px}}
     `}</style>
   </main>;
 }
