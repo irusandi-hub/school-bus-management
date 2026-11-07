@@ -9,6 +9,7 @@ import { DriverOpsHeader } from "@/components/driver/DriverOpsHeader";
 import { FullRouteNavigator } from "@/components/driver/FullRouteNavigator";
 import type { DriverMapStop } from "@/components/driver/DriverRouteMap";
 import { cameraDemoEnabled } from "@/lib/camera/demo-policy";
+import { compareStudentsByRouteOrder } from "@/lib/driver/student-order";
 import { deploymentKind } from "@/lib/dev-open-access";
 import { OpenSafetyCheckLink } from "@/components/driver/OpenSafetyCheckLink";
 import { StudentList, type StudentListRow } from "@/components/driver/StudentList";
@@ -171,8 +172,17 @@ export default async function DriverOperationsPage({
   ]);
 
   const stops = (stopsResult.data ?? []) as unknown as RouteStopRow[];
-  const roster = ((rosterResult.data ?? []) as unknown as RosterEntry[]).sort(
-    (a, b) => (a.route_stops?.stop_order ?? 0) - (b.route_stops?.stop_order ?? 0),
+  const roster = ((rosterResult.data ?? []) as unknown as RosterEntry[]).sort((a, b) =>
+    compareStudentsByRouteOrder(
+      {
+        stopOrder: a.route_stops?.stop_order ?? 0,
+        admissionsNumber: a.students?.admissions_number ?? null,
+      },
+      {
+        stopOrder: b.route_stops?.stop_order ?? 0,
+        admissionsNumber: b.students?.admissions_number ?? null,
+      },
+    ),
   );
   const events = (eventsResult.data ?? []) as unknown as TripEventRow[];
 
@@ -377,7 +387,7 @@ export default async function DriverOperationsPage({
             tripStatus={tripStatus}
             nextStop={nextStop}
           />
-          <DriverMapPanel stops={mapStops} />
+          <DriverMapPanel stops={mapStops} active={inProgress} />
         </div>
 
         <section className="panel ops-manifest" aria-label="Daftar siswa dan tindakan">

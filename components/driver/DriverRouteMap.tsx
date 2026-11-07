@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import type { DeviceLocation } from "@/lib/driver/device-location";
 import "leaflet/dist/leaflet.css";
 
 export type DriverMapStop = {
@@ -29,12 +30,22 @@ function hasCoordinates(stop: DriverMapStop): stop is DriverMapStop & { latitude
 /**
  * Peta tampilan dari koordinat rute yang tersimpan.
  *
+ * Posisi HP pengemudi ditambahkan hanya dari sampel Geolocation yang valid.
  * Tidak ada posisi bus, jalur jalan, atau rute yang dikarang. Garis pada peta
  * hanya menghubungkan urutan titik menurut data rute; bukan jalur jalan dan
  * bukan navigasi belokan.
  */
-export function DriverRouteMap({ stops }: { stops: DriverMapStop[] }) {
+export function DriverRouteMap({
+  stops,
+  driverLocation,
+}: {
+  stops: DriverMapStop[];
+  driverLocation: DeviceLocation | null;
+}) {
   const container = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<import("leaflet").Map | null>(null);
+  const driverMarker = useRef<import("leaflet").Marker | null>(null);
+  const [mapReady, setMapReady] = useState(false);
   const [tileState, setTileState] = useState<"loading" | "ready" | "error">("loading");
   const validStops = useMemo(() => stops.filter(hasCoordinates), [stops]);
   const missingCount = stops.length - validStops.length;
@@ -62,6 +73,7 @@ export function DriverRouteMap({ stops }: { stops: DriverMapStop[] }) {
         touchZoom: false,
         zoomControl: false,
       });
+      mapRef.current = map;
 
       const tiles = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -127,6 +139,7 @@ export function DriverRouteMap({ stops }: { stops: DriverMapStop[] }) {
         map.fitBounds(bounds, { maxZoom: 15, padding: [24, 24] });
       }
       map.invalidateSize();
+      setMapReady(true);
 
       resizeObserver = new ResizeObserver(() => map?.invalidateSize());
       resizeObserver.observe(node);
@@ -138,9 +151,60 @@ export function DriverRouteMap({ stops }: { stops: DriverMapStop[] }) {
       disposed = true;
       window.clearTimeout(tileTimeout);
       resizeObserver?.disconnect();
+      driverMarker.current = null;
+      mapRef.current = null;
+      setMapReady(false);
       map?.remove();
     };
   }, [validStops]);
+
+  // Marker posisi HP diperbarui tanpa membangun ulang peta atau mengubah
+  // urutan/titik pemberhentian.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapReady) return;
+
+    let disposed = false;
+    void import("leaflet").then((L) => {
+      if (disposed || mapRef.current !== map) return;
+      driverMarker.current?.remove();
+      driverMarker.current = null;
+      if (!driverLocation) return;
+
+      const icon = L.divIcon({
+        className: "ops-map-marker is-driver",
+        html: "<span>HP</span>",
+        iconAnchor: [13, 13],
+        iconSize: [26, 26],
+      });
+      const marker = L.marker([driverLocation.latitude, driverLocation.longitude], {
+        icon,
+        keyboard: false,
+        title: "Posisi HP pengemudi",
+        zIndexOffset: 500,
+      }).addTo(map);
+
+      const tooltip = document.createElement("span");
+      const title = document.createElement("strong");
+      title.textContent = "Posisi HP pengemudi";
+      const detail = document.createElement("small");
+      detail.textContent = `Sumber utama · akurasi ±${Math.round(driverLocation.accuracy)} m`;
+      tooltip.className = "ops-map-tooltip-copy";
+      tooltip.append(title, detail);
+      marker.bindTooltip(tooltip, {
+        className: "ops-map-tooltip",
+        direction: "top",
+        offset: [0, -12],
+        opacity: 1,
+      });
+
+      driverMarker.current = marker;
+    });
+
+    return () => {
+      disposed = true;
+    };
+  }, [driverLocation, mapReady]);
 
   if (validStops.length === 0) {
     return (

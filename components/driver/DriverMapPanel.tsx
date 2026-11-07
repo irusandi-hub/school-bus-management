@@ -1,13 +1,34 @@
+"use client";
+
 import { Icon } from "@/components/ui/Icon";
+import { useDriverLocation } from "./useDriverLocation";
 import { DriverRouteMap, type DriverMapStop } from "./DriverRouteMap";
 
 /**
  * Kartu peta di bawah dua panel operasional.
  *
- * Hanya menampilkan koordinat rute yang tersedia. Posisi bus tidak digambar
- * karena GPS belum terhubung, dan garis peta bukan jalur jalan.
+ * Hanya menampilkan koordinat rute yang tersedia. Marker posisi berasal dari
+ * GPS HP pengemudi; GPS bus belum memiliki sumber koordinat di aplikasi ini.
+ * Garis peta tetap bukan jalur jalan.
  */
-export function DriverMapPanel({ stops }: { stops: DriverMapStop[] }) {
+export function DriverMapPanel({ stops, active }: { stops: DriverMapStop[]; active: boolean }) {
+  const gps = useDriverLocation(active);
+  const gpsLabel =
+    gps.status === "active" && gps.location
+      ? `GPS HP · ±${Math.round(gps.location.accuracy)} m`
+      : gps.status === "locating"
+        ? "Mencari GPS HP"
+        : gps.status === "denied"
+          ? "GPS HP ditolak"
+          : gps.status === "unsupported"
+            ? "GPS HP tidak didukung"
+            : gps.status === "invalid"
+              ? "Sinyal GPS lemah"
+              : gps.status === "stale"
+                ? "GPS HP menunggu"
+                : gps.status === "unavailable"
+                  ? "GPS HP belum tersedia"
+                  : "GPS HP belum aktif";
   const mappedStops = stops.filter(
     (stop) =>
       typeof stop.latitude === "number" &&
@@ -32,13 +53,13 @@ export function DriverMapPanel({ stops }: { stops: DriverMapStop[] }) {
             </small>
           </div>
         </div>
-        <span className="ops-map-gps">
-          <Icon name="gpsOff" size={12} />
-          Lokasi bus belum tersedia
+        <span className="ops-map-gps" role="status" title={gps.message}>
+          <Icon name={gps.status === "active" ? "pin" : "gpsOff"} size={12} />
+          {gpsLabel}
         </span>
       </header>
 
-      <DriverRouteMap stops={stops} />
+      <DriverRouteMap stops={stops} driverLocation={gps.location} />
     </section>
   );
 }

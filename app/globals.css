@@ -1333,6 +1333,7 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
 .ops-map-marker span{display:block;line-height:1}
 .ops-map-marker.is-school{border-color:#2B2416;background:#FFD670;color:#2B2416}
 .ops-map-marker.is-skipped{border-color:#9C978D;background:#F3F1EC;color:#77726A;opacity:.75}
+.ops-map-marker.is-driver{border-color:#285E43;background:#2F8A5D;color:#fff;font-size:8px;box-shadow:0 2px 9px #285E4359}
 .leaflet-tooltip.ops-map-tooltip{max-width:190px;padding:5px 7px;border:1px solid #E5DECF;border-radius:7px;background:#FFFDF9;box-shadow:0 5px 14px #2B24161A;color:#3B3428;white-space:normal;font-size:8px;line-height:1.3}
 .leaflet-tooltip.ops-map-tooltip::before{display:none}
 .ops-map-tooltip-copy strong,.ops-map-tooltip-copy small{display:block}
@@ -1378,7 +1379,7 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
 .ops-nav-panel .route-stops>summary::-webkit-details-marker,.ops-nav-panel .route-note>summary::-webkit-details-marker{display:none}
 .ops-nav-panel .route-stops>summary>span:first-child{display:inline-flex;align-items:center;gap:4px}
 .ops-nav-panel .route-stops>summary>span:last-child{border-radius:999px;background:var(--brand-bg);padding:2px 5px;font-size:7px}
-.route-stops-scroll{max-height:232px;overflow-y:auto;overscroll-behavior:contain;padding-right:2px}
+.route-stops-scroll{max-height:none;overflow:visible;overscroll-behavior:auto;padding-right:2px}
 .ops-nav-panel .nav-stop-list{padding:2px 0 0;margin:0}
 .ops-nav-panel .route-note ul{font-size:8px;line-height:1.4;padding-left:12px;gap:3px}
 .ops-nav-panel .route-note summary{min-height:30px;font-size:8px}
@@ -1488,7 +1489,7 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
   .ops-workspace{gap:7px}
   .ops-nav-panel{padding:8px 7px}
   .ops-students-scroll{max-height:calc(100dvh - 340px);min-height:230px}
-  .route-stops-scroll{max-height:calc(100dvh - 490px);min-height:120px}
+  .route-stops-scroll{max-height:none;min-height:0}
   .ops-close-flag{max-width:36%;font-size:7px}
   .breadcrumb,.page-footer{display:none}
 }
@@ -1516,7 +1517,7 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
   .ops-nav-panel .route-cta small{font-size:9px}
   .ops-nav-panel .route-summary span{font-size:7px}
   .ops-nav-panel .route-summary strong{font-size:10px}
-  .route-stops-scroll{max-height:285px}
+  .route-stops-scroll{max-height:none}
   .ops-students-scroll{max-height:455px}
   .ops-manifest .panel-head{padding:10px 11px 7px}
   .ops-manifest .panel-title{font-size:13px}
@@ -1533,7 +1534,7 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
 
 @media(min-width:1000px){
   .ops-workspace{grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr)}
-  .route-stops-scroll{max-height:330px}
+  .route-stops-scroll{max-height:none}
   .ops-students-scroll{max-height:500px}
 }
 
@@ -1797,7 +1798,7 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
 .ops-workspace{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr);gap:7px;align-items:stretch;margin:0}
 .ops-workspace>section{min-width:0;margin-bottom:0}
 .ops-left{display:flex;flex-direction:column;gap:6px;min-width:0;min-height:0}
-.ops-left>.ops-nav-panel{flex:0 0 auto;min-width:0;margin:0;padding:7px;border-radius:12px}
+.ops-left>.ops-nav-panel{flex:0 0 auto;min-width:0;margin:0;padding:7px;border-radius:12px;max-height:calc(100% - 101px);overflow:clip}
 .ops-left>.ops-map{grid-column:auto;flex:1 1 auto;min-width:0;min-height:95px;margin:0;border-radius:12px}
 .ops-nav-panel .route-head-top{gap:3px}
 .ops-panel-eyebrow{font-size:6.5px;gap:3px}
@@ -1978,7 +1979,7 @@ body:has(.dev-mode-banner) .driver-app{height:calc(100dvh - 20px);min-height:0}
   .driver-ops .ops-close-open{display:none}
   .ops-workspace{gap:4px;min-height:0}
   .ops-left{gap:4px;min-height:0}
-  .ops-left>.ops-nav-panel{padding:5px;border-radius:9px;max-height:calc(100% - 74px);overflow-y:auto}
+  .ops-left>.ops-nav-panel{padding:5px;border-radius:9px;overflow:clip}
   .ops-panel-eyebrow{font-size:6.8px}
   .ops-nav-panel .route-direction{font-size:6.2px;padding:1px 3px}
   .ops-nav-panel .route-head h2{font-size:11.5px}
