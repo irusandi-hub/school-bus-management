@@ -296,6 +296,85 @@ button{cursor:pointer}
 .upcoming-list span{font-size:11px;color:var(--muted);line-height:1.6}
 .landing-footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:52px;padding-top:18px;border-top:1px solid var(--line);font-size:10.5px;color:#87969a}
 
+/* Landing page CTA band (versi mockup kuning, bukan `.landing-cta` tombol) */
+.landing-cta-section{margin-top:54px}
+.landing-cta-inner{display:flex;align-items:center;justify-content:space-between;gap:26px;flex-wrap:wrap;background:linear-gradient(120deg,#fdf3e6,#f7f9f4 70%);border:1px solid #f0e3cf;border-radius:22px;padding:32px 34px}
+.landing-cta-mark{display:inline-grid;place-items:center;width:54px;height:54px;border-radius:16px;background:var(--brand);color:var(--ink);flex-shrink:0;font-size:24px}
+.landing-cta-title{font:800 24px Manrope,sans-serif;letter-spacing:-.02em;margin:0 0 8px;color:var(--ink);max-width:560px}
+.landing-cta-title .landing-cta-emphasis{color:var(--brand);font-style:normal}
+.landing-cta-note{font-size:12px;line-height:1.75;color:#7c6a51;margin:0 0 18px;max-width:520px}
+.landing-cta-form{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.landing-email-label{display:inline-flex;align-items:center;gap:10px;color:var(--ink);font-size:12px;font-weight:700;text-decoration:none;border:1px solid var(--line);border-radius:10px;padding:10px 13px;background:#fff;min-width:260px;max-width:380px}
+.landing-email-label svg{width:18px;height:18px;color:#8a5c00}
+.landing-email-input{flex:1 1 auto;min-width:140px;border:0;background:transparent;font:inherit;font-size:12.5px;color:var(--ink);outline:0}
+.landing-email-input::placeholder{color:#9a8b6c}
+.landing-email-note{display:block;margin-top:6px;font-size:10px;line-height:1.5;color:#8a7a5a}
+.landing-email-note::before{content:"";display:inline-block;width:14px;height:1px;background:#e9e3d8;margin-right:6px;vertical-align:middle}
+
+/* Landing page role grid */
+.role-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-bottom:8px}
+.role-card{position:relative;background:#fff;border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-xs);overflow:hidden;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.role-card:hover{transform:translateY(-3px);border-color:#ebcf8c;box-shadow:var(--shadow-sm)}
+.role-accent{position:absolute;left:0;top:0;width:10px;height:100%;background:var(--brand);border-right:1px solid #f0e3cf}
+.role-image-wrap{position:relative;margin:18px 18px 0}
+.role-image{width:100%;height:auto;border-radius:var(--radius-md);display:block;background:#f2e7d6 object-cover}
+.role-body{padding:14px 18px 18px}
+.role-top{display:flex;align-items:flex-start;gap:10px}
+.role-badge{display:inline-grid;place-items:center;width:38px;height:38px;border-radius:12px;background:var(--brand);color:var(--ink);flex-shrink:0}
+.role-badge svg{width:20px;height:20px}
+.role-info{flex:1;min-width:0}
+.role-title{font:800 15px Manrope,sans-serif;letter-spacing:-.3px;display:block;color:var(--ink);margin:0 0 4px}
+.role-sub{display:block;font-size:11.5px;line-height:1.6;color:#7c766a;margin:0}
+.role-cta{margin-left:auto;color:var(--ink);background:var(--brand-bg);border-radius:999px;padding:8px;flex-shrink:0;text-decoration:none;border:1px solid #f2e3be;transition:background .15s ease,border-color .15s ease}
+.role-cta:hover{background:var(--brand-pastel);border-color:#e7cf8a}
+.role-cta svg{width:16px;height:16px;color:#7a5100}
+.role-chips{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:14px}
+.role-chip{border:1px solid var(--line);border-radius:999px;padding:7px 10px;font:700 10.5px 'DM Sans',Arial,sans-serif;color:#5f5a50;background:#fff;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Landing page hero art overrides (mengikuti mockup) */
+.hero-art-img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-art-shade{position:absolute;inset:0;background:linear-gradient(180deg,#0f172a08 35%,#0f172a55 100%);border-radius:inherit}
+.hero-art-label{position:absolute;left:22px;bottom:22px;display:flex;align-items:center;gap:12px;padding:13px 17px;border:1px solid #ffffff80;border-radius:9px;background:#fffF;color:#172b35;backdrop-filter:blur(12px)}
+.lp-label-icon{width:34px;height:34px;display:grid;place-items:center;border-radius:8px;background:#fef3c7;color:#8a6a0b;font-size:21px}
+.hero-art-label b,.hero-art-label small{display:block}
+.hero-art-label b{font:700 12px Manrope,sans-serif}
+.hero-art-label small{margin-top:3px;color:#64748b;font-size:10px}
+.hero-art-index{position:absolute;right:20px;top:20px;display:flex;align-items:center;gap:9px;color:#fff;text-shadow:0 1px 8px #0008}
+.hero-art-index b{font:800 28px Manrope,sans-serif}
+.hero-art-index span{font-size:8px;line-height:1.45;font-weight:800;letter-spacing:1px}
+
+/* Landing page brand wordmark kuning untuk mockup */
+.landing-brand-word{color:var(--brand)}
+
+/* Landing page section headings (mengikuti pola global) */
+.landing-section{padding:54px 4px 6px}
+.section-head{max-width:660px;margin-bottom:26px}
+.section-head h2{font:800 clamp(23px,2.6vw,31px)/1.2 Manrope,sans-serif;letter-spacing:-.02em;margin:0 0 12px}
+.section-head h2 em{font-style:normal;color:var(--brand)}
+.section-head p{font-size:13px;line-height:1.8;color:var(--muted);margin:0}
+
+/* Landing page feature grid (polos, sesuai mockup) */
+.feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.feature-card-sep{border-top:1px solid var(--line)}
+
+/* Responsif landing page */
+@media(max-width:900px){
+  .landing-hero{grid-template-columns:1fr;padding:48px 32px}
+  .hero-art-art{display:none}
+  .role-grid{grid-template-columns:1fr}
+  .landing-cta-inner{flex-direction:column;align-items:stretch}
+  .landing-email-label{min-width:0;width:100%}
+}
+@media(max-width:760px){
+  .landing-inner{padding:18px 18px 30px}
+  .landing-nav-links{display:none}
+  .landing-link{display:none}
+  .landing-hero{padding:36px 22px;border-radius:20px}
+  .hero-actions .btn{flex:1 1 auto}
+  .landing-section{padding-top:42px}
+  .feature-grid{grid-template-columns:1fr}
+}
+
 .loading-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(330px,1fr);gap:18px}
 .loading-block{min-height:320px;background:linear-gradient(100deg,#f7faf8 30%,#eef5f1 50%,#f7faf8 70%);background-size:200% 100%;animation:loading-shimmer 1.4s ease-in-out infinite}
 .loading-block-tall{min-height:420px}
@@ -2488,7 +2567,7 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
 .mini-stats div{background:#fff;border:1px solid #e6edf3;border-radius:6px;padding:5px 7px;min-width:0}
 .mini-stats strong{display:block;font:800 15px Manrope,Arial,sans-serif;color:#1d3552}
 .mini-stats small{display:block;font-size:7px;color:#77869a;margin-top:1px}
-.mini-chart{height:23px;display:flex;align-items:end;gap:5px;margin:7px 3px 0}
+.mini-chart{height:23px;display:flex;align-items:flex-end;gap:5px;margin:7px 3px 0}
 .mini-chart i{display:block;flex:1;border-radius:3px 3px 0 0;background:#8db4d2;height:40%}
 .mini-chart i:nth-child(3n){height:80%;background:#4388bd}.mini-chart i:nth-child(4n){height:60%}.mini-chart i:nth-child(5n){height:95%;background:#d5ad42}
 .mini-foot{position:absolute;left:10px;right:10px;bottom:7px;display:flex;justify-content:space-between;color:#73839a;font-size:7px;font-weight:700}
