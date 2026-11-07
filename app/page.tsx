@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
+import "./landing.css";
 
 export const metadata: Metadata = {
   title: "School Bus Management | Perjalanan Sekolah Terpantau",
@@ -11,145 +11,297 @@ export const metadata: Metadata = {
   },
 };
 
-const FEATURE_ITEMS = [
+const HOME_LINKS = [
+  { label: "Buka pilihan peran", href: "/pilih-peran" },
+  { label: "Masuk", href: "/pilih-peran" },
+];
+
+const STRIP_ITEMS = [
   {
+    label: (
+      <>
+        Perjalanan
+        <br />
+        Lebih Aman
+      </>
+    ),
     icon: (
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path
-          d="M12 3l8 4v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z"
+          d="M12 3l7 3.2v4.6c0 4.6-3 8.1-7 9.7-4-1.6-7-5.1-7-9.7V6.2L12 3z"
           stroke="currentColor"
-          strokeWidth="2"
+          strokeWidth="1.7"
           strokeLinejoin="round"
         />
         <path
-          d="M9 12l2 2 4-4"
+          d="M9.2 11.8l2 2 3.6-3.9"
           stroke="currentColor"
-          strokeWidth="2"
+          strokeWidth="1.7"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
       </svg>
     ),
-    title: "Perjalanan Lebih Aman",
-    sub: "Setiap perjalanan anak didampingi informasi yang jelas.",
   },
   {
+    label: (
+      <>
+        Lokasi Bus
+        <br />
+        Real-Time
+      </>
+    ),
     icon: (
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path
-          d="M12 21s-7-6.5-7-11a7 7 0 0114 0c0 4.5-7 11-7 11z"
+          d="M12 21c0-6.2 5-8.4 5-12a5 5 0 10-10 0c0 3.6 5 5.8 5 12z"
           stroke="currentColor"
-          strokeWidth="2"
+          strokeWidth="1.7"
+          strokeLinejoin="round"
         />
-        <circle cx="12" cy="10" r="2.5" stroke="currentColor" strokeWidth="2" />
-        <path
-          d="M12 7v.01"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
+        <circle cx="12" cy="9" r="1.9" fill="currentColor" />
       </svg>
     ),
-    title: "Lokasi Bus Real-Time",
-    sub: "Posisi bus dapat dilihat saat perangkat dan jaringan tersedia.",
   },
   {
+    label: (
+      <>
+        Notifikasi
+        <br />
+        Instan
+      </>
+    ),
     icon: (
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path
-          d="M18 8a6 6 0 00-12 0c0 7-4 11-4 11s1.5 2 4 2c2.5 0 4-1 4-2"
+          d="M6.5 9.5a5.5 5.5 0 1111 0c0 3.4 1.4 5.1 2.2 6.1.4.5 0 1.4-.7 1.4H5c-.7 0-1.1-.9-.7-1.4.8-1 2.2-2.7 2.2-6.1z"
           stroke="currentColor"
-          strokeWidth="2"
+          strokeWidth="1.7"
           strokeLinejoin="round"
         />
         <path
-          d="M12 14v-2M9 17h6"
+          d="M9.8 19.4a2.4 2.4 0 004.4 0"
           stroke="currentColor"
-          strokeWidth="2"
+          strokeWidth="1.7"
           strokeLinecap="round"
         />
       </svg>
     ),
-    title: "Notifikasi Instan",
-    sub: "Pemberitahuan penting langsung sampai ke yang berhak.",
   },
 ];
 
 const ROLE_CARDS = [
   {
     id: "parent",
-    accent: " Untuk Orang Tua",
-    accentBg: "#FFF9E6",
-    accentBorder: "#F3D97A",
+    title: "Untuk Orang Tua",
+    description: "Pantau perjalanan anak secara langsung, kapan saja.",
     badge: (
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <circle cx="9" cy="8" r="3.4" stroke="currentColor" strokeWidth="2" />
-        <circle cx="16" cy="7.5" r="4" stroke="currentColor" strokeWidth="2" />
+        <circle cx="9.2" cy="8.4" r="3.3" stroke="currentColor" strokeWidth="1.8" />
+        <circle cx="16.4" cy="9.6" r="2.6" stroke="currentColor" strokeWidth="1.8" />
         <path
-          d="M3 21c0-4 3-6 6-6"
+          d="M3.4 19.4c0-3.1 2.6-5.2 5.8-5.2s5.8 2.1 5.8 5.2"
           stroke="currentColor"
-          strokeWidth="2"
+          strokeWidth="1.8"
           strokeLinecap="round"
         />
         <path
-          d="M21 21c0-3-2.2-5.5-5-6"
+          d="M16.2 14.4c2.4.2 4.4 2.1 4.4 5"
           stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
-        <path
-          d="M7 13c0-2 1.6-3 4-3"
-          stroke="currentColor"
-          strokeWidth="2"
+          strokeWidth="1.8"
           strokeLinecap="round"
         />
       </svg>
     ),
-    title: "Untuk Orang Tua",
-    subtitle: "Pantauan perjalanan anak secara langsung, kapan saja.",
-    chips: ["Lokasi", "Kamera", "Perisai", "•••"],
-    imageUrl: "/assets/landing/role-orang-tua.webp",
+    chips: [
+      <svg key="pin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path
+          d="M12 20c0-5 4-6.8 4-9.8a4 4 0 10-8 0C8 13.2 12 15 12 20z"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinejoin="round"
+        />
+        <circle cx="12" cy="10" r="1.5" fill="currentColor" />
+      </svg>,
+      <svg key="camera" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect
+          x="3"
+          y="7"
+          width="13"
+          height="10"
+          rx="2.4"
+          stroke="currentColor"
+          strokeWidth="1.8"
+        />
+        <path
+          d="M16 11.4l4.3-2.3v5.8L16 12.6z"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinejoin="round"
+        />
+      </svg>,
+      <svg key="shield" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path
+          d="M12 3.6l6.6 2.9v4.3c0 4.2-2.8 7.4-6.6 8.9-3.8-1.5-6.6-4.7-6.6-8.9V6.5L12 3.6z"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M9.3 11.6l1.9 1.9 3.4-3.7"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>,
+      <svg key="more" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <circle cx="6" cy="12" r="1.7" />
+        <circle cx="12" cy="12" r="1.7" />
+        <circle cx="18" cy="12" r="1.7" />
+      </svg>,
+    ],
   },
   {
     id: "driver",
-    accent: " Untuk Pengemudi",
-    accentBg: "#E6F0FF",
-    accentBorder: "#8AB4FF",
-    badge: (
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="2" />
-        <path d="M9 12h6M12 9v6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      </svg>
-    ),
     title: "Untuk Pengemudi",
-    subtitle: "Dapatkan tugas dan navigasi rute dengan mudah.",
-    chips: ["Navigasi", "Daftar", "Bus", "•••"],
-    imageUrl: "/assets/landing/role-pengemudi.webp",
-  },
-  {
-    id: "operator",
-    accent: " Untuk Operator",
-    accentBg: "#E9EEFF",
-    accentBorder: "#9A9CFF",
+    description: "Dapatkan tugas dan navigasi rute dengan mudah.",
     badge: (
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="1.8" />
+        <circle cx="12" cy="12" r="2.6" stroke="currentColor" strokeWidth="1.8" />
         <path
-          d="M12 7a5 5 0 100 10 5 5 0 000-10z"
+          d="M12 3.9v5.5M5 15.6l4.8-2.8M19 15.6l-4.8-2.8"
           stroke="currentColor"
-          strokeWidth="2"
-        />
-        <path
-          d="M12 3v4M12 17v4M3 12h4M17 12h4"
-          stroke="currentColor"
-          strokeWidth="2"
+          strokeWidth="1.8"
           strokeLinecap="round"
         />
       </svg>
     ),
+    chips: [
+      <svg key="nav" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path
+          d="M20.5 3.5L3.8 10.4l7 2.6 2.6 7 5.4-16.5z"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinejoin="round"
+        />
+      </svg>,
+      <svg key="clipboard" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect
+          x="5"
+          y="4.6"
+          width="14"
+          height="15.8"
+          rx="2.4"
+          stroke="currentColor"
+          strokeWidth="1.8"
+        />
+        <path
+          d="M9.6 4.6V3.4h4.8v1.2"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+        />
+        <path
+          d="M8.8 13.2l2.1 2.1 4-4.4"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>,
+      <svg key="bus" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect
+          x="4"
+          y="4.4"
+          width="16"
+          height="12.6"
+          rx="2.6"
+          stroke="currentColor"
+          strokeWidth="1.8"
+        />
+        <path
+          d="M4 9.6h16M8.2 17v2.2M15.8 17v2.2"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+        />
+        <circle cx="8.4" cy="13.9" r="1" fill="currentColor" />
+        <circle cx="15.6" cy="13.9" r="1" fill="currentColor" />
+      </svg>,
+      <svg key="more" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <circle cx="6" cy="12" r="1.7" />
+        <circle cx="12" cy="12" r="1.7" />
+        <circle cx="18" cy="12" r="1.7" />
+      </svg>,
+    ],
+  },
+  {
+    id: "operator",
     title: "Untuk Operator",
-    subtitle: "Kelola armada, pengemudi, dan jadwal perjalanan.",
-    chips: ["Bus", "Orang", "Grafik", "•••"],
-    imageUrl: "/assets/landing/role-operator.webp",
+    description: "Kelola armada, pengemudi, dan jadwal perjalanan.",
+    badge: (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="3.2" stroke="currentColor" strokeWidth="1.8" />
+        <path
+          d="M12 2.8l1.5 2.4 2.7-.7.6 2.8 2.6 1.2-1.4 2.5 1.4 2.5-2.6 1.2-.6 2.8-2.7-.7L12 21.2l-1.5-2.4-2.7.7-.6-2.8-2.6-1.2L6 13l-1.4-2.5 2.6-1.2.6-2.8 2.7.7L12 2.8z"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+    chips: [
+      <svg key="bus" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect
+          x="4"
+          y="4.4"
+          width="16"
+          height="12.6"
+          rx="2.6"
+          stroke="currentColor"
+          strokeWidth="1.8"
+        />
+        <path
+          d="M4 9.6h16M8.2 17v2.2M15.8 17v2.2"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+        />
+        <circle cx="8.4" cy="13.9" r="1" fill="currentColor" />
+        <circle cx="15.6" cy="13.9" r="1" fill="currentColor" />
+      </svg>,
+      <svg key="users" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="9.2" cy="8.4" r="3.3" stroke="currentColor" strokeWidth="1.8" />
+        <circle cx="16.4" cy="9.6" r="2.6" stroke="currentColor" strokeWidth="1.8" />
+        <path
+          d="M3.4 19.4c0-3.1 2.6-5.2 5.8-5.2s5.8 2.1 5.8 5.2"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+        />
+        <path
+          d="M16.2 14.4c2.4.2 4.4 2.1 4.4 5"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+        />
+      </svg>,
+      <svg key="chart" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path
+          d="M5 19.4V13M12 19.4V6M19 19.4v-8.6"
+          stroke="currentColor"
+          strokeWidth="1.9"
+          strokeLinecap="round"
+        />
+      </svg>,
+      <svg key="more" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <circle cx="6" cy="12" r="1.7" />
+        <circle cx="12" cy="12" r="1.7" />
+        <circle cx="18" cy="12" r="1.7" />
+      </svg>,
+    ],
   },
 ];
 
@@ -160,18 +312,17 @@ function Brand() {
       className="landing-brand"
       aria-label="School Bus Management, halaman pemilihan peran"
     >
-      <span className="landing-mark" aria-hidden="true">
-        <svg viewBox="0 0 40 40" fill="none">
-          <rect x="5" y="6" width="30" height="25" rx="5" fill="currentColor" />
-          <path d="M9 11h22v11H9z" fill="#fff" />
-          <path d="M8 26h24" stroke="#172b35" strokeWidth="2" />
-          <circle cx="12" cy="32" r="3" fill="#172b35" />
-          <circle cx="28" cy="32" r="3" fill="#172b35" />
+      <span className="landing-brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 40 34" fill="none">
+          <rect x="3" y="4" width="34" height="22" rx="6" fill="currentColor" />
+          <path d="M7.5 8h7v6h-7zM17.5 8h7v6h-7zM27.5 8h5v6h-5z" fill="#FFFFFF" />
+          <path d="M7.5 17h7v5h-7zM17.5 17h7v5h-7zM27.5 17h5v5h-5z" fill="#FFFFFF" />
+          <circle cx="11" cy="28" r="4" fill="#101B3B" />
+          <circle cx="29" cy="28" r="4" fill="#101B3B" />
         </svg>
       </span>
-      <span>
-        School
-        <span className="landing-brand-word">Bus</span>
+      <span className="landing-brand-word">
+        School<span>Bus</span>
       </span>
     </Link>
   );
@@ -180,55 +331,67 @@ function Brand() {
 export default function LandingPage() {
   return (
     <div className="landing">
-      <div className="landing-inner">
-        <nav className="landing-nav" aria-label="Navigasi utama">
+      <div className="landing-shell">
+        <header className="landing-header">
           <Brand />
-          <div className="landing-nav-actions">
-            <Link href="/pilih-peran" className="landing-link">
-              Buka pilihan peran
-            </Link>
-            <Link href="/pilih-peran" className="landing-cta">
-              Masuk
-            </Link>
-          </div>
-        </nav>
+          <details className="landing-menu">
+            <summary aria-label="Buka menu navigasi">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M4 7h16M4 12h16M4 17h16"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </summary>
+            <div className="landing-menu-panel">
+              {HOME_LINKS.map((link) => (
+                <Link key={link.label} href={link.href}>
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          </details>
+        </header>
 
-        <section
-          className="landing-hero"
-          aria-labelledby="hero-title"
-        >
-          <div className="hero-copy">
-            <span className="hero-kicker">
-              <span className="hero-kicker-dot" aria-hidden="true" />
-              TRANSPORTASI SEKOLAH
-            </span>
-            <h1 id="hero-title" className="hero-title">
+        <section className="landing-hero" aria-labelledby="landing-title">
+          <div className="landing-hero-copy">
+            <h1 id="landing-title" className="landing-title">
               Your Child’s
               <br />
               Safety,
               <br />
               Tracked in
               <br />
-              Real-Time.
-              <span className="hero-title-emphasis" aria-hidden="true">
+              <span className="landing-title-accent">
                 Real-Time.
+                <svg
+                  className="landing-title-underline"
+                  viewBox="0 0 240 14"
+                  fill="none"
+                  aria-hidden="true"
+                  preserveAspectRatio="none"
+                >
+                  <path
+                    d="M3 9.5C60 3.6 150 2.4 236 6.5"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                    strokeLinecap="round"
+                  />
+                </svg>
               </span>
             </h1>
-            <p className="hero-sub">
+            <p className="landing-lead">
               Perjalanan sekolah lebih aman dengan pantauan langsung dan
               informasi yang akurat.
             </p>
-            <div className="hero-actions">
-              <Link href="/pilih-peran" className="btn btn-primary btn-lg">
+            <div className="landing-actions">
+              <Link href="/pilih-peran" className="landing-btn landing-btn-primary">
                 Mulai Sekarang
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  aria-hidden="true"
-                  className="btn-icon"
-                >
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <path
-                    d="M5 12h12M13 6l6 6-6 6"
+                    d="M4.5 12h14M13 6.2l5.8 5.8L13 17.8"
                     stroke="currentColor"
                     strokeWidth="2"
                     strokeLinecap="round"
@@ -236,267 +399,143 @@ export default function LandingPage() {
                   />
                 </svg>
               </Link>
-              <a
-                href="#how-it-works"
-                className="btn btn-outline"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  aria-hidden="true"
-                  className="btn-icon"
-                >
-                  <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" />
-                  <path
-                    d="M10.5 9.5l3 2-3 2z"
-                    fill="currentColor"
-                  />
+              <a href="#how-it-works" className="landing-btn landing-btn-outline">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <circle cx="12" cy="12" r="9.4" stroke="currentColor" strokeWidth="1.7" />
+                  <path d="M10.2 8.6l5.3 3.4-5.3 3.4z" fill="currentColor" />
                 </svg>
                 Lihat Cara Kerjanya
               </a>
             </div>
-            <p className="hero-note">
-              Informasi perjalanan anak, panduan bagi pengemudi, dan
-              pengelolaan armada bus sekolah dalam satu aplikasi.
-            </p>
           </div>
 
-          <div className="hero-art" aria-hidden="true">
-            <Image
-              src="/assets/landing/hero-bus.webp"
-              alt="Bus sekolah di jalan"
-              priority
-              width={640}
-              height={360}
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className="hero-art-img"
-              fetchPriority="high"
-            />
-            <div className="hero-art-shade" />
-            <div className="hero-art-label">
-              <span className="lp-label-icon" aria-hidden="true">
-                ⌖
-              </span>
-              <span>
-                <b>Perjalanan lebih terarah</b>
-                <small>Informasi dalam satu aplikasi</small>
-              </span>
-            </div>
-            <div className="hero-art-index">
-              <b>01</b>
-              <span>TRANSPORTASI<br />SEKOLAH</span>
-            </div>
-          </div>
+          <div className="landing-hero-media" aria-hidden="true" />
         </section>
 
-        <section
-          id="how-it-works"
-          className="landing-section"
-          aria-labelledby="section-title"
-        >
-          <div className="section-head">
-            <span className="hero-kicker">SATU APLIKASI, TIGA PERAN</span>
-            <h2 id="section-title">
-              Informasi yang dibutuhkan,
-              <br />
-              <em>lebih mudah dijangkau.</em>
-            </h2>
-          </div>
+        <section id="how-it-works" className="landing-strip" aria-label="Keunggulan layanan">
+          {STRIP_ITEMS.map((item, index) => (
+            <div className="landing-strip-item" key={index}>
+              <span className="landing-strip-icon">{item.icon}</span>
+              <span className="landing-strip-text">{item.label}</span>
+            </div>
+          ))}
+        </section>
 
-          <div className="feature-grid">
-            {FEATURE_ITEMS.map((item, i) => (
-              <div
-                key={i}
-                className={`feature-card ${i > 0 ? "feature-card-sep" : ""}`}
-              >
-                <div className="feature-top">
-                  <span className="feature-icon" aria-hidden="true">
-                    {item.icon}
+        <section className="landing-roles" aria-label="Pilihan peran pengguna">
+          {ROLE_CARDS.map((role) => (
+            <article className={`landing-role landing-role-${role.id}`} key={role.id}>
+              <div className="landing-role-media" aria-hidden="true" />
+              <div className="landing-role-body">
+                <div className="landing-role-head">
+                  <span className="landing-role-badge" aria-hidden="true">
+                    {role.badge}
                   </span>
+                  <h2 className="landing-role-title">{role.title}</h2>
                 </div>
-                <h3>{item.title}</h3>
-                <p>{item.sub}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section
-          className="landing-section"
-          aria-labelledby="roles-title"
-        >
-          <div className="section-head">
-            <span className="hero-kicker">SATU APLIKASI, TIGA PERAN</span>
-            <h2 id="roles-title">
-              Pilih peran untuk melihat informasi yang relevan.
-            </h2>
-          </div>
-
-          <div className="role-grid">
-            {ROLE_CARDS.map((role) => (
-              <article
-                key={role.id}
-                className={`role-card role-card-${role.id}`}
-              >
-                <div
-                  className="role-accent"
-                  style={{
-                    backgroundColor: role.accentBg,
-                    borderColor: role.accentBorder,
-                  }}
-                  aria-hidden="true"
-                />
-                <div className="role-image-wrap">
-                  <Image
-                    src={role.imageUrl}
-                    alt={`Ilustrasi ${role.title}`}
-                    loading="lazy"
-                    width={220}
-                    height={160}
-                    className="role-image"
-                  />
-                </div>
-                <div className="role-body">
-                  <div className="role-top">
-                    <span className="role-badge" aria-hidden="true">
-                      {role.badge}
+                <p className="landing-role-desc">{role.description}</p>
+                <div className="landing-chips" aria-hidden="true">
+                  {role.chips.map((chip, index) => (
+                    <span className="landing-chip" key={index}>
+                      {chip}
                     </span>
-                    <div className="role-info">
-                      <span className="role-title">{role.title}</span>
-                      <span className="role-sub">{role.subtitle}</span>
-                    </div>
-                    <Link
-                      href="/pilih-peran"
-                      className="role-cta"
-                      aria-label={`Pilih ${role.title}`}
-                    >
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        aria-hidden="true"
-                      >
-                        <path
-                          d="M5 12h14M13 6l6 6-6 6"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </Link>
-                  </div>
-                  <div className="role-chips" role="list">
-                    {role.chips.map((chip, i) => (
-                      <span key={i} className="role-chip" role="listitem">
-                        {chip}
-                      </span>
-                    ))}
-                  </div>
+                  ))}
                 </div>
-              </article>
-            ))}
-          </div>
+              </div>
+              <Link
+                href="/pilih-peran"
+                className="landing-role-arrow"
+                aria-label={`Buka pilihan peran untuk ${role.title}`}
+              >
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path
+                    d="M4.5 12h14M13 6.2l5.8 5.8L13 17.8"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </Link>
+            </article>
+          ))}
         </section>
 
-        <section
-          className="landing-cta-section"
-          aria-labelledby="cta-title"
-        >
-          <div className="landing-cta-inner">
-            <span className="landing-cta-mark" aria-hidden="true">
+        <section className="landing-cta" aria-labelledby="landing-cta-title">
+          <div className="landing-cta-top" aria-hidden="true">
+            <span className="landing-cta-line" />
+            <span className="landing-cta-badge">
               <svg viewBox="0 0 24 24" fill="none">
                 <path
-                  d="M12 3l8 4v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinejoin="round"
+                  d="M12 2.6l7.4 3.2v5c0 4.8-3.2 8.6-7.4 10.3-4.2-1.7-7.4-5.5-7.4-10.3v-5L12 2.6z"
+                  fill="currentColor"
                 />
                 <path
-                  d="M9 12l2 2 4-4"
-                  stroke="currentColor"
+                  d="M8.7 11.7l2.4 2.4 4.3-4.7"
+                  stroke="#101B3B"
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
               </svg>
             </span>
-            <h2 id="cta-title" className="landing-cta-title">
-              Bring Safety and Peace of Mind
-              <br />
-              to{" "}
-              <span className="landing-cta-emphasis">Your School.</span>
-            </h2>
-            <p className="landing-cta-note">
-              Masuk untuk membuka halaman sesuai peran dan hak akses akun Anda.
-            </p>
-            <div className="landing-cta-form">
-              <label className="landing-email-label" htmlFor="lp-email">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  aria-hidden="true"
-                >
-                  <rect
-                    x="3"
-                    y="6"
-                    width="18"
-                    height="13"
-                    rx="2"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  />
-                  <path
-                    d="M3 7l9 6 9-6"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <input
-                  id="lp-email"
-                  name="email"
-                  type="email"
-                  className="landing-email-input"
-                  placeholder="Masukkan email Anda"
-                  aria-label="Email"
-                  autoComplete="email"
-                  readOnly
+            <span className="landing-cta-line" />
+          </div>
+
+          <h2 id="landing-cta-title" className="landing-cta-title">
+            Bring Safety and Peace of Mind
+            <br />
+            to <span>Your School.</span>
+          </h2>
+
+          <div className="landing-cta-row">
+            <label className="landing-email-field">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect
+                  x="2.6"
+                  y="5.4"
+                  width="18.8"
+                  height="13.2"
+                  rx="3"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
                 />
-                <span className="landing-email-note">
-                  UI saja. Disiapkan untuk integrasi sign-in sesuai peran akun
-                  (profiles.role). Saat ini akses dibuka untuk keperluan
-                  pengembangan.
-                </span>
-              </label>
-              <Link href="/pilih-peran" className="btn btn-primary btn-lg">
-                Masuk Akun
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  aria-hidden="true"
-                  className="btn-icon"
-                >
-                  <path
-                    d="M5 12h12M13 6l6 6-6 6"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </Link>
-            </div>
+                <path
+                  d="M3.6 7.2l8.4 5.6 8.4-5.6"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              {/* UI saja. Disiapkan untuk integrasi sign-in sesuai peran akun (profiles.role). Saat ini akses dibuka untuk keperluan pengembangan. */}
+              <input
+                type="email"
+                name="email"
+                className="landing-email-input"
+                placeholder="Masukkan email Anda"
+                aria-label="Email"
+              />
+            </label>
+            <Link href="/pilih-peran" className="landing-btn landing-btn-primary landing-btn-cta">
+              Masuk Akun
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M4.5 12h14M13 6.2l5.8 5.8L13 17.8"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </Link>
           </div>
         </section>
 
         <footer className="landing-footer">
           <Brand />
-          <div>
+          <div className="landing-footer-meta">
             <span>© 2026 School Bus Management</span>
-            <span className="landing-footer-loc">
-              Dammam, Saudi Arabia
-            </span>
+            <span>Dammam, Saudi Arabia</span>
           </div>
         </footer>
       </div>
