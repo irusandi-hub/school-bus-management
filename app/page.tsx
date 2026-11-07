@@ -61,7 +61,7 @@ export default function LandingPage() {
     <section className="sbm-refined-assurance"><span aria-hidden="true">✓</span><p><strong>Informasi sesuai hak akses.</strong> Data anak, lokasi, dan video hanya ditampilkan kepada pengguna yang berwenang dan saat fitur tersedia.</p></section>
     <section className="sbm-login-section" aria-label="Masuk ke aplikasi">
       <div className="sbm-login-card">
-        <div className="sbm-login-heading"><strong>Sign In</strong><span>Masuk untuk melanjutkan</span></div>
+        <div className="sbm-login-heading"><div><span className="sbm-login-kicker">AKSES PENGGUNA</span><strong>Sign In</strong></div><span>Masuk untuk melanjutkan</span></div>
         <label>Email atau username<input type="text" name="username" autoComplete="username" placeholder="Masukkan email atau username"/></label>
         <label>Password<input type="password" name="password" autoComplete="current-password" placeholder="Masukkan password"/></label>
         <Link href="/pilih-peran" className="sbm-login-submit">Sign In</Link>
@@ -84,17 +84,21 @@ export default function LandingPage() {
       .sbm-route-caption strong,.sbm-route-caption small{display:block}
       .sbm-route-caption strong{font-size:13px;color:#243444}
       .sbm-route-caption small{font-size:11px;color:#78838b;margin-top:3px}
-      .sbm-login-section{display:flex;justify-content:center;margin:8px 0 58px;padding:0 18px}
-      .sbm-login-card{width:min(100%,390px);padding:22px;background:#fff;border:1px solid #eee5c9;border-radius:15px;box-shadow:0 9px 28px #2737460b}
-      .sbm-login-heading{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:17px}
-      .sbm-login-heading strong{font:800 19px Manrope,sans-serif;color:#263746}
-      .sbm-login-heading span{font-size:11px;color:#7a858b}
-      .sbm-login-card label{display:block;margin:0 0 12px;font-size:11px;font-weight:700;color:#52616a}
-      .sbm-login-card input{display:block;width:100%;height:42px;margin-top:6px;padding:0 12px;border:1px solid #e4e2d8;border-radius:8px;background:#fff;color:#263746;font-size:13px;font-family:inherit;outline:none;box-sizing:border-box}
+      .sbm-login-section{display:flex;justify-content:center;margin:12px 0 52px;padding:26px 18px 0;border-top:1px solid #ece7d9}
+      .sbm-login-card{width:min(100%,390px);padding:23px 24px 19px;background:#fff;border:1px solid #e9e2ce;border-radius:14px;box-shadow:0 8px 24px #2737460a}
+      .sbm-login-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-bottom:18px}
+      .sbm-login-heading strong{display:block;font:800 20px Manrope,sans-serif;color:#263746;margin-top:4px}
+      .sbm-login-kicker{display:block;font-size:9px;font-weight:800;letter-spacing:1.1px;color:#9a780e}
+      .sbm-login-heading>span{font-size:11px;color:#7a858b;padding-bottom:3px}
+      .sbm-login-card label{display:block;margin:0 0 13px;font-size:11px;font-weight:700;color:#52616a}
+      .sbm-login-card input{display:block;width:100%;height:43px;margin-top:6px;padding:0 12px;border:1px solid #e4e2d8;border-radius:8px;background:#fff;color:#263746;font-size:13px;font-family:inherit;outline:none;box-sizing:border-box}
+      .sbm-login-card input::placeholder{color:#a4aaad}
       .sbm-login-card input:focus{border-color:#d2aa1d;box-shadow:0 0 0 3px #efc32d24}
-      .sbm-login-submit{display:flex;justify-content:center;align-items:center;width:100%;height:43px;margin-top:17px;border-radius:8px;background:#efc32d;color:#34290c;text-decoration:none;font-size:13px;font-weight:800;box-sizing:border-box}
-      .sbm-login-signup{margin:14px 0 0;text-align:center;font-size:11px;color:#7a858b}
+      .sbm-login-submit{display:flex;justify-content:center;align-items:center;width:100%;height:44px;margin-top:17px;border-radius:8px;background:#efc32d;color:#34290c;text-decoration:none;font-size:13px;font-weight:800;box-sizing:border-box;transition:filter .15s ease}
+      .sbm-login-submit:hover{filter:brightness(.97)}
+      .sbm-login-signup{margin:15px 0 0;text-align:center;font-size:11px;color:#7a858b}
       .sbm-login-signup a{color:#8a6900;font-weight:800;text-decoration:none}
+      @media(max-width:480px){.sbm-login-section{margin-bottom:34px;padding:22px 14px 0}.sbm-login-card{padding:20px 17px 17px}.sbm-login-heading{align-items:flex-start;flex-direction:column;gap:3px}}
       .sbm-refined-roles{margin:56px 0 30px}
       .sbm-section-heading{margin-bottom:17px}
       .sbm-section-heading h2{font:800 clamp(21px,3vw,28px) Manrope,sans-serif;letter-spacing:-.8px;margin:7px 0 0;color:#243444}
