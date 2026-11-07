@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -261,11 +262,15 @@ export default function LandingPage() {
           </div>
 
           <div className="hero-art" aria-hidden="true">
-            <img
-              src="https://theshadowgps.com/cdn/shop/articles/Best_GPS_Car_Tracking_Device.jpg?v=1762760262"
+            <Image
+              src="/assets/landing/hero-bus.webp"
               alt="Bus sekolah di jalan"
-              fetchPriority="high"
+              priority
+              width={640}
+              height={360}
+              sizes="(max-width: 768px) 100vw, 50vw"
               className="hero-art-img"
+              fetchPriority="high"
             />
             <div className="hero-art-shade" />
             <div className="hero-art-label">
@@ -342,13 +347,13 @@ export default function LandingPage() {
                   aria-hidden="true"
                 />
                 <div className="role-image-wrap">
-                  <img
+                  <Image
                     src={role.imageUrl}
                     alt={`Ilustrasi ${role.title}`}
-                    className="role-image"
                     loading="lazy"
                     width={220}
                     height={160}
+                    className="role-image"
                   />
                 </div>
                 <div className="role-body">
