@@ -13,9 +13,9 @@ function Brand() {
   return <div className="sbm-brand"><BrandMark/><span>School Bus<br/>Management</span></div>;
 }
 function RoleIcon({ type }: { type: "parent" | "driver" | "operator" }) {
-  if (type === "parent") return <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M5 13 16 5l11 8v13H5V13Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/><path d="M12 26v-8h8v8" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/></svg>;
-  if (type === "driver") return <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M5 24 24 7M13 7h11v11" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/><circle cx="7" cy="25" r="3" stroke="currentColor" strokeWidth="2"/></svg>;
-  return <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect x="3" y="5" width="26" height="22" rx="4" stroke="currentColor" strokeWidth="2"/><path d="M8 11h16M8 16h7m4 0h5M8 21h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>;
+  if (type === "parent") return <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><circle cx="13" cy="10" r="5" stroke="currentColor" strokeWidth="2"/><path d="M3.5 27c.7-5.3 4.1-8 9.5-8 2.2 0 4 .5 5.4 1.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><path d="m23 18 1.5 1.2L26 18c1.7-1.3 4 .1 3.4 2.3-.5 1.8-3.4 4-4.9 5-1.5-1-4.4-3.2-4.9-5-.6-2.2 1.7-3.6 3.4-2.3Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/></svg>;
+  if (type === "driver") return <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><circle cx="16" cy="16" r="11.5" stroke="currentColor" strokeWidth="2"/><circle cx="16" cy="16" r="3" stroke="currentColor" strokeWidth="2"/><path d="M5 13h7l4 3 4-3h7M16 19v8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+  return <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M5 27V8.5L16 4l11 4.5V27H5Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/><path d="M10 12h3v3h-3zm9 0h3v3h-3zm-9 7h3v3h-3zm9 0h3v3h-3zM14 27v-5h4v5" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/></svg>;
 }
 
 const roles = [
@@ -95,7 +95,7 @@ export default function LandingPage() {
       </div>
     </section>
 
-    <section className="sbm-refined-assurance"><span aria-hidden="true">✓</span><p><strong>Akses sesuai kewenangan.</strong> Informasi anak dan perjalanan ditampilkan sesuai hak akses pengguna. Lokasi dan kamera bergantung pada koneksi serta ketersediaan perangkat.</p></section>
+    <section className="sbm-refined-assurance"><span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2.8 19 5.5v5.7c0 4.6-2.8 7.8-7 10-4.2-2.2-7-5.4-7-10V5.5l7-2.7Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/><path d="m8.5 12 2.3 2.3 4.8-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg></span><p><strong>Perlindungan dan akses terbatas.</strong> Informasi anak dan perjalanan ditampilkan sesuai hak akses pengguna. Lokasi dan kamera bergantung pada koneksi serta ketersediaan perangkat.</p></section>
     <section className="sbm-login-section" aria-label="Masuk ke aplikasi">
       <div className="sbm-login-card">
         <div className="sbm-login-heading"><div><span className="sbm-login-kicker">SUDAH MEMILIKI AKUN?</span><strong>Masuk</strong></div></div>
@@ -232,6 +232,26 @@ export default function LandingPage() {
         .sbm-login-submit{grid-column:1 / -1}
         .sbm-login-signup{grid-column:1 / -1;text-align:center}
       }
+      /* Role colors: distinct accents, unchanged layout */
+      .sbm-refined .sbm-feature-label{color:#96700d}
+      .sbm-refined .sbm-feature-label svg{color:#bd9016}
+      .sbm-refined .sbm-support-feature.driver{background:#f3f8fa;border-color:#d8e7eb}
+      .sbm-refined .sbm-support-feature.driver .sbm-support-icon{background:#dceef1;color:#287b83}
+      .sbm-refined .sbm-support-feature.driver .sbm-support-kicker{color:#287b83}
+      .sbm-refined .sbm-support-feature.driver li:before{color:#328b8b}
+      .sbm-refined .sbm-support-feature.operator{background:#f5f6fa;border-color:#dfe3ed}
+      .sbm-refined .sbm-support-feature.operator .sbm-support-icon{background:#e5e9f3;color:#586b91}
+      .sbm-refined .sbm-support-feature.operator .sbm-support-kicker{color:#586b91}
+      .sbm-refined .sbm-support-feature.operator li:before{color:#7184aa}
+      .sbm-refined .sbm-refined-assurance{background:#eef5f2;border-color:#d5e5dc}
+      .sbm-refined .sbm-refined-assurance>span{width:30px;height:30px;border-radius:9px;background:#dcece3;color:#287451}
+      .sbm-refined .sbm-refined-assurance>span svg{width:19px;height:19px}
+      .sbm-refined .sbm-refined-assurance p{color:#526d60}
+      .sbm-refined .sbm-refined-assurance strong{color:#245c43}
+      .sbm-refined .sbm-parent-feature-visual{border-color:#e9dfbf}
+      .sbm-refined .sbm-parent-journey{background:#f7f5ed}
+      .sbm-refined .sbm-parent-camera-row .sbm-camera-symbol{background:#eaf2f7;color:#397a9b}
+      .sbm-refined .sbm-parent-camera-row .sbm-camera-state{background:#eaf2f7;color:#397a9b}
       @media(max-width:420px){
         .sbm-parent-feature{padding:16px}
         .sbm-feature-checks li{grid-template-columns:1fr;gap:1px}
