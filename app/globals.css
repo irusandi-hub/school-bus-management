@@ -651,9 +651,16 @@ body{background:var(--paper);color:var(--ink)}
 }
 
 
-/* Pita mode akses terbuka pengembangan (DEC-024): selalu terlihat di atas konten. */
-.dev-mode-banner{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;padding:9px 16px;background:#fff0d9;border-bottom:1px solid #f0dcb4;color:#795a2d;font-size:12px;line-height:1.5}
-.dev-mode-banner strong{font:800 12px Manrope,sans-serif;letter-spacing:.4px;text-transform:uppercase}
+/* Penanda mode pengembangan: mengambang, ringkas, dan tidak menggeser konten. */
+.dev-mode-banner{position:fixed;top:12px;right:14px;z-index:1000;display:block;color:#725719;font-size:10px;line-height:1.4}
+.dev-mode-banner summary{display:flex;align-items:center;gap:7px;min-height:27px;padding:5px 10px;border:1px solid #ead99f;border-radius:999px;background:rgba(255,250,232,.94);box-shadow:0 3px 12px #30250d12;cursor:pointer;list-style:none;backdrop-filter:blur(8px)}
+.dev-mode-banner summary::-webkit-details-marker{display:none}
+.dev-mode-banner summary strong{font:800 9px Manrope,sans-serif;letter-spacing:.45px;text-transform:uppercase;white-space:nowrap}
+.dev-mode-indicator{width:6px;height:6px;border-radius:50%;background:#d7a91b;flex:none}
+.dev-mode-details{position:absolute;top:calc(100% + 7px);right:0;width:min(330px,calc(100vw - 24px));padding:12px 14px;border:1px solid #ead99f;border-radius:11px;background:#fffdf6;box-shadow:0 10px 28px #30250d20;color:#66552e}
+.dev-mode-details>strong{font:800 11px Manrope,sans-serif}
+.dev-mode-details p{margin:5px 0 0;font-size:10px;line-height:1.55}
+@media(max-width:759px){.dev-mode-banner{top:8px;right:8px}.dev-mode-banner summary{min-height:25px;padding:4px 8px}}
 
 /* ==========================================================================
    UI System v2 — token desain, kerangka aplikasi, navigasi, dan status bersama.
@@ -689,7 +696,6 @@ svg{flex-shrink:0}
 .sidebar-bottom{box-shadow:var(--shadow-xs)}
 .main{padding:22px 32px 40px;max-width:1360px;width:100%}
 .main > .topbar{position:sticky;top:0;z-index:20;margin:-22px -32px 24px;padding:14px 32px;background:rgba(255,253,248,.94);backdrop-filter:blur(10px);border-bottom:1px solid #F3EBDC}
-.dev-mode-banner + * .main > .topbar{top:0}
 .topbar-title .eyebrow{letter-spacing:.16em;font-size:9.5px;color:#A3937A}
 .admin-topbar-role{font-size:14px;letter-spacing:-.2px}
 .top-actions{gap:8px}
@@ -1928,12 +1934,7 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
 .driver-ops .broadcast-publisher-status{font-size:6.2px}
 .driver-ops .ops-side-notes{display:none}
 
-/* Pita pengembangan global satu baris ringkas, termasuk desktop, agar tinggi
-   aplikasi tetap satu viewport. */
-body:has(.driver-app) .dev-mode-banner{height:20px;max-height:20px;padding:3px 12px;gap:0 8px;flex-wrap:nowrap;align-items:center;overflow:hidden;font-size:8.5px;line-height:1.2}
-body:has(.driver-app) .dev-mode-banner strong{font-size:8.5px;white-space:nowrap;flex:0 0 auto}
-body:has(.driver-app) .dev-mode-banner span{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:8.5px}
-body:has(.dev-mode-banner) .driver-app{height:calc(100dvh - 20px);min-height:0}
+
 
 @media(max-width:759px){
   .driver-app{padding-bottom:calc(38px + env(safe-area-inset-bottom))}
