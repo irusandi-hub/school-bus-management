@@ -218,8 +218,8 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
           </ul>
         )}
         <p className="detail-footnote">
-          Posisi bus langsung belum tersedia. Status perjalanan berasal dari catatan pengemudi, dan akses Live Video
-          mengikuti status anak di bus — bukan posisi yang dilacak.
+          Lokasi perjalanan aktif mengikuti GPS HP pengemudi dan tersedia di kartu anak. Status perjalanan berasal dari
+          catatan pengemudi, dan akses Live Video mengikuti status anak di bus — bukan posisi yang dilacak.
         </p>
       </section>
 

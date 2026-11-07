@@ -498,6 +498,18 @@ export function createSimulationTables(): SimTables {
       },
     ],
 
+    trip_live_locations: [
+      {
+        trip_id: "51111111-0000-4000-8000-000000000b12",
+        driver_id: "51111111-0000-4000-8000-0000000004e2",
+        latitude: 26.4185,
+        longitude: 50.0868,
+        accuracy_meters: 18,
+        recorded_at: iso(0),
+        updated_at: iso(0),
+      },
+    ],
+
     trip_student_events: [
       {
         id: 1,

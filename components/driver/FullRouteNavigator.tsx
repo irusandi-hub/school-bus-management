@@ -215,7 +215,7 @@ export function FullRouteNavigator({
 
       <p className="route-foot">
         <Icon name="info" size={12} /> {tripStatus === "scheduled" ? "Rute dapat dilihat sebelum mulai. " : ""}
-        GPS belum aktif.
+        GPS HP aktif selama perjalanan; jarak dan ETA belum tersedia.
       </p>
     </section>
   );

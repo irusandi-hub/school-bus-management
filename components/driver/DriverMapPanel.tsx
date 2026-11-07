@@ -2,6 +2,7 @@
 
 import { Icon } from "@/components/ui/Icon";
 import { useDriverLocation } from "./useDriverLocation";
+import { useDriverLocationPublisher } from "./useDriverLocationPublisher";
 import { DriverRouteMap, type DriverMapStop } from "./DriverRouteMap";
 
 /**
@@ -11,8 +12,17 @@ import { DriverRouteMap, type DriverMapStop } from "./DriverRouteMap";
  * GPS HP pengemudi; GPS bus belum memiliki sumber koordinat di aplikasi ini.
  * Garis peta tetap bukan jalur jalan.
  */
-export function DriverMapPanel({ stops, active }: { stops: DriverMapStop[]; active: boolean }) {
+export function DriverMapPanel({
+  stops,
+  active,
+  tripId,
+}: {
+  stops: DriverMapStop[];
+  active: boolean;
+  tripId: string | null;
+}) {
   const gps = useDriverLocation(active);
+  const publisher = useDriverLocationPublisher({ active, tripId, location: gps.location });
   const gpsLabel =
     gps.status === "active" && gps.location
       ? `GPS HP · ±${Math.round(gps.location.accuracy)} m`
@@ -49,17 +59,22 @@ export function DriverMapPanel({ stops, active }: { stops: DriverMapStop[]; acti
           <div>
             <h2 id="ops-map-title">Peta rute</h2>
             <small>
-              Tampilan saja · {mappedStops} titik dari koordinat tersimpan · S = sekolah
+              Geser/cubit peta · {mappedStops} titik · S = sekolah
             </small>
           </div>
         </div>
-        <span className="ops-map-gps" role="status" title={gps.message}>
+        <span className="ops-map-gps" role="status" title={`${gps.message} ${publisher.message}`}>
           <Icon name={gps.status === "active" ? "pin" : "gpsOff"} size={12} />
           {gpsLabel}
         </span>
       </header>
 
-      <DriverRouteMap stops={stops} driverLocation={gps.location} />
+      <DriverRouteMap
+        stops={stops}
+        driverLocation={gps.location}
+        locationStatus={gps.status}
+        locationMessage={gps.message}
+      />
     </section>
   );
 }

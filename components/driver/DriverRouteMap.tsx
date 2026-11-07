@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Icon } from "@/components/ui/Icon";
 import type { DeviceLocation } from "@/lib/driver/device-location";
+import type { DriverLocationStatus } from "./useDriverLocation";
 import "leaflet/dist/leaflet.css";
 
 export type DriverMapStop = {
@@ -38,15 +40,21 @@ function hasCoordinates(stop: DriverMapStop): stop is DriverMapStop & { latitude
 export function DriverRouteMap({
   stops,
   driverLocation,
+  locationStatus,
+  locationMessage,
 }: {
   stops: DriverMapStop[];
   driverLocation: DeviceLocation | null;
+  locationStatus: DriverLocationStatus;
+  locationMessage: string;
 }) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<import("leaflet").Map | null>(null);
   const driverMarker = useRef<import("leaflet").Marker | null>(null);
+  const locateTimer = useRef<number | undefined>(undefined);
   const [mapReady, setMapReady] = useState(false);
   const [tileState, setTileState] = useState<"loading" | "ready" | "error">("loading");
+  const [locateNotice, setLocateNotice] = useState<string | null>(null);
   const validStops = useMemo(() => stops.filter(hasCoordinates), [stops]);
   const missingCount = stops.length - validStops.length;
 
@@ -66,11 +74,11 @@ export function DriverRouteMap({
       map = L.map(container.current, {
         attributionControl: true,
         boxZoom: false,
-        doubleClickZoom: false,
-        dragging: false,
-        keyboard: false,
-        scrollWheelZoom: false,
-        touchZoom: false,
+        doubleClickZoom: true,
+        dragging: true,
+        keyboard: true,
+        scrollWheelZoom: true,
+        touchZoom: true,
         zoomControl: false,
       });
       mapRef.current = map;
@@ -165,11 +173,21 @@ export function DriverRouteMap({
     if (!map || !mapReady) return;
 
     let disposed = false;
-    void import("leaflet").then((L) => {
-      if (disposed || mapRef.current !== map) return;
+    if (!driverLocation) {
       driverMarker.current?.remove();
       driverMarker.current = null;
-      if (!driverLocation) return;
+      return;
+    }
+
+    // Sampel baru hanya memindahkan marker; jangan bangun ulang peta/marker.
+    if (driverMarker.current) {
+      driverMarker.current.setLatLng([driverLocation.latitude, driverLocation.longitude]);
+      return;
+    }
+
+    void import("leaflet").then((L) => {
+      if (disposed || mapRef.current !== map) return;
+      if (!driverLocation || driverMarker.current) return;
 
       const icon = L.divIcon({
         className: "ops-map-marker is-driver",
@@ -206,6 +224,28 @@ export function DriverRouteMap({
     };
   }, [driverLocation, mapReady]);
 
+  const locate = () => {
+    const map = mapRef.current;
+    if (!driverLocation) {
+      setLocateNotice(locationStatus === "locating" ? "Mencari GPS HP. Tunggu sampel lokasi pertama." : locationMessage);
+      return;
+    }
+    if (!map) {
+      setLocateNotice("Peta masih dimuat. Coba lagi sebentar.");
+      return;
+    }
+
+    map.flyTo([driverLocation.latitude, driverLocation.longitude], Math.max(map.getZoom() ?? 15, 15), {
+      animate: true,
+      duration: 0.6,
+    });
+    setLocateNotice("Peta dipusatkan ke posisi HP.");
+    window.clearTimeout(locateTimer.current);
+    locateTimer.current = window.setTimeout(() => setLocateNotice(null), 2_500);
+  };
+
+  useEffect(() => () => window.clearTimeout(locateTimer.current), []);
+
   if (validStops.length === 0) {
     return (
       <div className="ops-map-empty" role="status">
@@ -223,8 +263,22 @@ export function DriverRouteMap({
           className="ops-map-canvas"
           role="region"
           aria-busy={tileState === "loading"}
-          aria-label={`Peta ${validStops.length} titik rute dari koordinat tersimpan; tampilan saja, bukan navigasi belokan`}
+          aria-label={`Peta ${validStops.length} titik rute dari koordinat tersimpan; dapat digeser dan diperbesar, bukan navigasi belokan`}
         />
+        <button
+          className="ops-map-locate"
+          type="button"
+          onClick={locate}
+          aria-label="Pusatkan peta ke posisi HP pengemudi"
+          title={driverLocation ? "Pusatkan ke posisi HP" : locationMessage}
+        >
+          <Icon name="navigation" size={13} />
+        </button>
+        {locateNotice && (
+          <p className="ops-map-locate-notice" role="status" aria-live="polite">
+            {locateNotice}
+          </p>
+        )}
         {tileState !== "ready" && (
           <div className={`ops-map-status is-${tileState}`} role="status">
             <strong>{tileState === "error" ? "Peta tidak dapat dimuat" : "Memuat peta OpenStreetMap…"}</strong>

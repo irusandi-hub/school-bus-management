@@ -34,8 +34,9 @@ const IDLE: DriverLocationState = {
  * Satu watcher GPS HP untuk halaman pengemudi.
  *
  * Watcher hanya dibuat saat perjalanan aktif dan selalu dibersihkan saat
- * perjalanan berakhir/unmount. Tidak ada posisi yang dikirim atau disimpan;
- * koordinat hanya dipakai di memori browser untuk marker peta.
+ * perjalanan berakhir/unmount. Hook ini tidak membuat watcher kedua; sampel yang
+ * sama dipakai untuk marker peta dan dikirim oleh `useDriverLocationPublisher`
+ * hanya selama perjalanan aktif.
  */
 export function useDriverLocation(active: boolean): DriverLocationState {
   const [state, setState] = useState<DriverLocationState>(IDLE);

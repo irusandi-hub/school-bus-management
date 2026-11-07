@@ -5,8 +5,11 @@ import { redirect } from "next/navigation";
 import { DEV_DRIVER_RECORD, DEV_VIEWER, isDevOpenAccess } from "@/lib/dev-open-access";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { supabaseNotConfiguredMessage } from "@/lib/supabase/env";
+import { validateDeviceLocation } from "@/lib/driver/device-location";
 import { evaluateTripEnd, SAFETY_CHECKS, type SafetyFieldName } from "@/lib/driver/trip-end";
 import { failure, readText, type ActionState } from "@/lib/validation";
+
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 type DriverContext =
   | { ok: true; supabase: NonNullable<Awaited<ReturnType<typeof createServerSupabase>>>; userId: string; driverId: string }
@@ -244,6 +247,45 @@ export async function endTrip(formData: FormData) {
 }
 
 const eventTypes = ["boarded", "dropped_off", "absent", "issue"];
+
+export async function publishDriverLocation(
+  tripId: string,
+  input: { latitude: number; longitude: number; accuracy: number; timestamp: number },
+) {
+  const ctx = await driverActionContext();
+  if (!ctx.ok) return { ok: false, message: ctx.state.message };
+  if (!UUID_PATTERN.test(tripId)) {
+    return { ok: false, message: "Perjalanan tidak dikenali." };
+  }
+
+  const checked = validateDeviceLocation(input);
+  if (!checked.ok) {
+    return {
+      ok: false,
+      message:
+        checked.reason === "accuracy"
+          ? "Akurasi GPS HP belum cukup untuk dibagikan."
+          : checked.reason === "stale"
+            ? "Sampel GPS HP sudah lama. Menunggu posisi baru."
+            : "Koordinat GPS HP tidak valid.",
+    };
+  }
+
+  const { error } = await ctx.supabase.rpc("driver_publish_trip_location", {
+    p_trip_id: tripId,
+    p_latitude: checked.location.latitude,
+    p_longitude: checked.location.longitude,
+    p_accuracy: checked.location.accuracy,
+    p_recorded_at: new Date(checked.location.timestamp).toISOString(),
+  });
+
+  if (error) {
+    // RPC/RLS is the authority; the UI only reports that sharing did not happen.
+    return { ok: false, message: "Lokasi HP belum dapat dibagikan ke wali." };
+  }
+
+  return { ok: true, message: "Lokasi HP dibagikan ke wali." };
+}
 
 export async function recordStudentEvent(formData: FormData) {
   const ctx = await driverActionContext();

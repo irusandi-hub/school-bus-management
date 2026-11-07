@@ -387,7 +387,7 @@ export default async function DriverOperationsPage({
             tripStatus={tripStatus}
             nextStop={nextStop}
           />
-          <DriverMapPanel stops={mapStops} active={inProgress} />
+          <DriverMapPanel stops={mapStops} active={inProgress} tripId={trip?.id ?? null} />
         </div>
 
         <section className="panel ops-manifest" aria-label="Daftar siswa dan tindakan">
@@ -467,9 +467,9 @@ export default async function DriverOperationsPage({
       <details className="ops-side-notes">
         <summary>Catatan navigasi, GPS, dan kamera</summary>
         <p>
-          Navigasi membuka satu rute berisi titik yang tersimpan. Posisi bus belum dilacak karena GPS belum aktif.
-          Siaran kamera mengikuti status perjalanan pada panel kamera, dan kembali dari aplikasi peta tidak mengubah
-          status siswa atau menyelesaikan titik pemberhentian.
+          Navigasi membuka satu rute berisi titik yang tersimpan. Selama perjalanan aktif, posisi HP pengemudi dibagikan
+          ke wali yang berhak dan hanya lokasi terbaru yang disimpan. Siaran kamera mengikuti status perjalanan pada
+          panel kamera, dan kembali dari aplikasi peta tidak mengubah status siswa atau menyelesaikan titik pemberhentian.
         </p>
       </details>
     </div>

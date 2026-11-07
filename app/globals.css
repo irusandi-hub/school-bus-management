@@ -2150,3 +2150,45 @@ body:has(.dev-mode-banner) .driver-app{height:calc(100dvh - 20px);min-height:0}
   .ops-workspace .ops-student-title strong{font-size:11px}
   .ops-workspace .ops-action,.ops-workspace .ops-absent summary{min-height:36px;font-size:9px}
 }
+
+/* ==========================================================================
+   GPS HP pengemudi → wali dan interaksi peta
+   ========================================================================== */
+
+/* Kontrol Current Location berada di dalam peta tanpa mengubah tinggi stage. */
+.ops-map-stage{overscroll-behavior:contain}
+.ops-map-canvas.leaflet-container{touch-action:none;-webkit-user-select:none;user-select:none}
+.ops-map-locate{position:absolute;top:6px;right:6px;z-index:1001;display:grid;place-items:center;width:27px;height:27px;padding:0;border:1px solid #B99B55;border-radius:7px;background:#FFFDF8F2;color:#7A5100;box-shadow:0 2px 7px #2B241629;cursor:pointer}
+.ops-map-locate:hover{background:#FFEEC5;color:#5D4308}
+.ops-map-locate:focus-visible{outline:2px solid #2F8A5D;outline-offset:1px}
+.ops-map-locate-notice{position:absolute;left:6px;right:37px;bottom:6px;z-index:1001;margin:0;padding:4px 6px;border:1px solid #E8C77B;border-radius:6px;background:#FFFDF8F5;color:#6B5120;font-size:6.8px;font-weight:700;line-height:1.25;box-shadow:0 2px 8px #2B24161A;overflow-wrap:anywhere}
+
+/* Saat dibuka, daftar titik memakai area panel yang sudah ada dan hanya isi
+   daftar itu yang bergulir. Panel, peta, dan halaman tidak ikut bergerak. */
+.ops-nav-panel{position:relative}
+.ops-nav-panel .route-stops[open]{position:absolute;inset:4px;z-index:45;display:flex;flex-direction:column;min-height:0;margin:0;padding:5px 6px;border:1px solid #E9DECB;border-radius:9px;background:#FFFDF8;box-shadow:0 10px 24px #2B24161F;overflow:hidden}
+.ops-nav-panel .route-stops[open]>summary{flex:0 0 auto;padding:0 1px 4px;border-bottom:1px solid #F3EEE4;margin:0}
+.ops-nav-panel .route-stops[open] .route-stops-scroll{flex:1 1 auto;min-height:0;max-height:none;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;touch-action:pan-y;padding-right:3px;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+
+/* Peta wali: memakai stage yang sama, hanya marker HP pengemudi. */
+.guardian-map-stage.is-live{padding:0;background:#E8EEE6}
+.guardian-live-map-wrap{position:absolute;inset:0;z-index:1;overflow:hidden}
+.guardian-live-map{height:100%;width:100%;background:#E8EEE6;pointer-events:none}
+.guardian-live-map.leaflet-container{font-family:'DM Sans',Arial,sans-serif;outline:0}
+.guardian-live-map .leaflet-control-attribution{max-width:calc(100% - 7px);padding:2px 4px;border-radius:4px 0 0 0;background:#FFFDF8D9;color:#5F5A50;font-size:6.5px;line-height:1.3;white-space:normal}
+.guardian-live-map .leaflet-control-attribution a{color:#4D5F86}
+.guardian-live-map-status{position:absolute;left:7px;bottom:7px;z-index:2;padding:3px 6px;border:1px solid #DCE4DD;border-radius:5px;background:#FFFDF8E8;color:#6F6A60;font-size:7.5px;font-weight:700;line-height:1.2}
+.guardian-live-map-status.is-error{border-color:#E8C77B;background:#FFF8E3F2;color:#7A5100}
+.guardian-live-marker{border-color:#1F6D48 !important;background:#2F8A5D !important;color:#fff !important;box-shadow:0 0 0 3px #2F8A5D2E,0 2px 9px #285E4359 !important}
+.guardian-map-updated.is-live{color:#2B6A45;font-weight:700}
+.guardian-map-updated.is-stale{color:#8A5C00;font-weight:700}
+.guardian-map-updated.is-offline{color:#A74F40;font-weight:700}
+.guardian-map-updated.is-ended{color:#6F6A60}
+
+@media(max-width:759px){
+  .ops-map-locate{width:24px;height:24px;top:4px;right:4px}
+  .ops-map-locate svg{width:11px;height:11px}
+  .ops-map-locate-notice{left:4px;right:32px;bottom:4px;font-size:6.2px;padding:3px 4px}
+  .ops-nav-panel .route-stops[open]{inset:3px;padding:4px 5px}
+  .guardian-live-map-status{left:5px;bottom:5px;font-size:7px}
+}
