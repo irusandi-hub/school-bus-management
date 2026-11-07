@@ -5,18 +5,22 @@ import {
 } from "@/lib/dev-open-access";
 
 /**
- * Pita peringatan global untuk mode akses terbuka pengembangan (DEC-024).
- * Muncul di setiap halaman selama mode aktif supaya tidak ada tampilan yang bisa
- * disalahartikan sebagai data nyata, dan menyebut lingkungan tempat mode aktif
- * (lokal atau Vercel Preview) agar tidak tertukar dengan produksi.
+ * Penanda kecil untuk pengembang. Tidak mengambil ruang layout dan dapat
+ * dibuka bila detail mode simulasi perlu dibaca.
  */
 export function DevModeBanner() {
   if (!isDevOpenAccess()) return null;
 
   return (
-    <div className="dev-mode-banner" role="status">
-      <strong>Mode pengembangan · data simulasi · {devAccessEnvironmentLabel()}</strong>
-      <span title={DEV_OPEN_ACCESS_NOTICE}>{DEV_OPEN_ACCESS_NOTICE}</span>
-    </div>
+    <details className="dev-mode-banner">
+      <summary aria-label="Informasi mode pengembangan">
+        <span className="dev-mode-indicator" aria-hidden="true" />
+        <strong>DEMO · {devAccessEnvironmentLabel()}</strong>
+      </summary>
+      <div className="dev-mode-details" role="status">
+        <strong>Mode pengembangan aktif</strong>
+        <p>{DEV_OPEN_ACCESS_NOTICE}</p>
+      </div>
+    </details>
   );
 }
