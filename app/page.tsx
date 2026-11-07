@@ -62,13 +62,12 @@ export default function LandingPage() {
             <span className="sbm-role-icon"><RoleIcon type="parent"/></span>
             <span className="sbm-role-kicker">ORANG TUA / WALI</span>
           </div>
-          <h3>Pantau perjalanan anak.</h3>
-          <p>Lihat kabar perjalanan anak dengan mudah dari satu halaman.</p>
+          <p>Pantau perjalanan anak dari satu halaman.</p>
           <ul>
-            <li><span className="sbm-feature-mini-icon">✓</span><span><strong>Status perjalanan</strong><small>Ketahui saat anak naik, turun, atau tidak ikut bus.</small></span></li>
-            <li><span className="sbm-feature-mini-icon">⌖</span><span><strong>Lokasi bus</strong><small>Lihat posisi bus saat lokasi tersedia.</small></span></li>
-            <li><span className="sbm-feature-mini-icon">▣</span><span><strong>Kamera perjalanan</strong><small>Lihat kamera saat perjalanan anak berlangsung dan tersedia.</small></span></li>
-            <li><span className="sbm-feature-mini-icon">♡</span><span><strong>Akses pribadi</strong><small>Informasi anak hanya dapat dilihat oleh wali yang berhak.</small></span></li>
+            <li><span className="sbm-feature-mini-icon">✓</span><span className="sbm-feature-copy">Ketahui saat anak naik, turun, atau tidak ikut bus.</span></li>
+            <li><span className="sbm-feature-mini-icon">⌖</span><span className="sbm-feature-copy">Lihat posisi bus saat lokasi tersedia.</span></li>
+            <li><span className="sbm-feature-mini-icon">▣</span><span className="sbm-feature-copy">Lihat kamera saat perjalanan berlangsung dan tersedia.</span></li>
+            <li><span className="sbm-feature-mini-icon">♡</span><span className="sbm-feature-copy">Informasi anak hanya dapat dilihat oleh wali yang berhak.</span></li>
           </ul>
         </article>
 
@@ -77,13 +76,12 @@ export default function LandingPage() {
             <span className="sbm-role-icon"><RoleIcon type="driver"/></span>
             <span className="sbm-role-kicker">PENGEMUDI</span>
           </div>
-          <h3>Antarkan anak dengan lebih teratur.</h3>
-          <p>Lihat urutan jemput, antar, dan informasi setiap anak.</p>
+          <p>Jalankan perjalanan dengan urutan yang jelas.</p>
           <ul>
-            <li><span className="sbm-feature-mini-icon">↗</span><span><strong>Urutan titik</strong><small>Titik jemput dan antar tersusun rapi.</small></span></li>
-            <li><span className="sbm-feature-mini-icon">◎</span><span><strong>Informasi siswa</strong><small>Lihat informasi penting setiap anak.</small></span></li>
-            <li><span className="sbm-feature-mini-icon">✓</span><span><strong>Status naik dan turun</strong><small>Catat anak yang naik, turun, atau tidak ikut.</small></span></li>
-            <li><span className="sbm-feature-mini-icon">盾</span><span><strong>Pemeriksaan keselamatan</strong><small>Periksa bus dan pastikan semua anak sudah turun.</small></span></li>
+            <li><span className="sbm-feature-mini-icon">↗</span><span className="sbm-feature-copy">Titik jemput dan antar tersusun rapi.</span></li>
+            <li><span className="sbm-feature-mini-icon">◎</span><span className="sbm-feature-copy">Lihat informasi penting setiap anak.</span></li>
+            <li><span className="sbm-feature-mini-icon">✓</span><span className="sbm-feature-copy">Catat anak yang naik, turun, atau tidak ikut.</span></li>
+            <li><span className="sbm-feature-mini-icon">盾</span><span className="sbm-feature-copy">Periksa bus dan pastikan semua anak sudah turun.</span></li>
           </ul>
         </article>
 
@@ -92,13 +90,12 @@ export default function LandingPage() {
             <span className="sbm-role-icon"><RoleIcon type="operator"/></span>
             <span className="sbm-role-kicker">OPERATOR</span>
           </div>
-          <h3>Kelola bus dan jadwal dengan mudah.</h3>
-          <p>Informasi bus dan pengemudi tersusun rapi.</p>
+          <p>Atur bus, pengemudi, dan jadwal dalam satu tempat.</p>
           <ul>
-            <li><span className="sbm-feature-mini-icon">▣</span><span><strong>Data kendaraan</strong><small>Lihat daftar bus, kapasitas, dan kondisinya.</small></span></li>
-            <li><span className="sbm-feature-mini-icon">♙</span><span><strong>Data pengemudi</strong><small>Lihat data pengemudi dan masa berlaku SIM.</small></span></li>
-            <li><span className="sbm-feature-mini-icon">⇄</span><span><strong>Penugasan</strong><small>Atur jadwal bus dan pengemudi agar tidak bertabrakan.</small></span></li>
-            <li><span className="sbm-feature-mini-icon">▤</span><span><strong>Riwayat perjalanan</strong><small>Lihat perjalanan yang sedang dan sudah dilakukan.</small></span></li>
+            <li><span className="sbm-feature-mini-icon">▣</span><span className="sbm-feature-copy">Lihat daftar bus, kapasitas, dan kondisinya.</span></li>
+            <li><span className="sbm-feature-mini-icon">♙</span><span className="sbm-feature-copy">Lihat data pengemudi dan masa berlaku SIM.</span></li>
+            <li><span className="sbm-feature-mini-icon">⇄</span><span className="sbm-feature-copy">Atur jadwal bus dan pengemudi agar tidak bertabrakan.</span></li>
+            <li><span className="sbm-feature-mini-icon">▤</span><span className="sbm-feature-copy">Lihat perjalanan yang sedang dan sudah dilakukan.</span></li>
           </ul>
         </article>
       </div>
@@ -316,6 +313,13 @@ export default function LandingPage() {
       .sbm-role-card h3{font-size:clamp(15px,1.3vw,17px);line-height:1.3;overflow-wrap:anywhere}
       @media(max-width:820px){.sbm-role-card li{grid-template-columns:26px minmax(0,1fr)}}
       @media(max-width:560px){.sbm-role-card li strong{font-size:11px}.sbm-role-card li small{font-size:10px}}
+      /* Feature descriptions are single, readable lines; icons carry the visual cue. */
+      .sbm-role-card li{grid-template-columns:26px minmax(0,1fr);gap:10px;align-items:center}
+      .sbm-role-card li>.sbm-feature-mini-icon{width:25px;height:25px;min-width:25px;min-height:25px}
+      .sbm-role-card .sbm-feature-copy{display:block;min-width:0;font-size:11px;line-height:1.55;color:#52616a;overflow-wrap:anywhere}
+      .sbm-role-card>p{min-height:0;margin-bottom:13px;font-size:11px;line-height:1.55;color:#667681}
+      .sbm-role-card h3{display:none}
+
     `}</style>
   </main>;
 }
