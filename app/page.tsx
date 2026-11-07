@@ -49,50 +49,57 @@ export default function LandingPage() {
       </div>
     </section>
 
-    <section className="sbm-feature-showcase" aria-label="Fitur utama aplikasi">
+    <section className="sbm-feature-showcase sbm-role-showcase" aria-label="Fitur berdasarkan jenis pengguna">
       <div className="sbm-section-heading">
-        <p className="sbm-eyebrow"><i/> FITUR YANG MEMBANTU SETIAP HARI</p>
-        <h2>Lebih dari sekadar antar-jemput sekolah</h2>
-        <p className="sbm-section-lead">Informasi perjalanan, panduan kerja, dan pengelolaan armada tersusun dalam satu alur yang saling terhubung.</p>
+        <p className="sbm-eyebrow"><i/> FITUR APLIKASI</p>
+        <h2>Semua kebutuhan, sesuai peran.</h2>
+        <p className="sbm-section-lead">Setiap pengguna mendapat informasi dan alat kerja yang memang dibutuhkan.</p>
       </div>
 
-      <article className="sbm-parent-feature">
-        <div className="sbm-parent-feature-copy">
-          <span className="sbm-feature-label"><RoleIcon type="parent"/> UNTUK ORANG TUA / WALI</span>
-          <h3>Ketahui perjalanan anak, dengan privasi yang tetap dijaga.</h3>
-          <p>Informasi perjalanan anak tersaji dalam satu halaman, sehingga orang tua dapat mengikuti perjalanan tanpa harus terus menghubungi pengemudi.</p>
-          <ul className="sbm-feature-checks">
-            <li><strong>Status anak</strong><span>Ketahui catatan naik, turun, tidak ikut bus, dan perkembangan perjalanan.</span></li>
-            <li><strong>Lokasi bus</strong><span>Lihat posisi pengemudi saat GPS perangkat terhubung dan mengirim lokasi.</span></li>
-            <li><strong>Kamera terbatas</strong><span>Akses tayangan mengikuti status anak selama perjalanan; bukan pemantauan sepanjang hari.</span></li>
-            <li><strong>Akses pribadi</strong><span>Informasi anak hanya ditampilkan kepada akun wali yang terhubung dan terverifikasi.</span></li>
-            <li><strong>Beberapa anak</strong><span>Pantau anak-anak yang terdaftar melalui satu akun wali.</span></li>
-          </ul>
-        </div>
-        <div className="sbm-parent-feature-visual" aria-label="Ilustrasi informasi lokasi bus dan perjalanan">
-          <div className="sbm-parent-visual-top"><span><i/> CONTOH PERJALANAN</span><b>STATUS ANAK</b></div>
-          <div className="sbm-parent-journey">
-            <div className="sbm-journey-head"><span>PERKEMBANGAN PERJALANAN</span><b>HARI INI</b></div>
-            <div className="sbm-journey-line">
-              <div className="sbm-journey-step complete"><i>✓</i><span><strong>Bus berangkat</strong><small>Perjalanan dimulai</small></span></div>
-              <div className="sbm-journey-step current"><i><span/></i><span><strong>Dalam perjalanan</strong><small>Status dapat dipantau</small></span></div>
-              <div className="sbm-journey-step"><i>3</i><span><strong>Tiba di sekolah</strong><small>Menunggu konfirmasi</small></span></div>
-            </div>
+      <div className="sbm-role-grid">
+        <article className="sbm-role-card parent">
+          <div className="sbm-role-card-top">
+            <span className="sbm-role-icon"><RoleIcon type="parent"/></span>
+            <span className="sbm-role-kicker">ORANG TUA / WALI</span>
           </div>
-          <div className="sbm-parent-camera-row"><span className="sbm-camera-symbol">▣</span><span><strong>Kamera perjalanan</strong><small>Akses mengikuti status naik hingga turun</small></span><span className="sbm-camera-state">TERBATAS</span></div>
-        </div>
-      </article>
-
-      <div className="sbm-support-features">
-        <article className="sbm-support-feature driver">
-          <span className="sbm-support-icon"><RoleIcon type="driver"/></span>
-          <div><span className="sbm-support-kicker">UNTUK PENGEMUDI</span><h3>Perjalanan terarah, siswa lebih terperiksa.</h3><p>Pengemudi mendapat urutan titik, informasi siswa, dan catatan perjalanan. Sebelum menutup tugas, sistem meminta pemeriksaan keselamatan dan status seluruh siswa.</p></div>
-          <ul><li>Checklist kondisi kendaraan</li><li>Periksa jumlah dan siswa tertinggal</li><li>Catat naik, turun, dan ketidakhadiran</li><li>Navigasi titik jemput dan antar</li></ul>
+          <h3>Pantau perjalanan anak.</h3>
+          <p>Informasi penting anak tersaji ringkas dalam satu halaman.</p>
+          <ul>
+            <li><span className="sbm-feature-mini-icon">✓</span><span><strong>Status perjalanan</strong><small>Catatan saat anak naik, turun, atau tidak ikut bus.</small></span></li>
+            <li><span className="sbm-feature-mini-icon">⌖</span><span><strong>Lokasi bus</strong><small>Posisi tersedia saat GPS perangkat terhubung.</small></span></li>
+            <li><span className="sbm-feature-mini-icon">▣</span><span><strong>Kamera perjalanan</strong><small>Akses mengikuti status perjalanan anak.</small></span></li>
+            <li><span className="sbm-feature-mini-icon">♡</span><span><strong>Akses pribadi</strong><small>Hanya wali terverifikasi yang terhubung.</small></span></li>
+          </ul>
         </article>
-        <article className="sbm-support-feature operator">
-          <span className="sbm-support-icon"><RoleIcon type="operator"/></span>
-          <div><span className="sbm-support-kicker">UNTUK OPERATOR</span><h3>Armada dan perjalanan dalam satu kendali.</h3><p>Kelola data kendaraan dan pengemudi, atur penugasan tanpa benturan, lalu ikuti status serta riwayat perjalanan dalam satu tempat.</p></div>
-          <ul><li>Data dan status kendaraan</li><li>Data pengemudi dan SIM</li><li>Penugasan dengan cek benturan</li><li>Status dan riwayat perjalanan</li></ul>
+
+        <article className="sbm-role-card driver">
+          <div className="sbm-role-card-top">
+            <span className="sbm-role-icon"><RoleIcon type="driver"/></span>
+            <span className="sbm-role-kicker">PENGEMUDI</span>
+          </div>
+          <h3>Jalankan rute dengan terarah.</h3>
+          <p>Panduan perjalanan dan data siswa membantu tugas harian.</p>
+          <ul>
+            <li><span className="sbm-feature-mini-icon">↗</span><span><strong>Urutan titik</strong><small>Daftar penjemputan dan pengantaran yang teratur.</small></span></li>
+            <li><span className="sbm-feature-mini-icon">◎</span><span><strong>Informasi siswa</strong><small>Data dan catatan penting di setiap titik.</small></span></li>
+            <li><span className="sbm-feature-mini-icon">✓</span><span><strong>Status naik dan turun</strong><small>Catat kehadiran dan perubahan perjalanan.</small></span></li>
+            <li><span className="sbm-feature-mini-icon">盾</span><span><strong>Pemeriksaan keselamatan</strong><small>Periksa kendaraan dan siswa sebelum tugas ditutup.</small></span></li>
+          </ul>
+        </article>
+
+        <article className="sbm-role-card operator">
+          <div className="sbm-role-card-top">
+            <span className="sbm-role-icon"><RoleIcon type="operator"/></span>
+            <span className="sbm-role-kicker">OPERATOR</span>
+          </div>
+          <h3>Kelola armada lebih mudah.</h3>
+          <p>Data operasional tersusun agar penugasan lebih tertib.</p>
+          <ul>
+            <li><span className="sbm-feature-mini-icon">▣</span><span><strong>Data kendaraan</strong><small>Kelola armada, kapasitas, dan statusnya.</small></span></li>
+            <li><span className="sbm-feature-mini-icon">♙</span><span><strong>Data pengemudi</strong><small>Informasi pengemudi dan SIM.</small></span></li>
+            <li><span className="sbm-feature-mini-icon">⇄</span><span><strong>Penugasan</strong><small>Bantu hindari benturan jadwal kendaraan dan pengemudi.</small></span></li>
+            <li><span className="sbm-feature-mini-icon">▤</span><span><strong>Riwayat perjalanan</strong><small>Lihat status dan catatan perjalanan.</small></span></li>
+          </ul>
         </article>
       </div>
     </section>
@@ -263,6 +270,42 @@ export default function LandingPage() {
         .sbm-login-card{grid-template-columns:1fr}
         .sbm-login-heading,.sbm-login-submit,.sbm-login-signup{grid-column:1}
       }
+
+      /* Compact, feature-led hierarchy and balanced role cards */
+      .sbm-refined .sbm-hero-copy h1{font-size:clamp(30px,4vw,48px);line-height:1.08;letter-spacing:-1.6px;margin:10px 0 12px}
+      .sbm-refined .sbm-lead{font-size:13px;line-height:1.65;max-width:470px}
+      .sbm-role-showcase{margin-top:34px}
+      .sbm-role-showcase .sbm-section-heading{max-width:none;margin-bottom:15px}
+      .sbm-role-showcase .sbm-section-heading h2{font-size:clamp(18px,2.2vw,23px);line-height:1.2;letter-spacing:-.45px;margin:5px 0}
+      .sbm-role-showcase .sbm-section-lead{font-size:11px}
+      .sbm-role-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;align-items:stretch}
+      .sbm-role-card{min-width:0;padding:18px 17px 16px;border:1px solid #eadfbf;border-radius:15px;background:linear-gradient(160deg,#fffaf0 0%,#fff 58%);box-shadow:0 6px 18px #27374608}
+      .sbm-role-card.driver{background:linear-gradient(160deg,#f0f8f8 0%,#fff 58%);border-color:#d9e9e8}
+      .sbm-role-card.operator{background:linear-gradient(160deg,#f2f4f9 0%,#fff 58%);border-color:#dfe4ef}
+      .sbm-role-card-top{display:flex;align-items:center;gap:10px;margin-bottom:13px}
+      .sbm-role-icon{width:38px;height:38px;display:grid;place-items:center;flex:none;border-radius:12px;background:#fff0bd;color:#9b7410}
+      .sbm-role-icon svg{width:23px;height:23px}
+      .sbm-role-card.driver .sbm-role-icon{background:#dcefee;color:#287b83}
+      .sbm-role-card.operator .sbm-role-icon{background:#e4e9f4;color:#586b91}
+      .sbm-role-kicker{font-size:9px;font-weight:800;letter-spacing:.75px;color:#96700d}
+      .sbm-role-card.driver .sbm-role-kicker{color:#287b83}
+      .sbm-role-card.operator .sbm-role-kicker{color:#586b91}
+      .sbm-role-card h3{font:750 17px/1.25 Manrope,sans-serif;letter-spacing:-.35px;color:#2b3c4c;margin:0 0 6px}
+      .sbm-role-card>p{min-height:36px;font-size:10px;line-height:1.55;color:#71808b;margin:0 0 14px}
+      .sbm-role-card ul{list-style:none;display:grid;gap:11px;margin:0;padding:13px 0 0;border-top:1px solid #eee8d9}
+      .sbm-role-card.driver ul{border-color:#e2eeee}
+      .sbm-role-card.operator ul{border-color:#e7eaf1}
+      .sbm-role-card li{display:grid;grid-template-columns:25px minmax(0,1fr);align-items:start;gap:8px;min-width:0}
+      .sbm-feature-mini-icon{width:24px;height:24px;display:grid;place-items:center;border-radius:8px;background:#fff1c9;color:#9a7410;font-size:12px;font-weight:800;line-height:1}
+      .sbm-role-card.driver .sbm-feature-mini-icon{background:#e2f1ef;color:#287b83}
+      .sbm-role-card.operator .sbm-feature-mini-icon{background:#e9edf6;color:#586b91}
+      .sbm-role-card li strong,.sbm-role-card li small{display:block}
+      .sbm-role-card li strong{font-size:10px;line-height:1.35;color:#3c4b58;font-weight:750}
+      .sbm-role-card li small{margin-top:2px;font-size:9px;line-height:1.45;color:#7c8991}
+      .sbm-refined .sbm-parent-feature,.sbm-refined .sbm-support-features{display:none}
+      .sbm-refined-assurance{margin-top:15px}
+      @media(max-width:820px){.sbm-role-grid{grid-template-columns:1fr 1fr}.sbm-role-card.parent{grid-column:1 / -1}.sbm-role-card.parent ul{grid-template-columns:1fr 1fr;column-gap:16px}.sbm-role-card>p{min-height:0}}
+      @media(max-width:560px){.sbm-role-grid{grid-template-columns:1fr;gap:10px}.sbm-role-card.parent{grid-column:auto}.sbm-role-card.parent ul{grid-template-columns:1fr}.sbm-role-card{padding:16px}.sbm-role-showcase{margin-top:26px}.sbm-refined .sbm-hero-copy h1{font-size:clamp(29px,8vw,38px)}}
     `}</style>
   </main>;
 }
