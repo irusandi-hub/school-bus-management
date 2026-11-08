@@ -2612,3 +2612,15 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
  .guardian-shell .portal-head .brand-logo{gap:6px;min-width:0}
  .guardian-shell .portal-head .brand-logo-sub{font-size:9px}
 }
+
+/* Daftar dan detail baca siswa hanya di area Pengelola. */
+.operator-shell .student-read-filters{display:flex;flex-wrap:wrap;align-items:end;gap:8px;padding:12px;margin-bottom:12px}
+.operator-shell .student-read-filters label{display:grid;gap:5px;font-size:11px;flex:1 1 140px;min-width:0}
+.operator-shell .student-read-filters :is(input,select){width:100%;min-width:0;min-height:44px;padding:8px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--surface)}
+.operator-shell .student-read-filters .btn{min-height:44px}
+.operator-shell .student-read-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:8px}
+.operator-shell .student-read-card{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;padding:12px;min-height:44px;color:var(--ink);text-decoration:none;overflow-wrap:anywhere;min-width:0}
+.operator-shell .student-read-card small{display:block;color:var(--muted);font-size:11px}.operator-shell .student-read-card p{grid-column:1/-1;margin:0;font-size:12px}.operator-shell .student-read-card>small{grid-column:1/-1}
+.operator-shell .student-read-detail{padding:12px;margin-bottom:8px;overflow-wrap:anywhere}.operator-shell .student-read-detail header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}.operator-shell .student-read-detail h2{font-size:16px;margin:0 0 8px}
+.operator-shell .student-read-detail dl{margin:0;display:grid;gap:10px}.operator-shell .student-read-detail dl>div{display:grid;grid-template-columns:100px minmax(0,1fr);gap:8px;font-size:12px}.operator-shell .student-read-detail dd{margin:0}.operator-shell .student-read-detail dt{color:var(--muted)}.operator-shell .student-read-placement{padding:8px 0;border-top:1px solid var(--line)}.operator-shell .student-read-placement p{margin:4px 0}
+.operator-shell :is(.student-read-card,.student-stat-link):focus-visible{outline:3px solid var(--brand);outline-offset:2px}
