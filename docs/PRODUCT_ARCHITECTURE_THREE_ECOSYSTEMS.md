@@ -4,124 +4,126 @@
 **Berlaku mulai:** 2026-11-08  
 **Repository:** `school-bus-management`
 
-Dokumen ini adalah aturan produk dan arsitektur yang mengikat seluruh desain, implementasi, pengujian, dokumentasi, serta pekerjaan agen berikutnya. Jika dokumen lama, kode, atau PR bertentangan dengan aturan ini, tandai sebagai ketidaksesuaian dan arahkan implementasi menuju aturan ini. Jangan menganggap implementasi lama sebagai keputusan yang lebih tinggi.
+Dokumen ini mengikat seluruh desain, implementasi, pengujian, dokumentasi, dan pekerjaan agen. Jika dokumen lama, kode, atau PR bertentangan, implementasi harus diarahkan ke aturan ini.
 
 ## 1. Hanya tiga ekosistem pengguna
 
-Produk hanya memiliki tiga ekosistem pengguna yang terlihat dan digunakan dalam aplikasi:
+1. **Operator** — satu pusat kendali dan pengelolaan seluruh aplikasi.
+2. **Pengemudi** — menjalankan tugas perjalanan yang diberikan Operator.
+3. **Orang Tua** — memantau anak/perjalanan dan menyampaikan laporan.
 
-1. **Operator** — pusat pengelolaan seluruh layanan dan administrasi organisasi.
-2. **Pengemudi** — menjalankan tugas perjalanan yang secara sah diberikan oleh Operator.
-3. **Orang Tua** — melihat informasi, memantau perjalanan anak, riwayat, dan menyampaikan laporan.
+Tidak ada ekosistem Admin Pusat atau Sekolah yang terpisah. Sekolah adalah data/entitas yang dikelola Operator.
 
-Tidak ada ekosistem pengguna Admin Pusat yang terpisah. Tidak ada ekosistem pengguna Sekolah yang terpisah dalam model produk yang disetujui saat ini.
+## 2. Satu Operator Utama, satu kendali aplikasi
 
-## 2. Operator adalah satu ruang kerja terpadu
+- Hanya ada **satu Operator Utama** sebagai pemegang kewenangan tertinggi di dalam aplikasi.
+- Operator mengelola seluruh sekolah, siswa, wali, bus, pengemudi, wilayah, rute, penugasan, perjalanan, laporan, dan audit.
+- Semua fungsi administrasi lama menjadi modul dalam satu dashboard, satu navigasi, satu autentikasi, dan satu ekosistem Operator.
+- Tidak ada perusahaan/operator tenant kedua, akun operator wilayah, dashboard admin, atau pusat kendali paralel.
+- Pembagian fungsi administrasi dan operasional di menu hanyalah pengelompokan pekerjaan, bukan role atau tingkatan kewenangan baru.
+- Tidak perlu membuat hierarki staf atau permission matrix baru. Jika kebutuhan tersebut muncul di masa depan, harus dimintakan keputusan tersendiri.
 
-Seluruh fungsi administrasi dan operasional dikerjakan dari satu dashboard/ruang kerja Operator. Fungsi yang sebelumnya ditempatkan di area Admin Pusat bukan produk, role, atau dashboard kedua. Fungsi tersebut menjadi modul dalam ruang kerja Operator, antara lain:
+## 3. Wilayah operasi dan pembagian tugas adalah DATA
 
-- administrasi organisasi dan pengaturan akun/staf;
-- data sekolah dan relasi layanan sekolah;
-- data siswa dan orang tua/wali;
-- armada/bus dan pengemudi;
-- rute dan titik pemberhentian;
-- penugasan bus, pengemudi, rute, dan tanggal;
-- perjalanan dan pemantauan operasional;
-- laporan, riwayat, dan audit aktivitas.
+Wilayah operasi bukan batas keamanan, bukan tenant, bukan organisasi baru, dan bukan pembatas akses Operator.
 
-Semua modul itu merupakan satu ekosistem dan satu navigasi Operator. Kelompok menu boleh dipakai untuk merapikan pekerjaan, tetapi tidak boleh membentuk role, dashboard, atau login terpisah.
+Data wilayah dipakai untuk pemetaan dan audit pembagian pekerjaan, meliputi:
+- nama/kode dan cakupan wilayah;
+- area/titik penjemputan dan pengantaran;
+- siswa yang dipetakan ke wilayah;
+- pengemudi yang ditugaskan;
+- penanggung jawab atau catatan pembagian tugas bila diperlukan;
+- masa berlaku penugasan dan riwayat perubahan penanggung jawab.
 
-Tidak perlu membuat hierarki jabatan internal baru untuk mengakomodasi fungsi administrasi. Fungsi administrasi adalah kemampuan kerja Operator. Jika di masa depan diperlukan beberapa akun staf dalam satu organisasi, semuanya tetap berada dalam ekosistem Operator; pembatasan izin per tindakan hanya boleh ditambahkan berdasarkan kebutuhan yang disetujui, bukan dengan menciptakan ekosistem Admin baru.
+Operator Utama selalu dapat melihat, membuat, memperbarui, dan mengaudit seluruh data lintas wilayah. Penugasan wilayah hanya menjawab **siapa menangani area/tugas tertentu dan kapan**, bukan siapa boleh melihat database.
 
-## 3. Batas kewenangan tiga ekosistem
+Jangan menggunakan `region_id`, `area_id`, atau penugasan wilayah sebagai filter RLS untuk Operator. Jangan mengunci akses data induk Operator berdasarkan wilayah. Pengemudi tetap hanya melihat penugasan perjalanan yang diberikan kepadanya; pembatasan Pengemudi berasal dari identitas dan penugasan, bukan dari wilayah sebagai role.
+
+## 4. Batas kewenangan tiga ekosistem
 
 ### Operator
-- Mengelola data dan konfigurasi layanan dalam organisasi yang terhubung dengannya.
-- Membuat dan mengubah data induk yang diperlukan untuk layanan.
-- Menetapkan bus, pengemudi, rute, titik jemput, dan penugasan.
-- Memberi, mengubah, dan mencabut kewenangan tugas pengemudi.
-- Memantau perjalanan dan membaca laporan operasional organisasi.
-- Mengelola relasi siswa–wali sesuai kewenangan dan dasar akses yang berlaku.
+- Kendali penuh atas seluruh data dan operasional aplikasi.
+- Input, lihat, perbarui, dan kelola data siswa, sekolah, wali, bus, pengemudi, wilayah, rute, titik, penugasan, perjalanan, laporan, dan audit.
+- Menetapkan dan mengubah penugasan serta tanggung jawab wilayah.
+- Melihat seluruh wilayah dan riwayat pembagian tugas.
 
 ### Pengemudi
-- Hanya memperoleh akses setelah akun terhubung ke data pengemudi aktif dan diberi penugasan yang berlaku.
-- Hanya melihat tugas, rute, siswa, dan perjalanan yang menjadi kewenangannya.
-- Menjalankan perjalanan, memperbarui status siswa, dan mengirim lokasi selama penugasan/perjalanan aktif sesuai aturan.
-- Tidak mengelola data induk, armada, pengemudi lain, rute, atau penugasan.
-- Akses tugas berakhir atau berubah ketika penugasan dicabut, diganti, atau tidak lagi aktif.
+- Akses hanya setelah akun terhubung ke data pengemudi aktif.
+- Hanya melihat tugas, rute, siswa, dan perjalanan yang ditugaskan kepadanya.
+- Menjalankan perjalanan dan mengirim pembaruan sesuai alur tugas.
+- Tidak mengelola database induk, armada, pengemudi lain, wilayah, atau penugasan.
 
 ### Orang Tua
-- Hanya melihat anak yang secara sah terhubung ke akun dan masih memenuhi syarat layanan.
-- Melihat status, lokasi bus yang tersedia, informasi perjalanan, kamera bila integrasi sah tersedia, dan riwayat yang berhak diakses.
-- Menyampaikan laporan atau informasi terkait anak/perjalanan.
-- Tidak mengelola armada, rute, pengemudi, penugasan, atau data induk organisasi.
+- Hanya melihat anak yang terhubung secara sah ke akun dan memenuhi syarat layanan.
+- Melihat status, lokasi bus bila tersedia, perjalanan, riwayat, kamera bila integrasi sah tersedia, dan mengirim laporan.
+- Tidak mengelola data induk atau operasional.
 
-## 4. Role dan otorisasi
+## 5. Role dan otorisasi
 
-Role produk yang diharapkan adalah:
+Role produk akhir:
 - `operator`
 - `driver`
 - `parent`
 
-Role `admin` sebagai role pengguna aplikasi dan pintu masuk dashboard tersendiri harus dihapus dari rancangan akhir. Sekolah adalah data/entitas yang dikelola dalam ruang kerja Operator, bukan role login tersendiri.
+Role `admin` harus ditransisikan secara aman menjadi `operator`; role itu tidak boleh menjadi ekosistem atau dashboard tersendiri. Transisi akun lama wajib memetakan akun Operator Utama yang sah, mempertahankan data dan histori, dan tidak boleh mengasumsikan setiap akun admin lama memiliki relasi/organisasi yang benar.
 
-Otorisasi harus tetap ditegakkan pada server dan database/RLS, bukan hanya dengan menyembunyikan menu. Operator dibatasi pada organisasi yang terhubung dengannya. Pengemudi dibatasi pada identitas pengemudi aktif dan penugasan yang sah. Orang Tua dibatasi pada siswa yang terhubung dan memenuhi syarat.
+Otorisasi wajib ditegakkan di server dan database/RLS:
+- Operator: akses global ke seluruh data aplikasi.
+- Pengemudi: hanya identitas, penugasan, perjalanan, roster, dan data operasional yang menjadi tugasnya.
+- Orang Tua: hanya siswa dan perjalanan anak yang berhak diakses.
 
-Akses teknis pemilik platform/support, bila suatu saat benar-benar diperlukan, bukan ekosistem pengguna harian dan tidak boleh disamakan dengan dashboard Admin Pusat yang dipakai dalam alur produk. Kebutuhan tersebut memerlukan desain keamanan, audit, dan persetujuan tersendiri.
+Jangan membuat multi-tenant atau pembatasan RLS berdasarkan perusahaan/wilayah. Wilayah adalah data audit, bukan security boundary.
 
-## 5. Aturan UX, navigasi, dan autentikasi
+## 6. UX, route, dan autentikasi
 
-- Landing page, halaman masuk, onboarding, dan dokumentasi pengguna hanya menampilkan tiga ekosistem: Operator, Pengemudi, Orang Tua.
-- Setelah autentikasi, aplikasi menentukan area dari role dan relasi database; pengguna tidak dapat memilih atau menaikkan role sendiri.
-- Pengguna Operator masuk langsung ke satu ruang kerja Operator. Tidak boleh ada halaman perantara yang meminta memilih Admin atau Operator.
-- Semua fungsi administrasi yang saat ini berada di `/admin/*` harus dipindahkan/diintegrasikan ke dalam navigasi dan route ruang kerja Operator. Selama masa transisi, redirect kompatibilitas boleh dipertahankan, tetapi route lama tidak boleh menjadi dashboard atau gate role yang berdiri sendiri.
-- Tidak boleh ada dua dashboard dengan fungsi duplikat, dua menu master data, atau alur login berbeda untuk administrasi dan operasional Operator.
-- Bahasa antarmuka untuk pengguna umum harus memakai istilah “Operator/Pengelola” secara konsisten. Istilah “Admin Pusat” tidak ditampilkan sebagai ekosistem pengguna.
+- Landing page, login, onboarding, dan dokumentasi hanya menampilkan Operator, Pengemudi, dan Orang Tua.
+- Login menentukan akses dari role dan relasi database; pengguna tidak dapat memilih atau menaikkan role sendiri.
+- Operator masuk langsung ke satu ruang kerja Operator tanpa pemilihan Admin/Operator.
+- Seluruh modul lama `/admin/*` harus dipindahkan/diintegrasikan ke ruang kerja `/operator/*`. Redirect kompatibilitas boleh dipakai sementara, tetapi tidak boleh mempertahankan layout/gate Admin tersendiri.
+- Tidak boleh ada dashboard, navigasi, atau alur login Admin Pusat terpisah.
 
-## 6. Aturan perubahan teknis dan migrasi
+## 7. Migrasi dan keselamatan data
 
-Audit dan implementasi harus mencakup UI, route, layout, navigasi, login/redirect, server actions, helper otorisasi, tipe role, database constraints, fungsi SQL, RLS policies, data linking, tests, README, dan dokumen keputusan.
+Audit implementasi mencakup role, routes, layouts, redirects, middleware, Server Actions, server loaders, SQL functions, constraints, grants, RLS, linking akun, tests, README, dan seluruh dokumen.
 
-Jangan sekadar mengganti label “Admin Pusat” menjadi “Pengelola”. Itu belum memenuhi aturan bila role `admin`, gate `requireAdmin`, ruang kerja `/admin`, atau kebijakan database admin-only masih membentuk ekosistem kedua.
+Migrasi wajib:
+- mempertahankan seluruh data dan histori;
+- menyiapkan pemetaan semua akun `admin` dan `operator` lama;
+- membuat satu identitas Operator Utama yang sah dan memastikan relasi seluruh data menunjuk ke entitas pusat tersebut;
+- menangani konflik akun tertaut/duplikasi secara eksplisit dan fail-closed;
+- memindahkan hak master-data dari `private.is_admin()` ke otorisasi Operator;
+- menghapus role lama hanya setelah backfill dan verifikasi;
+- mempertahankan pembatasan Pengemudi dan Orang Tua;
+- memasukkan tes RLS yang membuktikan Operator dapat mengelola semua wilayah, sedangkan Pengemudi dan Orang Tua tetap terisolasi;
+- menyertakan strategi rollback dan pemeriksaan pra/pasca migrasi.
 
-Perubahan database harus dirancang dengan aman:
-- inventarisasi seluruh akun dan relasi yang sudah ada sebelum migrasi;
-- tentukan pemetaan akun admin lama ke akun Operator yang sah, tanpa mengasumsikan setiap akun admin memiliki organisasi;
-- pertahankan data dan histori; jangan menghapus atau menimpa relasi secara diam-diam;
-- sediakan transisi/backfill yang dapat diverifikasi dan rencana rollback;
-- jangan menjalankan migrasi pada database lokal bersama, development hosted, atau production tanpa persetujuan eksplisit pemilik produk;
-- jangan mengubah skema, RLS, atau migrasi hanya untuk menyelesaikan dokumentasi.
+**Tidak boleh mengasumsikan database kosong.** Jika data/relasi lama ambigu, migrasi harus berhenti dengan pesan yang jelas, bukan memilih akun secara otomatis.
 
-Tidak boleh ada penggabungan, deploy, atau migrasi database hosted tanpa persetujuan eksplisit.
+Migrasi boleh disiapkan sebagai file pada branch setelah proses pembuatan migration lokal yang benar. Persetujuan ini tidak mengizinkan menjalankannya pada Supabase lokal bersama, development hosted, staging, atau production. Tidak ada merge/deploy tanpa persetujuan tersendiri.
 
-## 7. Audit ketidaksesuaian awal yang sudah terverifikasi
+## 8. Temuan ketidaksesuaian awal
 
-Pada branch `develop` yang diperiksa 2026-11-08, implementasi masih memiliki pemisahan yang bertentangan dengan aturan ini:
+Pada branch `develop` yang diperiksa 2026-11-08:
+- `lib/types.ts` masih memiliki empat role.
+- `lib/auth.ts` memiliki `requireAdmin()` dan `requireOperator()`.
+- `lib/paths.ts`, `lib/auth-actions.ts`, middleware, dan dua layout memisahkan Admin/Operator.
+- `lib/admin/read.ts` dan `lib/operator/read.ts` memakai gate berbeda.
+- Migrasi lama memakai `private.is_admin()` untuk master data dan linking akun.
+- Model `operator_id` lama membatasi data ke organisasi Operator, bertentangan dengan satu Operator Utama.
+- README dan beberapa dokumen lama masih menggambarkan empat role/multi-tenant.
 
-- `lib/types.ts` masih mendefinisikan `UserRole = admin | operator | driver | parent`.
-- `lib/auth.ts` masih mengenali role `admin` dan `operator` secara terpisah, serta menyediakan `requireAdmin()` dan `requireOperator()`.
-- `lib/paths.ts` masih mengarahkan role `admin` ke `/admin` dan role `operator` ke `/operator`; `loginAction` di `lib/auth-actions.ts` masih memiliki dua cabang redirect dan pesan akses yang berbeda.
-- `app/admin/layout.tsx` dan `app/operator/layout.tsx` masih membangun dua ruang kerja terpisah; `lib/admin/read.ts` dan `lib/operator/read.ts` masih memakai gate/context yang berbeda.
-- `middleware.ts` masih melindungi prefix `/admin` dan `/operator` secara terpisah.
-- Migrasi `20261031000000_admin_core_crud.sql` masih mendefinisikan `private.is_admin()` dan memakai pemeriksaan admin-only untuk operasi master data/status siswa.
-- Migrasi `20261031000001_operator_driver_guardian_areas.sql` masih menetapkan constraint role dengan empat nilai termasuk `admin` dan mendefinisikan operator sebagai role terpisah.
-- Migrasi `20261031000002_operator_driver_account_linking.sql` masih mensyaratkan `private.is_admin()` untuk link/unlink akun operator dan pengemudi; komentar dan pesan SQL menyebut Admin Pusat sebagai aktor yang berwenang.
-- `lib/auth-actions.ts` masih mengarahkan akun operator yang belum tertaut untuk menghubungi Admin Pusat; alur aktivasi orang tua dan beberapa pesan autentikasi juga menyebut Admin Pusat.
-- `README.md` masih menjelaskan dua area Admin & Operator, empat role, dan rute `/admin/*`.
-- `AGENTS.md` pada `develop` sebelum PR ini masih memerintahkan pekerjaan empat area Admin Pusat, Operator, Pengemudi, dan Orang Tua/Wali.
-- PR #27 sudah mengubah sebagian label Admin Pusat menjadi Pengelola dan menyatakan area admin akan digabung ke `/operator`, tetapi perubahan label tersebut belum menghapus gate, route, tipe role, atau otorisasi admin yang terpisah.
+Daftar ini adalah titik awal, bukan audit final. Implementer harus mencari seluruh referensi sebelum menyatakan selesai.
 
-Daftar ini adalah temuan awal, bukan audit menyeluruh setiap pemanggilan SQL/komponen. Implementer wajib melakukan pencarian menyeluruh dan melaporkan semua referensi tersisa sebelum menyatakan selesai.
+## 9. Kriteria penerimaan
 
-## 8. Kriteria penerimaan akhir
-
-- Hanya tiga role produk: Operator, Pengemudi, Orang Tua.
-- Hanya satu dashboard, layout, dan navigasi Operator yang memuat fungsi administrasi serta operasional.
-- Tidak ada pemilih Admin vs Operator, halaman Admin Pusat, atau alur login Admin terpisah.
-- Seluruh fungsi administrasi lama tetap tersedia di ruang kerja Operator dan hanya dapat digunakan oleh akun Operator yang berwenang.
-- Pengemudi hanya dapat mengakses tugas yang diberikan kepadanya.
-- Orang Tua hanya dapat mengakses anak dan perjalanan yang berhak dilihatnya.
-- Semua Server Actions, route handlers, server loaders, SQL functions, dan RLS policies mengikuti batas kewenangan baru.
-- Akun dan data lama ditangani melalui rencana transisi yang teruji; tidak ada data yang hilang.
-- Unit test, tes otorisasi/RLS, typecheck, build, dan pemeriksaan alur login/redirect lulus.
-- README, master specification, matriks tanggung jawab, instruksi agen, dan decision log konsisten dengan tiga ekosistem.
+- Tepat tiga role: Operator, Pengemudi, Orang Tua.
+- Tepat satu Operator Utama dengan kendali global aplikasi.
+- Satu dashboard/layout/navigasi Operator memuat semua fungsi administrasi dan operasional.
+- Tidak ada dashboard/gate/login Admin terpisah.
+- Tidak ada operator tenant kedua atau isolasi data berdasarkan `operator_id`/wilayah.
+- Wilayah hanya data pemetaan, pembagian tugas, dan audit; Operator dapat melihat dan mengelola semuanya.
+- Pengemudi hanya dapat mengakses tugas yang diberikan.
+- Orang Tua hanya dapat mengakses anak dan perjalanan yang berhak dilihat.
+- Transisi akun dan data lama teruji tanpa kehilangan data.
+- Unit test, tes otorisasi/RLS, typecheck, build, serta alur login/redirect lulus.
+- README, master spec, decision log, dan instruksi agen konsisten.
