@@ -580,15 +580,18 @@ body{background:var(--paper);color:var(--ink)}
 
 
 /* Penanda mode pengembangan: mengambang, ringkas, dan tidak menggeser konten. */
-.dev-mode-banner{position:fixed;top:12px;right:14px;z-index:1000;display:block;color:#725719;font-size:10px;line-height:1.4}
-.dev-mode-banner summary{display:flex;align-items:center;gap:7px;min-height:27px;padding:5px 10px;border:1px solid #ead99f;border-radius:999px;background:rgba(255,250,232,.94);box-shadow:0 3px 12px #30250d12;cursor:pointer;list-style:none;backdrop-filter:blur(8px)}
-.dev-mode-banner summary::-webkit-details-marker{display:none}
-.dev-mode-banner summary strong{font:800 9px Manrope,sans-serif;letter-spacing:.45px;text-transform:uppercase;white-space:nowrap}
+.dev-mode-banner{position:fixed;top:clamp(120px,45dvh,calc(100dvh - 160px));left:env(safe-area-inset-left,0px);z-index:1000;color:#725719;font-size:10px;line-height:1.4}
+.dev-mode-tab{display:flex;align-items:center;justify-content:center;gap:6px;width:22px;height:72px;padding:6px 3px;border:1px solid #ead99f;border-left:0;border-radius:0 9px 9px 0;background:#fff7d8;color:#725719;cursor:pointer;overflow:hidden;transition:width .18s ease;box-shadow:0 3px 12px #30250d12}
 .dev-mode-indicator{width:6px;height:6px;border-radius:50%;background:#d7a91b;flex:none}
-.dev-mode-details{position:absolute;top:calc(100% + 7px);right:0;width:min(330px,calc(100vw - 24px));padding:12px 14px;border:1px solid #ead99f;border-radius:11px;background:#fffdf6;box-shadow:0 10px 28px #30250d20;color:#66552e}
-.dev-mode-details>strong{font:800 11px Manrope,sans-serif}
-.dev-mode-details p{margin:5px 0 0;font-size:10px;line-height:1.55}
-@media(max-width:759px){.dev-mode-banner{top:8px;right:8px}.dev-mode-banner summary{min-height:25px;padding:4px 8px}}
+.dev-mode-short{writing-mode:vertical-rl;font:800 9px Manrope,sans-serif;letter-spacing:1px}
+.dev-mode-tab{flex-direction:column}
+.dev-mode-label{display:none;font:800 10px Manrope,sans-serif;text-transform:uppercase;white-space:normal;overflow-wrap:anywhere}
+.dev-mode-banner[data-open="true"] .dev-mode-tab{width:min(250px,calc(100vw - env(safe-area-inset-left,0px) - 24px));flex-direction:row;padding:8px 12px}
+.dev-mode-banner[data-open="true"] .dev-mode-short{display:none}
+.dev-mode-banner[data-open="true"] .dev-mode-label{display:block}
+.dev-mode-tab:focus-visible{outline:3px solid #725719;outline-offset:2px}
+@media(prefers-reduced-motion:reduce){.dev-mode-tab{transition:none}}
+
 
 /* ==========================================================================
    UI System v2 — token desain, kerangka aplikasi, navigasi, dan status bersama.
@@ -1416,7 +1419,7 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
 .ops-switch>span{font-size:8px}
 
 @media(max-width:759px){
-  body:has(.driver-app) .dev-mode-banner{padding:3px 10px;font-size:8px}
+
   .driver-head{padding:10px 12px}
   .driver-main{padding:0 10px 10px}
   .driver-app .ops-head{margin-bottom:7px}
