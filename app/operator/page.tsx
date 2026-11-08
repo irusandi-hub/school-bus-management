@@ -62,7 +62,7 @@ export default async function OperatorHomePage() {
       />
 
       <nav className="operator-extra-links" aria-label="Menu operator lainnya">
-        {operatorGroups.flatMap((group) => group.items).filter((item) => !operatorBottomNav.some((bottom) => bottom.href === item.href)).map((item) => (
+        {operatorGroups.flatMap((group) => group.items).filter((item) => item.href !== "/operator" && !operatorBottomNav.some((bottom) => bottom.href === item.href)).map((item) => (
           <Link key={item.href} href={item.href}><Icon name={item.icon} size={16} />{item.label}</Link>
         ))}
       </nav>
