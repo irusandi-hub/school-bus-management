@@ -34,7 +34,7 @@ export default async function ReportsPage() {
     <>
       <PageHeader
         title="Laporan & audit"
-        description="Angka operasional diambil dari data nyata. Jejak audit ditulis otomatis oleh database dan tidak dapat diubah dari aplikasi."
+        description="Angka operasional diambil dari data nyata. Riwayat aktivitas dicatat otomatis dan tidak dapat diubah dari aplikasi."
       />
 
       {audits.error && <Notice kind="error">Jejak audit belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
@@ -69,7 +69,7 @@ export default async function ReportsPage() {
             <li>
               <strong>Data induk &amp; akun wali</strong>
               <span>✓</span>
-              <small>CRUD berjalan dengan RLS per peran dan riwayat status append-only.</small>
+              <small>Perubahan mengikuti hak akses akun. Riwayat status tetap tersimpan.</small>
             </li>
             <li>
               <strong>Rute, penugasan, perjalanan</strong>
@@ -87,7 +87,7 @@ export default async function ReportsPage() {
             <li>
               <strong>Ekspor laporan</strong>
               <span>—</span>
-              <small>Belum tersedia; laporan saat ini ditampilkan di layar dan mengikuti kebijakan akses database.</small>
+              <small>Belum tersedia; laporan saat ini ditampilkan di layar sesuai hak akses akun.</small>
             </li>
           </ul>
         </section>
@@ -96,7 +96,7 @@ export default async function ReportsPage() {
           <header className="panel-head">
             <div>
               <h2 className="panel-title">Prinsip audit</h2>
-              <div className="panel-subtitle">Ditulis oleh trigger database</div>
+              <div className="panel-subtitle">Dicatat otomatis saat ada perubahan</div>
             </div>
           </header>
           <div className="audit-note">

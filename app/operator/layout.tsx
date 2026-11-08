@@ -49,7 +49,7 @@ export default async function OperatorLayout({ children }: { children: React.Rea
             <Icon name="shield" size={13} />
           </span>
           <strong>Akses terbatas organisasi</strong>
-          <p>Armada, pengemudi, siswa, dan perjalanan difilter oleh kebijakan database untuk organisasi ini saja.</p>
+          <p>Armada, pengemudi, siswa, dan perjalanan hanya milik organisasi ini.</p>
         </div>
       </aside>
 
@@ -61,9 +61,12 @@ export default async function OperatorLayout({ children }: { children: React.Rea
             areaLabel="Operator"
             note={`Hanya data milik ${operator.name} yang tersedia di menu ini.`}
           />
+          <div className="workspace-heading">
+            <BrandLogo size="sm" />
           <div className="topbar-title">
             <div className="eyebrow">RUANG KERJA OPERATOR</div>
             <div className="admin-topbar-role">{operator.name}</div>
+          </div>
           </div>
           <div className="top-actions">
             <span className="account-chip" title={viewer.email ?? undefined}>
@@ -83,7 +86,7 @@ export default async function OperatorLayout({ children }: { children: React.Rea
         {children}
         <footer className="page-footer">
           <span>School Bus Management · Operator</span>
-          <span>Data organisasi · akses diperiksa database · GPS belum aktif</span>
+          <span>Data organisasi · akses sesuai akun · GPS belum aktif</span>
         </footer>
       </main>
 

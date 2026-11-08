@@ -46,8 +46,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <span className="security-icon">
             <Icon name="shield" size={13} />
           </span>
-          <strong>Otorisasi dari database</strong>
-          <p>Setiap perubahan diperiksa ulang oleh kebijakan akses database, bukan hanya oleh tampilan.</p>
+          <strong>Akses sesuai akun</strong>
+          <p>Setiap perubahan diperiksa sesuai hak akses akun Anda.</p>
         </div>
       </aside>
 

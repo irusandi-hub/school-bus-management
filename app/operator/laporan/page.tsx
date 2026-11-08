@@ -51,7 +51,7 @@ export default async function OperatorReportsPage() {
 
       <div className="admin-overview-grid">
         <section className="panel">
-          <header className="panel-head"><div><h2 className="panel-title">Cakupan laporan</h2><div className="panel-subtitle">Data dibatasi oleh kebijakan database organisasi</div></div><Pill tone="info">Organisasi</Pill></header>
+          <header className="panel-head"><div><h2 className="panel-title">Cakupan laporan</h2><div className="panel-subtitle">Data hanya milik organisasi Anda</div></div><Pill tone="info">Organisasi</Pill></header>
           <ul className="check-list">
             <li><strong>Armada dan pengemudi</strong><span>✓</span><small>Hanya data organisasi yang sedang masuk.</small></li>
             <li><strong>Perjalanan dan kehadiran</strong><span>✓</span><small>Ringkasan dan ekspor berasal dari catatan perjalanan organisasi Anda.</small></li>

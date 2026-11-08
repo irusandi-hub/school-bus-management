@@ -270,7 +270,7 @@ export default async function PengemudiPage({
             <div>
               <h2 className="panel-title">{editing ? "Ubah pengemudi" : "Tambah pengemudi"}</h2>
               <div className="panel-subtitle">
-                {editing ? `Memperbarui ${editing.full_name}` : "Data tersimpan langsung ke database"}
+                {editing ? `Memperbarui ${editing.full_name}` : "Data langsung tersimpan"}
               </div>
             </div>
           </header>

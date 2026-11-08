@@ -2534,3 +2534,20 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
 .brand-logo-sm .brand-logo-mark{width:38px;height:33px}
 .brand-logo-sm .brand-logo-word{font-size:17px;letter-spacing:-.5px}
 .auth-logo{margin-bottom:24px}
+
+/* Header operator: identitas dan aksi tetap terpisah pada layar sempit. */
+.operator-shell .topbar{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px}
+.operator-shell .workspace-heading{min-width:0;display:flex;align-items:center;gap:14px}
+.operator-shell .topbar-title{min-width:0;overflow-wrap:anywhere}
+.operator-shell .top-actions{flex:none;color:var(--ink)}
+.operator-shell .account-avatar{color:#6B4A00;opacity:1}
+.operator-shell .top-actions .btn{color:var(--ink);opacity:1;min-height:44px;white-space:nowrap}
+@media(max-width:960px){
+ .operator-shell .topbar{grid-template-columns:44px minmax(0,1fr);align-items:start}
+ .operator-shell .topbar>.menu-trigger{width:44px;min-height:44px;padding:0;font-size:0}
+ .operator-shell .workspace-heading{flex-direction:column;align-items:flex-start;gap:6px}
+ .operator-shell .top-actions{grid-column:2;justify-content:flex-end;flex-wrap:wrap;min-width:0}
+ .operator-shell .top-actions .account-name{display:none}
+ .operator-shell .account-chip{padding:4px;border:0;flex:none}
+ .operator-shell .topbar-title .eyebrow{display:none}
+}

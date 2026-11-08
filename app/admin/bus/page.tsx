@@ -249,7 +249,7 @@ export default async function BusPage({
             <div>
               <h2 className="panel-title">{editing ? "Ubah data bus" : "Tambah bus"}</h2>
               <div className="panel-subtitle">
-                {editing ? `Memperbarui ${editing.fleet_code}` : "Data tersimpan langsung ke database"}
+                {editing ? `Memperbarui ${editing.fleet_code}` : "Data langsung tersimpan"}
               </div>
             </div>
           </header>

@@ -262,7 +262,7 @@ export default async function OperatorPage({
             <div>
               <h2 className="panel-title">{editing ? "Ubah operator" : "Tambah operator"}</h2>
               <div className="panel-subtitle">
-                {editing ? `Memperbarui ${editing.name}` : "Data tersimpan langsung ke database"}
+                {editing ? `Memperbarui ${editing.name}` : "Data langsung tersimpan"}
               </div>
             </div>
           </header>

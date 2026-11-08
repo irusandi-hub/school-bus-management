@@ -50,8 +50,8 @@ export default async function OperatorHomePage() {
   return (
     <>
       <PageHeader
-        title={`Ringkasan ${access.operator.name}`}
-        description="Semua angka dan daftar di halaman ini dibatasi oleh kebijakan database ke organisasi Anda. Data organisasi lain tidak dapat dibaca dari area ini."
+        title="Ringkasan"
+        description="Data di halaman ini hanya milik organisasi Anda."
         actions={
           <Link className="btn btn-primary" href="/operator/operasional">
             <Icon name="clock" size={16} />
@@ -66,7 +66,7 @@ export default async function OperatorHomePage() {
 
       <section className="stats" aria-label="Ringkasan organisasi">
         <StatCard label="Bus aktif" value={buses.count ?? 0} note="Armada organisasi Anda" icon="bus" />
-        <StatCard label="Pengemudi aktif" value={drivers.count ?? 0} note="Staf yang dapat ditugaskan" icon="driver" />
+        <StatCard label="Pengemudi aktif" value={drivers.count ?? 0} note="Staf yang dapat ditugaskan" icon="users" />
         <StatCard
           label="Siswa aktif"
           value={students.count ?? 0}

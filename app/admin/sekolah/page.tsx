@@ -203,7 +203,7 @@ export default async function SekolahPage({
                     detail={
                       q || status
                         ? "Ubah kata kunci atau filter status, lalu terapkan kembali."
-                        : "Tambahkan sekolah pertama melalui formulir di samping. Data akan langsung tersimpan di database."
+                        : "Tambahkan sekolah pertama melalui formulir di samping. Data akan langsung tersimpan."
                     }
                   />
                 ) : (
@@ -269,7 +269,7 @@ export default async function SekolahPage({
             <div>
               <h2 className="panel-title">{editing ? "Ubah sekolah" : "Tambah sekolah"}</h2>
               <div className="panel-subtitle">
-                {editing ? `Memperbarui ${editing.name}` : "Data tersimpan langsung ke database"}
+                {editing ? `Memperbarui ${editing.name}` : "Data langsung tersimpan"}
               </div>
             </div>
           </header>
