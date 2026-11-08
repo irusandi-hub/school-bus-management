@@ -2624,3 +2624,6 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
 .operator-shell .student-read-detail{padding:12px;margin-bottom:8px;overflow-wrap:anywhere}.operator-shell .student-read-detail header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}.operator-shell .student-read-detail h2{font-size:16px;margin:0 0 8px}
 .operator-shell .student-read-detail dl{margin:0;display:grid;gap:10px}.operator-shell .student-read-detail dl>div{display:grid;grid-template-columns:100px minmax(0,1fr);gap:8px;font-size:12px}.operator-shell .student-read-detail dd{margin:0}.operator-shell .student-read-detail dt{color:var(--muted)}.operator-shell .student-read-placement{padding:8px 0;border-top:1px solid var(--line)}.operator-shell .student-read-placement p{margin:4px 0}
 .operator-shell :is(.student-read-card,.student-stat-link):focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+
+.operator-shell .student-stat-link{display:block;min-width:0;min-height:44px;text-decoration:none;color:inherit}.operator-shell .student-stat-link>.stat-card{height:100%}
+.operator-shell .student-name-search{display:grid;gap:5px;font-size:11px;margin-bottom:10px}.operator-shell .student-name-search input{min-width:0;width:100%;min-height:44px;padding:8px;border:1px solid var(--line);border-radius:var(--radius-sm)}

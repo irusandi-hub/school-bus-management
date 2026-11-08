@@ -74,12 +74,14 @@ export default async function OperatorHomePage() {
       <section className="stats" aria-label="Ringkasan organisasi">
         <StatCard label="Bus aktif" value={buses.count ?? 0} note="Armada organisasi Anda" icon="bus" />
         <StatCard label="Pengemudi aktif" value={drivers.count ?? 0} note="Staf yang dapat ditugaskan" icon="users" />
+        <Link href="/operator/siswa" className="student-stat-link" aria-label="Lihat daftar siswa">
         <StatCard
           label="Siswa aktif"
           value={students.count ?? 0}
           note="Dari sekolah yang ditautkan ke organisasi"
           icon="students"
         />
+        </Link>
         <StatCard
           label="Tugas hari ini"
           value={assignmentsToday.count ?? 0}
