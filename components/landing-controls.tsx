@@ -24,6 +24,7 @@ export function LandingControls({ children }: { children: ReactNode }) {
   return <NoticeContext.Provider value={{ active, show }}><div ref={root} className="landing-controls">{children}</div></NoticeContext.Provider>;
 }
 
+// Tooltip absolut tidak ikut menentukan tinggi wrapper tombol.
 function NoticeButton({ id, message, className, label, children }: { id: string; message: string; className: string; label?: string; children: ReactNode }) {
   const { active, show } = useContext(NoticeContext);
   return <span className={`landing-notice-anchor ${id.startsWith("role-") ? "landing-notice-role" : ""}`} data-landing-notice={id}>
