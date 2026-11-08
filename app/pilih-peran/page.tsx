@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "Eksplorasi Sementara | School Bus Ma
 const roles = [
   { href: "/wali", title: "Orang Tua" },
   { href: "/pengemudi", title: "Pengemudi" },
-  { href: "/operator", title: "Operator" },
+  { href: "/operator", title: "Pengelola" },
 ];
 
 export default function ChooseRolePage() {

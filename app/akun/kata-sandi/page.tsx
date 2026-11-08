@@ -54,7 +54,7 @@ export default async function KataSandiPage({
         <h1>Buat kata sandi</h1>
         <p className="auth-copy">
           Email <strong>{viewer.email ?? "Anda"}</strong> sudah diverifikasi. Buat kata sandi untuk menyelesaikan
-          aktivasi. Akses hanya dibuka jika email terdaftar oleh Admin Pusat dan memiliki siswa dengan layanan aktif.
+          aktivasi. Akses hanya dibuka jika email terdaftar oleh Pengelola dan memiliki siswa dengan layanan aktif.
         </p>
 
         {notice && (

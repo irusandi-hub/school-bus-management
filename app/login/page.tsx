@@ -14,19 +14,19 @@ const reasons: Record<string, string> = {
 
 const doors: Record<string, { label: string; detail: string }> = {
   admin: {
-    label: "Admin & Operator",
+    label: "Pengelola & Pengelola",
     detail:
-      "Gunakan akun staf. Area Admin Pusat dan area operator ditentukan dari peran serta keterkaitan organisasi pada akun Anda.",
+      "Gunakan akun staf. Area Pengelola dan area pengelola ditentukan dari peran serta keterkaitan organisasi pada akun Anda.",
   },
   pengemudi: {
     label: "Pengemudi",
     detail:
-      "Gunakan akun pengemudi yang sudah ditautkan Admin Pusat. Setelah masuk, Anda diarahkan ke tugas hari ini.",
+      "Gunakan akun pengemudi yang sudah ditautkan Pengelola. Setelah masuk, Anda diarahkan ke tugas hari ini.",
   },
   wali: {
     label: "Orang Tua/Wali",
     detail:
-      "Gunakan email dan kata sandi akun wali. Akun harus didaftarkan Admin Pusat dan memiliki siswa dengan layanan aktif.",
+      "Gunakan email dan kata sandi akun wali. Akun harus didaftarkan Pengelola dan memiliki siswa dengan layanan aktif.",
   },
 };
 
@@ -72,7 +72,7 @@ export default async function LoginPage({
         <LoginForm next={safeNextPath(rawNext, "")} reason={reason} />
 
         <p className="auth-footnote">
-          Peran akun ditentukan dari data pengguna di server. Lupa kata sandi? Hubungi Admin Pusat untuk pemulihan
+          Peran akun ditentukan dari data pengguna di server. Lupa kata sandi? Hubungi Pengelola untuk pemulihan
           akses.
         </p>
 
