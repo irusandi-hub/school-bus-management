@@ -663,7 +663,7 @@
 .landing-tooltip { position: absolute; z-index: 5; top: calc(100% + 4px); left: 0; width: 100%; max-width: 240px; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; color: var(--lp-navy); font-size: 13px; font-weight: 500; text-shadow: 0 0 3px #fff, 0 0 6px #fff; line-height: 1.4; text-align: center; pointer-events: none; }
 .landing-tooltip:not(:empty) { padding: 0; }
 
-.landing-btn:focus-visible, .landing-role-arrow:focus-visible { outline: 3px solid #497ec6; outline-offset: 3px; }
+.landing-btn:focus-visible, .landing-role-arrow:focus-visible { outline: 3px solid #497ec6; outline-offset: 2px; }
 
 .landing-notice-role { position: absolute; inset: 0; max-width: none; pointer-events: none; }
 .landing-notice-role .landing-role-arrow { pointer-events: auto; }
@@ -683,3 +683,16 @@
 
 .landing-actions { position: relative; margin-bottom: 44px; }
 .landing-download-tooltip { top: calc(100% + 6px); width: 100%; max-width: 100%; }
+
+/* Sentuhan mengikuti pill; wrapper dan ikon bukan target sentuh. */
+.landing-btn,.landing-role-arrow {
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-touch-callout: none;
+  overflow: visible;
+}
+.landing-notice-anchor { pointer-events: none; -webkit-tap-highlight-color: transparent; }
+.landing-notice-anchor > button { pointer-events: auto; }
+.landing-btn > *,.landing-role-arrow > * { pointer-events: none; }
+.landing-btn:active { transform: scale(.98); filter: brightness(.96); }
+.landing-role-arrow:active { transform: translateY(-50%) scale(.98); filter: brightness(.96); }
