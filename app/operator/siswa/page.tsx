@@ -49,7 +49,7 @@ export default async function OperatorStudentsPage() {
                 <EmptyRow
                   colSpan={4}
                   title="Belum ada siswa"
-                  detail="Siswa akan muncul setelah Admin Pusat menautkan sekolah ke organisasi Anda dan menambahkan siswa."
+                  detail="Siswa akan muncul setelah pengelola menautkan sekolah ke organisasi Anda dan menambahkan siswa."
                 />
               ) : (
                 students.map((student) => (
@@ -82,8 +82,8 @@ export default async function OperatorStudentsPage() {
       </section>
 
       <Notice kind="info">
-        Halaman ini hanya untuk membaca. Perubahan data siswa, wali, dan sekolah dilakukan Admin Pusat. Penempatan
-        siswa pada titik jemput juga dikelola Admin Pusat.
+        Halaman ini hanya untuk membaca. Perubahan data siswa, wali, dan sekolah dilakukan pengelola. Penempatan
+        siswa pada titik jemput juga dikelola pengelola.
       </Notice>
     </>
   );

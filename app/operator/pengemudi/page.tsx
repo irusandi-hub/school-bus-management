@@ -63,7 +63,7 @@ export default async function OperatorDriversPage({
     <>
       <PageHeader
         title="Pengemudi"
-        description="Pengemudi yang terdaftar di sini hanya dapat ditugaskan oleh organisasi Anda. Akun login pengemudi ditautkan oleh Admin Pusat."
+        description="Pengemudi yang terdaftar di sini hanya dapat ditugaskan oleh organisasi Anda. Akun login pengemudi ditautkan oleh pengelola."
       />
 
       {error && <Notice kind="error">Daftar pengemudi belum dapat dimuat.</Notice>}
@@ -92,7 +92,7 @@ export default async function OperatorDriversPage({
                   <EmptyRow
                     colSpan={4}
                     title="Belum ada pengemudi"
-                    detail="Tambahkan pengemudi melalui formulir di samping. Akun login ditautkan Admin Pusat agar pengemudi dapat melihat tugas."
+                    detail="Tambahkan pengemudi melalui formulir di samping. Akun login ditautkan pengelola agar pengemudi dapat melihat tugas."
                   />
                 ) : (
                   drivers.map((driver) => (
@@ -134,7 +134,7 @@ export default async function OperatorDriversPage({
               hidden={editing ? { id: editing.id } : undefined}
               submitLabel={editing ? "Simpan perubahan" : "Tambah pengemudi"}
               secondary={editing ? { href: "/operator/pengemudi", label: "Batalkan" } : undefined}
-              note="Penautan akun login pengemudi dilakukan Admin Pusat agar pemilihan peran tidak dapat dilakukan sendiri."
+              note="Penautan akun login pengemudi dilakukan pengelola agar pemilihan peran tidak dapat dilakukan sendiri."
             />
           </div>
         </section>

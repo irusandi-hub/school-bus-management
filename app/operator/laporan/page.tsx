@@ -55,7 +55,7 @@ export default async function OperatorReportsPage() {
           <ul className="check-list">
             <li><strong>Armada dan pengemudi</strong><span>✓</span><small>Hanya data organisasi yang sedang masuk.</small></li>
             <li><strong>Perjalanan dan kehadiran</strong><span>✓</span><small>Ringkasan dan ekspor berasal dari catatan perjalanan organisasi Anda.</small></li>
-            <li><strong>Jejak audit platform</strong><span>—</span><small>Hanya Admin Pusat yang dapat membaca audit lintas organisasi.</small></li>
+            <li><strong>Jejak audit platform</strong><span>—</span><small>Hanya pengelola yang dapat membaca audit lintas organisasi.</small></li>
             <li><strong>Ekspor perjalanan CSV</strong><span>✓</span><small>Unduh hingga 5.000 perjalanan terbaru untuk pengolahan lebih lanjut.</small></li>
           </ul>
         </section>
@@ -67,7 +67,7 @@ export default async function OperatorReportsPage() {
           </div>
         </section>
       </div>
-      <Notice kind="info">Untuk laporan lintas sekolah dan jejak audit platform, gunakan akun Admin Pusat. Peran operator tidak dapat dinaikkan dari antarmuka.</Notice>
+      <Notice kind="info">Untuk laporan lintas sekolah dan jejak audit platform, akses belum tersedia di area Operator.</Notice>
     </>
   );
 }

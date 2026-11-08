@@ -25,7 +25,7 @@ export default async function OperatorRouteDetailPage({ params }: { params: Prom
   if (!route) {
     return (
       <>
-        <PageHeader title="Rute" description="Rute dan titik jemput dikelola Admin Pusat." />
+        <PageHeader title="Rute" description="Rute dan titik jemput dikelola pengelola." />
         <Notice kind="error">
           {error
             ? "Rute belum dapat dimuat. Muat ulang halaman atau coba lagi nanti."
@@ -70,7 +70,7 @@ export default async function OperatorRouteDetailPage({ params }: { params: Prom
     <>
       <PageHeader
         title={route.route_name}
-        description="Rute, urutan titik jemput, dan siswa yang terdaftar. Perubahan rute dilakukan Admin Pusat."
+        description="Rute, urutan titik jemput, dan siswa yang terdaftar. Perubahan rute dilakukan pengelola."
       />
 
       <p>
@@ -125,7 +125,7 @@ export default async function OperatorRouteDetailPage({ params }: { params: Prom
           <EmptyRow
             colSpan={3}
             title="Belum ada titik jemput"
-            detail="Admin Pusat belum menambahkan titik jemput pada rute ini."
+            detail="pengelola belum menambahkan titik jemput pada rute ini."
           />
         ) : (
           <div className="admin-table-wrap">

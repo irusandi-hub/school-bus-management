@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-const areas = [["/", "Beranda"], ["/wali", "Orang Tua"], ["/pengemudi", "Pengemudi"], ["/operator", "Operator"], ["/admin", "Admin"]] as const;
+const areas = [["/", "Beranda"], ["/wali", "Orang Tua"], ["/pengemudi", "Pengemudi"], ["/operator", "Operator"]] as const;
 
 // Panel ini hanya untuk masa pengembangan.
 export function DevModeTab({ environment, sha, branch }: { environment: string; sha?: string; branch?: string }) {
@@ -13,7 +13,7 @@ export function DevModeTab({ environment, sha, branch }: { environment: string; 
   const root = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
   const close = useRef<HTMLButtonElement>(null);
-  const area = areas.find(([href]) => href === pathname || (href !== "/" && pathname.startsWith(`${href}/`)))?.[1] ?? "Beranda";
+  const area = (pathname === "/admin" || pathname.startsWith("/admin/")) ? "Operator" : areas.find(([href]) => href === pathname || (href !== "/" && pathname.startsWith(`${href}/`)))?.[1] ?? "Beranda";
   useEffect(() => { setOpen(false); }, [pathname]);
   useEffect(() => {
     if (!open) return;

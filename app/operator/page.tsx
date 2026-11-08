@@ -160,7 +160,7 @@ export default async function OperatorHomePage() {
       </div>
 
       <Notice kind="info">
-        Rute dan data induk sekolah dikelola Admin Pusat dan hanya dapat dibaca di sini. Jejak audit platform, akun
+        Rute dan data induk sekolah dikelola pengelola dan hanya dapat dibaca di sini. Jejak audit platform, akun
         wali, serta data organisasi lain tidak tersedia untuk peran operator.
       </Notice>
     </>

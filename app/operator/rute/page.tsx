@@ -22,7 +22,7 @@ export default async function OperatorRoutesPage() {
     <>
       <PageHeader
         title="Rute yang tersedia"
-        description="Rute dan titik jemput dikelola Admin Pusat. Operator menggunakan rute ini saat membuat penugasan."
+        description="Rute dan titik jemput dikelola pengelola. Operator menggunakan rute ini saat membuat penugasan."
       />
 
       {error && <Notice kind="error">Daftar rute belum dapat dimuat.</Notice>}
@@ -50,7 +50,7 @@ export default async function OperatorRoutesPage() {
                 <EmptyRow
                   colSpan={5}
                   title="Belum ada rute"
-                  detail="Admin Pusat belum membuat rute. Penugasan memerlukan minimal satu rute aktif."
+                  detail="pengelola belum membuat rute. Penugasan memerlukan minimal satu rute aktif."
                 />
               ) : (
                 routes.map((route) => (
@@ -78,7 +78,7 @@ export default async function OperatorRoutesPage() {
       </section>
 
       <Notice kind="info">
-        Perubahan rute, titik jemput, dan penempatan siswa dilakukan Admin Pusat. Area operator tidak menyediakan
+        Perubahan rute, titik jemput, dan penempatan siswa dilakukan pengelola. Area operator tidak menyediakan
         tombol yang tidak berfungsi untuk tindakan tersebut.
       </Notice>
     </>

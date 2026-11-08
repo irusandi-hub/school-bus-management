@@ -111,7 +111,7 @@ export default async function OperatorAssignmentsPage() {
       {assignmentsResult.error && <Notice kind="error">Daftar penugasan belum dapat dimuat.</Notice>}
       {!ready && (
         <Notice kind="warning">
-          Lengkapi minimal satu rute aktif (dari Admin Pusat), satu pengemudi, dan satu bus organisasi Anda sebelum
+          Lengkapi minimal satu rute aktif (dari pengelola), satu pengemudi, dan satu bus organisasi Anda sebelum
           membuat penugasan.
         </Notice>
       )}
@@ -214,7 +214,7 @@ export default async function OperatorAssignmentsPage() {
               disabledReason={
                 ready
                   ? undefined
-                  : "Penugasan dapat dibuat setelah ada satu rute aktif dari Admin Pusat, satu pengemudi, dan satu bus organisasi Anda. Lengkapi data tersebut terlebih dahulu."
+                  : "Penugasan dapat dibuat setelah ada satu rute aktif dari pengelola, satu pengemudi, dan satu bus organisasi Anda. Lengkapi data tersebut terlebih dahulu."
               }
               note="Penugasan tidak membuat perjalanan sebelum pengemudi memulainya dari area pengemudi."
             />
