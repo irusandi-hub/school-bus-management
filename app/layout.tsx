@@ -4,7 +4,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "School Bus | Manajemen Transportasi Sekolah",
-  description: "Dasbor operasional bus sekolah untuk admin, pengemudi, dan orang tua/wali.",
+  description: "Dasbor operasional bus sekolah untuk pengelola, pengemudi, dan orang tua/wali.",
   icons: {
     icon: "/assets/landing/favicon.svg",
   },

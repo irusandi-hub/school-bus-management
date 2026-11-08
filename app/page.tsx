@@ -249,8 +249,8 @@ const ROLE_CARDS = [
   {
     id: "operator",
     href: "/operator",
-    entryLabel: "Masuk sebagai Operator",
-    title: "Untuk Operator",
+    entryLabel: "Masuk sebagai Pengelola",
+    title: "Untuk Pengelola",
     description: "Kelola armada, pengemudi, dan jadwal perjalanan.",
     image: { src: "/assets/landing/role-operator.webp", width: 1408, height: 768 },
     badge: (
