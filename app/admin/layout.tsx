@@ -10,7 +10,7 @@ import { requireAdmin } from "@/lib/auth";
 import { signOutAction } from "@/lib/auth-actions";
 
 export const metadata: Metadata = {
-  title: "Admin Pusat | School Bus",
+  title: "Pengelola | School Bus",
 };
 
 export const dynamic = "force-dynamic";
@@ -34,8 +34,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <aside className="sidebar">
         <BrandLogo
           href="/admin"
-          subtitle="Admin Pusat"
-          ariaLabel="School Bus Admin Pusat"
+          subtitle="Pengelola"
+          ariaLabel="School Bus Pengelola"
           className="brand"
         />
 
@@ -57,14 +57,14 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <MobileMenu
             groups={adminGroups}
             rootHref="/admin"
-            areaLabel="Admin Pusat"
-            note="Menu ini menampilkan seluruh modul Admin Pusat. Data yang tampil mengikuti hak akses akun Anda."
+            areaLabel="Pengelola"
+            note="Menu ini menampilkan seluruh modul Pengelola. Data yang tampil mengikuti hak akses akun Anda."
           />
           <div className="workspace-heading">
             <BrandLogo size="sm" />
           <div className="topbar-title">
             <div className="eyebrow">DAMMAM · PILOT</div>
-            <div className="admin-topbar-role">Ruang kerja Admin Pusat</div>
+            <div className="admin-topbar-role">Ruang kerja Pengelola</div>
           </div>
           </div>
           <div className="top-actions">
@@ -86,12 +86,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         {children}
 
         <footer className="page-footer">
-          <span>School Bus Management · Admin Pusat</span>
+          <span>School Bus Management · Pengelola</span>
           <span>Data induk &amp; operasional · GPS belum aktif · kamera mengikuti perjalanan</span>
         </footer>
       </main>
 
-      <BottomNav items={adminBottomNav} rootHref="/admin" ariaLabel="Navigasi seluler Admin Pusat" />
+      <BottomNav items={adminBottomNav} rootHref="/admin" ariaLabel="Navigasi seluler Pengelola" />
     </div>
   );
 }

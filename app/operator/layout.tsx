@@ -8,7 +8,7 @@ import { operatorBottomNav } from "@/components/ui/nav-config";
 import { requireOperator } from "@/lib/auth";
 import { signOutAction } from "@/lib/auth-actions";
 
-export const metadata: Metadata = { title: "Operator | School Bus" };
+export const metadata: Metadata = { title: "Pengelola | School Bus" };
 
 export const dynamic = "force-dynamic";
 
@@ -23,8 +23,8 @@ export default async function OperatorLayout({ children }: { children: React.Rea
       <aside className="sidebar">
         <BrandLogo
           href="/operator"
-          subtitle="Operator"
-          ariaLabel="School Bus Operator"
+          subtitle="Pengelola"
+          ariaLabel="School Bus Pengelola"
           className="brand"
         />
         <div className="org-chip" title={operator.name}>
@@ -48,7 +48,7 @@ export default async function OperatorLayout({ children }: { children: React.Rea
 
       <main className="main">
         <header className="operator-header compact-area-header">
-          <BrandLogo href="/operator" subtitle="Area Operator" size="sm" />
+          <BrandLogo href="/operator" subtitle="Area Pengelola" size="sm" />
           <form action={signOutAction}>
             <button className="btn btn-ghost btn-sm" type="submit">
               <Icon name="logout" size={15} />
@@ -58,12 +58,12 @@ export default async function OperatorLayout({ children }: { children: React.Rea
         </header>
         {children}
         <footer className="page-footer">
-          <span>School Bus Management · Operator</span>
+          <span>School Bus Management · Pengelola</span>
           <span>Data organisasi · akses sesuai akun · GPS belum aktif</span>
         </footer>
       </main>
 
-      <BottomNav items={operatorBottomNav} rootHref="/operator" ariaLabel="Navigasi seluler operator" />
+      <BottomNav items={operatorBottomNav} rootHref="/operator" ariaLabel="Navigasi seluler pengelola" />
     </div>
   );
 }
