@@ -98,14 +98,18 @@ Tidak boleh ada penggabungan, deploy, atau migrasi database hosted tanpa persetu
 
 Pada branch `develop` yang diperiksa 2026-11-08, implementasi masih memiliki pemisahan yang bertentangan dengan aturan ini:
 
+- `lib/types.ts` masih mendefinisikan `UserRole = admin | operator | driver | parent`.
 - `lib/auth.ts` masih mengenali role `admin` dan `operator` secara terpisah, serta menyediakan `requireAdmin()` dan `requireOperator()`.
-- `lib/paths.ts` masih mengarahkan role `admin` ke `/admin` dan role `operator` ke `/operator`.
-- `app/admin/layout.tsx` dan `app/operator/layout.tsx` masih membangun dua ruang kerja terpisah.
+- `lib/paths.ts` masih mengarahkan role `admin` ke `/admin` dan role `operator` ke `/operator`; `loginAction` di `lib/auth-actions.ts` masih memiliki dua cabang redirect dan pesan akses yang berbeda.
+- `app/admin/layout.tsx` dan `app/operator/layout.tsx` masih membangun dua ruang kerja terpisah; `lib/admin/read.ts` dan `lib/operator/read.ts` masih memakai gate/context yang berbeda.
 - `middleware.ts` masih melindungi prefix `/admin` dan `/operator` secara terpisah.
-- Migrasi `20261031000000_admin_core_crud.sql` masih memakai `private.is_admin()` untuk sejumlah operasi/policy.
+- Migrasi `20261031000000_admin_core_crud.sql` masih mendefinisikan `private.is_admin()` dan memakai pemeriksaan admin-only untuk operasi master data/status siswa.
+- Migrasi `20261031000001_operator_driver_guardian_areas.sql` masih menetapkan constraint role dengan empat nilai termasuk `admin` dan mendefinisikan operator sebagai role terpisah.
+- Migrasi `20261031000002_operator_driver_account_linking.sql` masih mensyaratkan `private.is_admin()` untuk link/unlink akun operator dan pengemudi; komentar dan pesan SQL menyebut Admin Pusat sebagai aktor yang berwenang.
+- `lib/auth-actions.ts` masih mengarahkan akun operator yang belum tertaut untuk menghubungi Admin Pusat; alur aktivasi orang tua dan beberapa pesan autentikasi juga menyebut Admin Pusat.
 - `README.md` masih menjelaskan dua area Admin & Operator, empat role, dan rute `/admin/*`.
-- `AGENTS.md` masih memerintahkan pekerjaan empat area Admin Pusat, Operator, Pengemudi, dan Orang Tua/Wali.
-- PR #27 sudah mengubah sebagian label Admin Pusat menjadi Pengelola dan menyatakan area admin akan digabung ke `/operator`, tetapi perubahan label tersebut belum menghapus gate, route, atau otorisasi admin yang terpisah.
+- `AGENTS.md` pada `develop` sebelum PR ini masih memerintahkan pekerjaan empat area Admin Pusat, Operator, Pengemudi, dan Orang Tua/Wali.
+- PR #27 sudah mengubah sebagian label Admin Pusat menjadi Pengelola dan menyatakan area admin akan digabung ke `/operator`, tetapi perubahan label tersebut belum menghapus gate, route, tipe role, atau otorisasi admin yang terpisah.
 
 Daftar ini adalah temuan awal, bukan audit menyeluruh setiap pemanggilan SQL/komponen. Implementer wajib melakukan pencarian menyeluruh dan melaporkan semua referensi tersisa sebelum menyatakan selesai.
 
