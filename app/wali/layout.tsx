@@ -20,17 +20,14 @@ export default async function GuardianLayout({ children }: { children: React.Rea
   const access = await requireGuardian();
   if (access.status === "unconfigured") return <ConfigNotice />;
 
-  const name = access.viewer.profile?.full_name || access.viewer.email || "Wali";
-
   return (
     <div className="portal-shell guardian-shell">
-      <header className="portal-head">
-        <BrandLogo href="/wali" subtitle="Portal Orang Tua/Wali" className="brand" />
+      <header className="portal-head compact-area-header">
+        <BrandLogo href="/wali" subtitle="Portal Orang Tua/Wali" size="sm" className="brand" />
 
         <PortalNav items={portalNavItems} rootHref="/wali" />
 
         <div className="portal-account">
-          <span className="account-name">{name}</span>
           <form action={signOutAction}>
             <button className="btn btn-ghost btn-sm" type="submit">
               <Icon name="logout" size={15} />
