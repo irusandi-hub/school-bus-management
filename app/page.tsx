@@ -23,7 +23,7 @@ const STRIP_ITEMS = [
   {
     label: (
       <>
-        Perjalanan
+        Perjalanan{" "}
         <br />
         Lebih Aman
       </>
@@ -49,7 +49,7 @@ const STRIP_ITEMS = [
   {
     label: (
       <>
-        Lokasi Bus
+        Lokasi Bus{" "}
         <br />
         Real-Time
       </>
@@ -69,7 +69,7 @@ const STRIP_ITEMS = [
   {
     label: (
       <>
-        Notifikasi
+        Notifikasi{" "}
         <br />
         Instan
       </>

@@ -66,7 +66,7 @@
   font-size: clamp(34px, 5.4vw, 64px);
   font-weight: 800;
   line-height: 1.03;
-  letter-spacing: -1.8px;
+  letter-spacing: -0.02em;
 }
 
 .landing-title-accent {
@@ -248,6 +248,8 @@
   font-size: clamp(11.5px, 1.5vw, 15px);
   font-weight: 700;
   line-height: 1.28;
+  text-align: center;
+  word-break: normal;
 }
 
 /* --- Kartu peran --- */
@@ -263,7 +265,8 @@
   grid-template-columns: 38% minmax(0, 1fr);
   gap: clamp(12px, 2vw, 24px);
   min-height: clamp(168px, 20vw, 214px);
-  padding: clamp(9px, 1.2vw, 14px);
+  padding: 0;
+  overflow: hidden;
   border-radius: var(--lp-radius);
 }
 
@@ -282,8 +285,10 @@
 .landing-role-media {
   position: relative;
   overflow: hidden;
-  border-radius: 18px;
-  background: #f4e7c2;
+  border-radius: 0;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
 }
 
 /* Foto peran 1408x768 (11:6) mengisi slot kartu (~38% lebar) dengan cover,
@@ -311,11 +316,11 @@
 }
 
 .landing-role-driver .landing-role-media {
-  background: #d8e5f6;
+  background: transparent;
 }
 
 .landing-role-operator .landing-role-media {
-  background: #daddeb;
+  background: transparent;
 }
 
 .landing-role-body {
@@ -324,13 +329,13 @@
   align-items: flex-start;
   justify-content: center;
   min-width: 0;
-  padding: 8px clamp(38px, 5vw, 52px) 8px 0;
+  padding: 12px clamp(60px, 7vw, 76px) 12px 0;
 }
 
 .landing-role-head {
   display: flex;
   align-items: center;
-  gap: clamp(9px, 1.4vw, 14px);
+  gap: clamp(6px, 1.4vw, 14px);
   min-width: 0;
 }
 
@@ -356,7 +361,7 @@
   font-family: Manrope, "DM Sans", Arial, sans-serif;
   font-size: clamp(15px, 2vw, 22px);
   font-weight: 800;
-  letter-spacing: -0.5px;
+  letter-spacing: 0;
   line-height: 1.2;
 }
 
@@ -424,17 +429,19 @@
   text-align: center;
 }
 
+.landing-cta::before,
 .landing-cta::after {
   content: "";
   position: absolute;
-  left: -8%;
-  right: -8%;
   bottom: -58px;
+  width: 72%;
   height: 96px;
   border-radius: 50%;
   background: var(--lp-yellow);
   pointer-events: none;
 }
+.landing-cta::before { left: -22%; transform: rotate(8deg); }
+.landing-cta::after { right: -22%; transform: rotate(-8deg); }
 
 .landing-cta-top {
   position: relative;
@@ -475,7 +482,7 @@
   font-family: Manrope, "DM Sans", Arial, sans-serif;
   font-size: clamp(21px, 3vw, 32px);
   font-weight: 800;
-  letter-spacing: -0.6px;
+  letter-spacing: 0;
   line-height: 1.26;
 }
 
@@ -499,14 +506,15 @@
   align-items: center;
   flex: 1 1 auto;
   min-height: 54px;
-  padding: 0 20px 0 50px;
+  min-width: 0;
+  padding: 0 12px 0 38px;
   border-radius: 999px;
   background: #ffffff;
 }
 
 .landing-email-field > svg {
   position: absolute;
-  left: 20px;
+  left: 12px;
   width: 20px;
   height: 20px;
   color: var(--lp-navy);
@@ -587,7 +595,7 @@
   /* Dua kolom tetap di ponsel: teks kiri, visual kanan yang menjulur ke tepi. */
   .landing-title {
     font-size: clamp(18px, 5vw, 28px);
-    letter-spacing: -0.9px;
+    letter-spacing: -0.02em;
   }
 
   .landing-lead {
@@ -621,7 +629,7 @@
   }
 
   .landing-role-body {
-    padding-right: 34px;
+    padding-right: 58px;
   }
 }
 
@@ -645,19 +653,28 @@
   }
 
   .landing-strip-text br {
-    display: none;
+    display: block;
   }
 }
 
 /* Satu state bersama untuk tooltip tombol dan panah. */
-.landing-notice-anchor { position: relative; display: inline-flex; min-width: 0; max-width: 100%; }
+.landing-notice-anchor { position: relative; display: inline-flex; flex-direction: column; min-width: 0; max-width: 100%; }
 .landing-notice-anchor > .landing-btn { width: 100%; cursor: pointer; }
-.landing-tooltip { position: absolute; z-index: 5; top: 100%; left: 0; width: 100%; max-width: 240px; padding: 0; border-radius: 8px; background: var(--lp-navy); color: #fff; font-size: 12px; line-height: 1.4; text-align: center; pointer-events: none; }
+.landing-tooltip { position: relative; z-index: 5; top: auto; left: 0; width: 100%; max-width: 240px; padding: 0; border-radius: 8px; background: var(--lp-navy); color: #fff; font-size: 12px; line-height: 1.4; text-align: center; pointer-events: none; }
 .landing-tooltip:not(:empty) { padding: 7px; box-shadow: 0 3px 10px #101b3b25; }
-.landing-actions { padding-bottom: 42px; margin-bottom: -42px; }
+
 .landing-btn:focus-visible, .landing-role-arrow:focus-visible { outline: 3px solid #497ec6; outline-offset: 3px; }
 
 .landing-notice-role { position: absolute; inset: 0; max-width: none; pointer-events: none; }
 .landing-notice-role .landing-role-arrow { pointer-events: auto; }
 .landing-role-arrow-muted { opacity: .65; }
 .landing-notice-role .landing-tooltip { top: auto; bottom: 6px; left: auto; right: 12px; width: min(240px, calc(100% - 24px)); }
+
+.landing-role::before { content: ""; position: absolute; z-index: 1; left: 0; top: 0; bottom: 0; width: 5px; background: var(--lp-yellow); pointer-events: none; }
+.landing-role-operator .landing-role-media img { object-position: 65% center; }
+.landing-notice-role .landing-tooltip { position: absolute; }
+.landing-btn-cta { white-space: nowrap; flex-shrink: 0; }
+@media (min-width: 380px) {
+  .landing-cta-row { flex-direction: row; align-items: center; gap: 8px; }
+  .landing-btn-cta { padding-inline: 12px; }
+}
