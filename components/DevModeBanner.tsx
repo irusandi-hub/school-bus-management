@@ -1,6 +1,5 @@
 import { DevModeTab } from "./DevModeTab";
 import {
-  DEV_OPEN_ACCESS_NOTICE,
   devAccessEnvironmentLabel,
   isDevOpenAccess,
 } from "@/lib/dev-open-access";
@@ -12,5 +11,5 @@ import {
 export function DevModeBanner() {
   if (!isDevOpenAccess()) return null;
 
-  return <DevModeTab label={`DEMO · ${devAccessEnvironmentLabel()}`} notice={DEV_OPEN_ACCESS_NOTICE} />;
+  return <DevModeTab environment={devAccessEnvironmentLabel()} sha={process.env.VERCEL_GIT_COMMIT_SHA} branch={process.env.VERCEL_GIT_COMMIT_REF} />;
 }
