@@ -403,7 +403,9 @@
   background: #ffffff;
   color: var(--lp-navy);
   box-shadow: 0 6px 16px #101b3b14;
-  pointer-events: none;
+  border: 0;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .landing-role-arrow svg {
@@ -654,3 +656,8 @@
 .landing-tooltip:not(:empty) { padding: 7px; box-shadow: 0 3px 10px #101b3b25; }
 .landing-actions { padding-bottom: 42px; margin-bottom: -42px; }
 .landing-btn:focus-visible, .landing-role-arrow:focus-visible { outline: 3px solid #497ec6; outline-offset: 3px; }
+
+.landing-notice-role { position: absolute; inset: 0; max-width: none; pointer-events: none; }
+.landing-notice-role .landing-role-arrow { pointer-events: auto; }
+.landing-role-arrow-muted { opacity: .65; }
+.landing-notice-role .landing-tooltip { top: auto; bottom: 6px; left: auto; right: 12px; width: min(240px, calc(100% - 24px)); }

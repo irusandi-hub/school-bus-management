@@ -3,7 +3,9 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { BrandLogo } from "@/components/brand-logo";
 import "./landing.css";
-import { LandingControls, LandingDownloads } from "@/components/landing-controls";
+import { LandingControls, LandingDownloads, LandingRoleArrow } from "@/components/landing-controls";
+
+import { isDevOpenAccess } from "@/lib/dev-open-access";
 
 const HERO_IMAGE = {
   src: "/assets/landing/hero-bus.webp",
@@ -94,6 +96,8 @@ const STRIP_ITEMS = [
 const ROLE_CARDS = [
   {
     id: "parent",
+    href: "/wali",
+    entryLabel: "Masuk sebagai Orang Tua",
     title: "Untuk Orang Tua",
     description: "Pantau perjalanan anak secara langsung, kapan saja.",
     image: { src: "/assets/landing/role-orang-tua.webp", width: 1376, height: 768 },
@@ -166,6 +170,8 @@ const ROLE_CARDS = [
   },
   {
     id: "driver",
+    href: "/pengemudi",
+    entryLabel: "Masuk sebagai Pengemudi",
     title: "Untuk Pengemudi",
     description: "Dapatkan tugas dan navigasi rute dengan mudah.",
     image: { src: "/assets/landing/role-pengemudi.webp", width: 1408, height: 768 },
@@ -242,6 +248,8 @@ const ROLE_CARDS = [
   },
   {
     id: "operator",
+    href: "/operator",
+    entryLabel: "Masuk sebagai Operator",
     title: "Untuk Operator",
     description: "Kelola armada, pengemudi, dan jadwal perjalanan.",
     image: { src: "/assets/landing/role-operator.webp", width: 1408, height: 768 },
@@ -310,6 +318,8 @@ const ROLE_CARDS = [
 ];
 
 export default function LandingPage() {
+  // Masa depan: panah aktif setelah pengguna registrasi/masuk. Saat ini akses dibuka untuk pengembangan.
+  const ROLE_ENTRY_ENABLED = isDevOpenAccess();
   return (
     <div className="landing">
       <LandingControls>
@@ -406,17 +416,7 @@ export default function LandingPage() {
                   ))}
                 </div>
               </div>
-              <span className="landing-role-arrow" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path
-                    d="M4.5 12h14M13 6.2l5.8 5.8L13 17.8"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
+              <LandingRoleArrow enabled={ROLE_ENTRY_ENABLED} href={role.href} label={role.entryLabel} />
             </article>
           ))}
         </section>
@@ -477,6 +477,7 @@ export default function LandingPage() {
                 aria-label="Email"
               />
             </label>
+            {/* Masa depan: CTA ini dapat berubah menjadi registrasi. */}
             <Link href="/pilih-peran" className="landing-btn landing-btn-primary landing-btn-cta">
               Masuk Akun
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
