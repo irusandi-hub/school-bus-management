@@ -45,7 +45,9 @@
 .landing-hero {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+  /* Kolom visual mobile ~47% lebar layar: cukup sempit agar tombol 13 px
+     tetap utuh, cukup lebar untuk ponsel + bus menjulur ke tepi. */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: clamp(8px, 1.6vw, 36px);
   align-items: start;
   padding: clamp(6px, 1.6vw, 18px) 0 clamp(26px, 4vw, 42px);
@@ -169,8 +171,8 @@
 .landing-phone {
   position: absolute;
   top: 3%;
-  right: 4%;
-  width: 78%;
+  right: 2%;
+  width: 84%;
   aspect-ratio: 9 / 19;
   padding: 6px;
   border-radius: 26px;
@@ -709,20 +711,26 @@
   }
 
   .landing-actions {
+    align-items: stretch;
     gap: 8px;
     margin-top: 14px;
   }
 
+  /* Teks tombol tetap 13 px; lebarnya yang mengalah (kolom visual ~47%). */
   .landing-btn {
-    min-height: 40px;
-    padding: 0 10px;
-    gap: 6px;
-    font-size: 11px;
+    min-height: 44px;
+    max-width: 100%;
+    padding: 0 8px;
+    gap: 5px;
+    font-size: 13px;
+    line-height: 1.15;
+    white-space: normal;
+    text-align: center;
   }
 
   .landing-btn svg {
-    width: 13px;
-    height: 13px;
+    width: 12px;
+    height: 12px;
   }
 
   .landing-role-body {
@@ -734,8 +742,8 @@
   /* Kolom teks di ponsel sempit: tombol dibuat lebih rapat agar tidak
      melewati kolom visual. */
   .landing-btn {
-    padding: 0 8px;
-    font-size: 10.5px;
+    padding: 0 7px;
+    font-size: 13px;
   }
 
   .landing-strip {
