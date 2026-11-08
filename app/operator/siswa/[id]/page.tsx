@@ -27,7 +27,7 @@ export default async function OperatorStudentDetail({ params }: { params: Promis
   const { data: rows, error: placementError } = await supabase.from("student_route_stops").select("id, direction, routes(route_name), route_stops(stop_name)").eq("student_id", id).eq("active", true);
   const placements = (rows ?? []) as unknown as { id: string; direction: string; routes: { route_name: string } | null; route_stops: { stop_name: string } | null }[];
   return <>
-    <PageHeader title="Detail siswa" actions={<Link href="/operator/siswa" className="btn btn-secondary">Kembali ke daftar siswa</Link>} />
+    <PageHeader title="Detail siswa" description="Data siswa pada organisasi Anda. Halaman ini hanya untuk membaca." actions={<Link href="/operator/siswa" className="btn btn-secondary">Kembali ke daftar siswa</Link>} />
     <section className="panel student-read-detail"><header><h2>{student.full_name}</h2><ServiceStatusPill status={student.service_status} /></header>
       <dl>{[["Nomor siswa", student.admissions_number], ["Tanggal lahir", student.date_of_birth ? formatDate(student.date_of_birth) : "—"], ["Sekolah", student.schools?.name ?? "—"], ["Orang tua", student.guardians?.full_name ?? "—"], ["Alamat", student.home_address ?? "—"], ["Catatan jemput", student.pickup_notes ?? "—"]].map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
     </section>
