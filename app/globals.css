@@ -2627,3 +2627,12 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
 
 .operator-shell .student-stat-link{display:block;min-width:0;min-height:44px;text-decoration:none;color:inherit}.operator-shell .student-stat-link>.stat-card{height:100%}
 .operator-shell .student-name-search{display:grid;gap:5px;font-size:11px;margin-bottom:10px}.operator-shell .student-name-search input{min-width:0;width:100%;min-height:44px;padding:8px;border:1px solid var(--line);border-radius:var(--radius-sm)}
+
+/* Tab demo bersama: panel di luar alur layout, tanpa pintasan. */
+.dev-info{position:fixed;inset-inline-start:env(safe-area-inset-left,0px);inset-block-end:max(108px,22dvh);z-index:1000;font:500 12px/1.6 Arial,sans-serif;color:#0F1B3D}
+.dev-info-tab{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:30px;min-height:100px;padding:5px 2px;border:1px solid #d5c58e;border-inline-start:0;border-radius:0 12px 12px 0;background:#fff5d3;color:#0F1B3D;touch-action:pan-y;cursor:ew-resize;animation:dev-info-peek .7s ease .8s 2;user-select:none;-webkit-tap-highlight-color:transparent}
+.dev-info-tab::after{content:"";position:absolute;inset:0;inset-inline-end:-14px}.dev-info-word{writing-mode:vertical-rl;font-size:9px;letter-spacing:1px;font-weight:700}.dev-info-grip{font-size:18px;line-height:1}.dev-info-chevron{font-size:19px;line-height:1}.dev-info-tab:focus-visible{outline:3px solid #3462a5;outline-offset:2px}
+.dev-info-panel{position:absolute;inset-inline-start:38px;inset-block-end:0;width:min(80vw,320px);max-height:min(60dvh,480px);overflow:auto;border:1px solid #e1d5b4;border-radius:16px;background:#fffdf2;padding:18px;box-shadow:0 10px 28px #0f1b3d20;animation:dev-info-slide .18s ease}
+.dev-info-panel h2{font-size:16px;margin:0 0 12px}.dev-info-panel dl{margin:0}.dev-info-panel dl>div{margin-block-end:8px}.dev-info-panel dt{font-weight:700}.dev-info-panel dd{margin:0;overflow-wrap:anywhere}.dev-info-panel p{margin:12px 0 0}.dev-info[dir=rtl]{font-family:"IBM Plex Sans Arabic","Noto Sans Arabic",Tahoma,sans-serif;inset-inline-start:env(safe-area-inset-right,0px)}.dev-info[dir=rtl] .dev-info-tab{border-radius:12px 0 0 12px}.dev-info[dir=rtl] .dev-info-chevron{transform:scaleX(-1)}
+@keyframes dev-info-peek{50%{translate:5px 0}}@keyframes dev-info-slide{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.dev-info-tab,.dev-info-panel{animation:none}}

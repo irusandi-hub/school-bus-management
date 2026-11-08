@@ -1,43 +1,40 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { dictionaries, resolveLanguage, type Language } from "./landing-copy";
 
-const areas = [["/", "Beranda"], ["/wali", "Orang Tua"], ["/pengemudi", "Pengemudi"], ["/operator", "Pengelola"]] as const;
-
-// Panel ini hanya untuk masa pengembangan.
+// Panel informasi hanya untuk masa pengembangan; tidak memiliki tautan atau tombol di dalamnya.
 export function DevModeTab({ environment, sha, branch }: { environment: string; sha?: string; branch?: string }) {
   const [open, setOpen] = useState(false);
+  const [language, setLanguage] = useState<Language>("id");
   const pathname = usePathname();
   const root = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
-  const close = useRef<HTMLButtonElement>(null);
-  const area = (pathname === "/admin" || pathname.startsWith("/admin/")) ? "Pengelola" : areas.find(([href]) => href === pathname || (href !== "/" && pathname.startsWith(`${href}/`)))?.[1] ?? "Beranda";
+  const start = useRef<{ x: number; y: number } | null>(null);
+  const dragged = useRef(false);
+  const t = dictionaries[language];
+  const environmentText = environment.toLowerCase().includes("preview") ? t.preview : environment.toLowerCase().includes("lokal") ? t.local : environment;
+  useEffect(() => {
+    const sync = () => setLanguage(resolveLanguage(document.documentElement.lang));
+    sync(); const observer = new MutationObserver(sync); observer.observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
+    return () => observer.disconnect();
+  }, []);
   useEffect(() => { setOpen(false); }, [pathname]);
   useEffect(() => {
     if (!open) return;
-    close.current?.focus({ preventScroll: true });
-    const closeOutside = (event: PointerEvent) => {
-      if (event.target instanceof Node && !root.current?.contains(event.target)) setOpen(false);
-    };
-    const escape = (event: KeyboardEvent) => { if (event.key === "Escape") { setOpen(false); trigger.current?.focus({ preventScroll: true }); } };
-    document.addEventListener("pointerdown", closeOutside);
-    document.addEventListener("keydown", escape);
-    return () => { document.removeEventListener("pointerdown", closeOutside); document.removeEventListener("keydown", escape); };
+    const outside = (event: PointerEvent) => { if (event.target instanceof Node && !root.current?.contains(event.target)) setOpen(false); };
+    const escape = (event: KeyboardEvent) => { if (event.key === "Escape") { setOpen(false); trigger.current?.focus(); } };
+    document.addEventListener("pointerdown", outside); document.addEventListener("keydown", escape);
+    return () => { document.removeEventListener("pointerdown", outside); document.removeEventListener("keydown", escape); };
   }, [open]);
-  return <div className="dev-mode-banner" ref={root} data-open={open}>
-    <button ref={trigger} type="button" className="dev-mode-tab" aria-label={`DEMO · ${environment}`} aria-expanded={open} aria-controls={open ? "dev-mode-panel" : undefined} onClick={() => setOpen(!open)}>
-      <span className="dev-mode-tab-face"><span className="dev-mode-indicator" aria-hidden="true" /><span className="dev-mode-short" aria-hidden="true">DEMO</span></span>
+  return <div className="dev-info" ref={root} dir={language === "ar" ? "rtl" : "ltr"} data-open={open}>
+    <button ref={trigger} className="dev-info-tab" type="button" aria-label={t.demoOpen} aria-expanded={open} aria-controls={open ? "dev-info-panel" : undefined} title={t.demoGrip}
+      onPointerDown={(event) => { start.current = { x: event.clientX, y: event.clientY }; dragged.current = false; event.currentTarget.setPointerCapture(event.pointerId); }}
+      onPointerUp={(event) => { if (!start.current) return; const dx = (event.clientX - start.current.x) * (language === "ar" ? -1 : 1); const dy = Math.abs(event.clientY - start.current.y); if (Math.abs(dx) > 25 && Math.abs(dx) > dy) { setOpen(dx > 0); dragged.current = true; } start.current = null; }}
+      onPointerCancel={() => { start.current = null; }} onClick={() => { if (!dragged.current) setOpen(!open); dragged.current = false; }}>
+      <span aria-hidden="true" className="dev-info-grip">⋮</span><span className="dev-info-word">{t.demo}</span><span aria-hidden="true" className="dev-info-chevron">{open ? "‹" : "›"}</span>
     </button>
-    {open && <section className="dev-mode-panel" id="dev-mode-panel" aria-labelledby="dev-mode-title">
-      <header><h2 id="dev-mode-title">Mode demo</h2><button ref={close} type="button" aria-label="Tutup informasi mode demo" onClick={() => { setOpen(false); trigger.current?.focus({ preventScroll: true }); }}>×</button></header>
-      <p>Ini versi uji coba. Akses dibuka tanpa login dan data yang tampil adalah data contoh.</p>
-      <dl><div><dt>Lingkungan</dt><dd>{environment}</dd></div><div><dt>Akses</dt><dd>Dibuka</dd></div><div><dt>Data</dt><dd>Contoh</dd></div><div><dt>Area saat ini</dt><dd>{area}</dd></div>
-        {(sha || branch) && <div><dt>Versi</dt><dd>{[sha?.slice(0, 7), branch].filter(Boolean).join(" · ")}</dd></div>}
-      </dl>
-      <nav aria-label="Pintasan area demo">{areas.map(([href, label]) => <Link key={href} href={href} onClick={() => setOpen(false)}>{label}</Link>)}</nav>
-      <p>Login dan hak akses akan diaktifkan di tahap berikutnya.</p>
-    </section>}
+    {open && <section id="dev-info-panel" className="dev-info-panel" aria-labelledby="dev-info-heading" role="status"><h2 id="dev-info-heading">{t.demoTitle}</h2><dl><div><dt>{t.environment}</dt><dd>{environmentText}</dd></div>{(sha || branch) && <div><dt>{t.version}</dt><dd dir="ltr">{[sha?.slice(0,7), branch].filter(Boolean).join(" · ")}</dd></div>}</dl><p>{t.demoNote}</p></section>}
   </div>;
 }
