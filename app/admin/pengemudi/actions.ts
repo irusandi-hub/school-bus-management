@@ -60,7 +60,7 @@ export async function saveDriver(_prev: ActionState, formData: FormData): Promis
 
   if (error) {
     return writeFailure(error, {
-      foreignKey: "Operator yang dipilih tidak tersedia. Muat ulang halaman lalu pilih kembali.",
+      foreignKey: "Pengelola yang dipilih tidak tersedia. Muat ulang halaman lalu pilih kembali.",
       unique: "Data pengemudi sudah terdaftar untuk akun tersebut.",
     });
   }

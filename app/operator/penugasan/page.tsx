@@ -6,7 +6,7 @@ import type { TripAssignmentRow } from "@/lib/types";
 import { formatDate, routeDirectionLabel, tripStatusLabel } from "@/lib/validation";
 import { saveOperatorAssignment } from "../actions";
 
-export const metadata: Metadata = { title: "Penugasan | Operator" };
+export const metadata: Metadata = { title: "Penugasan | Pengelola" };
 
 function today() {
   const now = new Date();

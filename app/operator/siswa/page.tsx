@@ -4,7 +4,7 @@ import { operatorReadContext } from "@/lib/operator/read";
 import type { StudentRow } from "@/lib/types";
 import { serviceStatusLabel } from "@/lib/validation";
 
-export const metadata: Metadata = { title: "Siswa | Operator" };
+export const metadata: Metadata = { title: "Siswa | Pengelola" };
 
 export default async function OperatorStudentsPage() {
   const supabase = await operatorReadContext();

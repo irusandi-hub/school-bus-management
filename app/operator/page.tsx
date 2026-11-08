@@ -16,7 +16,7 @@ import { operatorReadContext } from "@/lib/operator/read";
 import type { TripAssignmentRow } from "@/lib/types";
 import { formatDate, routeDirectionLabel } from "@/lib/validation";
 
-export const metadata: Metadata = { title: "Ringkasan Operator | School Bus" };
+export const metadata: Metadata = { title: "Ringkasan Pengelola | School Bus" };
 
 function today() {
   const now = new Date();
@@ -61,7 +61,7 @@ export default async function OperatorHomePage() {
         }
       />
 
-      <nav className="operator-extra-links" aria-label="Menu operator lainnya">
+      <nav className="operator-extra-links" aria-label="Menu pengelola lainnya">
         {operatorGroups.flatMap((group) => group.items).filter((item) => item.href !== "/operator" && !operatorBottomNav.some((bottom) => bottom.href === item.href)).map((item) => (
           <Link key={item.href} href={item.href}><Icon name={item.icon} size={16} />{item.label}</Link>
         ))}
@@ -161,7 +161,7 @@ export default async function OperatorHomePage() {
 
       <Notice kind="info">
         Rute dan data induk sekolah dikelola pengelola dan hanya dapat dibaca di sini. Jejak audit platform, akun
-        wali, serta data organisasi lain tidak tersedia untuk peran operator.
+        wali, serta data organisasi lain tidak tersedia untuk peran pengelola.
       </Notice>
     </>
   );

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { ConfigNotice, Notice, PageHeader, Pill, StatCard } from "@/components/admin/ui";
 import { operatorReadContext } from "@/lib/operator/read";
 
-export const metadata: Metadata = { title: "Laporan | Operator" };
+export const metadata: Metadata = { title: "Laporan | Pengelola" };
 
 function today() {
   const now = new Date();
@@ -30,7 +30,7 @@ export default async function OperatorReportsPage() {
         actions={<Link className="btn btn-primary" href="/operator/laporan/export">Unduh CSV perjalanan</Link>}
       />
 
-      <section className="stats" aria-label="Ringkasan laporan operator">
+      <section className="stats" aria-label="Ringkasan laporan pengelola">
         <StatCard label="Bus aktif" value={buses.count ?? 0} note="Armada yang dapat ditugaskan" icon="bus" />
         <StatCard label="Pengemudi aktif" value={drivers.count ?? 0} note="Staf organisasi Anda" icon="driver" />
         <StatCard
@@ -67,7 +67,7 @@ export default async function OperatorReportsPage() {
           </div>
         </section>
       </div>
-      <Notice kind="info">Untuk laporan lintas sekolah dan jejak audit platform, akses belum tersedia di area Operator.</Notice>
+      <Notice kind="info">Untuk laporan lintas sekolah dan jejak audit platform, akses belum tersedia di area Pengelola.</Notice>
     </>
   );
 }

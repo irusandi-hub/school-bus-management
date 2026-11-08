@@ -18,7 +18,7 @@ import type { BusRow } from "@/lib/types";
 import { sanitizeSearch } from "@/lib/validation";
 import { saveBus, setBusActive } from "./actions";
 
-export const metadata: Metadata = { title: "Bus | Admin Pusat" };
+export const metadata: Metadata = { title: "Bus | Pengelola" };
 
 const path = "/admin/bus";
 const selectColumns = "id, fleet_code, plate_number, capacity, model, notes, operator_id, active, operators(name)";
@@ -113,15 +113,15 @@ export default async function BusPage({
     },
     {
       name: "operator_id",
-      label: "Operator",
+      label: "Pengelola",
       type: "select",
       fullWidth: true,
       defaultValue: editing?.operator_id ?? "",
       options: [{ value: "", label: "Belum ditetapkan" }, ...operatorOptions],
       help:
         operatorOptions.length === 0
-          ? "Belum ada operator aktif. Bus tetap dapat disimpan tanpa operator."
-          : "Operator dapat ditetapkan kemudian sesuai kontrak operasional.",
+          ? "Belum ada pengelola aktif. Bus tetap dapat disimpan tanpa pengelola."
+          : "Pengelola dapat ditetapkan kemudian sesuai kontrak operasional.",
     },
     {
       name: "notes",
@@ -154,8 +154,8 @@ export default async function BusPage({
             resetHref={path}
             filters={
               <>
-                <select name="operator" defaultValue={operatorFilter} aria-label="Filter operator">
-                  <option value="">Semua operator</option>
+                <select name="operator" defaultValue={operatorFilter} aria-label="Filter pengelola">
+                  <option value="">Semua pengelola</option>
                   {operators.map((operator) => (
                     <option key={operator.id} value={operator.id}>
                       {operator.name}
@@ -178,7 +178,7 @@ export default async function BusPage({
                   <th scope="col">Kode armada</th>
                   <th scope="col">Nomor polisi</th>
                   <th scope="col">Kapasitas</th>
-                  <th scope="col">Operator</th>
+                  <th scope="col">Pengelola</th>
                   <th scope="col">Status</th>
                   <th scope="col">Tindakan</th>
                 </tr>

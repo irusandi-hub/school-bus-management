@@ -16,7 +16,7 @@ import {
 import { changeStudentServiceStatus } from "../actions";
 import { assignStudentToStop, removeStudentFromRoute } from "../../rute/actions";
 
-export const metadata: Metadata = { title: "Detail Siswa | Admin Pusat" };
+export const metadata: Metadata = { title: "Detail Siswa | Pengelola" };
 
 const selectColumns =
   "id, admissions_number, full_name, date_of_birth, school_id, guardian_id, home_address, home_latitude, home_longitude, pickup_notes, service_status, service_status_changed_at, schools(name), guardians(full_name, email, phone)";
@@ -285,7 +285,7 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
           </button>
           {allStops.length === 0 && (
             <p className="form-note roster-form-note" role="status">
-              Penempatan dapat disimpan setelah Admin Pusat menambahkan titik jemput pada rute yang sesuai.
+              Penempatan dapat disimpan setelah Pengelola menambahkan titik jemput pada rute yang sesuai.
             </p>
           )}
         </form>

@@ -5,7 +5,7 @@ import { Icon } from "@/components/ui/Icon";
 import { operatorReadContext } from "@/lib/operator/read";
 import { formatDate, formatTime, routeDirectionLabel } from "@/lib/validation";
 
-export const metadata: Metadata = { title: "Pusat Operasi | Operator" };
+export const metadata: Metadata = { title: "Pusat Operasi | Pengelola" };
 
 function localToday() {
   const now = new Date();

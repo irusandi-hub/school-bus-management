@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ConfigNotice, EmptyRow, Notice, PageHeader, Pill } from "@/components/admin/ui";
 import { operatorReadContext } from "@/lib/operator/read";
 
-export const metadata: Metadata = { title: "Orang Tua | Operator" };
+export const metadata: Metadata = { title: "Orang Tua | Pengelola" };
 
 export default async function OperatorGuardiansPage() {
   const supabase = await operatorReadContext();

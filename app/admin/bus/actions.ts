@@ -62,7 +62,7 @@ export async function saveBus(_prev: ActionState, formData: FormData): Promise<A
   if (error) {
     return writeFailure(error, {
       unique: "Kode armada atau nomor polisi sudah dipakai bus lain. Gunakan nilai lain.",
-      foreignKey: "Operator yang dipilih tidak tersedia. Muat ulang halaman lalu pilih kembali.",
+      foreignKey: "Pengelola yang dipilih tidak tersedia. Muat ulang halaman lalu pilih kembali.",
     });
   }
 

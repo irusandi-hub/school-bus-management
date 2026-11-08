@@ -6,7 +6,7 @@ import { operatorReadContext } from "@/lib/operator/read";
 import type { BusRow } from "@/lib/types";
 import { saveOperatorBus } from "../actions";
 
-export const metadata: Metadata = { title: "Armada | Operator" };
+export const metadata: Metadata = { title: "Armada | Pengelola" };
 
 const selectColumns = "id, fleet_code, plate_number, capacity, model, notes, operator_id, active";
 

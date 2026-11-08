@@ -5,7 +5,7 @@ import { operatorReadContext } from "@/lib/operator/read";
 import type { RouteRow } from "@/lib/types";
 import { routeDirectionLabel } from "@/lib/validation";
 
-export const metadata: Metadata = { title: "Rute | Operator" };
+export const metadata: Metadata = { title: "Rute | Pengelola" };
 
 export default async function OperatorRoutesPage() {
   const supabase = await operatorReadContext();
@@ -22,7 +22,7 @@ export default async function OperatorRoutesPage() {
     <>
       <PageHeader
         title="Rute yang tersedia"
-        description="Rute dan titik jemput dikelola pengelola. Operator menggunakan rute ini saat membuat penugasan."
+        description="Rute dan titik jemput dikelola pengelola. Pengelola menggunakan rute ini saat membuat penugasan."
       />
 
       {error && <Notice kind="error">Daftar rute belum dapat dimuat.</Notice>}
@@ -78,7 +78,7 @@ export default async function OperatorRoutesPage() {
       </section>
 
       <Notice kind="info">
-        Perubahan rute, titik jemput, dan penempatan siswa dilakukan pengelola. Area operator tidak menyediakan
+        Perubahan rute, titik jemput, dan penempatan siswa dilakukan pengelola. Area pengelola tidak menyediakan
         tombol yang tidak berfungsi untuk tindakan tersebut.
       </Notice>
     </>

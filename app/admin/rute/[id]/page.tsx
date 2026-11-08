@@ -10,7 +10,7 @@ import type { RouteRow, RouteStopRow, StudentRouteStopRow } from "@/lib/types";
 import { routeDirectionLabel } from "@/lib/validation";
 import { assignStudentToStop, removeStudentFromRoute, saveStop } from "../actions";
 
-export const metadata: Metadata = { title: "Detail Rute | Admin Pusat" };
+export const metadata: Metadata = { title: "Detail Rute | Pengelola" };
 
 export default async function RouteDetailPage({
   params,

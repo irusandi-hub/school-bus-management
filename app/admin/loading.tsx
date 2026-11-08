@@ -1,5 +1,5 @@
 import { LoadingState } from "@/components/ui/AreaStates";
 
 export default function AdminLoading() {
-  return <LoadingState title="Memuat data admin…" variant="split" />;
+  return <LoadingState title="Memuat data pengelola…" variant="split" />;
 }

@@ -4,7 +4,7 @@ import { adminReadContext } from "@/lib/admin/read";
 import type { AuditLogRow } from "@/lib/types";
 import { formatDateTime } from "@/lib/validation";
 
-export const metadata: Metadata = { title: "Laporan & Audit | Admin Pusat" };
+export const metadata: Metadata = { title: "Laporan & Audit | Pengelola" };
 
 export default async function ReportsPage() {
   const supabase = await adminReadContext();
@@ -74,7 +74,7 @@ export default async function ReportsPage() {
             <li>
               <strong>Rute, penugasan, perjalanan</strong>
               <span>✓</span>
-              <small>Rute dan penugasan dikelola Admin; perjalanan dijalankan pengemudi yang ditugaskan.</small>
+              <small>Rute dan penugasan dikelola Pengelola; perjalanan dijalankan pengemudi yang ditugaskan.</small>
             </li>
             <li>
               <strong>GPS langsung &amp; kamera bus</strong>
@@ -105,8 +105,8 @@ export default async function ReportsPage() {
               jejak audit agar data pribadi tidak menumpuk di luar tabel asalnya.
             </p>
             <p>
-              Jejak audit hanya dapat dibaca Admin Pusat. Operator tidak memiliki akses ke jejak audit platform;
-              laporan operator dibatasi pada data organisasinya.
+              Jejak audit hanya dapat dibaca Pengelola. Pengelola tidak memiliki akses ke jejak audit platform;
+              laporan pengelola dibatasi pada data organisasinya.
             </p>
           </div>
         </section>

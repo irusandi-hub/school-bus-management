@@ -9,7 +9,7 @@ export function OperatorNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="nav-list" aria-label="Menu operator">
+    <nav className="nav-list" aria-label="Menu pengelola">
       {operatorGroups.map((group) => (
         <div className="nav-section" key={group.label}>
           <div className="workspace-label nav-section-label">{group.label}</div>

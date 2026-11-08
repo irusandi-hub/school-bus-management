@@ -5,7 +5,7 @@ import { operatorReadContext } from "@/lib/operator/read";
 import type { RouteRow, RouteStopRow, StudentRouteStopRow } from "@/lib/types";
 import { routeDirectionLabel } from "@/lib/validation";
 
-export const metadata: Metadata = { title: "Detail rute | Operator" };
+export const metadata: Metadata = { title: "Detail rute | Pengelola" };
 
 const path = "/operator/rute";
 

@@ -6,7 +6,7 @@ import { operatorReadContext } from "@/lib/operator/read";
 import type { DriverRow } from "@/lib/types";
 import { saveOperatorDriver } from "../actions";
 
-export const metadata: Metadata = { title: "Pengemudi | Operator" };
+export const metadata: Metadata = { title: "Pengemudi | Pengelola" };
 
 const selectColumns = "id, full_name, phone, license_number, operator_id, profile_id, active";
 
