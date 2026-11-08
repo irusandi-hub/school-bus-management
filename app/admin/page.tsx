@@ -65,7 +65,7 @@ export default async function AdminHomePage() {
           <StatCard label="Selesai" value={completed} icon="check" tone="done" />
         </div>
         {assignmentRows.error ? <p className="ops-note">Data penugasan belum dapat dimuat.</p> : assignments.length === 0 ? (
-          <p className="ops-note">Belum ada penugasan hari ini. <Link className="row-link" href="/admin/penugasan">Buat penugasan</Link>.</p>
+          <p className="ops-note">Belum ada penugasan hari ini.</p>
         ) : (
           <p className="ops-note">{running} perjalanan berlangsung dari {assignments.length} penugasan hari ini.</p>
         )}

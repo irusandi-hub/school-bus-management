@@ -80,9 +80,6 @@ export default async function LoginPage({
           <Link className="auth-back" href="/daftar">
             Aktivasi akun wali
           </Link>
-          <Link className="auth-back" href="/">
-            Kembali ke gerbang akses
-          </Link>
         </div>
       </section>
     </main>

@@ -22,7 +22,6 @@ export default function ChooseRolePage() {
             <Link href={role.href} key={role.href}>{role.title}<span aria-hidden="true">→</span></Link>
           ))}
         </nav>
-        <Link href="/" className="sbm-role-explore-back">Kembali ke beranda</Link>
       </section>
       <style>{`
         .sbm-role-explore{min-height:100vh;display:grid;place-items:center;padding:22px;background:#f7f5ec}
@@ -34,7 +33,6 @@ export default function ChooseRolePage() {
         .sbm-role-explore-actions a{min-height:48px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 15px;border:1px solid #e9e3d1;border-radius:9px;text-decoration:none;color:#263746;font:700 13px Manrope,sans-serif;background:#fff;transition:background .15s ease,border-color .15s ease}
         .sbm-role-explore-actions a:hover{background:#fff9e7;border-color:#e8d28b}.sbm-role-explore-actions a:first-child{background:#fff9e7;border-color:#f0dfa9}
         .sbm-role-explore-actions a span{font-size:18px;color:#987400}
-        .sbm-role-explore-back{display:inline-block;margin-top:20px;color:#7c6a37;text-decoration:none;font-size:11px;font-weight:700}
         @media(max-width:480px){.sbm-role-explore-card{padding:22px;border-radius:15px}}
       `}</style>
     </main>

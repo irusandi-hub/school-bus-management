@@ -92,7 +92,6 @@ export default async function OperatorOperationsPage() {
             icon="inbox"
             title="Belum ada penugasan untuk hari ini"
             detail="Buat penugasan agar pengemudi menerima tugas dan perjalanan dapat dipantau dari papan ini."
-            action={{ href: "/operator/penugasan", label: "Buat penugasan" }}
           />
         </section>
       ) : (

@@ -90,9 +90,6 @@ export default async function OperatorHomePage() {
           </div>
           <div className="panel-head-actions">
             <Pill tone="info">{formatDate(today())}</Pill>
-            <Link className="btn btn-secondary btn-sm" href="/operator/penugasan">
-              Kelola
-            </Link>
           </div>
         </header>
         <div className="admin-table-wrap">
