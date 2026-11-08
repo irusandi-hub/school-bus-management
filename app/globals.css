@@ -2536,18 +2536,34 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
 .auth-logo{margin-bottom:24px}
 
 /* Header operator: identitas dan aksi tetap terpisah pada layar sempit. */
-.operator-shell .topbar{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px}
-.operator-shell .workspace-heading{min-width:0;display:flex;align-items:center;gap:14px}
-.operator-shell .topbar-title{min-width:0;overflow-wrap:anywhere}
-.operator-shell .top-actions{flex:none;color:var(--ink)}
-.operator-shell .account-avatar{color:#6B4A00;opacity:1}
-.operator-shell .top-actions .btn{color:var(--ink);opacity:1;min-height:44px;white-space:nowrap}
+:is(.operator-shell,.admin-workspace) .topbar{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px}
+:is(.operator-shell,.admin-workspace) .workspace-heading{min-width:0;display:flex;align-items:center;gap:14px}
+:is(.operator-shell,.admin-workspace) .topbar-title{min-width:0;overflow-wrap:anywhere}
+:is(.operator-shell,.admin-workspace) .top-actions{flex:none;color:var(--ink)}
+:is(.operator-shell,.admin-workspace) .account-avatar{color:#6B4A00;opacity:1}
+:is(.operator-shell,.admin-workspace) .top-actions .btn{color:var(--ink);opacity:1;min-height:44px;white-space:nowrap}
 @media(max-width:960px){
- .operator-shell .topbar{grid-template-columns:44px minmax(0,1fr);align-items:start}
- .operator-shell .topbar>.menu-trigger{width:44px;min-height:44px;padding:0;font-size:0}
- .operator-shell .workspace-heading{flex-direction:column;align-items:flex-start;gap:6px}
- .operator-shell .top-actions{grid-column:2;justify-content:flex-end;flex-wrap:wrap;min-width:0}
- .operator-shell .top-actions .account-name{display:none}
- .operator-shell .account-chip{padding:4px;border:0;flex:none}
- .operator-shell .topbar-title .eyebrow{display:none}
+ :is(.operator-shell,.admin-workspace) .topbar{grid-template-columns:44px minmax(0,1fr);align-items:start}
+ :is(.operator-shell,.admin-workspace) .topbar>.menu-trigger{width:44px;min-height:44px;padding:0;font-size:0}
+ :is(.operator-shell,.admin-workspace) .workspace-heading{flex-direction:column;align-items:flex-start;gap:6px}
+ :is(.operator-shell,.admin-workspace) .top-actions{grid-column:2;justify-content:flex-end;flex-wrap:wrap;min-width:0}
+ :is(.operator-shell,.admin-workspace) .top-actions .account-name{display:none}
+ :is(.operator-shell,.admin-workspace) .account-chip{padding:4px;border:0;flex:none}
+ :is(.operator-shell,.admin-workspace) .topbar-title .eyebrow{display:none}
 }
+
+/* Token bersama, terbatas ke workspace admin/operator dan layar akses. */
+:is(.operator-shell,.admin-workspace) .topbar{min-height:72px}
+:is(.operator-shell,.admin-workspace) :is(.panel,.stat-card,.quick-tile),
+.auth-page .auth-card,.sbm-role-explore .sbm-role-explore-card{border-radius:var(--radius-lg);box-shadow:var(--shadow-xs)}
+:is(.operator-shell,.admin-workspace) :is(.btn,.menu-trigger),
+.auth-page :is(.btn,button),.sbm-role-explore-actions a{min-height:44px}
+:is(.operator-shell,.admin-workspace) .admin-page-head h1,
+.auth-page .auth-card h1,.sbm-role-explore-card h1{font-family:var(--font-display),Manrope,sans-serif;letter-spacing:-.02em;line-height:1.2}
+.auth-page .auth-card,.sbm-role-explore-card{padding:clamp(20px,5vw,32px)}
+.auth-page .auth-logo,.sbm-role-explore-brand{min-height:44px;margin-bottom:24px}
+:is(.operator-shell,.admin-workspace) .pill{border-radius:999px}
+:is(.operator-shell,.admin-workspace) .state-panel{padding:32px 20px}
+:is(.operator-shell,.admin-workspace) :is(.panel,.stat-card,.quick-tile,.top-actions){min-width:0}
+:is(.operator-shell,.admin-workspace) .btn:focus-visible,
+.auth-page :is(a,button):focus-visible,.sbm-role-explore-actions a:focus-visible{outline:3px solid var(--brand);outline-offset:3px}

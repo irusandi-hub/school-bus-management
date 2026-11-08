@@ -29,7 +29,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     .join("");
 
   return (
-    <div className="app-shell admin-shell">
+    <div className="app-shell admin-shell admin-workspace">
       <aside className="sidebar">
         <BrandLogo
           href="/admin"
@@ -59,9 +59,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             areaLabel="Admin Pusat"
             note="Menu ini menampilkan seluruh modul Admin Pusat. Data yang tampil mengikuti hak akses akun Anda."
           />
+          <div className="workspace-heading">
+            <BrandLogo size="sm" />
           <div className="topbar-title">
             <div className="eyebrow">DAMMAM · PILOT</div>
             <div className="admin-topbar-role">Ruang kerja Admin Pusat</div>
+          </div>
           </div>
           <div className="top-actions">
             <span className="account-chip" title={viewer.email ?? undefined}>

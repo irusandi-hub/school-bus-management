@@ -25,6 +25,7 @@ export default async function KataSandiPage({
     return (
       <main className="auth-page">
         <section className="auth-card">
+          <BrandLogo className="auth-logo" />
           <h1>Database belum dikonfigurasi</h1>
           <p className="auth-copy">
             Aktivasi akun belum dapat dilakukan karena koneksi database belum diatur. Hubungi pengelola sistem.
