@@ -45,6 +45,8 @@ export const operatorGroups: NavGroup[] = [
       { href: "/operator/pengemudi", label: "Pengemudi", icon: "driver", short: "Driver" },
       { href: "/operator/rute", label: "Rute & titik jemput", icon: "route", short: "Rute" },
       { href: "/operator/siswa", label: "Siswa", icon: "students", short: "Siswa" },
+      { href: "/operator/sekolah", label: "Sekolah", icon: "school", short: "Sekolah" },
+      { href: "/operator/wali", label: "Orang Tua", icon: "guardian", short: "Wali" },
     ],
   },
 ];
