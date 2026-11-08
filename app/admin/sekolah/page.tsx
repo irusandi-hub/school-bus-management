@@ -18,7 +18,7 @@ import type { SchoolRow } from "@/lib/types";
 import { sanitizeSearch } from "@/lib/validation";
 import { saveSchool, setSchoolActive } from "./actions";
 
-export const metadata: Metadata = { title: "Sekolah | Admin Pusat" };
+export const metadata: Metadata = { title: "Sekolah | Pengelola" };
 
 const path = "/admin/sekolah";
 const selectColumns =
@@ -96,14 +96,14 @@ export default async function SekolahPage({
     },
     {
       name: "operator_id",
-      label: "Operator transportasi",
+      label: "Pengelola transportasi",
       type: "select",
       defaultValue: editing?.operator_id ?? "",
       options: [
         { value: "", label: "Belum ditautkan" },
         ...operators.map((operator) => ({ value: operator.id, label: operator.name })),
       ],
-      help: "Menentukan operator yang dapat melihat siswa di sekolah ini. Data induk tetap dikelola Admin Pusat.",
+      help: "Menentukan pengelola yang dapat melihat siswa di sekolah ini. Data induk tetap dikelola Pengelola.",
       fullWidth: true,
     },
     {
@@ -203,7 +203,7 @@ export default async function SekolahPage({
                     detail={
                       q || status
                         ? "Ubah kata kunci atau filter status, lalu terapkan kembali."
-                        : "Tambahkan sekolah pertama melalui formulir di samping. Data akan langsung tersimpan di database."
+                        : "Tambahkan sekolah pertama melalui formulir di samping. Data akan langsung tersimpan."
                     }
                   />
                 ) : (
@@ -269,7 +269,7 @@ export default async function SekolahPage({
             <div>
               <h2 className="panel-title">{editing ? "Ubah sekolah" : "Tambah sekolah"}</h2>
               <div className="panel-subtitle">
-                {editing ? `Memperbarui ${editing.name}` : "Data tersimpan langsung ke database"}
+                {editing ? `Memperbarui ${editing.name}` : "Data langsung tersimpan"}
               </div>
             </div>
           </header>

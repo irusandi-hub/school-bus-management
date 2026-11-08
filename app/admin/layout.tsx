@@ -1,6 +1,6 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import { AdminNav } from "@/components/admin/AdminNav";
+import { BrandLogo } from "@/components/brand-logo";
 import { ConfigNotice } from "@/components/admin/ui";
 import { BottomNav } from "@/components/ui/BottomNav";
 import { Icon } from "@/components/ui/Icon";
@@ -10,11 +10,12 @@ import { requireAdmin } from "@/lib/auth";
 import { signOutAction } from "@/lib/auth-actions";
 
 export const metadata: Metadata = {
-  title: "Admin Pusat | School Bus",
+  title: "Pengelola | School Bus",
 };
 
 export const dynamic = "force-dynamic";
 
+// Area ini akan digabung ke /operator. Tidak ditautkan dari antarmuka.
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const access = await requireAdmin();
 
@@ -29,15 +30,14 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     .join("");
 
   return (
-    <div className="app-shell admin-shell">
+    <div className="app-shell admin-shell admin-workspace">
       <aside className="sidebar">
-        <Link className="brand" href="/admin" aria-label="School Bus Admin Pusat">
-          <div className="brand-mark">S</div>
-          <div>
-            <div className="brand-name">School Bus</div>
-            <div className="brand-sub">Admin Pusat</div>
-          </div>
-        </Link>
+        <BrandLogo
+          href="/admin"
+          subtitle="Pengelola"
+          ariaLabel="School Bus Pengelola"
+          className="brand"
+        />
 
         <div className="nav-group">
           <AdminNav />
@@ -47,8 +47,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <span className="security-icon">
             <Icon name="shield" size={13} />
           </span>
-          <strong>Otorisasi dari database</strong>
-          <p>Setiap perubahan diperiksa ulang oleh kebijakan akses database, bukan hanya oleh tampilan.</p>
+          <strong>Akses sesuai akun</strong>
+          <p>Setiap perubahan diperiksa sesuai hak akses akun Anda.</p>
         </div>
       </aside>
 
@@ -57,12 +57,15 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <MobileMenu
             groups={adminGroups}
             rootHref="/admin"
-            areaLabel="Admin Pusat"
-            note="Menu ini menampilkan seluruh modul Admin Pusat. Data yang tampil mengikuti hak akses akun Anda."
+            areaLabel="Pengelola"
+            note="Menu ini menampilkan seluruh modul Pengelola. Data yang tampil mengikuti hak akses akun Anda."
           />
+          <div className="workspace-heading">
+            <BrandLogo size="sm" />
           <div className="topbar-title">
             <div className="eyebrow">DAMMAM · PILOT</div>
-            <div className="admin-topbar-role">Ruang kerja Admin Pusat</div>
+            <div className="admin-topbar-role">Ruang kerja Pengelola</div>
+          </div>
           </div>
           <div className="top-actions">
             <span className="account-chip" title={viewer.email ?? undefined}>
@@ -83,12 +86,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         {children}
 
         <footer className="page-footer">
-          <span>School Bus Management · Admin Pusat</span>
+          <span>School Bus Management · Pengelola</span>
           <span>Data induk &amp; operasional · GPS belum aktif · kamera mengikuti perjalanan</span>
         </footer>
       </main>
 
-      <BottomNav items={adminBottomNav} rootHref="/admin" ariaLabel="Navigasi seluler Admin Pusat" />
+      <BottomNav items={adminBottomNav} rootHref="/admin" ariaLabel="Navigasi seluler Pengelola" />
     </div>
   );
 }

@@ -17,7 +17,7 @@ import type { StudentRow } from "@/lib/types";
 import { sanitizeSearch, serviceStatusLabel } from "@/lib/validation";
 import { saveStudent } from "./actions";
 
-export const metadata: Metadata = { title: "Data Siswa | Admin Pusat" };
+export const metadata: Metadata = { title: "Data Siswa | Pengelola" };
 
 const path = "/admin/siswa";
 const selectColumns =
@@ -149,7 +149,7 @@ export default async function SiswaPage({
       type: "number",
       step: "0.000001",
       defaultValue: editing?.home_latitude,
-      help: "Data privat. Hanya terlihat oleh Admin Pusat dan wali siswa terkait.",
+      help: "Data privat. Hanya terlihat oleh Pengelola dan wali siswa terkait.",
     },
     {
       name: "home_longitude",
@@ -291,7 +291,7 @@ export default async function SiswaPage({
             <div>
               <h2 className="panel-title">{editing ? "Ubah data siswa" : "Tambah siswa"}</h2>
               <div className="panel-subtitle">
-                {editing ? `Memperbarui ${editing.full_name}` : "Data tersimpan langsung ke database"}
+                {editing ? `Memperbarui ${editing.full_name}` : "Data langsung tersimpan"}
               </div>
             </div>
           </header>

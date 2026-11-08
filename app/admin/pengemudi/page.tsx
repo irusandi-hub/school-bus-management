@@ -18,7 +18,7 @@ import type { DriverRow } from "@/lib/types";
 import { sanitizeSearch } from "@/lib/validation";
 import { linkDriverAccount, saveDriver, setDriverActive, unlinkDriverAccount } from "./actions";
 
-export const metadata: Metadata = { title: "Pengemudi | Admin Pusat" };
+export const metadata: Metadata = { title: "Pengemudi | Pengelola" };
 
 const path = "/admin/pengemudi";
 const selectColumns = "id, full_name, phone, license_number, operator_id, profile_id, active, operators(name)";
@@ -110,12 +110,12 @@ export default async function PengemudiPage({
     },
     {
       name: "operator_id",
-      label: "Operator",
+      label: "Pengelola",
       type: "select",
       fullWidth: true,
       defaultValue: editing?.operator_id ?? "",
       options: [{ value: "", label: "Belum ditetapkan" }, ...operatorOptions],
-      help: "Menentukan operator tempat pengemudi bertugas.",
+      help: "Menentukan pengelola tempat pengemudi bertugas.",
     },
   ];
 
@@ -140,8 +140,8 @@ export default async function PengemudiPage({
             resetHref={path}
             filters={
               <>
-                <select name="operator" defaultValue={operatorFilter} aria-label="Filter operator">
-                  <option value="">Semua operator</option>
+                <select name="operator" defaultValue={operatorFilter} aria-label="Filter pengelola">
+                  <option value="">Semua pengelola</option>
                   {operators.map((operator) => (
                     <option key={operator.id} value={operator.id}>
                       {operator.name}
@@ -164,7 +164,7 @@ export default async function PengemudiPage({
                   <th scope="col">Nama pengemudi</th>
                   <th scope="col">Telepon</th>
                   <th scope="col">Nomor SIM</th>
-                  <th scope="col">Operator</th>
+                  <th scope="col">Pengelola</th>
                   <th scope="col">Status</th>
                   <th scope="col">Akun masuk</th>
                   <th scope="col">Tindakan</th>
@@ -270,7 +270,7 @@ export default async function PengemudiPage({
             <div>
               <h2 className="panel-title">{editing ? "Ubah pengemudi" : "Tambah pengemudi"}</h2>
               <div className="panel-subtitle">
-                {editing ? `Memperbarui ${editing.full_name}` : "Data tersimpan langsung ke database"}
+                {editing ? `Memperbarui ${editing.full_name}` : "Data langsung tersimpan"}
               </div>
             </div>
           </header>

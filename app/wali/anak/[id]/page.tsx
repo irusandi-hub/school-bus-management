@@ -16,7 +16,6 @@ import {
   formatDateTime,
   formatTime,
   routeDirectionLabel,
-  serviceStatusLabel,
   tripEventLabel,
   tripStatusLabel,
 } from "@/lib/validation";
@@ -124,10 +123,6 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
             <div>
               <dt>Kota sekolah</dt>
               <dd>{student.schools?.city ?? "—"}</dd>
-            </div>
-            <div>
-              <dt>Status layanan</dt>
-              <dd>{serviceStatusLabel(student.service_status)}</dd>
             </div>
             <div>
               <dt>Status diperbarui</dt>

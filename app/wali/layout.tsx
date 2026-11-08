@@ -1,6 +1,6 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import { ConfigNotice } from "@/components/admin/ui";
+import { BrandLogo } from "@/components/brand-logo";
 import { BottomNav } from "@/components/ui/BottomNav";
 import { Icon } from "@/components/ui/Icon";
 import { PortalNav } from "@/components/ui/PortalNav";
@@ -20,23 +20,14 @@ export default async function GuardianLayout({ children }: { children: React.Rea
   const access = await requireGuardian();
   if (access.status === "unconfigured") return <ConfigNotice />;
 
-  const name = access.viewer.profile?.full_name || access.viewer.email || "Wali";
-
   return (
     <div className="portal-shell guardian-shell">
-      <header className="portal-head">
-        <Link className="brand" href="/wali">
-          <div className="brand-mark">S</div>
-          <div>
-            <div className="brand-name">School Bus</div>
-            <div className="brand-sub">Portal Orang Tua/Wali</div>
-          </div>
-        </Link>
+      <header className="portal-head compact-area-header">
+        <BrandLogo href="/wali" subtitle="Portal Orang Tua/Wali" size="sm" className="brand" />
 
         <PortalNav items={portalNavItems} rootHref="/wali" />
 
         <div className="portal-account">
-          <span className="account-name">{name}</span>
           <form action={signOutAction}>
             <button className="btn btn-ghost btn-sm" type="submit">
               <Icon name="logout" size={15} />

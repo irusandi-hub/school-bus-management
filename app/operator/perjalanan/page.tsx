@@ -4,7 +4,7 @@ import { operatorReadContext } from "@/lib/operator/read";
 import type { TripRow } from "@/lib/types";
 import { formatDate, formatTime, routeDirectionLabel, tripStatusLabel } from "@/lib/validation";
 
-export const metadata: Metadata = { title: "Perjalanan | Operator" };
+export const metadata: Metadata = { title: "Perjalanan | Pengelola" };
 
 export default async function OperatorTripsPage() {
   const supabase = await operatorReadContext();

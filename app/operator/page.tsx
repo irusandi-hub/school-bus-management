@@ -10,12 +10,13 @@ import {
   TripStatusPill,
 } from "@/components/admin/ui";
 import { Icon } from "@/components/ui/Icon";
+import { operatorGroups, operatorBottomNav } from "@/components/ui/nav-config";
 import { requireOperator } from "@/lib/auth";
 import { operatorReadContext } from "@/lib/operator/read";
 import type { TripAssignmentRow } from "@/lib/types";
 import { formatDate, routeDirectionLabel } from "@/lib/validation";
 
-export const metadata: Metadata = { title: "Ringkasan Operator | School Bus" };
+export const metadata: Metadata = { title: "Ringkasan Pengelola | School Bus" };
 
 function today() {
   const now = new Date();
@@ -50,8 +51,8 @@ export default async function OperatorHomePage() {
   return (
     <>
       <PageHeader
-        title={`Ringkasan ${access.operator.name}`}
-        description="Semua angka dan daftar di halaman ini dibatasi oleh kebijakan database ke organisasi Anda. Data organisasi lain tidak dapat dibaca dari area ini."
+        title="Ringkasan"
+        description={`Data di halaman ini hanya milik ${access.operator.name}.`}
         actions={
           <Link className="btn btn-primary" href="/operator/operasional">
             <Icon name="clock" size={16} />
@@ -60,19 +61,27 @@ export default async function OperatorHomePage() {
         }
       />
 
+      <nav className="operator-extra-links" aria-label="Menu pengelola lainnya">
+        {operatorGroups.flatMap((group) => group.items).filter((item) => item.href !== "/operator" && !operatorBottomNav.some((bottom) => bottom.href === item.href)).map((item) => (
+          <Link key={item.href} href={item.href}><Icon name={item.icon} size={16} />{item.label}</Link>
+        ))}
+      </nav>
+
       {todayAssignments.error && (
         <Notice kind="error">Penugasan hari ini belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>
       )}
 
       <section className="stats" aria-label="Ringkasan organisasi">
         <StatCard label="Bus aktif" value={buses.count ?? 0} note="Armada organisasi Anda" icon="bus" />
-        <StatCard label="Pengemudi aktif" value={drivers.count ?? 0} note="Staf yang dapat ditugaskan" icon="driver" />
+        <StatCard label="Pengemudi aktif" value={drivers.count ?? 0} note="Staf yang dapat ditugaskan" icon="users" />
+        <Link href="/operator/siswa" className="student-stat-link" aria-label="Lihat daftar siswa">
         <StatCard
           label="Siswa aktif"
           value={students.count ?? 0}
           note="Dari sekolah yang ditautkan ke organisasi"
           icon="students"
         />
+        </Link>
         <StatCard
           label="Tugas hari ini"
           value={assignmentsToday.count ?? 0}
@@ -90,9 +99,6 @@ export default async function OperatorHomePage() {
           </div>
           <div className="panel-head-actions">
             <Pill tone="info">{formatDate(today())}</Pill>
-            <Link className="btn btn-secondary btn-sm" href="/operator/penugasan">
-              Kelola
-            </Link>
           </div>
         </header>
         <div className="admin-table-wrap">
@@ -156,8 +162,8 @@ export default async function OperatorHomePage() {
       </div>
 
       <Notice kind="info">
-        Rute dan data induk sekolah dikelola Admin Pusat dan hanya dapat dibaca di sini. Jejak audit platform, akun
-        wali, serta data organisasi lain tidak tersedia untuk peran operator.
+        Rute dan data induk sekolah dikelola pengelola dan hanya dapat dibaca di sini. Jejak audit platform, akun
+        wali, serta data organisasi lain tidak tersedia untuk peran pengelola.
       </Notice>
     </>
   );

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { BrandLogo } from "@/components/brand-logo";
 import { LoginForm } from "./login-form";
 import { homeForRole } from "@/lib/access";
 import { getViewerState } from "@/lib/auth";
@@ -13,19 +14,19 @@ const reasons: Record<string, string> = {
 
 const doors: Record<string, { label: string; detail: string }> = {
   admin: {
-    label: "Admin & Operator",
+    label: "Pengelola & Pengelola",
     detail:
-      "Gunakan akun staf. Area Admin Pusat dan area operator ditentukan dari peran serta keterkaitan organisasi pada akun Anda.",
+      "Gunakan akun staf. Area Pengelola dan area pengelola ditentukan dari peran serta keterkaitan organisasi pada akun Anda.",
   },
   pengemudi: {
     label: "Pengemudi",
     detail:
-      "Gunakan akun pengemudi yang sudah ditautkan Admin Pusat. Setelah masuk, Anda diarahkan ke tugas hari ini.",
+      "Gunakan akun pengemudi yang sudah ditautkan Pengelola. Setelah masuk, Anda diarahkan ke tugas hari ini.",
   },
   wali: {
     label: "Orang Tua/Wali",
     detail:
-      "Gunakan email dan kata sandi akun wali. Akun harus didaftarkan Admin Pusat dan memiliki siswa dengan layanan aktif.",
+      "Gunakan email dan kata sandi akun wali. Akun harus didaftarkan Pengelola dan memiliki siswa dengan layanan aktif.",
   },
 };
 
@@ -53,9 +54,7 @@ export default async function LoginPage({
   return (
     <main className="auth-page">
       <section className="auth-card">
-        <Link className="brand-mark auth-mark" href="/" aria-label="Kembali ke gerbang akses">
-          S
-        </Link>
+        <BrandLogo href="/" ariaLabel="Kembali ke gerbang akses" className="auth-logo" />
         <p className="eyebrow">SCHOOL BUS MANAGEMENT</p>
         <h1>Masuk ke akun</h1>
         {door ? (
@@ -73,16 +72,13 @@ export default async function LoginPage({
         <LoginForm next={safeNextPath(rawNext, "")} reason={reason} />
 
         <p className="auth-footnote">
-          Peran akun ditentukan dari data pengguna di server. Lupa kata sandi? Hubungi Admin Pusat untuk pemulihan
+          Peran akun ditentukan dari data pengguna di server. Lupa kata sandi? Hubungi Pengelola untuk pemulihan
           akses.
         </p>
 
         <div className="auth-links">
           <Link className="auth-back" href="/daftar">
             Aktivasi akun wali
-          </Link>
-          <Link className="auth-back" href="/">
-            Kembali ke gerbang akses
           </Link>
         </div>
       </section>

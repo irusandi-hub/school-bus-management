@@ -4,7 +4,7 @@ import { adminReadContext } from "@/lib/admin/read";
 import type { AuditLogRow } from "@/lib/types";
 import { formatDateTime } from "@/lib/validation";
 
-export const metadata: Metadata = { title: "Laporan & Audit | Admin Pusat" };
+export const metadata: Metadata = { title: "Laporan & Audit | Pengelola" };
 
 export default async function ReportsPage() {
   const supabase = await adminReadContext();
@@ -34,7 +34,7 @@ export default async function ReportsPage() {
     <>
       <PageHeader
         title="Laporan & audit"
-        description="Angka operasional diambil dari data nyata. Jejak audit ditulis otomatis oleh database dan tidak dapat diubah dari aplikasi."
+        description="Angka operasional diambil dari data nyata. Riwayat aktivitas dicatat otomatis dan tidak dapat diubah dari aplikasi."
       />
 
       {audits.error && <Notice kind="error">Jejak audit belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
@@ -69,12 +69,12 @@ export default async function ReportsPage() {
             <li>
               <strong>Data induk &amp; akun wali</strong>
               <span>✓</span>
-              <small>CRUD berjalan dengan RLS per peran dan riwayat status append-only.</small>
+              <small>Perubahan mengikuti hak akses akun. Riwayat status tetap tersimpan.</small>
             </li>
             <li>
               <strong>Rute, penugasan, perjalanan</strong>
               <span>✓</span>
-              <small>Rute dan penugasan dikelola Admin; perjalanan dijalankan pengemudi yang ditugaskan.</small>
+              <small>Rute dan penugasan dikelola Pengelola; perjalanan dijalankan pengemudi yang ditugaskan.</small>
             </li>
             <li>
               <strong>GPS langsung &amp; kamera bus</strong>
@@ -87,7 +87,7 @@ export default async function ReportsPage() {
             <li>
               <strong>Ekspor laporan</strong>
               <span>—</span>
-              <small>Belum tersedia; laporan saat ini ditampilkan di layar dan mengikuti kebijakan akses database.</small>
+              <small>Belum tersedia; laporan saat ini ditampilkan di layar sesuai hak akses akun.</small>
             </li>
           </ul>
         </section>
@@ -96,7 +96,7 @@ export default async function ReportsPage() {
           <header className="panel-head">
             <div>
               <h2 className="panel-title">Prinsip audit</h2>
-              <div className="panel-subtitle">Ditulis oleh trigger database</div>
+              <div className="panel-subtitle">Dicatat otomatis saat ada perubahan</div>
             </div>
           </header>
           <div className="audit-note">
@@ -105,8 +105,8 @@ export default async function ReportsPage() {
               jejak audit agar data pribadi tidak menumpuk di luar tabel asalnya.
             </p>
             <p>
-              Jejak audit hanya dapat dibaca Admin Pusat. Operator tidak memiliki akses ke jejak audit platform;
-              laporan operator dibatasi pada data organisasinya.
+              Jejak audit hanya dapat dibaca Pengelola. Pengelola tidak memiliki akses ke jejak audit platform;
+              laporan pengelola dibatasi pada data organisasinya.
             </p>
           </div>
         </section>

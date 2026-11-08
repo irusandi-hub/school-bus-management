@@ -1,6 +1,6 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import { ConfigNotice } from "@/components/admin/ui";
+import { BrandLogo } from "@/components/brand-logo";
 import { BottomNav } from "@/components/ui/BottomNav";
 import { Icon } from "@/components/ui/Icon";
 import { driverBottomNav } from "@/components/ui/nav-config";
@@ -19,13 +19,7 @@ export default async function DriverLayout({ children }: { children: React.React
   return (
     <div className="driver-app">
       <header className="driver-head">
-        <Link className="driver-brand" href="/pengemudi">
-          <span className="driver-mark" aria-hidden="true">S</span>
-          <span>
-            <strong>School Bus</strong>
-            <small>Area Pengemudi</small>
-          </span>
-        </Link>
+        <BrandLogo href="/pengemudi" subtitle="Area Pengemudi" size="sm" />
         <div className="driver-account">
           <span className="account-name">{name}</span>
           <form action={signOutAction}>

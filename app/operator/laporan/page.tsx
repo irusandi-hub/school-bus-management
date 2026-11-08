@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { ConfigNotice, Notice, PageHeader, Pill, StatCard } from "@/components/admin/ui";
 import { operatorReadContext } from "@/lib/operator/read";
 
-export const metadata: Metadata = { title: "Laporan | Operator" };
+export const metadata: Metadata = { title: "Laporan | Pengelola" };
 
 function today() {
   const now = new Date();
@@ -30,7 +30,7 @@ export default async function OperatorReportsPage() {
         actions={<Link className="btn btn-primary" href="/operator/laporan/export">Unduh CSV perjalanan</Link>}
       />
 
-      <section className="stats" aria-label="Ringkasan laporan operator">
+      <section className="stats" aria-label="Ringkasan laporan pengelola">
         <StatCard label="Bus aktif" value={buses.count ?? 0} note="Armada yang dapat ditugaskan" icon="bus" />
         <StatCard label="Pengemudi aktif" value={drivers.count ?? 0} note="Staf organisasi Anda" icon="driver" />
         <StatCard
@@ -51,11 +51,11 @@ export default async function OperatorReportsPage() {
 
       <div className="admin-overview-grid">
         <section className="panel">
-          <header className="panel-head"><div><h2 className="panel-title">Cakupan laporan</h2><div className="panel-subtitle">Data dibatasi oleh kebijakan database organisasi</div></div><Pill tone="info">Organisasi</Pill></header>
+          <header className="panel-head"><div><h2 className="panel-title">Cakupan laporan</h2><div className="panel-subtitle">Data hanya milik organisasi Anda</div></div><Pill tone="info">Organisasi</Pill></header>
           <ul className="check-list">
             <li><strong>Armada dan pengemudi</strong><span>✓</span><small>Hanya data organisasi yang sedang masuk.</small></li>
             <li><strong>Perjalanan dan kehadiran</strong><span>✓</span><small>Ringkasan dan ekspor berasal dari catatan perjalanan organisasi Anda.</small></li>
-            <li><strong>Jejak audit platform</strong><span>—</span><small>Hanya Admin Pusat yang dapat membaca audit lintas organisasi.</small></li>
+            <li><strong>Jejak audit platform</strong><span>—</span><small>Hanya pengelola yang dapat membaca audit lintas organisasi.</small></li>
             <li><strong>Ekspor perjalanan CSV</strong><span>✓</span><small>Unduh hingga 5.000 perjalanan terbaru untuk pengolahan lebih lanjut.</small></li>
           </ul>
         </section>
@@ -67,7 +67,7 @@ export default async function OperatorReportsPage() {
           </div>
         </section>
       </div>
-      <Notice kind="info">Untuk laporan lintas sekolah dan jejak audit platform, gunakan akun Admin Pusat. Peran operator tidak dapat dinaikkan dari antarmuka.</Notice>
+      <Notice kind="info">Untuk laporan lintas sekolah dan jejak audit platform, akses belum tersedia di area Pengelola.</Notice>
     </>
   );
 }

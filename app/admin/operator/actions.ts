@@ -32,7 +32,7 @@ export async function saveOperator(_prev: ActionState, formData: FormData): Prom
   const contactPhone = readOptionalText(formData, "contact_phone");
 
   const errors: FieldErrors = {};
-  if (name.length < 2 || name.length > 120) errors.name = "Nama operator harus 2–120 karakter.";
+  if (name.length < 2 || name.length > 120) errors.name = "Nama pengelola harus 2–120 karakter.";
   if (!/^[A-Z0-9][A-Z0-9-]{1,19}$/.test(code)) {
     errors.code = "Kode 2–20 karakter: huruf kapital, angka, atau tanda hubung.";
   }
@@ -56,11 +56,11 @@ export async function saveOperator(_prev: ActionState, formData: FormData): Prom
     ? await ctx.supabase.from("operators").update(payload).eq("id", id)
     : await ctx.supabase.from("operators").insert(payload);
 
-  if (error) return writeFailure(error, { unique: "Kode operator sudah dipakai. Gunakan kode lain." });
+  if (error) return writeFailure(error, { unique: "Kode pengelola sudah dipakai. Gunakan kode lain." });
 
   revalidatePath(path);
   revalidatePath("/admin");
-  return success(id ? "Data operator berhasil diperbarui." : "Operator baru berhasil ditambahkan.");
+  return success(id ? "Data pengelola berhasil diperbarui." : "Pengelola baru berhasil ditambahkan.");
 }
 
 /** Error text raised by our own SQL functions is safe to show; anything else is not. */
@@ -81,7 +81,7 @@ export async function linkOperatorAccount(formData: FormData) {
   const email = normalizeEmail(readText(formData, "email"));
   if (!id || !isValidEmail(email)) {
     redirect(
-      `${path}?jenis=error&pesan=${encodeURIComponent("Isian belum lengkap: masukkan operator dan email akun yang valid.")}`,
+      `${path}?jenis=error&pesan=${encodeURIComponent("Isian belum lengkap: masukkan pengelola dan email akun yang valid.")}`,
     );
   }
 
@@ -93,7 +93,7 @@ export async function linkOperatorAccount(formData: FormData) {
 
   revalidatePath(path);
   revalidatePath("/operator");
-  redirect(`${path}?pesan=${encodeURIComponent("Akun berhasil ditautkan sebagai Operator.")}`);
+  redirect(`${path}?pesan=${encodeURIComponent("Akun berhasil ditautkan sebagai Pengelola.")}`);
 }
 
 export async function unlinkOperatorAccount(formData: FormData) {
@@ -104,7 +104,7 @@ export async function unlinkOperatorAccount(formData: FormData) {
 
   const id = readText(formData, "id");
   if (!id) {
-    redirect(`${path}?jenis=error&pesan=${encodeURIComponent("Operator belum dipilih.")}`);
+    redirect(`${path}?jenis=error&pesan=${encodeURIComponent("Pengelola belum dipilih.")}`);
   }
 
   const { error } = await ctx.supabase.rpc("unlink_operator_account", { p_operator_id: id });
@@ -115,7 +115,7 @@ export async function unlinkOperatorAccount(formData: FormData) {
 
   revalidatePath(path);
   revalidatePath("/operator");
-  redirect(`${path}?pesan=${encodeURIComponent("Tautan akun operator dilepas.")}`);
+  redirect(`${path}?pesan=${encodeURIComponent("Tautan akun pengelola dilepas.")}`);
 }
 
 export async function setOperatorActive(formData: FormData) {
@@ -131,7 +131,7 @@ export async function setOperatorActive(formData: FormData) {
 
   if (error) {
     redirect(
-      `${path}?jenis=error&pesan=${encodeURIComponent("Status operator belum dapat diubah. Coba lagi atau hubungi pengelola sistem.")}`,
+      `${path}?jenis=error&pesan=${encodeURIComponent("Status pengelola belum dapat diubah. Coba lagi atau hubungi pengelola sistem.")}`,
     );
   }
 
@@ -140,8 +140,8 @@ export async function setOperatorActive(formData: FormData) {
   redirect(
     `${path}?pesan=${encodeURIComponent(
       active
-        ? "Operator diaktifkan kembali."
-        : "Operator dinonaktifkan. Data operator, bus, dan pengemudi terkait tetap tersimpan.",
+        ? "Pengelola diaktifkan kembali."
+        : "Pengelola dinonaktifkan. Data pengelola, bus, dan pengemudi terkait tetap tersimpan.",
     )}`,
   );
 }

@@ -5,7 +5,7 @@ import { Icon } from "@/components/ui/Icon";
 import { operatorReadContext } from "@/lib/operator/read";
 import { formatDate, formatTime, routeDirectionLabel } from "@/lib/validation";
 
-export const metadata: Metadata = { title: "Pusat Operasi | Operator" };
+export const metadata: Metadata = { title: "Pusat Operasi | Pengelola" };
 
 function localToday() {
   const now = new Date();
@@ -92,7 +92,6 @@ export default async function OperatorOperationsPage() {
             icon="inbox"
             title="Belum ada penugasan untuk hari ini"
             detail="Buat penugasan agar pengemudi menerima tugas dan perjalanan dapat dipantau dari papan ini."
-            action={{ href: "/operator/penugasan", label: "Buat penugasan" }}
           />
         </section>
       ) : (

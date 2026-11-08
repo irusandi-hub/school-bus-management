@@ -9,7 +9,7 @@ export const adminGroups: NavGroup[] = [
     items: [
       { href: "/admin", label: "Ringkasan", icon: "dashboard", short: "Ringkasan" },
       { href: "/admin/sekolah", label: "Sekolah", icon: "school", short: "Sekolah" },
-      { href: "/admin/operator", label: "Operator", icon: "operator", short: "Operator" },
+      { href: "/admin/operator", label: "Pengelola", icon: "operator", short: "Pengelola" },
       { href: "/admin/siswa", label: "Data siswa", icon: "students", short: "Siswa" },
       { href: "/admin/wali", label: "Akun wali", icon: "guardian", short: "Wali" },
       { href: "/admin/bus", label: "Bus", icon: "bus", short: "Bus" },
@@ -32,7 +32,7 @@ export const operatorGroups: NavGroup[] = [
     label: "Operasional harian",
     items: [
       { href: "/operator", label: "Ringkasan", icon: "dashboard", short: "Ringkasan" },
-      { href: "/operator/operasional", label: "Pusat operasi", icon: "clock", short: "Operasi" },
+      { href: "/operator/operasional", label: "Pusat operasi", icon: "dashboard", short: "Operasi" },
       { href: "/operator/perjalanan", label: "Perjalanan", icon: "trip", short: "Jalan" },
       { href: "/operator/penugasan", label: "Penugasan", icon: "assignment", short: "Tugas" },
       { href: "/operator/laporan", label: "Laporan", icon: "report", short: "Laporan" },
@@ -45,6 +45,8 @@ export const operatorGroups: NavGroup[] = [
       { href: "/operator/pengemudi", label: "Pengemudi", icon: "driver", short: "Driver" },
       { href: "/operator/rute", label: "Rute & titik jemput", icon: "route", short: "Rute" },
       { href: "/operator/siswa", label: "Siswa", icon: "students", short: "Siswa" },
+      { href: "/operator/sekolah", label: "Sekolah", icon: "school", short: "Sekolah" },
+      { href: "/operator/wali", label: "Orang Tua", icon: "guardian", short: "Wali" },
     ],
   },
 ];
@@ -58,7 +60,7 @@ export const adminBottomNav: NavItem[] = [
 ];
 
 export const operatorBottomNav: NavItem[] = [
-  { href: "/operator/operasional", label: "Operasi", icon: "clock" },
+  { href: "/operator/operasional", label: "Operasi", icon: "dashboard" },
   { href: "/operator/penugasan", label: "Tugas", icon: "assignment" },
   { href: "/operator/perjalanan", label: "Perjalanan", icon: "trip" },
   { href: "/operator/bus", label: "Bus", icon: "bus" },

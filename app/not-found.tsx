@@ -22,9 +22,6 @@ export default function NotFound() {
           <Link className="btn btn-primary" href="/">
             Kembali ke gerbang akses
           </Link>
-          <Link className="btn btn-secondary" href="/admin">
-            Buka area admin
-          </Link>
         </div>
       </section>
     </main>

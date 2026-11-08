@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { BrandLogo } from "@/components/brand-logo";
 import { PasswordForm } from "./password-form";
 import { getViewerState } from "@/lib/auth";
 import { signOutAction } from "@/lib/auth-actions";
@@ -24,6 +25,7 @@ export default async function KataSandiPage({
     return (
       <main className="auth-page">
         <section className="auth-card">
+          <BrandLogo className="auth-logo" />
           <h1>Database belum dikonfigurasi</h1>
           <p className="auth-copy">
             Aktivasi akun belum dapat dilakukan karena koneksi database belum diatur. Hubungi pengelola sistem.
@@ -47,12 +49,12 @@ export default async function KataSandiPage({
   return (
     <main className="auth-page">
       <section className="auth-card">
-        <div className="brand-mark">S</div>
+        <BrandLogo className="auth-logo" />
         <p className="eyebrow">AKTIVASI AKUN WALI</p>
         <h1>Buat kata sandi</h1>
         <p className="auth-copy">
           Email <strong>{viewer.email ?? "Anda"}</strong> sudah diverifikasi. Buat kata sandi untuk menyelesaikan
-          aktivasi. Akses hanya dibuka jika email terdaftar oleh Admin Pusat dan memiliki siswa dengan layanan aktif.
+          aktivasi. Akses hanya dibuka jika email terdaftar oleh Pengelola dan memiliki siswa dengan layanan aktif.
         </p>
 
         {notice && (
