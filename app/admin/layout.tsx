@@ -15,6 +15,7 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
+// Area ini akan digabung ke /operator. Tidak ditautkan dari antarmuka.
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const access = await requireAdmin();
 
