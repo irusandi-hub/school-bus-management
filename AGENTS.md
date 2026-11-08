@@ -1,59 +1,43 @@
 # Instruksi Agen AI
 
-Instruksi ini berlaku untuk semua agen AI yang bekerja pada repository `school-bus-management`.
+Berlaku untuk semua agen yang bekerja pada repository `school-bus-management`.
 
-## Aturan produk tertinggi — wajib dipatuhi
+## Aturan produk tertinggi
 
-Baca dan patuhi `docs/PRODUCT_ARCHITECTURE_THREE_ECOSYSTEMS.md`. Dokumen tersebut adalah keputusan produk yang disetujui pemilik produk dan mengikat semua pekerjaan.
+Baca `docs/PRODUCT_ARCHITECTURE_THREE_ECOSYSTEMS.md`. Aturan ini disetujui pemilik produk dan mengikat semua pekerjaan.
 
-**Produk hanya memiliki tiga ekosistem pengguna: Operator, Pengemudi, dan Orang Tua.**
-- Operator adalah satu-satunya pusat pengelolaan dan administrasi organisasi. Semua fungsi yang dahulu berada di Admin Pusat harus menjadi modul dalam satu dashboard/navigasi Operator.
-- Pengemudi hanya menjalankan tugas yang diberikan Operator dan hanya memiliki akses pada penugasan yang sah.
-- Orang Tua hanya memantau anak, perjalanan, riwayat, dan menyampaikan laporan sesuai hak akses.
-- Tidak ada role/dashboard Admin Pusat terpisah dan tidak ada role Sekolah terpisah.
-- Jangan membuat hierarki internal tambahan untuk memisahkan administrasi dari operasional. Jika kelak dibutuhkan pembatasan staf, tetap berada dalam ekosistem Operator dan harus mendapat persetujuan.
+**Hanya tiga ekosistem: Operator, Pengemudi, Orang Tua.**
+- Hanya ada satu Operator Utama, pemegang kendali tertinggi atas seluruh aplikasi dan seluruh database operasional.
+- Semua fungsi administrasi dan operasional berada dalam satu dashboard/navigasi Operator.
+- Tidak ada Admin Pusat sebagai role/dashboard/ekosistem terpisah.
+- Sekolah adalah data yang dikelola Operator, bukan akun/ekosistem.
+- Wilayah operasi adalah data pemetaan, pembagian tugas, dan audit. Wilayah tidak membentuk tenant, role, organisasi, hierarki, atau batas akses. Operator selalu dapat mengakses semua wilayah dan data.
+- Pengemudi hanya dapat mengakses penugasan/perjalanan yang diberikan kepadanya.
+- Orang Tua hanya dapat mengakses anak dan perjalanan yang sah terhubung dengannya.
 
-Jika kode, dokumen lama, atau PR bertentangan dengan aturan ini, laporkan sebagai ketidaksesuaian dan implementasikan menuju aturan ini. Jangan mempertahankan pemisahan Admin/Operator hanya karena sudah ada di kode.
+Jangan menciptakan multi-operator, multi-tenant, pembatasan Operator berdasarkan `operator_id`/wilayah, atau hierarki staf tanpa keputusan baru dari pemilik produk.
 
-## Batas teknis dan keamanan
+## Keamanan dan batas perubahan
 
-- Gunakan satu backend, satu database, dan satu sistem autentikasi. Perbedaan akses ditegakkan berdasarkan role, organisasi, relasi, dan penugasan.
-- Otorisasi wajib di server dan database/RLS; menyembunyikan menu saja tidak cukup.
-- Operator dibatasi pada organisasi yang terhubung dengannya; Pengemudi pada tugas aktif yang ditugaskan; Orang Tua pada siswa yang terhubung dan memenuhi syarat.
-- Jangan menganggap penggantian label Admin menjadi Pengelola sudah cukup. Audit role, route, layout, redirect, server actions, helper, SQL functions, constraints, grants, policies, tests, dan dokumentasi.
-- Jangan membuat perubahan skema, RLS, migrasi, atau data hosted tanpa persetujuan eksplisit pemilik produk. Sebelum mengusulkan migrasi, petakan akun lama dan organisasi terkait, strategi backfill, preservasi histori, serta rollback.
-- Jangan merge PR, deploy, atau menjalankan migrasi tanpa persetujuan eksplisit.
-- Jangan masukkan data pribadi siswa/wali, nomor telepon, alamat rumah, koordinat rumah, kredensial, token, atau rahasia ke Git.
-- Mode pengembangan terbuka hanya boleh aktif pada environment non-production yang dikenali secara eksplisit dan harus fail-closed.
+- Gunakan satu backend, database, dan sistem autentikasi.
+- Otorisasi wajib ditegakkan di server dan RLS; menyembunyikan menu saja tidak cukup.
+- Migrasi transisi harus menjaga data, histori, akun, dan relasi lama. Jika pemetaan akun/relasi ambigu, migrasi harus berhenti fail-closed.
+- Pengemudi dan Orang Tua tetap dibatasi sesuai identitas/relasi/penugasan.
+- Jangan memasukkan data pribadi anak/wali, koordinat, kredensial, token, atau rahasia ke Git.
+- Jangan menjalankan migrasi pada database mana pun, merge, atau deploy tanpa persetujuan eksplisit. Persetujuan menyiapkan migration file tidak sama dengan persetujuan menjalankannya.
+- Jangan mengubah layanan hosted atau produksi tanpa persetujuan eksplisit.
 
-## Sebelum bekerja
+## Proses kerja
 
-- Baca `README.md`, dokumen ini, `docs/PRODUCT_ARCHITECTURE_THREE_ECOSYSTEMS.md`, `docs/DECISIONS_LOG.md`, dan spesifikasi terkait tugas.
-- Periksa branch, status Git, perubahan lokal, PR terbuka, dan pekerjaan branch lain. Jangan menimpa pekerjaan yang belum digabung.
-- Tentukan apakah tugas hanya audit, dokumentasi, atau implementasi. Audit dilakukan read-only kecuali pemilik produk secara eksplisit meminta perubahan.
-- Jangan mengulang audit luas jika bukti yang tersedia masih berlaku; periksa hanya bagian yang relevan dan mismatch yang nyata.
+- Baca README, dokumen arsitektur, decision log, dan spesifikasi yang relevan.
+- Periksa branch, PR terbuka, dan pekerjaan yang belum digabung. Jangan menimpa branch lain.
+- Audit semua referensi role, route, layout, redirect, middleware, Server Action, server loader, SQL function, constraints, grants, policies, dan tests yang relevan.
+- Hindari audit luas berulang bila bukti masih berlaku; fokus pada mismatch yang nyata.
+- Jangan membagi satu refactor arsitektur menjadi PR bertumpuk yang saling bergantung tanpa alasan.
 
-## Kejujuran dan verifikasi
+## Verifikasi dan pelaporan
 
-- Jangan mengarang isi repository, data, hasil tes, status deployment, atau hasil integrasi.
-- Bedakan fakta terverifikasi, rekomendasi, asumsi, dan hal yang belum diketahui.
-- Klaim selesai harus didukung pemeriksaan dan pengujian relevan.
-- Laporkan file berubah, alasan, perintah tes yang benar-benar dijalankan, hasil aktual, keterbatasan, dan tindak lanjut.
-
-## Proses perubahan
-
-- Buat perubahan kecil dan terfokus, tetapi jangan membagi satu refactor arsitektur menjadi PR bertumpuk yang saling bergantung tanpa alasan.
-- Perbarui `docs/DECISIONS_LOG.md` bila ada keputusan produk baru.
-- Jangan commit, push, merge, deploy, atau menjalankan migrasi kecuali tugas secara eksplisit mengizinkannya.
-- Bila refactor memerlukan perubahan database, berhenti pada rancangan migrasi dan minta persetujuan sebelum menjalankannya.
-
-## Label status
-
-Gunakan label berikut bila relevan:
-- `BELUM DIPUTUSKAN`
-- `BELUM TERVERIFIKASI`
-- `BELUM DIKERJAKAN`
-- `SEDANG DIKERJAKAN`
-- `SELESAI DAN LULUS TES`
-- `TERIMPLEMENTASI TETAPI BELUM TERVERIFIKASI`
-- `TERBLOKIR`
+- Jangan mengarang isi repository, hasil tes, integrasi, atau status deploy.
+- Klaim selesai harus didukung tes yang benar-benar dijalankan.
+- Laporkan file yang berubah, tes aktual, hasil, keterbatasan, dan tindak lanjut.
+- Tandai hal yang belum terverifikasi secara jelas.
