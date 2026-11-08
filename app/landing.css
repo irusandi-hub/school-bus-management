@@ -45,9 +45,8 @@
 .landing-hero {
   position: relative;
   display: grid;
-  /* Kolom visual mobile ~47% lebar layar: cukup sempit agar tombol 13 px
-     tetap utuh, cukup lebar untuk ponsel + bus menjulur ke tepi. */
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  /* Teks tetap di kiri; foto dipotong hanya di tepi kanan. */
+  grid-template-columns: minmax(0, 55fr) minmax(0, 45fr);
   gap: clamp(8px, 1.6vw, 36px);
   align-items: start;
   padding: clamp(6px, 1.6vw, 18px) 0 clamp(26px, 4vw, 42px);
@@ -147,11 +146,11 @@
   border-color: var(--lp-navy);
 }
 
-/* Komposisi hero tanpa bingkai: latar gradien langit, ponsel dari kode,
-   lalu foto bus di depannya. Semua lapisan dekoratif (aria-hidden). */
+/* Foto dekoratif tanpa bingkai, mengikuti tinggi kolom teks. */
 .landing-hero-visual {
   position: relative;
-  min-height: 143vw; /* ~558px pada layar 390px */
+  align-self: stretch;
+  min-width: 0;
   justify-self: stretch;
 }
 
@@ -168,96 +167,12 @@
   pointer-events: none;
 }
 
-.landing-phone {
-  position: absolute;
-  top: 3%;
-  right: 2%;
-  width: 84%;
-  aspect-ratio: 9 / 19;
-  padding: 6px;
-  border-radius: 26px;
-  background: #16203a;
-  box-shadow: 0 24px 48px #101b3b2b;
-  transform: rotate(8deg);
-  transform-origin: 50% 42%;
-}
-
-.landing-phone-screen {
-  position: relative;
-  height: 100%;
-  overflow: hidden;
-  border-radius: 21px;
-  background: #eef1f3;
-}
-
-.landing-phone-map {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.landing-phone-card {
-  position: absolute;
-  left: 8%;
-  right: 8%;
-  display: grid;
-  gap: 2px;
-  padding: 8px 9px;
-  border-radius: 10px;
-  background: #ffffffee;
-  box-shadow: 0 6px 14px #101b3b14;
-}
-
-.landing-phone-card-top {
-  top: 9%;
-}
-
-.landing-phone-card-bottom {
-  bottom: 8%;
-}
-
-.landing-phone-title {
-  color: var(--lp-navy);
-  font-family: Manrope, "DM Sans", Arial, sans-serif;
-  font-size: clamp(9px, 2.4vw, 12px);
-  font-weight: 800;
-  line-height: 1.15;
-}
-
-.landing-phone-meta {
-  overflow: hidden;
-  color: #6b7488;
-  font-size: clamp(6.5px, 1.75vw, 8.5px);
-  font-weight: 600;
-  line-height: 1.3;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.landing-phone-label {
-  color: #7b8397;
-  font-size: clamp(6.5px, 1.7vw, 8.5px);
-  font-weight: 800;
-  letter-spacing: 0.08em;
-}
-
-.landing-phone-value {
-  color: var(--lp-navy);
-  font-family: Manrope, "DM Sans", Arial, sans-serif;
-  font-size: clamp(12px, 3.2vw, 16px);
-  font-weight: 800;
-  line-height: 1;
-}
-
-/* Foto bus 1408x768 di depan ponsel, terpotong tepi kanan layar. Mask di
-   sisi kiri + bawah membuatnya menyatu dengan latar putih. */
 .landing-hero-bus {
   position: absolute;
-  right: -30%;
-  bottom: -3%;
-  width: 150%;
-  height: 46%;
+  right: -12%;
+  top: 0;
+  bottom: 0;
+  width: 112%;
   pointer-events: none;
   -webkit-mask-image: linear-gradient(
     to right,
@@ -276,28 +191,16 @@
 .landing-hero-bus-fade {
   position: absolute;
   inset: 0;
-  -webkit-mask-image: linear-gradient(
-    to top,
-    transparent 0%,
-    rgba(0, 0, 0, 0.5) 16%,
-    #000 52%
-  );
-  mask-image: linear-gradient(
-    to top,
-    transparent 0%,
-    rgba(0, 0, 0, 0.5) 16%,
-    #000 52%
-  );
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 78%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 78%, transparent);
 }
 
-/* object-position 42% 58%: diukur dari foto, badan bus (kuning) berada di
-   sekitar x 10-70%, y 23-75%; titik ini menjaga bodi tetap dominan. */
 .landing-hero-bus img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 42% 58%;
+  object-position: 78% center;
 }
 
 /* --- Strip tiga fitur --- */
@@ -656,26 +559,8 @@
 /* --- Responsif --- */
 @media (min-width: 768px) {
   .landing-hero {
-    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+    grid-template-columns: minmax(0, 55fr) minmax(0, 45fr);
     margin-right: 0;
-  }
-
-  .landing-hero-visual {
-    min-height: clamp(460px, 46vw, 570px);
-  }
-
-  /* Di layar lebar ponsel ditentukan tinggi agar tidak melampaui kolom. */
-  .landing-phone {
-    top: 4%;
-    right: 6%;
-    width: auto;
-    height: min(88%, 520px);
-  }
-
-  .landing-hero-bus {
-    right: -26%;
-    width: 132%;
-    height: 44%;
   }
 
   .landing-actions {
