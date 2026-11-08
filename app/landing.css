@@ -646,3 +646,11 @@
     display: none;
   }
 }
+
+/* Satu state bersama untuk tooltip tombol dan panah. */
+.landing-notice-anchor { position: relative; display: inline-flex; min-width: 0; max-width: 100%; }
+.landing-notice-anchor > .landing-btn { width: 100%; cursor: pointer; }
+.landing-tooltip { position: absolute; z-index: 5; top: 100%; left: 0; width: 100%; max-width: 240px; padding: 0; border-radius: 8px; background: var(--lp-navy); color: #fff; font-size: 12px; line-height: 1.4; text-align: center; pointer-events: none; }
+.landing-tooltip:not(:empty) { padding: 7px; box-shadow: 0 3px 10px #101b3b25; }
+.landing-actions { padding-bottom: 42px; margin-bottom: -42px; }
+.landing-btn:focus-visible, .landing-role-arrow:focus-visible { outline: 3px solid #497ec6; outline-offset: 3px; }

@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { BrandLogo } from "@/components/brand-logo";
 import "./landing.css";
+import { LandingControls, LandingDownloads } from "@/components/landing-controls";
 
 const HERO_IMAGE = {
   src: "/assets/landing/hero-bus.webp",
@@ -311,6 +312,7 @@ const ROLE_CARDS = [
 export default function LandingPage() {
   return (
     <div className="landing">
+      <LandingControls>
       <div className="landing-shell">
         <header className="landing-header">
           <BrandLogo size="lg" />
@@ -347,27 +349,7 @@ export default function LandingPage() {
               Perjalanan sekolah lebih aman dengan pantauan langsung dan
               informasi yang akurat.
             </p>
-            <div className="landing-actions">
-              <a href="#masuk-akun" className="landing-btn landing-btn-primary">
-                Mulai Sekarang
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path
-                    d="M4.5 12h14M13 6.2l5.8 5.8L13 17.8"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </a>
-              <a href="#how-it-works" className="landing-btn landing-btn-outline">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <circle cx="12" cy="12" r="9.4" stroke="currentColor" strokeWidth="1.7" />
-                  <path d="M10.2 8.6l5.3 3.4-5.3 3.4z" fill="currentColor" />
-                </svg>
-                Lihat Cara Kerjanya
-              </a>
-            </div>
+            <LandingDownloads />
           </div>
 
           <div className="landing-hero-visual" aria-hidden="true">
@@ -386,7 +368,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="how-it-works" className="landing-strip" aria-label="Keunggulan layanan">
+        <section className="landing-strip" aria-label="Keunggulan layanan">
           {STRIP_ITEMS.map((item, index) => (
             <div className="landing-strip-item" key={index}>
               <span className="landing-strip-icon">{item.icon}</span>
@@ -439,7 +421,7 @@ export default function LandingPage() {
           ))}
         </section>
 
-        <section id="masuk-akun" className="landing-cta" aria-labelledby="landing-cta-title">
+        <section className="landing-cta" aria-labelledby="landing-cta-title">
           <div className="landing-cta-top" aria-hidden="true">
             <span className="landing-cta-line" />
             <span className="landing-cta-badge">
@@ -517,6 +499,7 @@ export default function LandingPage() {
           </div>
         </footer>
       </div>
+      </LandingControls>
     </div>
   );
 }
