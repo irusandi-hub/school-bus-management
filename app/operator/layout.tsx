@@ -4,8 +4,7 @@ import { OperatorNav } from "@/components/operator/OperatorNav";
 import { ConfigNotice } from "@/components/admin/ui";
 import { BottomNav } from "@/components/ui/BottomNav";
 import { Icon } from "@/components/ui/Icon";
-import { MobileMenu } from "@/components/ui/MobileMenu";
-import { operatorBottomNav, operatorGroups } from "@/components/ui/nav-config";
+import { operatorBottomNav } from "@/components/ui/nav-config";
 import { requireOperator } from "@/lib/auth";
 import { signOutAction } from "@/lib/auth-actions";
 
@@ -17,13 +16,7 @@ export default async function OperatorLayout({ children }: { children: React.Rea
   const access = await requireOperator();
   if (access.status === "unconfigured") return <ConfigNotice />;
 
-  const { viewer, operator } = access;
-  const initials = (viewer.profile?.full_name || viewer.email || "OP")
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join("");
+  const { operator } = access;
 
   return (
     <div className="app-shell admin-shell operator-shell">
@@ -54,34 +47,14 @@ export default async function OperatorLayout({ children }: { children: React.Rea
       </aside>
 
       <main className="main">
-        <header className="topbar">
-          <MobileMenu
-            groups={operatorGroups}
-            rootHref="/operator"
-            areaLabel="Operator"
-            note={`Hanya data milik ${operator.name} yang tersedia di menu ini.`}
-          />
-          <div className="workspace-heading">
-            <BrandLogo size="sm" />
-          <div className="topbar-title">
-            <div className="eyebrow">RUANG KERJA OPERATOR</div>
-            <div className="admin-topbar-role">{operator.name}</div>
-          </div>
-          </div>
-          <div className="top-actions">
-            <span className="account-chip" title={viewer.email ?? undefined}>
-              <span className="account-avatar" aria-hidden="true">
-                {initials || "OP"}
-              </span>
-              <span className="account-name">{viewer.profile?.full_name || viewer.email}</span>
-            </span>
-            <form action={signOutAction}>
-              <button className="btn btn-ghost" type="submit">
-                <Icon name="logout" size={15} />
-                Keluar
-              </button>
-            </form>
-          </div>
+        <header className="operator-header compact-area-header">
+          <BrandLogo href="/operator" subtitle="Area Operator" size="sm" />
+          <form action={signOutAction}>
+            <button className="btn btn-ghost btn-sm" type="submit">
+              <Icon name="logout" size={15} />
+              Keluar
+            </button>
+          </form>
         </header>
         {children}
         <footer className="page-footer">

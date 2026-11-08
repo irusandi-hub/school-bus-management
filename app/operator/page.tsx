@@ -10,6 +10,7 @@ import {
   TripStatusPill,
 } from "@/components/admin/ui";
 import { Icon } from "@/components/ui/Icon";
+import { operatorGroups, operatorBottomNav } from "@/components/ui/nav-config";
 import { requireOperator } from "@/lib/auth";
 import { operatorReadContext } from "@/lib/operator/read";
 import type { TripAssignmentRow } from "@/lib/types";
@@ -51,7 +52,7 @@ export default async function OperatorHomePage() {
     <>
       <PageHeader
         title="Ringkasan"
-        description="Data di halaman ini hanya milik organisasi Anda."
+        description={`Data di halaman ini hanya milik ${access.operator.name}.`}
         actions={
           <Link className="btn btn-primary" href="/operator/operasional">
             <Icon name="clock" size={16} />
@@ -59,6 +60,12 @@ export default async function OperatorHomePage() {
           </Link>
         }
       />
+
+      <nav className="operator-extra-links" aria-label="Menu operator lainnya">
+        {operatorGroups.flatMap((group) => group.items).filter((item) => !operatorBottomNav.some((bottom) => bottom.href === item.href)).map((item) => (
+          <Link key={item.href} href={item.href}><Icon name={item.icon} size={16} />{item.label}</Link>
+        ))}
+      </nav>
 
       {todayAssignments.error && (
         <Notice kind="error">Penugasan hari ini belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>
