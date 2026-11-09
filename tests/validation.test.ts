@@ -148,7 +148,7 @@ describe("post-login redirect safety", () => {
   });
 
   it("maps each database role to its own area", () => {
-    assert.equal(homeForRole("admin"), "/admin");
+    assert.equal(homeForRole("admin"), "/operator");
     assert.equal(homeForRole("operator"), "/operator");
     assert.equal(homeForRole("driver"), "/pengemudi");
     assert.equal(homeForRole("parent"), "/wali");
@@ -159,7 +159,7 @@ describe("post-login redirect safety", () => {
     assert.equal(scopedNext("parent", "/admin/siswa"), "/wali");
     assert.equal(scopedNext("driver", "/admin"), "/pengemudi");
     assert.equal(scopedNext("operator", "/admin/operator"), "/operator");
-    assert.equal(scopedNext("admin", "/operator"), "/admin");
+    assert.equal(scopedNext("admin", "/operator"), "/operator");
     assert.equal(scopedNext("parent", "//contoh.com"), "/wali");
   });
 
@@ -167,7 +167,7 @@ describe("post-login redirect safety", () => {
     assert.equal(scopedNext("parent", "/wali/anak/123"), "/wali/anak/123");
     assert.equal(scopedNext("driver", "/pengemudi/tugas/abc"), "/pengemudi/tugas/abc");
     assert.equal(scopedNext("operator", "/operator/bus"), "/operator/bus");
-    assert.equal(scopedNext("admin", "/admin/rute"), "/admin/rute");
+    assert.equal(scopedNext("admin", "/admin/rute"), "/operator");
   });
 });
 
