@@ -16,7 +16,7 @@ export function AdminNav() {
         <div className="nav-section" key={group.label}>
           <div className="workspace-label nav-section-label">{group.label}</div>
           {group.items.map((item) => {
-            const active = isNavItemActive(pathname, item.href, "/admin");
+            const active = isNavItemActive(pathname, item.href, "/operator");
             return (
               <Link
                 key={item.href}
