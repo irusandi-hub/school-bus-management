@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
+import { readFileSync } from "node:fs";
 import { homeForRole, scopedNext } from "../lib/paths.ts";
 
 describe("arsitektur akses tiga ekosistem", () => {
@@ -18,5 +19,23 @@ describe("arsitektur akses tiga ekosistem", () => {
     assert.equal(scopedNext("operator", "/admin/siswa"), "/operator");
     assert.equal(scopedNext("driver", "/wali"), "/pengemudi");
     assert.equal(scopedNext("parent", "/wali/riwayat"), "/wali/riwayat");
+  });
+});
+
+
+describe("batas perubahan peran Operator dan Pengemudi", () => {
+  const migration = readFileSync(
+    new URL("../supabase/migrations/20261109000000_unified_operator_global_authority.sql", import.meta.url),
+    "utf8",
+  );
+
+  it("melindungi akun Operator Utama dari penautan sebagai Pengemudi", () => {
+    assert.match(migration, /p\.role in \('admin', 'operator'\)/);
+  });
+
+  it("melindungi semua akun Wali, termasuk tautan wali yang nonaktif, dari demosi menjadi Pengemudi", () => {
+    assert.match(migration, /p\.role = 'parent'/);
+    assert.match(migration, /from public\.guardians g where g\.profile_id = v_uid/);
+    assert.doesNotMatch(migration, /g\.profile_id = v_uid and g\.active/);
   });
 });
