@@ -1,9 +1,5 @@
 import { operatorReadContext } from "@/lib/operator/read";
-
-function csvCell(value: unknown) {
-  const text = value == null ? "" : String(value);
-  return `"${text.replace(/"/g, '""')}"`;
-}
+import { csvCell } from "@/lib/operator/csv";
 
 export async function GET() {
   const supabase = await operatorReadContext();
