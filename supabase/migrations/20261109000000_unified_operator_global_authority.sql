@@ -8,6 +8,31 @@
 -- Both legacy admin and operator profiles receive the same global Operator access.
 -- Driver and parent policies remain unchanged.
 
+-- Fail early with an actionable message if prerequisite migrations have not run.
+-- This file must follow admin_core_crud and operator_driver_account_linking.
+do $operator_preflight$
+begin
+  if to_regnamespace('private') is null
+     or to_regprocedure('private.is_admin()') is null
+     or to_regprocedure('private.resolve_account_uid(text)') is null
+     or to_regprocedure('public.link_operator_account(uuid,text)') is null
+     or to_regprocedure('public.unlink_operator_account(uuid)') is null
+     or to_regclass('public.operators') is null
+     or not exists (
+       select 1 from information_schema.columns
+       where table_schema = 'public' and table_name = 'operators'
+         and column_name = 'profile_id'
+     )
+     or not exists (
+       select 1 from information_schema.columns
+       where table_schema = 'public' and table_name = 'profiles'
+         and column_name = 'updated_at'
+     ) then
+    raise exception 'Prasyarat migrasi belum lengkap. Jalankan migrasi admin_core_crud dan operator_driver_account_linking beserta migrasi sebelumnya secara berurutan sebelum migrasi Operator Utama.';
+  end if;
+end;
+$operator_preflight$;
+
 -- The initial schema only allowed admin/driver/parent. Extend the role constraint
 -- before promoting a legacy Admin account or creating an Operator profile.
 alter table public.profiles
