@@ -1,28 +1,58 @@
 import { operatorReadContext } from "@/lib/operator/read";
 import { csvCell } from "@/lib/operator/csv";
 
+const PAGE_SIZE = 1000;
+
 export async function GET() {
   const supabase = await operatorReadContext();
   if (!supabase) {
     return new Response("Layanan database belum dikonfigurasi.", { status: 503 });
   }
 
-  const { data, error } = await supabase
-    .from("trips")
-    .select("id, status, started_at, arrived_at, completed_at, trip_assignments(service_date, routes(route_name, school_name, direction), buses(fleet_code), drivers(full_name))")
-    .order("created_at", { ascending: false })
-    .limit(5000);
+  type TripExportRow = {
+    status: string;
+    started_at: string | null;
+    arrived_at: string | null;
+    completed_at: string | null;
+    trip_assignments:
+      | {
+          service_date: string;
+          routes: { route_name: string; school_name: string; direction: string } | null;
+          buses: { fleet_code: string } | null;
+          drivers: { full_name: string } | null;
+        }
+      | {
+          service_date: string;
+          routes: { route_name: string; school_name: string; direction: string } | null;
+          buses: { fleet_code: string } | null;
+          drivers: { full_name: string } | null;
+        }[]
+      | null;
+  };
 
-  if (error) {
-    return new Response("Laporan belum dapat dibuat. Silakan coba kembali.", { status: 500 });
+  const trips: TripExportRow[] = [];
+  for (let offset = 0; ; offset += PAGE_SIZE) {
+    const { data, error } = await supabase
+      .from("trips")
+      .select("id, status, started_at, arrived_at, completed_at, trip_assignments(service_date, routes(route_name, school_name, direction), buses(fleet_code), drivers(full_name))")
+      .order("created_at", { ascending: false })
+      .range(offset, offset + PAGE_SIZE - 1);
+
+    if (error) {
+      return new Response("Laporan belum dapat dibuat. Silakan coba kembali.", { status: 500 });
+    }
+
+    const batch = (data ?? []) as unknown as TripExportRow[];
+    trips.push(...batch);
+    if (batch.length < PAGE_SIZE) break;
   }
 
   const header = ["Tanggal layanan", "Rute", "Sekolah", "Arah", "Kode bus", "Pengemudi", "Status", "Mulai", "Tiba", "Selesai"];
-  const rows = (data ?? []).map((trip) => {
+  const rows = trips.map((trip) => {
     const assignment = Array.isArray(trip.trip_assignments) ? trip.trip_assignments[0] : trip.trip_assignments;
-    const route = assignment && (Array.isArray(assignment.routes) ? assignment.routes[0] : assignment.routes);
-    const bus = assignment && (Array.isArray(assignment.buses) ? assignment.buses[0] : assignment.buses);
-    const driver = assignment && (Array.isArray(assignment.drivers) ? assignment.drivers[0] : assignment.drivers);
+    const route = assignment && assignment.routes;
+    const bus = assignment && assignment.buses;
+    const driver = assignment && assignment.drivers;
     return [
       assignment?.service_date,
       route?.route_name,
