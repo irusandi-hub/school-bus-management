@@ -11,7 +11,7 @@ export function AdminNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="nav-list" aria-label="Menu Pengelola">
+    <nav className="nav-list" aria-label="Menu Operator">
       {adminGroups.map((group) => (
         <div className="nav-section" key={group.label}>
           <div className="workspace-label nav-section-label">{group.label}</div>
