@@ -1,7 +1,7 @@
 /**
  * Mode akses terbuka untuk pengembangan UI (DEC-024, disempurnakan DEC-025).
  *
- * Tujuan: keempat area aplikasi dapat ditinjau tanpa registrasi/login pada
+ * Tujuan: ketiga ekosistem aplikasi dapat ditinjau tanpa registrasi/login pada
  * lingkungan non-produksi, sementara produksi tetap tertutup penuh.
  *
  * Satu aturan lingkungan, dipakai oleh middleware, layout area, Server Action,
@@ -20,7 +20,7 @@
  *   simulasi berlabel di memori server.
  *
  * Gerbang otorisasi asli tidak dihapus: begitu mode ini tertutup, pemeriksaan
- * sesi, peran, keterkaitan organisasi, dan RLS kembali berlaku penuh.
+ * sesi, peran, pemeriksaan peran, dan RLS kembali berlaku penuh.
  */
 
 const DISABLE_VALUES = new Set(["0", "false", "off", "no", "disabled"]);
@@ -77,7 +77,7 @@ export function isDevOpenAccess(): boolean {
 }
 
 export const DEV_OPEN_ACCESS_NOTICE =
-  "Mode pengembangan aktif: keempat area terbuka tanpa login dan memakai data simulasi berlabel. Semua baris berasal dari dataset contoh di memori server, bukan data siswa, wali, atau armada nyata. Perubahan hilang saat server dimulai ulang.";
+  "Mode pengembangan aktif: ketiga ekosistem terbuka tanpa login dan memakai data simulasi berlabel. Semua baris berasal dari dataset contoh di memori server, bukan data siswa, wali, atau armada nyata. Perubahan hilang saat server dimulai ulang.";
 
 /** Label lingkungan untuk pita peringatan, supaya tidak disalahartikan sebagai produksi. */
 export function devAccessEnvironmentLabel(): string {
@@ -93,7 +93,6 @@ export function devAccessEnvironmentLabel(): string {
  * sehingga validasi format id di Server Action tetap dapat diuji tanpa data nyata.
  */
 export const DEV_VIEWER = {
-  admin: { userId: "51111111-0000-4000-8000-0000000000a1", email: "admin.contoh@example.test", fullName: "Admin Contoh" },
   operator: {
     userId: "51111111-0000-4000-8000-0000000000a2",
     email: "operator.contoh@example.test",
@@ -112,7 +111,7 @@ export const DEV_VIEWER = {
 } as const;
 
 /** Baris organisasi/pengemudi simulasi yang dipakai gerbang area operator dan pengemudi. */
-export const DEV_ORGANISATION = {
+export const DEV_COMPANY = {
   id: "51111111-0000-4000-8000-0000000001b1",
   name: "Operator Contoh Nusantara",
 } as const;
