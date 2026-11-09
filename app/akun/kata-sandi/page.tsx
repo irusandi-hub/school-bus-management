@@ -29,7 +29,7 @@ export default async function KataSandiPage({
           <BrandLogo className="auth-logo" />
           <h1>Database belum dikonfigurasi</h1>
           <p className="auth-copy">
-            Aktivasi akun belum dapat dilakukan karena koneksi database belum diatur. Hubungi pengelola sistem.
+            Aktivasi akun belum dapat dilakukan karena koneksi database belum diatur. Hubungi Operator Utama.
           </p>
           <Link className="auth-back" href="/">
             Kembali ke beranda
@@ -54,7 +54,7 @@ export default async function KataSandiPage({
         <h1>Buat kata sandi</h1>
         <p className="auth-copy">
           Email <strong>{viewer.email ?? "Anda"}</strong> sudah diverifikasi. Buat kata sandi untuk menyelesaikan
-          aktivasi. Akses hanya dibuka jika email terdaftar oleh Pengelola dan memiliki siswa dengan layanan aktif.
+          aktivasi. Akses hanya dibuka jika email terdaftar oleh Operator Utama dan memiliki siswa dengan layanan aktif.
         </p>
 
         {notice && (
