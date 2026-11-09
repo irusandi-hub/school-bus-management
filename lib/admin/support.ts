@@ -14,18 +14,16 @@ export type AdminActionContext =
   | { ok: false; state: ActionState };
 
 /**
- * Every admin mutation requires an authenticated session whose database profile role is
- * `admin`. Row level security enforces the same rule independently, so a request that
- * bypasses the UI still cannot write.
+ * Every platform mutation requires an authenticated session whose database profile role
+ * is `operator` (or legacy `admin` during migration). Row level security enforces the
+ * same global Operator authority independently.
  */
 export async function adminActionContext(): Promise<AdminActionContext> {
   const supabase = await createServerSupabase();
   if (!supabase) return { ok: false, state: failure(supabaseNotConfiguredMessage) };
 
-  // Mode akses terbuka pengembangan (DEC-024): tindakan Admin Pusat dilayani identitas
-  // simulasi atas dataset simulasi. Pemeriksaan peran di bawah tetap utuh dan berlaku
-  // kembali penuh ketika mode dev dimatikan.
-  if (isDevOpenAccess()) return { ok: true, supabase, userId: DEV_VIEWER.admin.userId };
+  // Mode akses terbuka pengembangan memakai identitas Operator simulasi.
+  if (isDevOpenAccess()) return { ok: true, supabase, userId: DEV_VIEWER.operator.userId };
 
   const {
     data: { user },
@@ -37,8 +35,8 @@ export async function adminActionContext(): Promise<AdminActionContext> {
 
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
 
-  if (profile?.role !== "admin") {
-    return { ok: false, state: failure("Akun Anda tidak memiliki izin Admin Pusat untuk tindakan ini.") };
+  if (profile?.role !== "operator" && profile?.role !== "admin") {
+    return { ok: false, state: failure("Akun Anda tidak memiliki izin Operator untuk tindakan ini.") };
   }
 
   return { ok: true, supabase, userId: user.id };
@@ -72,23 +70,19 @@ export function writeFailure(
 }
 
 export type OperatorActionContext =
-  | { ok: true; supabase: ServerSupabase; userId: string; operatorId: string }
+  | { ok: true; supabase: ServerSupabase; userId: string; operatorId: string | null }
   | { ok: false; state: ActionState };
 
 /**
- * Mutations in the operator area require the operator role AND an active organisation
- * link. The organisation id is taken from the database, never from the form, so an
- * operator cannot write into another operator's fleet by changing a field.
+ * Legacy operator-area mutations use the same global Operator authority. Company/operator
+ * rows remain optional data attribution and are not authorization boundaries.
  */
 export async function operatorActionContext(): Promise<OperatorActionContext> {
   const supabase = await createServerSupabase();
   if (!supabase) return { ok: false, state: failure(supabaseNotConfiguredMessage) };
 
-  // Mode akses terbuka pengembangan (DEC-024): organisasi simulasi dipakai sebagai
-  // pemilik baris, sehingga tulisan operator tetap terbatas pada satu armada contoh.
-  if (isDevOpenAccess()) {
-    return { ok: true, supabase, userId: DEV_VIEWER.operator.userId, operatorId: DEV_ORGANISATION.id };
-  }
+  // Development and production both use global Operator access; organization links
+  // are optional attribution, never a prerequisite for access.
 
   const {
     data: { user },
@@ -99,22 +93,19 @@ export async function operatorActionContext(): Promise<OperatorActionContext> {
   }
 
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
-  if (profile?.role !== "operator") {
-    return { ok: false, state: failure("Akun Anda tidak memiliki izin area operator untuk tindakan ini.") };
+  if (profile?.role !== "operator" && profile?.role !== "admin") {
+    return { ok: false, state: failure("Akun Anda tidak memiliki izin Operator untuk tindakan ini.") };
   }
 
   const { data: operator } = await supabase
     .from("operators")
     .select("id")
-    .eq("profile_id", user.id)
     .eq("active", true)
+    .order("created_at", { ascending: true })
+    .limit(1)
     .maybeSingle();
 
-  if (!operator) {
-    return { ok: false, state: failure("Akun operator belum ditautkan ke organisasi yang aktif.") };
-  }
-
-  return { ok: true, supabase, userId: user.id, operatorId: operator.id as string };
+  return { ok: true, supabase, userId: user.id, operatorId: (operator?.id as string | undefined) ?? null };
 }
 
 export function parsePage(value: string | string[] | undefined): number {
