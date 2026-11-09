@@ -10,7 +10,7 @@ import { requireAdmin } from "@/lib/auth";
 import { signOutAction } from "@/lib/auth-actions";
 
 export const metadata: Metadata = {
-  title: "Pengelola | School Bus",
+  title: "Operator | School Bus",
 };
 
 export const dynamic = "force-dynamic";
@@ -34,8 +34,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <aside className="sidebar">
         <BrandLogo
           href="/admin"
-          subtitle="Pengelola"
-          ariaLabel="School Bus Pengelola"
+          subtitle="Operator Utama"
+          ariaLabel="School Bus Operator"
           className="brand"
         />
 
@@ -57,14 +57,14 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <MobileMenu
             groups={adminGroups}
             rootHref="/admin"
-            areaLabel="Pengelola"
-            note="Menu ini menampilkan seluruh modul Pengelola. Data yang tampil mengikuti hak akses akun Anda."
+            areaLabel="Operator Utama"
+            note="Satu ruang kerja untuk seluruh data dan operasional platform."
           />
           <div className="workspace-heading">
             <BrandLogo size="sm" />
           <div className="topbar-title">
             <div className="eyebrow">DAMMAM · PILOT</div>
-            <div className="admin-topbar-role">Ruang kerja Pengelola</div>
+            <div className="admin-topbar-role">Ruang Kerja Operator Utama</div>
           </div>
           </div>
           <div className="top-actions">
@@ -86,7 +86,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         {children}
 
         <footer className="page-footer">
-          <span>School Bus Management · Pengelola</span>
+          <span>School Bus Management · Operator Utama</span>
           <span>Data induk &amp; operasional · GPS belum aktif · kamera mengikuti perjalanan</span>
         </footer>
       </main>
