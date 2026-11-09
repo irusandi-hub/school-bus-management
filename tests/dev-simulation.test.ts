@@ -106,7 +106,7 @@ describe("klien simulasi pengembangan", () => {
     const latest = rows(history)[0];
     assert.equal(latest.previous_status, "active");
     assert.equal(latest.new_status, "paused");
-    assert.equal((latest.profiles as SimRow).full_name, "Admin Contoh");
+    assert.equal((latest.profiles as SimRow).full_name, "Operator Contoh");
   });
 
   it("menyelesaikan relasi satu-ke-banyak trips pada penugasan", async () => {
