@@ -8,7 +8,7 @@ export function safeNextPath(raw: string | null | undefined, fallback: string): 
 }
 
 export const roleHome: Record<UserRole, string> = {
-  admin: "/admin",
+  admin: "/operator",
   operator: "/operator",
   driver: "/pengemudi",
   parent: "/wali",
