@@ -20,12 +20,12 @@ const doors: Record<string, { label: string; detail: string }> = {
   pengemudi: {
     label: "Pengemudi",
     detail:
-      "Gunakan akun pengemudi yang sudah ditautkan Pengelola. Setelah masuk, Anda diarahkan ke tugas hari ini.",
+      "Gunakan akun pengemudi yang sudah ditautkan Operator. Setelah masuk, Anda diarahkan ke tugas hari ini.",
   },
   wali: {
     label: "Orang Tua/Wali",
     detail:
-      "Gunakan email dan kata sandi akun wali. Akun harus didaftarkan Pengelola dan memiliki siswa dengan layanan aktif.",
+      "Gunakan email dan kata sandi akun wali. Akun harus didaftarkan Operator dan memiliki siswa dengan layanan aktif.",
   },
 };
 
