@@ -33,6 +33,10 @@ describe("batas perubahan peran Operator dan Pengemudi", () => {
     assert.match(migration, /p\.role in \('admin', 'operator'\)/);
   });
 
+  it("menegakkan satu identitas global lintas role admin dan operator", () => {
+    assert.match(migration, /create unique index if not exists profiles_single_global_operator_idx[\\s\\S]*where role in \\('admin', 'operator'\\)/);
+  });
+
   it("melindungi semua akun Wali, termasuk tautan wali yang nonaktif, dari demosi menjadi Pengemudi", () => {
     assert.match(migration, /p\.role = 'parent'/);
     assert.match(migration, /from public\.guardians g where g\.profile_id = v_uid/);
@@ -52,5 +56,16 @@ describe("login Operator global", () => {
     const operatorBranch = authActions.slice(start, end);
     assert.match(operatorBranch, /redirect\(scopedNext\("operator", requestedNext\)\)/);
     assert.doesNotMatch(operatorBranch, /from\("operators"\)|profile_id|operator-belum-tertaut/);
+  });
+});
+
+
+describe("aktivasi akun sesuai role", () => {
+  const passwordPage = readFileSync(
+    new URL("../app/akun/kata-sandi/page.tsx", import.meta.url),
+    "utf8",
+  );
+  it("mengarahkan semua profil aktif ke beranda rolenya, bukan form aktivasi wali", () => {
+    assert.match(passwordPage, /if \(viewer\.profile\) redirect\(homeForRole\(viewer\.profile\.role\)\)/);
   });
 });
