@@ -1,6 +1,8 @@
 name: Verify PR
 
 on:
+  push:
+    branches: [feat/unified-operator-global-workspace]
   pull_request:
     branches: [main]
   workflow_dispatch:
