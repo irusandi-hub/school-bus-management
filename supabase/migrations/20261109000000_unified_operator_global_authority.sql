@@ -148,11 +148,12 @@ begin
     raise exception 'Akun tersebut masih memiliki tautan perusahaan lama dan tidak dapat digunakan sebagai pengemudi.';
   end if;
 
-  if exists (
-    select 1 from public.guardians g
-    where g.profile_id = v_uid and g.active
-  ) then
-    raise exception 'Akun tersebut adalah akun orang tua/wali yang aktif dan tidak dapat diubah perannya.';
+  -- A parent identity must never be silently converted into a driver identity.
+  -- Check both the profile role and every guardian link, including inactive legacy
+  -- guardian rows, so deactivation cannot be used to bypass this role boundary.
+  if exists (select 1 from public.profiles p where p.id = v_uid and p.role = 'parent')
+     or exists (select 1 from public.guardians g where g.profile_id = v_uid) then
+    raise exception 'Akun tersebut adalah akun orang tua/wali dan tidak dapat diubah menjadi akun Pengemudi.';
   end if;
 
   insert into public.profiles (id, full_name, role)
