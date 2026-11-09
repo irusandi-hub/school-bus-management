@@ -7,6 +7,6 @@
  */
 export function csvCell(value: unknown): string {
   const raw = value == null ? "" : String(value);
-  const safe = /^[\u0000-\u0020]*[=+\-@]/.test(raw) ? `'${raw}` : raw;
+  const safe = /^[\u0000-\u0020\uFEFF]*[=+\-@]/.test(raw) ? `'${raw}` : raw;
   return `"${safe.replace(/"/g, '""')}"`;
 }
