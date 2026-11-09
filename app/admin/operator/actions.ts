@@ -5,10 +5,8 @@ import { redirect } from "next/navigation";
 import { adminActionContext, writeFailure } from "@/lib/admin/support";
 import {
   failure,
-  isValidEmail,
   isValidPhone,
   normalizeCode,
-  normalizeEmail,
   readCheckbox,
   readOptionalText,
   readText,
@@ -32,9 +30,9 @@ export async function saveOperator(_prev: ActionState, formData: FormData): Prom
   const contactPhone = readOptionalText(formData, "contact_phone");
 
   const errors: FieldErrors = {};
-  if (name.length < 2 || name.length > 120) errors.name = "Nama pengelola harus 2–120 karakter.";
+  if (name.length < 2 || name.length > 120) errors.name = "Nama perusahaan harus 2–120 karakter.";
   if (!/^[A-Z0-9][A-Z0-9-]{1,19}$/.test(code)) {
-    errors.code = "Kode 2–20 karakter: huruf kapital, angka, atau tanda hubung.";
+    errors.code = "Kode perusahaan 2–20 karakter: huruf kapital, angka, atau tanda hubung.";
   }
   if (contactEmail && !isValidEmail(contactEmail)) errors.contact_email = "Format email belum benar.";
   if (contactPhone && !isValidPhone(contactPhone)) {
@@ -56,66 +54,11 @@ export async function saveOperator(_prev: ActionState, formData: FormData): Prom
     ? await ctx.supabase.from("operators").update(payload).eq("id", id)
     : await ctx.supabase.from("operators").insert(payload);
 
-  if (error) return writeFailure(error, { unique: "Kode pengelola sudah dipakai. Gunakan kode lain." });
+  if (error) return writeFailure(error, { unique: "Kode perusahaan sudah dipakai. Gunakan kode lain." });
 
   revalidatePath(path);
   revalidatePath("/admin");
-  return success(id ? "Data pengelola berhasil diperbarui." : "Pengelola baru berhasil ditambahkan.");
-}
-
-/** Error text raised by our own SQL functions is safe to show; anything else is not. */
-function linkMessage(raw: string | undefined): string {
-  const own =
-    /Akses ditolak|Isian belum lengkap|tidak ditemukan|Email belum terdaftar|sudah tertaut|Admin Pusat dan tidak dapat|akun orang tua\/wali/i;
-  if (raw && own.test(raw)) return raw;
-  return "Penautan akun belum berhasil. Periksa email lalu coba lagi; jika berlanjut, hubungi pengelola sistem.";
-}
-
-export async function linkOperatorAccount(formData: FormData) {
-  const ctx = await adminActionContext();
-  if (!ctx.ok) {
-    redirect(`${path}?jenis=error&pesan=${encodeURIComponent(ctx.state.message)}`);
-  }
-
-  const id = readText(formData, "id");
-  const email = normalizeEmail(readText(formData, "email"));
-  if (!id || !isValidEmail(email)) {
-    redirect(
-      `${path}?jenis=error&pesan=${encodeURIComponent("Isian belum lengkap: masukkan pengelola dan email akun yang valid.")}`,
-    );
-  }
-
-  const { error } = await ctx.supabase.rpc("link_operator_account", { p_operator_id: id, p_email: email });
-
-  if (error) {
-    redirect(`${path}?jenis=error&pesan=${encodeURIComponent(linkMessage(error.message))}`);
-  }
-
-  revalidatePath(path);
-  revalidatePath("/operator");
-  redirect(`${path}?pesan=${encodeURIComponent("Akun berhasil ditautkan sebagai Pengelola.")}`);
-}
-
-export async function unlinkOperatorAccount(formData: FormData) {
-  const ctx = await adminActionContext();
-  if (!ctx.ok) {
-    redirect(`${path}?jenis=error&pesan=${encodeURIComponent(ctx.state.message)}`);
-  }
-
-  const id = readText(formData, "id");
-  if (!id) {
-    redirect(`${path}?jenis=error&pesan=${encodeURIComponent("Pengelola belum dipilih.")}`);
-  }
-
-  const { error } = await ctx.supabase.rpc("unlink_operator_account", { p_operator_id: id });
-
-  if (error) {
-    redirect(`${path}?jenis=error&pesan=${encodeURIComponent(linkMessage(error.message))}`);
-  }
-
-  revalidatePath(path);
-  revalidatePath("/operator");
-  redirect(`${path}?pesan=${encodeURIComponent("Tautan akun pengelola dilepas.")}`);
+  return success(id ? "Data perusahaan berhasil diperbarui." : "Perusahaan baru berhasil ditambahkan.");
 }
 
 export async function setOperatorActive(formData: FormData) {
@@ -140,8 +83,8 @@ export async function setOperatorActive(formData: FormData) {
   redirect(
     `${path}?pesan=${encodeURIComponent(
       active
-        ? "Pengelola diaktifkan kembali."
-        : "Pengelola dinonaktifkan. Data pengelola, bus, dan pengemudi terkait tetap tersimpan.",
+        ? "Perusahaan diaktifkan kembali."
+        : "Perusahaan dinonaktifkan. Data dan riwayat terkait tetap tersimpan.",
     )}`,
   );
 }
