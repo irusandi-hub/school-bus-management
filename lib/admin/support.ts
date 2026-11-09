@@ -81,8 +81,8 @@ export async function operatorActionContext(): Promise<OperatorActionContext> {
   const supabase = await createServerSupabase();
   if (!supabase) return { ok: false, state: failure(supabaseNotConfiguredMessage) };
 
-  // Development and production both use global Operator access; organization links
-  // are optional attribution, never a prerequisite for access.
+  // Development preview uses the dedicated simulated Operator identity.
+  if (isDevOpenAccess()) return { ok: true, supabase, userId: DEV_VIEWER.operator.userId };
 
   const {
     data: { user },
