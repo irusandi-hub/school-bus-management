@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
 
 :root{--ink:#172b35;--muted:#71818a;--line:#e5eceb;--paper:#f5f8f7;--green:#176b55;--green-soft:#e7f4ee;--orange:#f2a65a;--blue:#e9f2f7}
 *{box-sizing:border-box}
@@ -102,3 +102,21 @@ button{cursor:pointer}
   .operational-workspace-head{flex-direction:column;align-items:stretch}
   .operational-workspace .workspace-empty{min-height:205px;padding:24px 16px}
 }
+
+
+/* Login page aligned with the SchoolBus landing theme (navy + yellow accents) */
+.auth-page{background:#f7f9fc;padding:24px 20px}
+.auth-card{border-color:#e2e8f3;border-radius:24px;padding:28px 24px;box-shadow:0 24px 60px #0f1b3d12}
+.auth-brand{display:inline-flex;align-items:center;gap:9px;min-height:44px;margin-bottom:18px;color:#0f1b3d;font-family:Manrope,sans-serif;font-size:19px;font-weight:600;letter-spacing:-.03em;text-decoration:none}
+.auth-card .eyebrow{color:#556179;letter-spacing:.14em}
+.auth-card h1{color:#0f1b3d;font-size:26px;line-height:1.15;letter-spacing:-.02em}
+.auth-copy{color:#556179}
+.auth-form input{min-height:48px;border-color:#dbe3f0;border-radius:12px}
+.auth-form input:focus-visible{outline:3px solid #0f1b3d;outline-offset:2px;border-color:#0f1b3d}
+.auth-form button{min-height:50px;border-radius:999px;background:#f5c518;color:#0f1b3d;font-family:Manrope,sans-serif;font-weight:800}
+.auth-form button:hover{background:#ffd84a}
+.auth-form button:focus-visible{outline:3px solid #0f1b3d;outline-offset:2px}
+.auth-message{border:1px solid #efd267;border-radius:12px;background:#fff7dc;color:#4a3f00}
+.auth-back{display:inline-flex;align-items:center;min-height:44px;margin-top:10px;color:#0f1b3d;text-decoration:underline;text-underline-offset:3px}
+.auth-footnote{border-color:#e2e8f3;color:#556179}
+@media(prefers-reduced-motion:reduce){.auth-page *{animation:none!important;transition:none!important}}

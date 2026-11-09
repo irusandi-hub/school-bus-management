@@ -28,6 +28,8 @@ npm run start
 
 ## Tampilan awal
 
+- Beranda publik di `/` dengan teks Indonesia, English, dan العربية (termasuk tata letak RTL).
+- Pratinjau dashboard operasional di `/dashboard`.
 - Dashboard responsif untuk desktop dan perangkat seluler.
 - Pemilih tampilan Admin Pusat, Pengemudi, dan Orang Tua/Wali.
 - Navigasi dasar: Ringkasan, Perjalanan, Rute & Titik Jemput, Data Siswa, Bus & Pengemudi, dan Laporan.
