@@ -13,7 +13,7 @@ export const metadata: Metadata = { title: "Operator | School Bus" };
 export const dynamic = "force-dynamic";
 
 /** One global workspace for all platform administration and operations. */
-export default async function OperatorLayout({ children }: { children: React.ReactNode }) {
+export async function OperatorLayout({ children }: { children: React.ReactNode }) {
   const access = await requireOperator();
   if (access.status === "unconfigured") return <ConfigNotice />;
 
@@ -68,3 +68,5 @@ export default async function OperatorLayout({ children }: { children: React.Rea
     </div>
   );
 }
+
+export default OperatorLayout;
