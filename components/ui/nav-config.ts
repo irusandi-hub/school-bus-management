@@ -7,7 +7,7 @@ export const adminGroups: NavGroup[] = [
   {
     label: "Data induk",
     items: [
-      { href: "/admin", label: "Ringkasan", icon: "dashboard", short: "Ringkasan" },
+      { href: "/operator", label: "Ringkasan", icon: "dashboard", short: "Ringkasan" },
       { href: "/admin/sekolah", label: "Sekolah", icon: "school", short: "Sekolah" },
       { href: "/admin/operator", label: "Pengelola", icon: "operator", short: "Pengelola" },
       { href: "/admin/siswa", label: "Data siswa", icon: "students", short: "Siswa" },
