@@ -96,14 +96,14 @@ export default async function SekolahPage({
     },
     {
       name: "operator_id",
-      label: "Pengelola transportasi",
+      label: "Perusahaan bus (opsional)",
       type: "select",
       defaultValue: editing?.operator_id ?? "",
       options: [
         { value: "", label: "Belum ditautkan" },
         ...operators.map((operator) => ({ value: operator.id, label: operator.name })),
       ],
-      help: "Menentukan pengelola yang dapat melihat siswa di sekolah ini. Data induk tetap dikelola Pengelola.",
+      help: "Untuk pemetaan dan audit tanggung jawab transportasi. Bukan pembatas akses; Operator Utama tetap mengelola seluruh sekolah.",
       fullWidth: true,
     },
     {
