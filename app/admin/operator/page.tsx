@@ -58,7 +58,6 @@ export default async function OperatorPage({
     editing = (editRow as OperatorRow | null) ?? null;
   }
 
-
   const notice = noticeFromParams(params);
   const baseQuery = { q, status: status || undefined };
 
@@ -146,7 +145,6 @@ export default async function OperatorPage({
                   <th scope="col">Kota</th>
                   <th scope="col">Kontak</th>
                   <th scope="col">Status</th>
-                  
                   <th scope="col">Tindakan</th>
                 </tr>
               </thead>
@@ -158,7 +156,7 @@ export default async function OperatorPage({
                     detail={
                       q || status
                         ? "Ubah kata kunci atau filter status, lalu terapkan kembali."
-                        : "Tambahkan pengelola pertama melalui formulir di samping."
+                        : "Tambahkan perusahaan bus pertama melalui formulir di samping."
                     }
                   />
                 ) : (
