@@ -70,7 +70,7 @@ export function writeFailure(
 }
 
 export type OperatorActionContext =
-  | { ok: true; supabase: ServerSupabase; userId: string; operatorId: string | null }
+  | { ok: true; supabase: ServerSupabase; userId: string }
   | { ok: false; state: ActionState };
 
 /**
@@ -97,15 +97,7 @@ export async function operatorActionContext(): Promise<OperatorActionContext> {
     return { ok: false, state: failure("Akun Anda tidak memiliki izin Operator untuk tindakan ini.") };
   }
 
-  const { data: operator } = await supabase
-    .from("operators")
-    .select("id")
-    .eq("active", true)
-    .order("created_at", { ascending: true })
-    .limit(1)
-    .maybeSingle();
-
-  return { ok: true, supabase, userId: user.id, operatorId: (operator?.id as string | undefined) ?? null };
+  return { ok: true, supabase, userId: user.id };
 }
 
 export function parsePage(value: string | string[] | undefined): number {
