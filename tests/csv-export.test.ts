@@ -11,7 +11,7 @@ describe("CSV export safety", () => {
     assert.equal(csvCell("=HYPERLINK(\"https://example.test\")"), '"\'=HYPERLINK(""https://example.test"")"');
     assert.equal(csvCell(" +SUM(1,2)"), '"\' +SUM(1,2)"');
     assert.equal(csvCell("-1+2"), '"\'-1+2"');
-    assert.equal(csvCell("\\uFEFF=2+2"), '"\\uFEFF=2+2"');
+    assert.equal(csvCell("\uFEFF=2+2"), '"\'\uFEFF=2+2"');
     assert.equal(csvCell("@SUM(1,2)"), '"\'@SUM(1,2)"');
   });
 
