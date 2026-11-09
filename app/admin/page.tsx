@@ -7,10 +7,6 @@ import { formatDate, routeDirectionLabel, serviceDateInTimeZone } from "@/lib/va
 
 export const metadata: Metadata = { title: "Ringkasan | Operator" };
 
-function localToday() {
-  const now = new Date();
-  return new Date(now.getTime() - now.getTimezoneOffset() * 60_000).toISOString().slice(0, 10);
-}
 
 export default async function AdminHomePage() {
   const supabase = await adminReadContext();
