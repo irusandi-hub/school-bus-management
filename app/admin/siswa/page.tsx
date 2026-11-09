@@ -17,7 +17,7 @@ import type { StudentRow } from "@/lib/types";
 import { sanitizeSearch, serviceStatusLabel } from "@/lib/validation";
 import { saveStudent } from "./actions";
 
-export const metadata: Metadata = { title: "Data Siswa | Pengelola" };
+export const metadata: Metadata = { title: "Data Siswa | Operator" };
 
 const path = "/admin/siswa";
 const selectColumns =
@@ -149,7 +149,7 @@ export default async function SiswaPage({
       type: "number",
       step: "0.000001",
       defaultValue: editing?.home_latitude,
-      help: "Data privat. Hanya terlihat oleh Pengelola dan wali siswa terkait.",
+      help: "Data privat. Hanya dapat dikelola Operator; wali hanya melihat siswa yang terhubung ke akunnya.",
     },
     {
       name: "home_longitude",
