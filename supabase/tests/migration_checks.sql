@@ -102,7 +102,16 @@ begin
   select count(*) into n from public.trips; if n <> 2 then raise exception 'Operator tidak melihat seluruh perjalanan: %', n; end if;
   select count(*) into n from public.trip_student_events; if n <> 1 then raise exception 'Operator tidak melihat seluruh peristiwa perjalanan: %', n; end if;
   select count(*) into n from public.audit_logs; if n = 0 then raise exception 'Operator tidak dapat membaca audit platform'; end if;
-end $$;
+
+  -- Global authority must include write access, not merely broad read access.
+  update public.schools set name = 'Sekolah A diperbarui'
+    where id = '00000000-0000-0000-0000-000000000201';
+  if not found then raise exception 'Operator tidak dapat memperbarui master sekolah'; end if;
+  insert into public.operators (id, profile_id, name, code, city, active)
+    values ('00000000-0000-0000-0000-000000000103', null, 'Perusahaan C', 'OPR-C', 'Dammam', true);
+  select count(*) into n from public.operators;
+  if n <> 3 then raise exception 'Operator tidak dapat menambah data perusahaan global'; end if;
+end $;
 reset role;
 
 -- A second legacy Admin or Operator must not coexist with the global Operator.
@@ -137,7 +146,12 @@ begin
   select count(*) into n from public.trip_student_events; if n <> 1 then raise exception 'Pengemudi A melihat catatan lain: %', n; end if;
   select count(*) into n from public.schools; if n <> 0 then raise exception 'Pengemudi dapat membaca master sekolah'; end if;
   select count(*) into n from public.audit_logs; if n <> 0 then raise exception 'Pengemudi dapat membaca audit'; end if;
-end $$;
+  begin
+    insert into public.schools (name, code, city) values ('Sekolah Driver', 'DRV-SCH', 'Dammam');
+    raise exception 'Pengemudi dapat menambah master sekolah';
+  exception when insufficient_privilege then null;
+  end;
+end $;
 reset role;
 
 set role authenticated;
@@ -176,7 +190,12 @@ begin
   select count(*) into n from public.trip_student_events; if n <> 0 then raise exception 'Wali B melihat peristiwa anak lain'; end if;
   select count(*) into n from public.trips; if n <> 0 then raise exception 'Wali B melihat perjalanan anak lain'; end if;
   select count(*) into n from public.buses; if n <> 0 then raise exception 'Wali B melihat bus anak lain'; end if;
-end $$;
+  begin
+    insert into public.schools (name, code, city) values ('Sekolah Wali', 'WAL-SCH', 'Dammam');
+    raise exception 'Wali dapat menambah master sekolah';
+  exception when insufficient_privilege then null;
+  end;
+end $;
 reset role;
 
 -- No anonymous data access; parent/driver accounts cannot promote themselves.
