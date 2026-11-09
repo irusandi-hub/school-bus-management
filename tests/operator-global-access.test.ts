@@ -39,3 +39,18 @@ describe("batas perubahan peran Operator dan Pengemudi", () => {
     assert.doesNotMatch(migration, /g\.profile_id = v_uid and g\.active/);
   });
 });
+
+
+describe("login Operator global", () => {
+  const authActions = readFileSync(
+    new URL("../lib/auth-actions.ts", import.meta.url),
+    "utf8",
+  );
+  it("does not require a company row before entering the global workspace", () => {
+    const start = authActions.indexOf('if (role === "operator")');
+    const end = authActions.indexOf('if (role === "driver")', start);
+    const operatorBranch = authActions.slice(start, end);
+    assert.match(operatorBranch, /redirect\(scopedNext\("operator", requestedNext\)\)/);
+    assert.doesNotMatch(operatorBranch, /from\("operators"\)|profile_id|operator-belum-tertaut/);
+  });
+});
