@@ -1,4 +1,4 @@
-import { DEV_DRIVER_RECORD, DEV_ORGANISATION, DEV_VIEWER } from "../dev-open-access.ts";
+import { DEV_COMPANY, DEV_DRIVER_RECORD, DEV_VIEWER } from "../dev-open-access.ts";
 
 /**
  * Dataset simulasi untuk mode akses terbuka pengembangan (DEC-024).
@@ -25,10 +25,10 @@ function yesterday() {
   return iso(1).slice(0, 10);
 }
 
-const { admin, operator, driver, parent } = DEV_VIEWER;
+const { operator, driver, parent } = DEV_VIEWER;
 
 export const DEV_IDS = {
-  operator: DEV_ORGANISATION.id,
+  operator: DEV_COMPANY.id,
   driver: DEV_DRIVER_RECORD.id,
   guardian: "51111111-0000-4000-8000-0000000005f1",
 } as const;
@@ -36,14 +36,6 @@ export const DEV_IDS = {
 export function createSimulationTables(): SimTables {
   return {
     profiles: [
-      {
-        id: admin.userId,
-        full_name: admin.fullName,
-        role: "admin",
-        phone: "+966 50 000 0001",
-        created_at: iso(60),
-        updated_at: iso(60),
-      },
       {
         id: operator.userId,
         full_name: operator.fullName,
@@ -79,7 +71,7 @@ export function createSimulationTables(): SimTables {
         contact_name: "Manajer Armada Contoh",
         contact_email: "operator.contoh@example.test",
         contact_phone: "+966 50 000 0002",
-        profile_id: operator.userId,
+        profile_id: null,
         active: true,
         created_at: iso(60),
       },
@@ -296,7 +288,7 @@ export function createSimulationTables(): SimTables {
         new_status: "active",
         reason: "Contoh aktivasi layanan siswa pada data simulasi.",
         changed_at: iso(30),
-        actor_profile_id: admin.userId,
+        actor_profile_id: operator.userId,
       },
       {
         id: 2,
@@ -305,7 +297,7 @@ export function createSimulationTables(): SimTables {
         new_status: "paused",
         reason: "Contoh penonaktifan layanan untuk menguji tampilan status.",
         changed_at: iso(3),
-        actor_profile_id: admin.userId,
+        actor_profile_id: operator.userId,
       },
     ],
 
@@ -445,7 +437,7 @@ export function createSimulationTables(): SimTables {
         driver_id: DEV_DRIVER_RECORD.id,
         bus_id: "51111111-0000-4000-8000-0000000003d1",
         service_date: today(),
-        assigned_by: admin.userId,
+        assigned_by: operator.userId,
         created_at: iso(0, 3),
       },
       {
@@ -454,7 +446,7 @@ export function createSimulationTables(): SimTables {
         driver_id: "51111111-0000-4000-8000-0000000004e2",
         bus_id: "51111111-0000-4000-8000-0000000003d3",
         service_date: today(),
-        assigned_by: admin.userId,
+        assigned_by: operator.userId,
         created_at: iso(0, 3),
       },
       {
@@ -463,7 +455,7 @@ export function createSimulationTables(): SimTables {
         driver_id: DEV_DRIVER_RECORD.id,
         bus_id: "51111111-0000-4000-8000-0000000003d1",
         service_date: yesterday(),
-        assigned_by: admin.userId,
+        assigned_by: operator.userId,
         created_at: iso(1),
       },
     ],
@@ -552,7 +544,7 @@ export function createSimulationTables(): SimTables {
     audit_logs: [
       {
         id: 1,
-        actor_profile_id: admin.userId,
+        actor_profile_id: operator.userId,
         action: "insert",
         entity_type: "students",
         entity_id: "51111111-0000-4000-8000-000000000601",
@@ -561,7 +553,7 @@ export function createSimulationTables(): SimTables {
       },
       {
         id: 2,
-        actor_profile_id: admin.userId,
+        actor_profile_id: operator.userId,
         action: "update",
         entity_type: "students",
         entity_id: "51111111-0000-4000-8000-000000000603",
