@@ -1,7 +1,17 @@
--- PostgreSQL/PGlite integration checks for the three-ecosystem access model.
--- This file is run only against a fresh ephemeral test database by the SQL test
--- scripts. All fixtures below are synthetic and must never be copied to production.
-
+-- PostgreSQL/PGlite integration fixtures for the three-ecosystem access model.
+--
+-- Executed by supabase/tests/camera-checks.mjs and location-checks.mjs after
+-- they apply every migration in chronological order to a fresh in-memory PGlite
+-- database. Do not run against a hosted or production database.
+--
+-- This fixture verifies:
+--   * exactly one global Operator across all companies and schools;
+--   * Driver access limited to the driver's assigned route/trip;
+--   * Guardian access limited to their own active child and related trip;
+--   * legacy global role uniqueness and protected account-linking functions;
+--   * anonymous access denied.
+--
+-- All identities and records below are synthetic test data.
 insert into auth.users (id, email, email_confirmed_at) values
   ('00000000-0000-0000-0000-000000000001', 'operator@contoh.test', now()),
   ('00000000-0000-0000-0000-000000000002', 'unused.a@contoh.test', now()),
