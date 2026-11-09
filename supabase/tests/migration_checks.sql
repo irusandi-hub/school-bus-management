@@ -111,7 +111,7 @@ begin
     values ('00000000-0000-0000-0000-000000000103', null, 'Perusahaan C', 'OPR-C', 'Dammam', true);
   select count(*) into n from public.operators;
   if n <> 3 then raise exception 'Operator tidak dapat menambah data perusahaan global'; end if;
-end $;
+end $$;
 reset role;
 
 -- A second legacy Admin or Operator must not coexist with the global Operator.
@@ -151,7 +151,7 @@ begin
     raise exception 'Pengemudi dapat menambah master sekolah';
   exception when insufficient_privilege then null;
   end;
-end $;
+end $$;
 reset role;
 
 set role authenticated;
@@ -195,7 +195,7 @@ begin
     raise exception 'Wali dapat menambah master sekolah';
   exception when insufficient_privilege then null;
   end;
-end $;
+end $$;
 reset role;
 
 -- No anonymous data access; parent/driver accounts cannot promote themselves.
