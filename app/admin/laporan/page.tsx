@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { ConfigNotice, EmptyRow, Notice, PageHeader, Pill, StatCard } from "@/components/admin/ui";
 import { adminReadContext } from "@/lib/admin/read";
 import type { AuditLogRow } from "@/lib/types";
-import { formatDateTime } from "@/lib/validation";
+import { formatDateTime, serviceDateInTimeZone } from "@/lib/validation";
 
 export const metadata: Metadata = { title: "Laporan & Audit | Operator" };
 
@@ -11,7 +11,7 @@ export default async function ReportsPage() {
   const supabase = await adminReadContext();
   if (!supabase) return <ConfigNotice />;
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = serviceDateInTimeZone();
 
   const [activeStudents, guardians, routes, assignmentsToday, completedTrips, audits] = await Promise.all([
     supabase.from("students").select("id", { count: "exact", head: true }).eq("service_status", "active"),
