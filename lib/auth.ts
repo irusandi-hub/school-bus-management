@@ -98,17 +98,15 @@ function redirectToOwnArea(role: UserRole): never {
 
 export type AdminAccess = { status: "unconfigured" } | { status: "ready"; viewer: Viewer };
 
-/** Server-side gate for every Admin Pusat page and action. */
-export async function requireAdmin(nextPath = "/admin"): Promise<AdminAccess> {
-  if (isDevOpenAccess()) return { status: "ready", viewer: devViewerFor("admin") };
-
-  const viewer = await requireViewer(nextPath);
-  if (!viewer) return { status: "unconfigured" };
-
-  const profile = requireProfile(viewer);
-  if (profile.role !== "admin") redirectToOwnArea(profile.role);
-
-  return { status: "ready", viewer };
+/**
+ * Compatibility gate for legacy /admin routes and Server Actions.
+ * Both legacy admin accounts and operator accounts resolve to the single global
+ * Operator workspace. This alias must remain until legacy route files are moved.
+ */
+export async function requireAdmin(nextPath = "/operator"): Promise<AdminAccess> {
+  const access = await requireOperator(nextPath);
+  if (access.status === "unconfigured") return access;
+  return { status: "ready", viewer: access.viewer };
 }
 
 export type OperatorAccess =
@@ -116,15 +114,18 @@ export type OperatorAccess =
   | { status: "ready"; viewer: Viewer; operator: { id: string; name: string } };
 
 /**
- * Operator access requires the database role AND an active operator row linked to the
- * account. A role without an organisation must not see any organisation data.
+ * The Operator is the single global authority of the platform. Legacy admin
+ * profiles remain valid during account migration; new operator profiles receive
+ * the same global workspace without requiring a company/operator row.
+ *
+ * Database RLS must be updated by the paired migration before this code is deployed.
  */
 export async function requireOperator(nextPath = "/operator"): Promise<OperatorAccess> {
   if (isDevOpenAccess()) {
     return {
       status: "ready",
       viewer: devViewerFor("operator"),
-      operator: { id: DEV_ORGANISATION.id, name: DEV_ORGANISATION.name },
+      operator: { id: "global", name: "Operator Utama" },
     };
   }
 
@@ -132,27 +133,14 @@ export async function requireOperator(nextPath = "/operator"): Promise<OperatorA
   if (!viewer) return { status: "unconfigured" };
 
   const profile = requireProfile(viewer);
-  if (profile.role !== "operator") redirectToOwnArea(profile.role);
-
-  const supabase = await createServerSupabase();
-  if (!supabase) return { status: "unconfigured" };
-
-  const { data: operator } = await supabase
-    .from("operators")
-    .select("id, name")
-    .eq("profile_id", viewer.userId)
-    .eq("active", true)
-    .maybeSingle();
-
-  if (!operator) redirect("/tanpa-akses?alasan=operator-belum-tertaut");
+  if (profile.role !== "operator" && profile.role !== "admin") redirectToOwnArea(profile.role);
 
   return {
     status: "ready",
     viewer,
-    operator: { id: operator.id as string, name: operator.name as string },
+    operator: { id: "global", name: "Operator Utama" },
   };
 }
-
 export type DriverAccess =
   | { status: "unconfigured" }
   | { status: "ready"; viewer: Viewer; driver: { id: string; full_name: string } };
