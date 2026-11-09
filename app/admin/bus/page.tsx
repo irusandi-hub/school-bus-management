@@ -18,7 +18,7 @@ import type { BusRow } from "@/lib/types";
 import { sanitizeSearch } from "@/lib/validation";
 import { saveBus, setBusActive } from "./actions";
 
-export const metadata: Metadata = { title: "Bus | Pengelola" };
+export const metadata: Metadata = { title: "Bus | Operator" };
 
 const path = "/admin/bus";
 const selectColumns = "id, fleet_code, plate_number, capacity, model, notes, operator_id, active, operators(name)";
@@ -113,15 +113,15 @@ export default async function BusPage({
     },
     {
       name: "operator_id",
-      label: "Pengelola",
+      label: "Perusahaan bus",
       type: "select",
       fullWidth: true,
       defaultValue: editing?.operator_id ?? "",
       options: [{ value: "", label: "Belum ditetapkan" }, ...operatorOptions],
       help:
         operatorOptions.length === 0
-          ? "Belum ada pengelola aktif. Bus tetap dapat disimpan tanpa pengelola."
-          : "Pengelola dapat ditetapkan kemudian sesuai kontrak operasional.",
+          ? "Belum ada perusahaan bus aktif. Bus tetap dapat disimpan tanpa pengelompokan perusahaan."
+          : "Perusahaan bus dapat ditetapkan kemudian untuk kebutuhan pemetaan dan audit.",
     },
     {
       name: "notes",
@@ -154,8 +154,8 @@ export default async function BusPage({
             resetHref={path}
             filters={
               <>
-                <select name="operator" defaultValue={operatorFilter} aria-label="Filter pengelola">
-                  <option value="">Semua pengelola</option>
+                <select name="operator" defaultValue={operatorFilter} aria-label="Filter perusahaan bus">
+                  <option value="">Semua perusahaan bus</option>
                   {operators.map((operator) => (
                     <option key={operator.id} value={operator.id}>
                       {operator.name}
@@ -178,7 +178,7 @@ export default async function BusPage({
                   <th scope="col">Kode armada</th>
                   <th scope="col">Nomor polisi</th>
                   <th scope="col">Kapasitas</th>
-                  <th scope="col">Pengelola</th>
+                  <th scope="col">Perusahaan bus</th>
                   <th scope="col">Status</th>
                   <th scope="col">Tindakan</th>
                 </tr>
