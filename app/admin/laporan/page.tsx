@@ -1,10 +1,11 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 import { ConfigNotice, EmptyRow, Notice, PageHeader, Pill, StatCard } from "@/components/admin/ui";
 import { adminReadContext } from "@/lib/admin/read";
 import type { AuditLogRow } from "@/lib/types";
 import { formatDateTime } from "@/lib/validation";
 
-export const metadata: Metadata = { title: "Laporan & Audit | Pengelola" };
+export const metadata: Metadata = { title: "Laporan & Audit | Operator" };
 
 export default async function ReportsPage() {
   const supabase = await adminReadContext();
@@ -34,7 +35,7 @@ export default async function ReportsPage() {
     <>
       <PageHeader
         title="Laporan & audit"
-        description="Angka operasional diambil dari data nyata. Riwayat aktivitas dicatat otomatis dan tidak dapat diubah dari aplikasi."
+        description="Ringkasan seluruh data operasional dan jejak aktivitas platform." actions={<Link className="btn btn-secondary btn-sm" href="/operator/laporan/export">Unduh CSV</Link>}
       />
 
       {audits.error && <Notice kind="error">Jejak audit belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
@@ -74,7 +75,7 @@ export default async function ReportsPage() {
             <li>
               <strong>Rute, penugasan, perjalanan</strong>
               <span>✓</span>
-              <small>Rute dan penugasan dikelola Pengelola; perjalanan dijalankan pengemudi yang ditugaskan.</small>
+              <small>Rute dan penugasan dikelola Operator Utama; perjalanan dijalankan pengemudi yang ditugaskan.</small>
             </li>
             <li>
               <strong>GPS langsung &amp; kamera bus</strong>
@@ -87,7 +88,7 @@ export default async function ReportsPage() {
             <li>
               <strong>Ekspor laporan</strong>
               <span>—</span>
-              <small>Belum tersedia; laporan saat ini ditampilkan di layar sesuai hak akses akun.</small>
+              <small>Tersedia dalam format CSV untuk seluruh data perjalanan yang dapat diakses Operator.</small>
             </li>
           </ul>
         </section>
@@ -105,8 +106,7 @@ export default async function ReportsPage() {
               jejak audit agar data pribadi tidak menumpuk di luar tabel asalnya.
             </p>
             <p>
-              Jejak audit hanya dapat dibaca Pengelola. Pengelola tidak memiliki akses ke jejak audit platform;
-              laporan pengelola dibatasi pada data organisasinya.
+              Jejak audit platform dapat dibaca dan ditinjau oleh Operator Utama. Data perusahaan dan wilayah hanya menjadi pengelompokan untuk pemetaan serta audit, bukan pembatas akses.
             </p>
           </div>
         </section>
