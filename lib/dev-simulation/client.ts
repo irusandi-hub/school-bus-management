@@ -6,7 +6,7 @@ import { createSimulationTables, type SimRow, type SimTables } from "./data.ts";
  *
  * Berkas ini hanya memuat subset API supabase-js yang benar-benar dipakai aplikasi
  * (select/insert/update, eq/in/is/or, order/range/limit, maybeSingle, rpc, auth).
- * Tujuannya satu-satunya: membuat keempat area dapat ditinjau di lingkungan
+ * Tujuannya satu-satunya: membuat ketiga ekosistem dapat ditinjau di lingkungan
  * pengembangan tanpa kredensial dan tanpa menyentuh database mana pun. Otorisasi
  * tetap di database sungguhan lewat RLS; lapisan ini tidak pernah dipakai di
  * produksi dan tidak pernah menerjemahkan kebijakan akses apa pun.
@@ -382,7 +382,7 @@ export function createSimulationClient() {
   const query = (tableName: string) => new SimQuery(tables, tableName);
 
   const authMessage =
-    "Mode pengembangan aktif: proses masuk, pendaftaran, dan aktivasi akun dinonaktifkan karena keempat area dibuka tanpa login.";
+    "Mode pengembangan aktif: proses masuk, pendaftaran, dan aktivasi akun dinonaktifkan karena ketiga ekosistem dibuka tanpa login.";
 
   return {
     from: query,
@@ -511,7 +511,7 @@ export function createSimulationClient() {
           new_status: status,
           reason: String(args.p_reason ?? ""),
           changed_at: changedAt,
-          actor_profile_id: DEV_VIEWER.admin.userId,
+          actor_profile_id: DEV_VIEWER.operator.userId,
         });
 
         return { data: null, error: null };
@@ -523,7 +523,7 @@ export function createSimulationClient() {
       async getUser() {
         return {
           data: {
-            user: { id: DEV_VIEWER.admin.userId, email: DEV_VIEWER.admin.email, aud: "authenticated" },
+            user: { id: DEV_VIEWER.operator.userId, email: DEV_VIEWER.operator.email, aud: "authenticated" },
           },
           error: null,
         };
