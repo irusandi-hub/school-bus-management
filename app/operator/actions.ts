@@ -50,7 +50,6 @@ export async function saveOperatorBus(_prev: ActionState, formData: FormData): P
     model,
     notes,
     active,
-    operator_id: ctx.operatorId,
   };
 
   const { error } = id
