@@ -5,9 +5,9 @@
 -- database. Do not run against a hosted or production database.
 --
 -- This fixture verifies:
---   * exactly one global Operator across all companies and schools;
---   * Driver access limited to the driver's assigned route/trip;
---   * Guardian access limited to their own active child and related trip;
+--   * exactly one global Operator across all companies and schools, with platform-wide writes;
+--   * Driver access limited to the driver's assigned route/trip, without master-data writes;
+--   * Guardian access limited to their own active child and related trip, without master-data writes;
 --   * legacy global role uniqueness and protected account-linking functions;
 --   * anonymous access denied.
 --
