@@ -33,7 +33,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <div className="app-shell admin-shell admin-workspace">
       <aside className="sidebar">
         <BrandLogo
-          href="/admin"
+          href="/operator"
           subtitle="Operator Utama"
           ariaLabel="School Bus Operator"
           className="brand"
@@ -56,7 +56,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <header className="topbar">
           <MobileMenu
             groups={adminGroups}
-            rootHref="/admin"
+            rootHref="/operator"
             areaLabel="Operator Utama"
             note="Satu ruang kerja untuk seluruh data dan operasional platform."
           />
