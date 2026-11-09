@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { adminActionContext, writeFailure } from "@/lib/admin/support";
 import {
   failure,
+  isValidEmail,
   isValidPhone,
   normalizeCode,
   readCheckbox,
@@ -74,7 +75,7 @@ export async function setOperatorActive(formData: FormData) {
 
   if (error) {
     redirect(
-      `${path}?jenis=error&pesan=${encodeURIComponent("Status pengelola belum dapat diubah. Coba lagi atau hubungi pengelola sistem.")}`,
+      `${path}?jenis=error&pesan=${encodeURIComponent("Status perusahaan belum dapat diubah. Coba lagi atau hubungi pengelola sistem.")}`,
     );
   }
 
