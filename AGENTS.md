@@ -6,6 +6,8 @@ Berlaku untuk semua agen yang bekerja pada repository `school-bus-management`.
 
 Baca `docs/PRODUCT_ARCHITECTURE_THREE_ECOSYSTEMS.md`. Aturan ini disetujui pemilik produk dan mengikat semua pekerjaan.
 
+Dokumen lama yang masih menyebut Admin Pusat, empat area, atau pembatasan Operator berdasarkan organisasi/wilayah adalah **legacy**. Jangan mengikuti bagian tersebut; gunakan DEC-033 dan dokumen arsitektur tiga ekosistem. Keberadaan route `/admin` di kode saat ini bukan izin untuk mempertahankan role Admin sebagai target.
+
 **Hanya tiga ekosistem: Operator, Pengemudi, Orang Tua.**
 - Hanya ada satu Operator Utama, pemegang kendali tertinggi atas seluruh aplikasi dan seluruh database operasional.
 - Semua fungsi administrasi dan operasional berada dalam satu dashboard/navigasi Operator.

@@ -22,13 +22,13 @@
 
 Hello HERE Sales Team,
 
-We are evaluating HERE for a school-bus management application planned for a pilot in Dammam and surrounding areas, Saudi Arabia, with an estimated fleet of approximately 100 buses.
-
-The application would use server-side routing and traffic/incident information to help drivers follow school-admin-approved routes. It may display assigned bus locations to authorized users. The approved stop order must remain fixed during an active trip; any road-closure rerouting must preserve that order and follow our approval rules.
+We are evaluating HERE for a school-bus management application planned for a pilot in Dammam and surrounding areas, Saudi Arabia, with an estimated fleet of approximately 100 buses.The application would use server-side routing and traffic/incident information to help drivers follow Operator-approved routes.
+ It may display assigned bus locations to authorized users. The approved stop order must remain fixed during an active trip; any road-closure rerouting must preserve that order and follow our approval rules.
 
 Before starting a proof of concept, please provide written answers to the following:
 
-1. **Commercial license:** Which HERE plan and contract explicitly permit this school-bus fleet use case, including vehicle location tracking/display on a map, route calculation, traffic/incident data, and use by drivers, administrators, and guardians? We understand some Limited/Base Plan use cases may exclude Asset Management.
+1. **Commercial license:** Which HERE plan and contract explicitly permit this school-bus fleet use case, including vehicle location tracking/display on a map, route calculation, traffic/incident data, anduse by drivers, Operators, and guardians?
+ We understand some Limited/Base Plan use cases may exclude Asset Management.
 2. **Saudi Arabia coverage:** Please confirm current road-network, routing, traffic-flow, incident, road-closure, and roadwork coverage specifically for Dammam and surrounding areas. Please identify material coverage gaps or limitations on local/neighborhood roads.
 3. **Bus profile and road suitability:** Which routing profile should be used for a school bus? Can the API apply the actual vehicle dimensions and applicable restrictions? Please explain limitations regarding usable road width, turning feasibility, one-way roads, prohibited turns, and safe pickup/drop-off access. We will provide actual vehicle dimensions after operator confirmation.
 4. **Ordered stops:** What are the supported waypoint limits and recommended workflow for ordered routes with 20, 30, 40, or 50 stops? Can the workflow preserve a supplied stop order without silently optimizing or reordering it?

@@ -116,7 +116,7 @@ A provider that fails a mandatory gate is not selected, regardless of map appear
 ## Responsibilities and safety boundaries
 
 - The operator/school must validate the actual bus dimensions, permits, stopping points, and route suitability.
-- Admin reviews and approves route versions before dispatch.
+- Operator reviews and approves route versions before dispatch.
 - Driver Start loads the approved route; it does not optimize or reorder stops.
 - Road-closure recalculation may adjust the path between stops but preserves approved stop order and requires the defined review/approval behavior.
 - Keep a record of route version, provider, calculation time, relevant options, and approval.

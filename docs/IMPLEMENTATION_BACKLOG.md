@@ -1,8 +1,10 @@
 # Arsip Backlog Implementasi Produk
 
-**Tanggal pembaruan:** 2026-10-30  
+**Tanggal pembaruan:** 2026-10-30 (catatan DEC-033 ditambahkan 2026-11-08)
 **Status umum:** Arsip kebutuhan dan keputusan; bukan bukti bahwa fitur sudah tersedia.  
 **Tujuan:** Menjadi sumber kesinambungan ketika pekerjaan dilanjutkan di chat atau sesi agen baru.
+
+> **DEC-033 (2026-11-08):** target produk hanya tiga ekosistem — Operator, Pengemudi, dan Orang Tua/Wali. Satu Operator Utama memiliki akses global; Admin Pusat dan Sekolah bukan role/akun terpisah; wilayah/organisasi bukan batas akses Operator. Item dan status implementasi di bawah yang masih menyebut Admin/empat area/multi-operator adalah **snapshot legacy**, bukan target. Refactor belum dikerjakan.
 
 ## Cara menggunakan arsip ini
 
@@ -14,13 +16,13 @@
 
 ## A. Keputusan produk yang harus dipertahankan
 
-- [x] Tiga peran utama: Admin Pusat, Pengemudi, Orang Tua/Wali.
+- [x] Tiga ekosistem utama: Operator, Pengemudi, Orang Tua/Wali (DEC-033). Admin Pusat bukan role/ekosistem terpisah.
 - [x] Produk adalah penyedia aplikasi, bukan operator transportasi sekolah.
 - [x] Pilot Dammam dan sekitarnya; target perencanaan awal sekitar 100 bus.
 - [x] Fokus utama: navigasi operasional bus dan informasi/laporan wali. Kamera live adalah fitur tambahan.
 - [x] Satu siswa hanya terhubung ke satu wali/akun wali.
 - [x] Satu akun wali dapat terhubung ke beberapa siswa; tidak ada kategori akun keluarga terpisah.
-- [x] Email wali harus dipra-daftarkan admin dan disimpan di database. Signup hanya menggunakan email terdaftar; verifikasi tautan dilakukan sebelum membuat kata sandi. Login dengan email dan kata sandi.
+- [x] Email wali harus dipra-daftarkan Operator (saat ini melalui UI legacy `admin`) dan disimpan di database. Signup hanya menggunakan email terdaftar; verifikasi tautan dilakukan sebelum membuat kata sandi. Login dengan email dan kata sandi.
 - [x] Admissions Number adalah identitas siswa, bukan username/login. Nomor HP hanya kontak.
 - [x] Minimal satu siswa terkait harus berstatus aktif mengikuti layanan agar signup/akses akun diizinkan.
 - [x] Jika sebagian siswa nonaktif tetapi setidaknya satu masih aktif, akun dapat digunakan hanya untuk siswa aktif. Jika seluruh siswa nonaktif, akses layanan ditolak.
@@ -38,7 +40,7 @@
 
 ### B2. Pesan penolakan dan kegagalan — prioritas lintas sistem
 - [ ] Buat inventaris seluruh kondisi ditolak/gagal: validasi form, email, signup/login, verifikasi, sesi kedaluwarsa, hak akses, status siswa, CRUD, duplikasi data, konflik perubahan, jaringan/server, GPS, kamera/video, perjalanan/rute, dan ekspor.
-- [ ] Buat katalog pesan berbahasa sederhana: penyebab yang diketahui, tindakan pengguna berikutnya, dan kapan harus menghubungi admin.
+- [ ] Buat katalog pesan berbahasa sederhana: penyebab yang diketahui, tindakan pengguna berikutnya, dan kapan harus menghubungi Operator.
 - [ ] Pastikan tombol nonaktif yang menghalangi tindakan menjelaskan alasannya melalui teks atau bantuan kontekstual yang mudah ditemukan.
 - [ ] Pastikan respons API memiliki kode/status terstruktur dan pesan aman yang konsisten; UI menerjemahkannya menjadi bahasa pengguna.
 - [ ] Jika penyebab tidak diketahui, jangan menebak. Sampaikan bahwa proses belum berhasil, berikan langkah aman (misalnya coba lagi/periksa koneksi), dan sediakan kode referensi bila sesuai.
@@ -51,7 +53,7 @@ Contoh kondisi yang perlu dipetakan: email belum didaftarkan; email belum diveri
 ### B3. Akun wali, pra-pendaftaran, dan status layanan
 - [ ] Audit struktur saat ini: tabel profil/wali, siswa, Admissions Number, email, relasi, status layanan, serta constraint unik/FK.
 - [ ] Rancang model relasi satu siswa–satu wali dan satu wali–banyak siswa tanpa membuat tipe akun keluarga.
-- [ ] Tentukan sumber kebenaran email wali dan proses admin untuk menambah/mengubah email secara aman.
+- [ ] Tentukan sumber kebenaran email wali dan proses Operator untuk menambah/mengubah email secara aman.
 - [ ] Rancang signup berbasis email yang telah dipra-daftarkan; token verifikasi terbatas waktu dan sekali pakai; pembuatan kata sandi setelah verifikasi.
 - [ ] Login menggunakan email + kata sandi; Admissions Number tidak dipakai sebagai kredensial.
 - [ ] Terapkan syarat minimal satu siswa aktif untuk signup/akses akun dan isolasi akses siswa nonaktif.
@@ -61,9 +63,9 @@ Contoh kondisi yang perlu dipetakan: email belum didaftarkan; email belum diveri
 - [ ] Jangan ungkap apakah email terdaftar kepada pihak yang tidak berwenang; pesan harus tetap jelas tetapi aman.
 
 ### B4. Administrasi data dan CRUD nyata
-- [ ] Audit menu admin yang sudah ada dan tandai menu aktif, preview, tidak berfungsi, atau belum dibuat.
-- [ ] Rancang CRUD admin untuk sekolah, bus, pengemudi, siswa, wali, rute, stop, penugasan, dan titik lokasi.
-- [ ] Admin dapat mengelola data siswa, Admissions Number unik, sekolah, nama, tanggal lahir, email wali, nomor kontak, status layanan, dan titik rumah/penjemputan pada peta.
+- [ ] Audit menu legacy `admin`/`operator` yang sudah ada dan tandai menu aktif, preview, tidak berfungsi, atau belum dibuat; targetnya satu ruang kerja Operator.
+- [ ] Rancang CRUD Operator untuk sekolah, bus, pengemudi, siswa, wali, rute, stop, penugasan, dan titik lokasi.
+- [ ] Operator dapat mengelola data siswa, Admissions Number unik, sekolah, nama, tanggal lahir, email wali, nomor kontak, status layanan, dan titik rumah/penjemputan pada peta, tanpa batas wilayah/organisasi.
 - [ ] Koordinat rumah adalah data privat dan tidak boleh tampil ke pengguna yang tidak berwenang.
 - [ ] Tentukan arsip/nonaktif vs hapus permanen; pertahankan riwayat operasional dan audit.
 - [ ] Pastikan semua perubahan tersimpan di database dan ada validasi, pencarian, pagination, empty state, error state, serta konfirmasi untuk tindakan penting.
@@ -94,10 +96,10 @@ Contoh kondisi yang perlu dipetakan: email belum didaftarkan; email belum diveri
 - [ ] Jangan menjadikan kamera sebagai penghambat penyelesaian navigasi dan laporan inti.
 
 ### B8. Keamanan, audit, dan kesiapan rilis
-- [ ] Finalisasi matriks akses Admin/Pengemudi/Wali dan isolasi antarorganisasi.
+- [ ] Finalisasi matriks akses Operator/Pengemudi/Wali: Operator global, Pengemudi hanya tugas, Wali hanya anak/perjalanan yang berhak. Jangan memakai isolasi organisasi/wilayah untuk Operator.
 - [ ] Rancang RLS dan hak akses database setelah tinjauan teknis; jangan memakai UI hiding sebagai keamanan.
 - [ ] Periksa grants, policies, Storage, fungsi privileged, session revocation, rate limits, dan proteksi password.
-- [ ] Audit tindakan admin, perubahan status, relasi wali, ekspor, dan koreksi historis.
+- [ ] Audit tindakan Operator, perubahan status, relasi wali, ekspor, dan koreksi historis.
 - [ ] Tinjau PDPL dan kewajiban Saudi terkait data anak, lokasi, kamera, retensi, hosting, dan transfer lintas negara.
 - [ ] Susun QA end-to-end dan uji lapangan sebelum rilis bertahap.
 
@@ -130,7 +132,9 @@ Gunakan urutan berikut untuk setiap item; checklist tidak meminta pengujian prem
 
 Kamera live tetap tambahan dan dapat dikonfigurasi kemudian. Jangan menjadikan konfigurasi atau pengujian kamera sebagai prasyarat backlog navigasi dan laporan inti. Parameter GPS yang dapat dikonfigurasi juga tidak otomatis menjadi blocker tinjauan spesifikasi; yang harus ditinjau sekarang adalah prinsip sesi terikat penugasan, otorisasi, timestamp/kesegaran yang terlihat, dan perlindungan akses lokasi.
 
-## Status implementasi modul data — 2026-10-31
+> **Snapshot legacy.** Bagian status mulai di sini mencatat implementasi sebelum DEC-033. Jangan menganggap role/route Admin atau pembatasan organisasi di bawah sebagai target.
+
+## Status implementasi modul data (legacy) — 2026-10-31
 
 **Dasar:** DEC-021. Ruang lingkup hanya modul data Admin Pusat dan akun wali; perjalanan, GPS, routing, kamera, dan vendor tetap di luar lingkup.
 
@@ -171,7 +175,7 @@ Audit read-only 2026-10-29 mencatat 11 tabel inti dengan RLS aktif dan tanpa pol
 
 ---
 
-## Status implementasi Main Access Gate dan tiga area — 2026-10-31
+## Status implementasi Main Access Gate dan area legacy — 2026-10-31
 
 **Dasar:** permintaan implementasi UI utama (gate, tiga area pengguna, pemisahan hak akses, identitas School Bus Yellow). CRUD Admin Pusat dari DEC-021 dipertahankan.
 
@@ -218,3 +222,13 @@ Audit read-only 2026-10-29 mencatat 11 tabel inti dengan RLS aktif dan tanpa pol
 
 - GPS nyata, kamera live, dan routing (tanpa data palsu; UI hanya menyatakan belum tersedia).
 - Uji responsivitas visual pada perangkat nyata dan audit kontras warna.
+
+## B9. Refactor tiga ekosistem (DEC-033) — belum dikerjakan
+
+- [ ] Satukan role `admin` dan `operator` menjadi satu role `operator` dengan akses global; hapus pemilih/gate/layout Admin terpisah.
+- [ ] Pindahkan seluruh modul `/admin` ke ruang kerja `/operator`; pertahankan redirect kompatibilitas hanya sementara.
+- [ ] Hapus pembatasan RLS/helper `operator_id` dan filter wilayah untuk Operator; pertahankan pembatasan Pengemudi dan Orang Tua/Wali.
+- [ ] Siapkan pemetaan akun `admin` lama dan relasi data yang aman, fail-closed bila ambigu; jangan jalankan migrasi sebelum disetujui.
+- [ ] Perbarui role types, middleware, Server Action, server loader, SQL function, constraint, grant, policy, linking akun, dan seluruh tes.
+- [ ] Tambahkan tes yang membuktikan Operator dapat mengelola semua sekolah/wilayah, sedangkan Pengemudi dan Wali tetap terisolasi.
+- [ ] Perbarui README, MASTER_SPEC, TECHNICAL_SPEC_REVIEW, matriks tanggung jawab, dan dokumen vendor agar konsisten dengan DEC-033.
