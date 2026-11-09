@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { ConfigNotice, EmptyRow, PageHeader, Pill, StatCard, TripStatusPill } from "@/components/admin/ui";
 import { Icon } from "@/components/ui/Icon";
 import { adminReadContext } from "@/lib/admin/read";
-import { formatDate, routeDirectionLabel } from "@/lib/validation";
+import { formatDate, routeDirectionLabel, serviceDateInTimeZone } from "@/lib/validation";
 
 export const metadata: Metadata = { title: "Ringkasan | Operator" };
 
@@ -16,7 +16,7 @@ export default async function AdminHomePage() {
   const supabase = await adminReadContext();
   if (!supabase) return <ConfigNotice />;
 
-  const date = localToday();
+  const date = serviceDateInTimeZone();
   const [schoolRows, operatorRows, studentRows, busRows, driverRows, assignmentRows] = await Promise.all([
     supabase.from("schools").select("id", { count: "exact", head: true }).eq("active", true),
     supabase.from("operators").select("id", { count: "exact", head: true }).eq("active", true),
