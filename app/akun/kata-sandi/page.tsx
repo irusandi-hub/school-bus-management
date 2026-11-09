@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { BrandLogo } from "@/components/brand-logo";
 import { PasswordForm } from "./password-form";
 import { getViewerState } from "@/lib/auth";
+import { homeForRole } from "@/lib/access";
 import { signOutAction } from "@/lib/auth-actions";
 
 const notices: Record<string, string> = {
@@ -39,8 +40,7 @@ export default async function KataSandiPage({
   }
 
   const { viewer } = state;
-  if (viewer.profile?.role === "admin") redirect("/admin");
-  if (viewer.profile?.role === "parent") redirect("/wali");
+  if (viewer.profile) redirect(homeForRole(viewer.profile.role));
 
   const params = await searchParams;
   const rawReason = typeof params.alasan === "string" ? params.alasan : null;
