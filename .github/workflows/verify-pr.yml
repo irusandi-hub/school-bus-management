@@ -35,6 +35,8 @@ jobs:
         run: npm test
       - name: TypeScript
         run: npm run typecheck
+      - name: Operator bootstrap migration
+        run: npm run test:operator:sql
       - name: PostgreSQL migrations and RLS — camera fixture
         run: npm run test:camera:sql
       - name: PostgreSQL migrations and RLS — live-location fixture
