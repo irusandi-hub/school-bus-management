@@ -170,7 +170,7 @@ describe("klien simulasi pengembangan", () => {
     assert.equal(rows(limited)[0].full_name, "Siswa Contoh Tiga");
 
     const single = (await supabase.from("operators").select("id, name").eq("id", ORGANISATION).maybeSingle()) as Result;
-    assert.equal((single.data as SimRow).name, "Operator Contoh Nusantara");
+    assert.equal((single.data as SimRow).name, "Perusahaan Bus Contoh Nusantara");
 
     const missing = (await supabase.from("operators").select("id").eq("id", "tidak-ada").maybeSingle()) as Result;
     assert.equal(missing.data, null);
