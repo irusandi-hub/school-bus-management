@@ -8,6 +8,15 @@
 -- Both legacy admin and operator profiles receive the same global Operator access.
 -- Driver and parent policies remain unchanged.
 
+-- The initial schema only allowed admin/driver/parent. Extend the role constraint
+-- before promoting a legacy Admin account or creating an Operator profile.
+alter table public.profiles
+  drop constraint if exists profiles_role_check;
+
+alter table public.profiles
+  add constraint profiles_role_check
+  check (role in ('admin', 'operator', 'driver', 'parent'));
+
 -- Keep exactly one Operator account. If there is exactly one legacy Admin account,
 -- promote it in place. If the existing data is ambiguous, stop the migration rather
 -- than silently choosing an account or granting global access to multiple users.
