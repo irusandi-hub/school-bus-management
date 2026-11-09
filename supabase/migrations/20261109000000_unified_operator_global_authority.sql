@@ -11,7 +11,7 @@
 -- Keep exactly one Operator account. If there is exactly one legacy Admin account,
 -- promote it in place. If the existing data is ambiguous, stop the migration rather
 -- than silently choosing an account or granting global access to multiple users.
-do $
+do $operator_migration$
 declare
   v_admin_count integer;
   v_operator_count integer;
@@ -29,7 +29,7 @@ begin
     raise exception 'Migrasi Operator dibatalkan: ditemukan beberapa akun Admin lama. Tentukan satu akun Operator sebelum melanjutkan.';
   end if;
 end;
-$;
+$operator_migration$;
 
 create unique index if not exists profiles_single_operator_role_idx
   on public.profiles (role)
