@@ -5,7 +5,7 @@ import { Icon } from "@/components/ui/Icon";
 import { adminReadContext } from "@/lib/admin/read";
 import { formatDate, routeDirectionLabel } from "@/lib/validation";
 
-export const metadata: Metadata = { title: "Ringkasan | Pengelola" };
+export const metadata: Metadata = { title: "Ringkasan | Operator" };
 
 function localToday() {
   const now = new Date();
@@ -34,7 +34,7 @@ export default async function AdminHomePage() {
 
   const shortcuts = [
     { href: "/admin/sekolah", label: "Sekolah", icon: "school" },
-    { href: "/admin/operator", label: "Pengelola", icon: "operator" },
+    { href: "/admin/operator", label: "Perusahaan bus", icon: "operator" },
     { href: "/admin/siswa", label: "Siswa", icon: "students" },
     { href: "/admin/wali", label: "Akun wali", icon: "guardian" },
     { href: "/admin/bus", label: "Bus", icon: "bus" },
@@ -46,10 +46,10 @@ export default async function AdminHomePage() {
 
   return (
     <>
-      <PageHeader title="Ringkasan" description="Data operasional platform." actions={<Pill tone="info">{formatDate(date)}</Pill>} />
+      <PageHeader title="Ringkasan" description="Kendali seluruh data dan kegiatan operasional platform." actions={<Pill tone="info">{formatDate(date)}</Pill>} />
       <section className="stats" aria-label="Data aktif">
         <StatCard label="Sekolah aktif" value={schoolRows.count ?? 0} icon="school" />
-        <StatCard label="Pengelola aktif" value={operatorRows.count ?? 0} icon="operator" />
+        <StatCard label="Perusahaan bus aktif" value={operatorRows.count ?? 0} icon="operator" />
         <StatCard label="Siswa aktif" value={studentRows.count ?? 0} icon="students" />
         <StatCard label="Bus aktif" value={busRows.count ?? 0} note={`${driverRows.count ?? 0} pengemudi aktif`} icon="bus" />
       </section>
