@@ -13,6 +13,7 @@ import {
   routeDirectionLabel,
   sanitizeSearch,
   serviceStatusLabel,
+  serviceDateInTimeZone,
   tripEventLabel,
   tripStatusLabel,
   validateLength,
@@ -120,6 +121,16 @@ describe("length validation", () => {
   it("returns a message only when the value is outside the range", () => {
     assert.equal(validateLength("Sekolah", "Nama", 2, 120), null);
     assert.match(validateLength("S", "Nama", 2, 120) ?? "", /Nama/);
+  });
+});
+
+describe("service date timezone", () => {
+  it("uses the Riyadh calendar date when UTC has crossed midnight but Riyadh has not", () => {
+    assert.equal(serviceDateInTimeZone(new Date("2026-11-09T20:30:00.000Z")), "2026-11-09");
+  });
+
+  it("advances the service date at Riyadh midnight, not UTC midnight", () => {
+    assert.equal(serviceDateInTimeZone(new Date("2026-11-09T21:30:00.000Z")), "2026-11-10");
   });
 });
 
