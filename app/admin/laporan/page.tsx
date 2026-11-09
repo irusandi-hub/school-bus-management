@@ -87,7 +87,7 @@ export default async function ReportsPage() {
             </li>
             <li>
               <strong>Ekspor laporan</strong>
-              <span>—</span>
+              <span>✓</span>
               <small>Tersedia dalam format CSV untuk seluruh data perjalanan yang dapat diakses Operator.</small>
             </li>
           </ul>
