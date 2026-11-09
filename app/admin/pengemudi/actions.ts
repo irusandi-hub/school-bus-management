@@ -21,7 +21,7 @@ const path = "/admin/pengemudi";
 /** Error text raised by our own SQL functions is safe to show; anything else is not. */
 function linkMessage(raw: string | undefined): string {
   const own =
-    /Akses ditolak|Isian belum lengkap|tidak ditemukan|Email belum terdaftar|sudah tertaut|Admin Pusat dan tidak dapat|akun orang tua\/wali/i;
+    /Akses ditolak|Isian belum lengkap|tidak ditemukan|Email belum terdaftar|sudah tertaut|Operator Utama tidak dapat|akun orang tua\/wali/i;
   if (raw && own.test(raw)) return raw;
   return "Penautan akun belum berhasil. Periksa email lalu coba lagi; jika berlanjut, hubungi pengelola sistem.";
 }
