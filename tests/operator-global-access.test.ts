@@ -34,7 +34,7 @@ describe("batas perubahan peran Operator dan Pengemudi", () => {
   });
 
   it("menegakkan satu identitas global lintas role admin dan operator", () => {
-    assert.match(migration, /create unique index if not exists profiles_single_global_operator_idx[\\s\\S]*where role in \\('admin', 'operator'\\)/);
+    assert.match(migration, /create unique index if not exists profiles_single_global_operator_idx[\s\S]*where role in \\('admin', 'operator'\\)/);
   });
 
   it("melindungi semua akun Wali, termasuk tautan wali yang nonaktif, dari demosi menjadi Pengemudi", () => {
