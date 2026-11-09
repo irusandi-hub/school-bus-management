@@ -3,16 +3,11 @@ import { RecordForm, type FieldDef } from "@/components/admin/RecordForm";
 import { ConfigNotice, EmptyRow, Notice, PageHeader, Pill } from "@/components/admin/ui";
 import { adminReadContext } from "@/lib/admin/read";
 import type { TripAssignmentRow } from "@/lib/types";
-import { formatDate, routeDirectionLabel, tripStatusLabel } from "@/lib/validation";
+import { formatDate, routeDirectionLabel, serviceDateInTimeZone, tripStatusLabel } from "@/lib/validation";
 import { saveAssignment } from "./actions";
 
 export const metadata: Metadata = { title: "Penugasan | Operator" };
 
-function today() {
-  const now = new Date();
-  const offset = now.getTimezoneOffset() * 60_000;
-  return new Date(now.getTime() - offset).toISOString().slice(0, 10);
-}
 
 export default async function AssignmentsPage() {
   const supabase = await adminReadContext();
@@ -58,7 +53,7 @@ export default async function AssignmentsPage() {
       label: "Tanggal layanan",
       type: "date",
       required: true,
-      defaultValue: today(),
+      defaultValue: serviceDateInTimeZone(),
     },
     {
       name: "driver_id",
