@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { homeForRole } from "@/lib/access";
-import { DEV_DRIVER_RECORD, DEV_ORGANISATION, DEV_VIEWER, isDevOpenAccess } from "@/lib/dev-open-access";
+import { DEV_DRIVER_RECORD, DEV_VIEWER, isDevOpenAccess } from "@/lib/dev-open-access";
 import { createServerSupabase } from "@/lib/supabase/server";
 import type { ProfileRow, UserRole } from "@/lib/types";
 
@@ -68,7 +68,7 @@ async function requireViewer(nextPath: string): Promise<Viewer | null> {
 
 /**
  * Mode akses terbuka pengembangan (DEC-024): setiap gerbang area menyajikan identitas
- * simulasi untuk areanya sendiri, sehingga keempat area dapat ditinjau bersamaan tanpa
+ * simulasi untuk areanya sendiri, sehingga ketiga ekosistem dapat ditinjau bersamaan tanpa
  * login. Pemeriksaan peran yang sesunguhnya tetap ada di `profiles.role` dan RLS
  * database, dan kembali berlaku penuh begitu `DEV_OPEN_ACCESS` dimatikan.
  */
