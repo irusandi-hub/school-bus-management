@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { OperatorWorkspaceLayout } from "@/components/operator/OperatorWorkspaceLayout";
 
 /**
