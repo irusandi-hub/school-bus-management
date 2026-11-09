@@ -39,7 +39,7 @@ const finalSql = fs.readFileSync(`supabase/migrations/${finalName}`, "utf8").rep
   "create extension if not exists pgcrypto;",
   "",
 );
-const baseFiles = files.filter((file) => file !== finalName);
+const baseFiles = files.slice(0, files.indexOf(finalName));
 
 async function applyBase(db) {
   for (const file of baseFiles) {
