@@ -87,7 +87,6 @@ export async function saveOperatorDriver(_prev: ActionState, formData: FormData)
     phone,
     license_number: licenseNumber,
     active,
-    operator_id: ctx.operatorId,
   };
 
   const { error } = id
@@ -117,7 +116,7 @@ export async function saveOperatorAssignment(_prev: ActionState, formData: FormD
   if (!DATE_PATTERN.test(serviceDate)) errors.service_date = "Tanggal layanan wajib diisi.";
   if (Object.keys(errors).length > 0) return failure("Periksa kembali isian yang ditandai.", errors);
 
-  // Re-check ownership explicitly; RLS enforces the same rule independently.
+  // Re-check that all selected records exist and are active. Operator has global authority; RLS enforces the same role boundary independently.
   const [{ data: driver }, { data: bus }, { data: route }] = await Promise.all([
     ctx.supabase.from("drivers").select("operator_id, active").eq("id", driverId).maybeSingle(),
     ctx.supabase.from("buses").select("operator_id, active").eq("id", busId).maybeSingle(),
