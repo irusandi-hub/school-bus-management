@@ -8,6 +8,34 @@
 -- Both legacy admin and operator profiles receive the same global Operator access.
 -- Driver and parent policies remain unchanged.
 
+-- Keep exactly one Operator account. If there is exactly one legacy Admin account,
+-- promote it in place. If the existing data is ambiguous, stop the migration rather
+-- than silently choosing an account or granting global access to multiple users.
+do $
+declare
+  v_admin_count integer;
+  v_operator_count integer;
+begin
+  select count(*) into v_admin_count from public.profiles where role = 'admin';
+  select count(*) into v_operator_count from public.profiles where role = 'operator';
+
+  if v_operator_count > 1 or (v_operator_count > 0 and v_admin_count > 0) then
+    raise exception 'Migrasi Operator dibatalkan: ditemukan lebih dari satu akun dengan kewenangan global. Tinjau dan tentukan satu akun Operator secara manual.';
+  elsif v_operator_count = 0 and v_admin_count = 1 then
+    update public.profiles
+      set role = 'operator', updated_at = now()
+      where role = 'admin';
+  elsif v_admin_count > 1 then
+    raise exception 'Migrasi Operator dibatalkan: ditemukan beberapa akun Admin lama. Tentukan satu akun Operator sebelum melanjutkan.';
+  end if;
+end;
+$;
+
+create unique index if not exists profiles_single_operator_role_idx
+  on public.profiles (role)
+  where role = 'operator';
+
+
 create or replace function private.is_admin()
 returns boolean
 language sql
