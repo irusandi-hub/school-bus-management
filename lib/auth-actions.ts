@@ -64,20 +64,8 @@ export async function loginAction(_prev: ActionState, formData: FormData): Promi
   }
 
   if (role === "operator") {
-    const { data: operator } = await supabase
-      .from("operators")
-      .select("id")
-      .eq("profile_id", data.user.id)
-      .eq("active", true)
-      .maybeSingle();
-
-    if (!operator) {
-      await supabase.auth.signOut();
-      return failure(
-        "Akun ini memiliki peran operator tetapi belum ditautkan ke organisasi transportasi yang aktif. Hubungi Admin Pusat untuk menautkan akun Anda.",
-      );
-    }
-
+    // Operator is the single global authority. Company rows are attribution data,
+    // never a prerequisite for authentication or access to the Operator workspace.
     redirect(scopedNext("operator", requestedNext));
   }
 
