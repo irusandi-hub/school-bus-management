@@ -65,9 +65,14 @@ begin
 end;
 $operator_migration$;
 
-create unique index if not exists profiles_single_operator_role_idx
-  on public.profiles (role)
-  where role = 'operator';
+drop index if exists public.profiles_single_operator_role_idx;
+
+-- Exactly one global authority across both the current Operator role and the
+-- temporary legacy Admin role. A unique index on role alone would still allow
+-- one Admin and one Operator to coexist and both receive global access.
+create unique index if not exists profiles_single_global_operator_idx
+  on public.profiles ((true))
+  where role in ('admin', 'operator');
 
 
 create or replace function private.is_admin()
