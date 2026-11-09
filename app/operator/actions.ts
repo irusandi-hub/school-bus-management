@@ -42,7 +42,7 @@ export async function saveOperatorBus(_prev: ActionState, formData: FormData): P
 
   if (Object.keys(errors).length > 0) return failure("Periksa kembali isian yang ditandai.", errors);
 
-  // operator_id always comes from the authenticated organisation, never from the form.
+  // operator_id is optional data attribution; it is not an access boundary.
   const payload = {
     fleet_code: fleetCode,
     plate_number: plateNumber,
@@ -57,7 +57,7 @@ export async function saveOperatorBus(_prev: ActionState, formData: FormData): P
     ? await ctx.supabase.from("buses").update(payload).eq("id", id)
     : await ctx.supabase.from("buses").insert(payload);
 
-  if (error) return writeFailure(error, { unique: "Kode armada sudah dipakai pada organisasi ini." });
+  if (error) return writeFailure(error, { unique: "Kode armada sudah digunakan. Gunakan kode lain." });
 
   revalidatePath("/operator/bus");
   revalidatePath("/operator");
@@ -125,15 +125,15 @@ export async function saveOperatorAssignment(_prev: ActionState, formData: FormD
     ctx.supabase.from("routes").select("id, active").eq("id", routeId).maybeSingle(),
   ]);
 
-  if (!driver || driver.operator_id !== ctx.operatorId) {
-    return failure("Pengemudi tersebut bukan bagian dari organisasi Anda.");
+  if (!driver) {
+    return failure("Pengemudi tidak ditemukan atau tidak dapat diakses.");
   }
   if (!driver.active) return failure("Pengemudi nonaktif tidak dapat menerima penugasan.");
-  if (!bus || bus.operator_id !== ctx.operatorId) {
-    return failure("Bus tersebut bukan bagian dari organisasi Anda.");
+  if (!bus) {
+    return failure("Bus tidak ditemukan atau tidak dapat diakses.");
   }
   if (!bus.active) return failure("Bus nonaktif tidak dapat digunakan untuk penugasan.");
-  if (!route) return failure("Rute tidak tersedia untuk organisasi Anda.");
+  if (!route) return failure("Rute tidak ditemukan atau tidak dapat diakses.");
   if (!route.active) return failure("Rute nonaktif tidak dapat digunakan untuk penugasan.");
 
   // Prevent assigning the same driver or bus to a second route on the same service date.
