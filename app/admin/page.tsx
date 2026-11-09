@@ -46,7 +46,7 @@ export default async function AdminHomePage() {
 
   return (
     <>
-      <PageHeader title="Ringkasan" description="Kendali seluruh data dan kegiatan operasional platform." actions={<Pill tone="info">{formatDate(date)}</Pill>} />
+      <PageHeader title="Ringkasan" description="Operator Utama mengelola seluruh sekolah, perusahaan bus, siswa, wali, armada, rute, penugasan, dan perjalanan." actions={<Pill tone="info">{formatDate(date)}</Pill>} />
       <section className="stats" aria-label="Data aktif">
         <StatCard label="Sekolah aktif" value={schoolRows.count ?? 0} icon="school" />
         <StatCard label="Perusahaan bus aktif" value={operatorRows.count ?? 0} icon="operator" />
@@ -72,7 +72,7 @@ export default async function AdminHomePage() {
       </section>
 
       <section className="panel admin-work-panel">
-        <header className="panel-head"><div><h2 className="panel-title">Menu pengelolaan</h2><div className="panel-subtitle">Pilih modul yang ingin dikerjakan</div></div></header>
+        <header className="panel-head"><div><h2 className="panel-title">Menu Operator</h2><div className="panel-subtitle">Pilih modul yang ingin dikerjakan</div></div></header>
         <div className="quick-grid" style={{ padding: "0 16px 16px", margin: 0 }}>
           {shortcuts.map((item) => <Link className="quick-tile" href={item.href} key={item.href}>
             <span aria-hidden="true"><Icon name={item.icon} /></span><strong>{item.label}</strong>
