@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { BrandLogo } from "@/components/brand-logo";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { ConfigNotice } from "@/components/admin/ui";
@@ -8,9 +7,6 @@ import { adminBottomNav, adminGroups } from "@/components/ui/nav-config";
 import { requireOperator } from "@/lib/auth";
 import { signOutAction } from "@/lib/auth-actions";
 import { MobileMenu } from "@/components/ui/MobileMenu";
-
-export const metadata: Metadata = { title: "Operator | School Bus" };
-export const dynamic = "force-dynamic";
 
 /** One global workspace for all platform administration and operations. */
 export async function OperatorWorkspaceLayout({ children }: { children: React.ReactNode }) {
@@ -63,8 +59,7 @@ export async function OperatorWorkspaceLayout({ children }: { children: React.Re
           <span>Kendali global · pemetaan wilayah · audit operasional</span>
         </footer>
       </main>
-      <BottomNav items={adminBottomNav.map((item) => ({ ...item, href: item.href === "/admin" ? "/operator" : item.href }))}
-        rootHref="/operator" ariaLabel="Navigasi Operator" />
+      <BottomNav items={adminBottomNav} rootHref="/operator" ariaLabel="Navigasi Operator" />
     </div>
   );
 }
