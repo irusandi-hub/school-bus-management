@@ -8,6 +8,18 @@ export type ActionState = {
 
 export const idleState: ActionState = { status: "idle", message: "" };
 
+/** Calendar date used for service-day operations in the Dammam pilot timezone. */
+export function serviceDateInTimeZone(date: Date = new Date(), timeZone = "Asia/Riyadh"): string {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+  const part = (type: "year" | "month" | "day") => parts.find((item) => item.type === type)?.value ?? "";
+  return `${part("year")}-${part("month")}-${part("day")}`;
+}
+
 export function failure(message: string, fieldErrors?: FieldErrors): ActionState {
   return { status: "error", message, fieldErrors };
 }
