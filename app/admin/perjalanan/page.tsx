@@ -10,7 +10,7 @@ import {
   tripStatusLabel,
 } from "@/lib/validation";
 
-export const metadata: Metadata = { title: "Perjalanan | Pengelola" };
+export const metadata: Metadata = { title: "Perjalanan | Operator" };
 
 function tripTone(status: string) {
   if (status === "completed") return "success" as const;
@@ -39,7 +39,7 @@ export default async function TripsPage() {
     <>
       <PageHeader
         title="Perjalanan"
-        description="Perjalanan dibuat dan diakhiri oleh pengemudi yang ditugaskan. Pengelola memantau status dan waktu, bukan memulai perjalanan dari sini."
+        description="Perjalanan dibuat dan diakhiri oleh pengemudi yang ditugaskan. Operator Utama memantau status dan waktu, bukan memulai perjalanan dari sini."
         actions={<Pill tone={active > 0 ? "info" : "neutral"}>{active} berlangsung</Pill>}
       />
 
