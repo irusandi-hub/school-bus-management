@@ -8,20 +8,15 @@ export const metadata: Metadata = { title: "Akses belum tersedia | School Bus" }
 export const dynamic = "force-dynamic";
 
 const reasons: Record<string, { title: string; detail: string }> = {
-  "operator-belum-tertaut": {
-    title: "Akun pengelola belum ditautkan",
-    detail:
-      "Akun Anda memiliki peran pengelola, tetapi belum terhubung ke organisasi transportasi yang aktif. Pengelola perlu menautkan akun ini ke data pengelola sebelum area pengelola dapat dibuka.",
-  },
   "pengemudi-belum-tertaut": {
     title: "Akun pengemudi belum ditautkan",
     detail:
-      "Akun Anda memiliki peran pengemudi, tetapi belum terhubung ke data pengemudi yang aktif. Pengelola perlu menautkan akun ini ke data pengemudi sebelum tugas dan perjalanan dapat dibuka.",
+      "Akun Anda memiliki peran pengemudi, tetapi belum terhubung ke data pengemudi yang aktif. Operator Utama perlu menautkan akun ini ke data pengemudi sebelum tugas dan perjalanan dapat dibuka.",
   },
   "peran-tidak-dikenal": {
     title: "Peran akun tidak dikenali",
     detail:
-      "Akun ini belum memiliki peran aplikasi yang sah. Hubungi Pengelola untuk memeriksa data pengguna Anda.",
+      "Akun ini belum memiliki peran aplikasi yang sah. Hubungi Operator Utama untuk memeriksa data pengguna Anda.",
   },
 };
 
