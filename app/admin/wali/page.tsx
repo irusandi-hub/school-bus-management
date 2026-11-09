@@ -18,7 +18,7 @@ import type { GuardianRow } from "@/lib/types";
 import { sanitizeSearch } from "@/lib/validation";
 import { saveGuardian, setGuardianActive } from "./actions";
 
-export const metadata: Metadata = { title: "Akun Wali | Pengelola" };
+export const metadata: Metadata = { title: "Akun Wali | Operator" };
 
 const path = "/admin/wali";
 const selectColumns = "id, profile_id, email, full_name, phone, active";
