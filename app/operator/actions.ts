@@ -58,7 +58,7 @@ export async function saveOperatorBus(_prev: ActionState, formData: FormData): P
 
   if (error) return writeFailure(error, { unique: "Kode armada sudah digunakan. Gunakan kode lain." });
 
-  revalidatePath("/operator/bus");
+  revalidatePath("/admin/bus");
   revalidatePath("/operator");
   return success(id ? "Data bus berhasil diperbarui." : "Bus baru berhasil ditambahkan.");
 }
@@ -95,7 +95,7 @@ export async function saveOperatorDriver(_prev: ActionState, formData: FormData)
 
   if (error) return writeFailure(error, { fallback: "Data pengemudi belum tersimpan. Coba lagi." });
 
-  revalidatePath("/operator/pengemudi");
+  revalidatePath("/admin/pengemudi");
   revalidatePath("/operator");
   return success(id ? "Data pengemudi berhasil diperbarui." : "Pengemudi baru berhasil ditambahkan.");
 }
@@ -118,7 +118,7 @@ export async function saveOperatorAssignment(_prev: ActionState, formData: FormD
 
   // Re-check that all selected records exist and are active. Operator has global authority; RLS enforces the same role boundary independently.
   const [{ data: driver }, { data: bus }, { data: route }] = await Promise.all([
-    ctx.supabase.from("drivers").select("operator_id, active").eq("id", driverId).maybeSingle(),
+    ctx.supabase.from("drivers").select("active").eq("id", driverId).maybeSingle(),
     ctx.supabase.from("buses").select("operator_id, active").eq("id", busId).maybeSingle(),
     ctx.supabase.from("routes").select("id, active").eq("id", routeId).maybeSingle(),
   ]);
@@ -167,7 +167,7 @@ export async function saveOperatorAssignment(_prev: ActionState, formData: FormD
     });
   }
 
-  revalidatePath("/operator/penugasan");
-  revalidatePath("/operator/perjalanan");
+  revalidatePath("/admin/penugasan");
+  revalidatePath("/admin/perjalanan");
   return success("Penugasan berhasil ditambahkan.");
 }
