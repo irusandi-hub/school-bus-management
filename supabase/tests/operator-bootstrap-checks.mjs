@@ -121,4 +121,56 @@ async function applyBase(db) {
   process.stdout.write("PASS ambiguous legacy global accounts are rejected without changing them\n");
 }
 
+
+ // An already-provisioned Operator remains the same global identity.
+{
+  const db = await createDatabase();
+  await applyBase(db);
+  await db.exec(`
+    insert into auth.users(id,email,email_confirmed_at)
+    values('00000000-0000-0000-0000-000000000021','operator@contoh.test',now());
+    insert into public.profiles(id,full_name,role)
+    values('00000000-0000-0000-0000-000000000021','Operator Existing','operator');
+  `);
+  await db.exec(finalSql);
+  const profile = await db.query(
+    "select full_name, role from public.profiles where id='00000000-0000-0000-0000-000000000021'",
+  );
+  assert.equal(profile.rows[0]?.role, "operator");
+  assert.equal(profile.rows[0]?.full_name, "Operator Existing");
+  await db.close();
+  process.stdout.write("PASS an existing global Operator is preserved without replacement\\n");
+}
+
+// A legacy Admin and a current Operator together are also ambiguous. The
+// migration must stop before modifying either identity.
+{
+  const db = await createDatabase();
+  await applyBase(db);
+  await db.exec(`
+    insert into auth.users(id,email,email_confirmed_at) values
+      ('00000000-0000-0000-0000-000000000031','legacy@contoh.test',now()),
+      ('00000000-0000-0000-0000-000000000032','operator@contoh.test',now());
+    insert into public.profiles(id,full_name,role) values
+      ('00000000-0000-0000-0000-000000000031','Legacy Admin','admin'),
+      ('00000000-0000-0000-0000-000000000032','Current Operator','operator');
+  `);
+  await db.exec("begin");
+  let rejected = false;
+  try {
+    await db.exec(finalSql);
+    await db.exec("commit");
+  } catch (error) {
+    rejected = /lebih dari satu akun dengan kewenangan global/.test(error.message);
+    await db.exec("rollback");
+  }
+  assert.equal(rejected, true, "mixed legacy/current global accounts must abort migration");
+  const count = await db.query(
+    "select count(*)::int as n from public.profiles where role in ('admin','operator')",
+  );
+  assert.equal(count.rows[0]?.n, 2);
+  await db.close();
+  process.stdout.write("PASS mixed legacy Admin and current Operator are rejected without mutation\\n");
+}
+
 process.stdout.write("ALL OPERATOR BOOTSTRAP CHECKS PASS\n");
