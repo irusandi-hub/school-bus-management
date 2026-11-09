@@ -16,12 +16,12 @@ import { firstParam, listHref, noticeFromParams } from "@/lib/admin/query";
 import { PAGE_SIZE, pageRange, parsePage } from "@/lib/admin/support";
 import type { OperatorRow } from "@/lib/types";
 import { sanitizeSearch } from "@/lib/validation";
-import { linkOperatorAccount, saveOperator, setOperatorActive, unlinkOperatorAccount } from "./actions";
+import { saveOperator, setOperatorActive } from "./actions";
 
-export const metadata: Metadata = { title: "Pengelola | Pengelola" };
+export const metadata: Metadata = { title: "Perusahaan bus | Operator" };
 
 const path = "/admin/operator";
-const selectColumns = "id, name, code, city, contact_name, contact_email, contact_phone, profile_id, active";
+const selectColumns = "id, name, code, city, contact_name, contact_email, contact_phone, active";
 
 export default async function OperatorPage({
   searchParams,
@@ -58,13 +58,6 @@ export default async function OperatorPage({
     editing = (editRow as OperatorRow | null) ?? null;
   }
 
-  const linkedIds = rows.filter((row) => row.profile_id).map((row) => row.profile_id as string);
-  let emailRows: { profile_id: string; email: string }[] = [];
-  if (linkedIds.length) {
-    const res = await supabase.rpc("linked_account_emails", { p_profile_ids: linkedIds });
-    emailRows = (res.data ?? []) as { profile_id: string; email: string }[];
-  }
-  const emailById = new Map<string, string>(emailRows.map((row) => [row.profile_id, row.email]));
 
   const notice = noticeFromParams(params);
   const baseQuery = { q, status: status || undefined };
@@ -72,7 +65,7 @@ export default async function OperatorPage({
   const fields: FieldDef[] = [
     {
       name: "name",
-      label: "Nama pengelola",
+      label: "Nama perusahaan",
       required: true,
       maxLength: 120,
       defaultValue: editing?.name,
@@ -80,7 +73,7 @@ export default async function OperatorPage({
     },
     {
       name: "code",
-      label: "Kode pengelola",
+      label: "Kode perusahaan",
       required: true,
       maxLength: 20,
       defaultValue: editing?.code,
@@ -119,8 +112,8 @@ export default async function OperatorPage({
   return (
     <>
       <PageHeader
-        title="Pengelola"
-        description="Perusahaan atau unit transportasi yang mengoperasikan bus sekolah. Satu pengelola dapat melayani beberapa sekolah pada modul penugasan berikutnya."
+        title="Perusahaan bus"
+        description="Data perusahaan atau unit transportasi untuk pemetaan armada, sekolah, dan riwayat operasional. Semua data tetap dikelola Operator Utama."
       />
 
       {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
@@ -132,11 +125,11 @@ export default async function OperatorPage({
             key={`${q}|${status}|${page}`}
             action={path}
             q={q}
-            placeholder="Cari nama, kode, atau kota pengelola"
+            placeholder="Cari nama, kode, atau kota perusahaan"
             total={total}
             resetHref={path}
             filters={
-              <select name="status" defaultValue={status} aria-label="Filter status pengelola">
+              <select name="status" defaultValue={status} aria-label="Filter status perusahaan">
                 <option value="">Semua status</option>
                 <option value="aktif">Aktif</option>
                 <option value="nonaktif">Nonaktif</option>
@@ -148,20 +141,20 @@ export default async function OperatorPage({
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th scope="col">Nama pengelola</th>
+                  <th scope="col">Nama perusahaan</th>
                   <th scope="col">Kode</th>
                   <th scope="col">Kota</th>
                   <th scope="col">Kontak</th>
                   <th scope="col">Status</th>
-                  <th scope="col">Akun masuk</th>
+                  
                   <th scope="col">Tindakan</th>
                 </tr>
               </thead>
               <tbody>
                 {rows.length === 0 ? (
                   <EmptyRow
-                    colSpan={7}
-                    title={q || status ? "Tidak ada pengelola yang cocok" : "Belum ada data pengelola"}
+                    colSpan={6}
+                    title={q || status ? "Tidak ada perusahaan yang cocok" : "Belum ada data perusahaan"}
                     detail={
                       q || status
                         ? "Ubah kata kunci atau filter status, lalu terapkan kembali."
@@ -185,41 +178,6 @@ export default async function OperatorPage({
                       <td>
                         <Pill tone={row.active ? "success" : "neutral"}>{row.active ? "Aktif" : "Nonaktif"}</Pill>
                       </td>
-                      <td className="account-cell">
-                        {row.profile_id ? (
-                          <>
-                            <Pill tone="info">Tertaut</Pill>
-                            <small>{emailById.get(row.profile_id) ?? "Akun tersambung"}</small>
-                            <form action={unlinkOperatorAccount} className="row-form">
-                              <input type="hidden" name="id" value={row.id} />
-                              <ConfirmSubmit
-                                className="row-link danger"
-                                message={`Lepas tautan akun ${emailById.get(row.profile_id) ?? "tersebut"} dari ${row.name}? Akun tersebut tidak lagi dapat masuk area Pengelola.`}
-                              >
-                                Lepas tautan
-                              </ConfirmSubmit>
-                            </form>
-                          </>
-                        ) : (
-                          <form action={linkOperatorAccount} className="account-link-form">
-                            <input type="hidden" name="id" value={row.id} />
-                            <input
-                              type="email"
-                              name="email"
-                              required
-                              maxLength={254}
-                              placeholder="email@contoh.com"
-                              aria-label={`Email akun untuk ${row.name}`}
-                            />
-                            <ConfirmSubmit
-                              className="row-link"
-                              message={`Tautkan akun ini ke ${row.name}? Peran akun menjadi Pengelola dan hanya dapat mengakses organisasi tersebut.`}
-                            >
-                              Tautkan
-                            </ConfirmSubmit>
-                          </form>
-                        )}
-                      </td>
                       <td>
                         <div className="row-actions">
                           <Link className="row-link" href={listHref(path, { ...baseQuery, page, edit: row.id })}>
@@ -232,7 +190,7 @@ export default async function OperatorPage({
                               className={row.active ? "row-link danger" : "row-link"}
                               message={
                                 row.active
-                                  ? `Nonaktifkan ${row.name}? Data pengelola dan riwayat terkait tetap tersimpan.`
+                                  ? `Nonaktifkan ${row.name}? Data perusahaan dan riwayat terkait tetap tersimpan.`
                                   : `Aktifkan kembali ${row.name}?`
                               }
                             >
@@ -260,7 +218,7 @@ export default async function OperatorPage({
         <aside className="panel admin-form-panel" id="form">
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">{editing ? "Ubah pengelola" : "Tambah pengelola"}</h2>
+              <h2 className="panel-title">{editing ? "Ubah perusahaan" : "Tambah perusahaan"}</h2>
               <div className="panel-subtitle">
                 {editing ? `Memperbarui ${editing.name}` : "Data langsung tersimpan"}
               </div>
@@ -272,8 +230,8 @@ export default async function OperatorPage({
               action={saveOperator}
               fields={fields}
               hidden={{ id: editing?.id ?? "" }}
-              submitLabel={editing ? "Simpan perubahan" : "Tambah pengelola"}
-              note="Menonaktifkan pengelola tidak menghapus data bus, pengemudi, atau riwayat yang sudah tercatat."
+              submitLabel={editing ? "Simpan perubahan" : "Tambah perusahaan"}
+              note="Perusahaan adalah data pengelompokan dan audit, bukan akun atau batas hak akses."
               secondary={editing ? { href: listHref(path, baseQuery), label: "Batal" } : undefined}
             />
           </div>
