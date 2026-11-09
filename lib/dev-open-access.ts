@@ -113,7 +113,7 @@ export const DEV_VIEWER = {
 /** Data perusahaan/pengemudi simulasi yang dipakai gerbang area operator dan pengemudi. */
 export const DEV_COMPANY = {
   id: "51111111-0000-4000-8000-0000000001b1",
-  name: "Operator Contoh Nusantara",
+  name: "Perusahaan Bus Contoh Nusantara",
 } as const;
 export const DEV_DRIVER_RECORD = {
   id: "51111111-0000-4000-8000-0000000004e1",
