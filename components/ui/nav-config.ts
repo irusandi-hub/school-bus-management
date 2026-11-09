@@ -53,7 +53,7 @@ export const operatorGroups: NavGroup[] = [
 
 /** Empat menu utama di navigasi bawah agar setiap area tetap terjangkau satu ketukan. */
 export const adminBottomNav: NavItem[] = [
-  { href: "/admin", label: "Ringkasan", icon: "dashboard" },
+  { href: "/operator", label: "Ringkasan", icon: "dashboard" },
   { href: "/admin/siswa", label: "Siswa", icon: "students" },
   { href: "/admin/penugasan", label: "Tugas", icon: "assignment" },
   { href: "/admin/perjalanan", label: "Perjalanan", icon: "trip" },
