@@ -66,3 +66,74 @@ revoke all on function public.unlink_operator_account(uuid) from public, anon, a
 
 comment on column public.operators.profile_id is
   'Legacy account link retained for historical compatibility only. Company records are data, not login identities or authorization boundaries.';
+
+
+-- The account resolver is an internal SECURITY DEFINER dependency of the linking
+-- functions. Callers must not be able to enumerate auth user IDs by email.
+revoke all on function private.resolve_account_uid(text) from public, anon, authenticated;
+
+-- Driver linking remains an Operator function, but it must never demote or reuse
+-- the single global Operator identity as a driver account.
+create or replace function public.link_driver_account(p_driver_id uuid, p_email text)
+returns text
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_uid uuid;
+  v_name text;
+begin
+  if not private.is_admin() then
+    raise exception 'Akses ditolak: hanya Operator yang dapat menautkan akun pengemudi.';
+  end if;
+
+  if p_driver_id is null or trim(coalesce(p_email, '')) = '' then
+    raise exception 'Isian belum lengkap: pengemudi dan email akun wajib diisi.';
+  end if;
+
+  select full_name into v_name from public.drivers where id = p_driver_id;
+  if not found then
+    raise exception 'Pengemudi tidak ditemukan. Muat ulang halaman lalu coba lagi.';
+  end if;
+
+  v_uid := private.resolve_account_uid(p_email);
+  if v_uid is null then
+    raise exception 'Email belum terdaftar sebagai pengguna aplikasi. Buat pengguna terlebih dahulu, lalu ulangi penautan.';
+  end if;
+
+  if exists (select 1 from public.profiles p where p.id = v_uid and p.role in ('admin', 'operator')) then
+    raise exception 'Akun Operator Utama tidak dapat diubah menjadi akun Pengemudi.';
+  end if;
+
+  if exists (select 1 from public.drivers d where d.profile_id = v_uid and d.id <> p_driver_id) then
+    raise exception 'Akun tersebut sudah tertaut ke pengemudi lain. Lepas tautannya terlebih dahulu.';
+  end if;
+
+  if exists (select 1 from public.operators o where o.profile_id = v_uid) then
+    raise exception 'Akun tersebut masih memiliki tautan perusahaan lama dan tidak dapat digunakan sebagai pengemudi.';
+  end if;
+
+  if exists (
+    select 1 from public.guardians g
+    where g.profile_id = v_uid and g.active
+  ) then
+    raise exception 'Akun tersebut adalah akun orang tua/wali yang aktif dan tidak dapat diubah perannya.';
+  end if;
+
+  insert into public.profiles (id, full_name, role)
+  select v_uid, v_name, 'driver'
+  where not exists (select 1 from public.profiles p where p.id = v_uid);
+
+  update public.profiles
+    set role = 'driver', updated_at = now()
+    where id = v_uid;
+
+  update public.drivers set profile_id = v_uid where id = p_driver_id;
+
+  return 'Akun berhasil ditautkan ke pengemudi ' || v_name || '.';
+end;
+$$;
+
+revoke all on function public.link_driver_account(uuid, text) from public, anon;
+grant execute on function public.link_driver_account(uuid, text) to authenticated;
