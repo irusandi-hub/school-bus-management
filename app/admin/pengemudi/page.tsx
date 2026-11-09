@@ -18,7 +18,7 @@ import type { DriverRow } from "@/lib/types";
 import { sanitizeSearch } from "@/lib/validation";
 import { linkDriverAccount, saveDriver, setDriverActive, unlinkDriverAccount } from "./actions";
 
-export const metadata: Metadata = { title: "Pengemudi | Pengelola" };
+export const metadata: Metadata = { title: "Pengemudi | Operator" };
 
 const path = "/admin/pengemudi";
 const selectColumns = "id, full_name, phone, license_number, operator_id, profile_id, active, operators(name)";
@@ -110,12 +110,12 @@ export default async function PengemudiPage({
     },
     {
       name: "operator_id",
-      label: "Pengelola",
+      label: "Perusahaan bus",
       type: "select",
       fullWidth: true,
       defaultValue: editing?.operator_id ?? "",
       options: [{ value: "", label: "Belum ditetapkan" }, ...operatorOptions],
-      help: "Menentukan pengelola tempat pengemudi bertugas.",
+      help: "Untuk pemetaan dan audit perusahaan tempat pengemudi bertugas; bukan batas akses Operator.",
     },
   ];
 
@@ -140,8 +140,8 @@ export default async function PengemudiPage({
             resetHref={path}
             filters={
               <>
-                <select name="operator" defaultValue={operatorFilter} aria-label="Filter pengelola">
-                  <option value="">Semua pengelola</option>
+                <select name="operator" defaultValue={operatorFilter} aria-label="Filter perusahaan bus">
+                  <option value="">Semua perusahaan bus</option>
                   {operators.map((operator) => (
                     <option key={operator.id} value={operator.id}>
                       {operator.name}
@@ -164,7 +164,7 @@ export default async function PengemudiPage({
                   <th scope="col">Nama pengemudi</th>
                   <th scope="col">Telepon</th>
                   <th scope="col">Nomor SIM</th>
-                  <th scope="col">Pengelola</th>
+                  <th scope="col">Perusahaan bus</th>
                   <th scope="col">Status</th>
                   <th scope="col">Akun masuk</th>
                   <th scope="col">Tindakan</th>
