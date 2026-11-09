@@ -116,7 +116,7 @@ export default async function OperatorPage({
       />
 
       {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
-      {error && <Notice kind="error">Daftar pengelola belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
+      {error && <Notice kind="error">Daftar perusahaan bus belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
 
       <div className="admin-split">
         <section className="panel">
