@@ -21,6 +21,8 @@ declare
   v_uid uuid;
   v_existing_role text;
   v_other_global_count integer;
+  v_driver_link_count integer;
+  v_guardian_link_count integer;
 begin
   select u.id
     into v_uid
@@ -40,6 +42,16 @@ begin
   if v_existing_role is not null
      and v_existing_role not in ('admin', 'operator') then
     raise exception 'Akun target sudah memiliki role non-Operator; provisioning dibatalkan.';
+  end if;
+
+  select count(*) into v_driver_link_count
+  from public.drivers d where d.profile_id = v_uid;
+
+  select count(*) into v_guardian_link_count
+  from public.guardians g where g.profile_id = v_uid;
+
+  if v_driver_link_count > 0 or v_guardian_link_count > 0 then
+    raise exception 'Akun target masih tertaut sebagai Pengemudi atau Orang Tua/Wali; provisioning dibatalkan.';
   end if;
 
   select count(*)
