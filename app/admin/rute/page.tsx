@@ -8,7 +8,7 @@ import type { RouteRow } from "@/lib/types";
 import { routeDirectionLabel } from "@/lib/validation";
 import { saveRoute } from "./actions";
 
-export const metadata: Metadata = { title: "Rute | Pengelola" };
+export const metadata: Metadata = { title: "Rute | Operator" };
 
 export default async function RoutesPage({
   searchParams,
