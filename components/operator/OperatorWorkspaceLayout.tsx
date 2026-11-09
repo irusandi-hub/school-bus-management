@@ -19,7 +19,7 @@ export async function OperatorWorkspaceLayout({ children }: { children: React.Re
 
   const viewer = access.viewer;
   const initials = (viewer.profile?.full_name || viewer.email || "OP")
-    .split(/\\s+/)
+    .split(/\s+/)
     .filter(Boolean)
     .slice(0, 2)
     .map((part) => part[0]?.toUpperCase())
