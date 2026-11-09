@@ -97,7 +97,7 @@ reset role;
 
 -- A second legacy Admin or Operator must not coexist with the global Operator.
 reset role;
-do $
+do $$
 begin
   begin
     insert into public.profiles (id, full_name, role)
@@ -183,7 +183,7 @@ reset role;
 
 set role authenticated;
 select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-000000000004', false);
-do $
+do $$
 begin
   begin
     perform public.link_driver_account('00000000-0000-0000-0000-000000000401', 'operator@contoh.test');
@@ -191,7 +191,7 @@ begin
   exception when others then
     if sqlerrm not like 'Akses ditolak%' then raise; end if;
   end;
-end $;
+end $$;
 reset role;
 
 -- Operator cannot turn its global identity into a driver account. A guardian
@@ -206,9 +206,9 @@ begin
   exception when others then
     if sqlerrm not like '%Operator Utama%' then raise; end if;
   end;
-  update public.guardians set active = false where profile_id = '00000000-0000-0000-0000-000000000006';
+  update public.guardians set active = false where profile_id = '00000000-0000-0000-0000-000000000007';
   begin
-    perform public.link_driver_account('00000000-0000-0000-0000-000000000402', 'wali.a@contoh.test');
+    perform public.link_driver_account('00000000-0000-0000-0000-000000000402', 'wali.b@contoh.test');
     raise exception 'Akun Wali berhasil diubah menjadi Pengemudi';
   exception when others then
     if sqlerrm not like '%orang tua/wali%' then raise; end if;
