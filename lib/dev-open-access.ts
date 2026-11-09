@@ -20,7 +20,7 @@
  *   simulasi berlabel di memori server.
  *
  * Gerbang otorisasi asli tidak dihapus: begitu mode ini tertutup, pemeriksaan
- * sesi, peran, pemeriksaan peran, dan RLS kembali berlaku penuh.
+ * sesi, peran, dan RLS kembali berlaku penuh.
  */
 
 const DISABLE_VALUES = new Set(["0", "false", "off", "no", "disabled"]);
@@ -110,7 +110,7 @@ export const DEV_VIEWER = {
   },
 } as const;
 
-/** Baris organisasi/pengemudi simulasi yang dipakai gerbang area operator dan pengemudi. */
+/** Data perusahaan/pengemudi simulasi yang dipakai gerbang area operator dan pengemudi. */
 export const DEV_COMPANY = {
   id: "51111111-0000-4000-8000-0000000001b1",
   name: "Operator Contoh Nusantara",
