@@ -18,7 +18,7 @@ import type { SchoolRow } from "@/lib/types";
 import { sanitizeSearch } from "@/lib/validation";
 import { saveSchool, setSchoolActive } from "./actions";
 
-export const metadata: Metadata = { title: "Sekolah | Pengelola" };
+export const metadata: Metadata = { title: "Sekolah | Operator" };
 
 const path = "/admin/sekolah";
 const selectColumns =
