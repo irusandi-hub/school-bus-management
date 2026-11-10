@@ -1,3 +1,4 @@
+import "@/app/workspace-redesign.css";
 import { BrandLogo } from "@/components/brand-logo";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { ConfigNotice } from "@/components/admin/ui";
