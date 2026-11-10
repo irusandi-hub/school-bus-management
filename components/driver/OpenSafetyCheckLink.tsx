@@ -21,7 +21,7 @@ export function OpenSafetyCheckLink() {
         if (details) details.open = true;
       }}
     >
-      <Icon name="shield" size={16} /> Periksa keselamatan
+      <Icon name="shield" size={16} /> Akhiri Perjalanan dan Periksa
     </a>
   );
 }
