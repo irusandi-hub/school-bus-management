@@ -87,9 +87,17 @@ where p.role = 'operator';
 
 Hasil yang diharapkan: tepat satu baris, dengan email terverifikasi milik Operator Utama.
 
+## Catatan implementasi
+
+- Operator Utama tidak memerlukan baris `operators` atau `schools`. Perusahaan dan sekolah adalah data pemetaan/audit, bukan identitas login atau batas hak akses.
+- Kolom lama `operators.profile_id` dipertahankan sebagai referensi historis. Tautan baris itu (dan `drivers.profile_id`) tidak lagi memberi akses dengan sendirinya karena `current_operator_id()` mensyaratkan role `admin`/`operator` dan `current_driver_id()` mensyaratkan role `driver`.
+- Penautan akun perusahaan melalui client sudah dicabut; jangan menambahkan UI atau pemanggilan RPC baru untuk itu.
+- Jalankan `npm run test:operator:sql` untuk memverifikasi promosi/penolakan bootstrap pada database PGlite terisolasi. Skrip uji tersebut membuat data dan **tidak boleh** diarahkan ke database hosted/produksi.
+
 ## Batas keamanan
 
 - Jangan menambahkan tombol signup publik yang mengizinkan pemilihan role `operator`.
 - Jangan menaruh service-role key atau password dalam aplikasi/browser.
 - Jangan menjalankan skrip ini sebelum migrasi role dan unique index Operator tersedia.
 - Jika ada lebih dari satu akun Admin/Operator lama, hentikan dan selesaikan rekonsiliasi identitas secara manual terlebih dahulu.
+- Jangan menjalankan fixture SQL pada database yang berisi data nyata; fixture tersebut membuat profil, siswa, dan perjalanan sintetis.
