@@ -169,8 +169,7 @@ describe("post-login redirect safety", () => {
   it("never carries a post-login destination into another role's area", () => {
     assert.equal(scopedNext("parent", "/admin/siswa"), "/wali");
     assert.equal(scopedNext("driver", "/admin"), "/pengemudi");
-    assert.equal(scopedNext("operator", "/admin/operator"), "/operator");
-    assert.equal(scopedNext("admin", "/operator"), "/operator");
+    assert.equal(scopedNext("parent", "/operator"), "/wali");
     assert.equal(scopedNext("parent", "//contoh.com"), "/wali");
   });
 
@@ -178,7 +177,10 @@ describe("post-login redirect safety", () => {
     assert.equal(scopedNext("parent", "/wali/anak/123"), "/wali/anak/123");
     assert.equal(scopedNext("driver", "/pengemudi/tugas/abc"), "/pengemudi/tugas/abc");
     assert.equal(scopedNext("operator", "/operator/bus"), "/operator/bus");
-    assert.equal(scopedNext("admin", "/admin/rute"), "/operator");
+    // The unified Operator workspace serves its modules from /admin/* too.
+    assert.equal(scopedNext("operator", "/admin/operator"), "/admin/operator");
+    assert.equal(scopedNext("admin", "/admin/rute"), "/admin/rute");
+    assert.equal(scopedNext("admin", "/operator"), "/operator");
   });
 });
 

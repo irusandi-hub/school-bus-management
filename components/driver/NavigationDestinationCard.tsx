@@ -47,7 +47,7 @@ export function NavigationDestinationCard({
               ? `${studentList(destination.students.map((student) => student.name)) ?? "Tidak ada siswa"}`
               : plan.completed
                 ? "Akses navigasi ditutup untuk perjalanan ini."
-                : "Titik jemput belum dibuat Admin Pusat."}
+                : "Titik jemput belum dibuat Operator Utama."}
           </small>
           {destination && <CoordinateLine destination={destination} />}
         </div>
@@ -137,7 +137,7 @@ export function NavigationDestinationCard({
                 <span>
                   {plan.completed
                     ? "Navigasi ditutup karena perjalanan sudah ditutup pengemudi."
-                    : "Rute ini belum memiliki titik jemput. Hubungi Admin Pusat atau operator."}
+                    : "Rute ini belum memiliki titik jemput. Hubungi Operator Utama."}
                 </span>
               </>
             )}
@@ -151,7 +151,7 @@ export function NavigationDestinationCard({
             destination={destination}
             destinationName={destination.name}
             showAlternatives
-            disabledMessage={`${destination.name} belum memiliki koordinat tersimpan, sehingga rute tidak dapat dibuka. Minta Admin Pusat melengkapi koordinat titik ini — alamat tidak boleh ditebak.`}
+            disabledMessage={`${destination.name} belum memiliki koordinat tersimpan, sehingga rute tidak dapat dibuka. Minta Operator Utama melengkapi koordinat titik ini — alamat tidak boleh ditebak.`}
           />
         </div>
       ) : (

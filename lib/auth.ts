@@ -184,6 +184,23 @@ export type GuardianAccess =
   | { status: "unconfigured" }
   | { status: "ready"; viewer: Viewer };
 
+/**
+ * Non-redirecting guardian check for route handlers. Pages may use `redirect()`,
+ * but an API must answer with a status code the client can handle instead of an
+ * HTML login page.
+ */
+export async function guardianRequestAccess(): Promise<
+  "unconfigured" | "anonymous" | "forbidden" | "ready"
+> {
+  if (isDevOpenAccess()) return "ready";
+
+  const state = await getViewerState();
+  if (state.status === "unconfigured") return "unconfigured";
+  if (state.status === "anonymous") return "anonymous";
+  if (!state.viewer.profile || state.viewer.profile.role !== "parent") return "forbidden";
+  return "ready";
+}
+
 /** Server-side gate for the guardian area. */
 export async function requireGuardian(nextPath = "/wali"): Promise<GuardianAccess> {
   if (isDevOpenAccess()) return { status: "ready", viewer: devViewerFor("parent") };

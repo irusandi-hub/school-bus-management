@@ -1,4 +1,5 @@
 import { DEV_COMPANY, DEV_DRIVER_RECORD, DEV_VIEWER } from "../dev-open-access.ts";
+import { serviceDateInTimeZone } from "../validation.ts";
 
 /**
  * Dataset simulasi untuk mode akses terbuka pengembangan (DEC-024).
@@ -17,12 +18,13 @@ function iso(daysAgo = 0, hoursAgo = 0) {
   return new Date(now).toISOString();
 }
 
+// Simulated assignments must use the same service day as the pages that query them.
 function today() {
-  return iso().slice(0, 10);
+  return serviceDateInTimeZone();
 }
 
 function yesterday() {
-  return iso(1).slice(0, 10);
+  return serviceDateInTimeZone(new Date(Date.now() - 86_400_000));
 }
 
 const { operator, driver, parent } = DEV_VIEWER;

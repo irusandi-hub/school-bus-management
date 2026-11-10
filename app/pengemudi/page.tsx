@@ -27,15 +27,10 @@ import {
 import { DEFAULT_NAVIGATION_PROVIDER, buildRouteDirectionsUrl } from "@/lib/navigation/external";
 import { createServerSupabase } from "@/lib/supabase/server";
 import type { RouteStopRow, TripEventRow } from "@/lib/types";
-import { formatDate, formatDateTime, formatTime, routeDirectionLabel } from "@/lib/validation";
+import { formatDate, formatDateTime, formatTime, routeDirectionLabel, serviceDateInTimeZone } from "@/lib/validation";
 import { startTrip } from "./actions";
 
 export const metadata: Metadata = { title: "Operasional Hari Ini | Pengemudi" };
-
-function today() {
-  const now = new Date();
-  return new Date(now.getTime() - now.getTimezoneOffset() * 60_000).toISOString().slice(0, 10);
-}
 
 type RosterEntry = {
   id: string;
@@ -81,7 +76,8 @@ export default async function DriverOperationsPage({
   const supabase = await createServerSupabase();
   if (!supabase) return <ConfigNotice />;
 
-  const date = today();
+  // Assignment dates use the Dammam pilot service day (Asia/Riyadh), not the host timezone.
+  const date = serviceDateInTimeZone();
   const { data, error } = await supabase
     .from("trip_assignments")
     .select(
@@ -127,7 +123,7 @@ export default async function DriverOperationsPage({
           <EmptyState
             icon="inbox"
             title="Belum ada tugas hari ini"
-            detail="Tugas dibuat oleh Admin Pusat atau operator. Tidak ada jadwal contoh yang ditampilkan."
+            detail="Tugas dibuat oleh Operator Utama. Tidak ada jadwal contoh yang ditampilkan."
           />
         </section>
         <p className="ops-foot-link">
@@ -405,7 +401,7 @@ export default async function DriverOperationsPage({
           <div className="table-empty">
             <strong>Belum ada siswa pada rute ini</strong>
             <p>
-              Admin Pusat belum menempatkan siswa pada titik rute ini. Jangan mencatat siswa yang tidak terdaftar.
+              Operator Utama belum menempatkan siswa pada titik rute ini. Jangan mencatat siswa yang tidak terdaftar.
             </p>
           </div>
         ) : (

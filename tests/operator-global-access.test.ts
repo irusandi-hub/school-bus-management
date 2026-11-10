@@ -16,9 +16,14 @@ describe("arsitektur akses tiga ekosistem", () => {
 
   it("hanya menerima tujuan login di dalam ruang kerja role terkait", () => {
     assert.equal(scopedNext("operator", "/operator/siswa"), "/operator/siswa");
-    assert.equal(scopedNext("operator", "/admin/siswa"), "/operator");
+    // Modul bersama Operator dilayani dari /admin/*, jadi tujuan itu tetap sah.
+    assert.equal(scopedNext("operator", "/admin/siswa"), "/admin/siswa");
+    assert.equal(scopedNext("admin", "/admin/penugasan"), "/admin/penugasan");
+    assert.equal(scopedNext("operator", "/admin"), "/admin");
     assert.equal(scopedNext("driver", "/wali"), "/pengemudi");
+    assert.equal(scopedNext("driver", "/admin/siswa"), "/pengemudi");
     assert.equal(scopedNext("parent", "/wali/riwayat"), "/wali/riwayat");
+    assert.equal(scopedNext("parent", "/operator"), "/wali");
   });
 });
 

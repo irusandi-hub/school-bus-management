@@ -1,5 +1,6 @@
 import type { ServerSupabase } from "@/lib/admin/support";
 import type { StudentRow } from "@/lib/types";
+import { serviceDateInTimeZone } from "../validation.ts";
 
 export type Placement = {
   id: string;
@@ -32,9 +33,13 @@ export type ChildOverview = {
   todayTrips: TodayTrip[];
 };
 
-export function todayDate() {
-  const now = new Date();
-  return new Date(now.getTime() - now.getTimezoneOffset() * 60_000).toISOString().slice(0, 10);
+/**
+ * The service day follows the pilot timezone (Asia/Riyadh), exactly like the Operator
+ * dashboard and assignment form. Using the server's local date here would hide the
+ * current trip for the first hours of the Riyadh day on a UTC host.
+ */
+export function todayDate(date: Date = new Date()) {
+  return serviceDateInTimeZone(date);
 }
 
 export async function loadChildren(supabase: ServerSupabase): Promise<ChildOverview[]> {

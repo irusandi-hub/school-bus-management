@@ -45,7 +45,7 @@ export function FullRouteNavigator({
       ? `${nextStop.waitingStudents} siswa masih menunggu tindakan pada perjalanan ini.`
       : hasStudents
         ? "Tidak ada siswa yang masih menunggu tindakan."
-        : "Admin Pusat belum menempatkan siswa pada titik rute ini.";
+        : "Operator Utama belum menempatkan siswa pada titik rute ini.";
   const skipReasons = Object.fromEntries(
     route.stops
       .filter((entry) => entry.skipReason)
@@ -164,7 +164,7 @@ export function FullRouteNavigator({
           </summary>
           <p>
             {route.missingCoordinateStops.map((stop) => `${stop.order}. ${stop.name}`).join(", ")}. Titik ini tidak
-            dikirim ke aplikasi peta; lengkapi koordinat lewat Admin Pusat atau operator.
+            dikirim ke aplikasi peta; lengkapi koordinat lewat Operator Utama.
           </p>
         </details>
       )}

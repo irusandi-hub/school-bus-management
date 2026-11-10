@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireGuardian } from "@/lib/auth";
+import { guardianRequestAccess } from "@/lib/auth";
 import { createServerSupabase } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -36,11 +36,14 @@ export async function GET(request: Request) {
     return noStore({ error: "Perjalanan tidak valid." }, 400);
   }
 
-  const access = await requireGuardian();
-  if (access.status === "unconfigured") {
+  const access = await guardianRequestAccess();
+  if (access === "unconfigured") {
     return noStore({ error: "Koneksi database belum dikonfigurasi." }, 503);
   }
-  if (access.status !== "ready") {
+  if (access === "anonymous") {
+    return noStore({ error: "Sesi wali tidak ditemukan." }, 401);
+  }
+  if (access !== "ready") {
     return noStore({ error: "Akses wali tidak tersedia." }, 403);
   }
 

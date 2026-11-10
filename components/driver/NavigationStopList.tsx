@@ -24,7 +24,7 @@ export function NavigationStopList({
       <EmptyState
         icon="route"
         title="Belum ada titik jemput"
-        detail="Admin Pusat belum menambahkan titik pada rute ini. Navigasi tidak dapat dibuka tanpa titik yang tersimpan."
+        detail="Operator Utama belum menambahkan titik pada rute ini. Navigasi tidak dapat dibuka tanpa titik yang tersimpan."
       />
     );
   }
