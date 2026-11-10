@@ -322,10 +322,21 @@ Lihat `TECHNICAL_SPEC_REVIEW.md`, bagian 19 pada `MASTER_SPEC.md`, serta `OPERAT
 - **Status:** DIIMPLEMENTASIKAN PADA BRANCH `feat/unified-operator-global-workspace` (PR #30, DRAFT). Tidak ada perubahan skema, migrasi, RLS, autentikasi, atau halaman Wali.
 - **Layout Pengelola:** Seluruh halaman `/admin/*` dan `/operator/*` memakai `app/workspace-redesign.css` di atas kerangka `OperatorWorkspaceLayout`: topbar 54 px, sidebar 232 px, judul halaman ringkas, filter area berupa strip, metrik dalam satu permukaan, serta tabel/form yang lebih padat. Brand ganda di topbar dan kotak menu duplikat di dashboard dihapus; navigasi yang tidak berfungsi tidak ditambahkan.
 - **Project Area:** Pemilih area dipadatkan menjadi strip `area-switch` horizontal yang tetap terlihat di dashboard dan daftar, tanpa blok penjelasan besar. Konteks cookie dan filter data tidak berubah.
-- **Pengemudi:** `DriverOpsHeader` menggabungkan identitas, bus, plat, kapasitas, jadwal, sekolah, jenis perjalanan, dan progres. Kartu progres terpisah dihapus. Aksi utama berada di satu area dengan tinggi 56–58 px; pada ponsel daftar siswa tampil sebelum peta.
+- **Pengemudi (koreksi):** redesign layout Pengemudi dari implementasi awal dibatalkan. `app/pengemudi/page.tsx`, `DriverOpsHeader`, dan `TripClosePanel` dikembalikan ke susunan sebelum redesign. Tidak ada perubahan pada susunan header, kartu/progres, navigasi, daftar siswa, peta, maupun urutan konten.
 - **Alur sesi:** Satu tombol berubah dari **Mulai Perjalanan** menjadi **Akhiri Perjalanan**. Tombol akhir membuka dialog checklist; tombol penyelesaian di dalam dialog bertuliskan **Akhiri** dan hanya mengirim jika seluruh checklist wajib serta syarat kedatangan/status siswa terpenuhi. Tidak ada tombol “Periksa Keselamatan” terpisah. DEC-034 bagian teks tombol akhir digantikan oleh keputusan ini.
 - **Sesi:** Satu sesi tetap diwakili satu `trip_assignments` + `trips` (tanggal, arah pagi/sore, jenis penjemputan/pengantaran). Menekan **Akhiri** hanya menutup trip tersebut; aplikasi tidak membuat assignment/trip baru otomatis. Sesi berikutnya hanya muncul jika sudah ada penugasan.
 - **Perbaikan pendukung:** Simulasi `trip_student_events` mengisi `occurred_at` seperti default database, dan pengurutan status tahan terhadap baris lama tanpa waktu. Ini mencegah halaman pengemudi gagal setelah status siswa dicatat di mode simulasi.
 - **Verifikasi 2026-11-10 (lokal):** `npm test` 197/197 lulus; typecheck lulus; build produksi lulus. Alur Server Action asli diuji lewat POST form: Mulai → catat dua siswa → konfirmasi tiba → checklist → Akhiri → status selesai, riwayat pengemudi dan daftar perjalanan Operator diperbarui; percobaan Akhiri tanpa checklist ditolak dan trip tetap berlangsung. Semua halaman utama merespons 200 pada preview.
 - **Belum terverifikasi:** render visual/klik di browser pada 360/390/430/768/1024/1440 px (tidak ada Chromium/Playwright yang dapat dijalankan pada lingkungan ini), perangkat GPS/kamera nyata, Supabase hosted, dan GitHub Actions.
 - **Pihak yang menyetujui:** Pemilik produk melalui instruksi redesain PR #30 tanggal 2026-11-10.
+
+
+### DEC-036 — Kembalikan layout Pengemudi; batasi perubahan pada tombol
+- **Tanggal:** 2026-11-10
+- **Status:** DIIMPLEMENTASIKAN PADA BRANCH `feat/unified-operator-global-workspace` (PR #30, DRAFT).
+- **Keputusan:** Layout halaman Pengemudi dikembalikan ke versi sebelum redesign terakhir. Perubahan visual besar pada halaman Pengemudi tidak dipertahankan karena instruksi hanya meminta penyesuaian tombol.
+- **Tombol utama:** Pada posisi semula di header, label berubah dari **Mulai Perjalanan** sebelum sesi menjadi **Akhiri Perjalanan** ketika sesi berlangsung. Tombol akhir membuka panel pemeriksaan keselamatan yang sudah ada; tidak ada tombol utama kedua.
+- **Checklist:** Panel keselamatan tetap memakai layout sebelumnya. Semua checklist wajib dipertahankan; tombol final di panel bertuliskan **Akhiri** dan tetap tunduk pada validasi kedatangan, pencatatan status siswa, serta validasi server.
+- **Isolasi CSS:** `workspace-redesign.css` hanya dimuat melalui `OperatorWorkspaceLayout`, bukan lagi dari root layout, sehingga aturan redesign Pengelola tidak ikut memengaruhi halaman Pengemudi.
+- **Cakupan yang tidak berubah:** Redesign Pengelola tetap dipertahankan. Tidak ada perubahan database, migration, RLS, GPS, kamera, hak akses, maupun halaman Wali.
+- **Validasi:** Source dan branch sudah dibaca kembali setelah perubahan. Unit test, typecheck, dan build untuk commit koreksi ini belum dijalankan.
