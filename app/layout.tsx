@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { DevModeBanner } from "@/components/DevModeBanner";
 import "./globals.css";
-import "./workspace-redesign.css";
 
 export const metadata: Metadata = {
   title: "School Bus | Manajemen Transportasi Sekolah",
