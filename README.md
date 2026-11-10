@@ -9,7 +9,7 @@ Aplikasi manajemen transportasi bus sekolah untuk Project Area, sekolah, pengemu
 Halaman pertama adalah **Main Access Gate**. Kartu hanya pintu masuk: setelah autentikasi, peran dibaca dari `profiles.role` di database, lalu pengguna diarahkan ke area miliknya. Tiga ekosistem:
 
 - **Operator Utama** (`/operator` sebagai beranda, modul di `/admin/*`): satu-satunya kendali global platform. Operator membaca dan mengubah seluruh Project Area, sekolah, armada, pengemudi, siswa, wali, rute, penugasan, perjalanan, dan audit lintas area. Project Area dan sekolah adalah data operasional, bukan akun login atau batas hak akses. Dashboard menyediakan pilihan **Semua Area** dan tab per area; pilihan disimpan pada cookie sehingga konteks daftar, statistik, laporan, filter, dan formulir tetap konsisten antarhalaman. Selama transisi, role lama `admin` menerima ruang kerja yang sama; URL modul lama `/operator/{bus,pengemudi,siswa,penugasan,perjalanan,laporan,sekolah,wali,rute}` dialihkan ke modul bersama.
-- **Pengemudi** (`/pengemudi`): satu halaman operasional berisi jadwal hari ini, navigasi rute lengkap, daftar siswa dengan tindakan sesuai tahap, catatan tugas, pemeriksaan keselamatan, berbagi GPS HP selama perjalanan, dan tombol akhiri perjalanan. Hanya penugasan, siswa pada rute itu, dan perjalanan miliknya sendiri; tanpa menu administrasi. Riwayat ada di `/pengemudi/riwayat`.
+- **Pengemudi** (`/pengemudi`): satu halaman operasional dengan satu tombol utama yang berubah dari **Mulai Perjalanan** menjadi **Akhiri Perjalanan**. Tombol akhir membuka dialog checklist keselamatan; tombol **Akhiri** di dalamnya menutup sesi dan tidak memulai sesi baru otomatis. Identitas, bus, jadwal, sekolah, jenis perjalanan, dan progres digabung dalam satu blok ringkas; daftar siswa dan GPS tetap tersedia. Hanya penugasan, siswa pada rute itu, dan perjalanan miliknya sendiri; tanpa menu administrasi. Riwayat ada di `/pengemudi/riwayat`.
 - **Orang Tua/Wali** (`/wali`): kartu anak adaptif untuk satu/lebih anak, sekolah dan layanan, status perjalanan, peta lokasi HP pengemudi selama perjalanan anak, live video perjalanan (eksperimental), detail penjemputan, dan riwayat perjalanan anak miliknya sendiri.
 
 Yang **belum** aktif atau belum siap produksi:
@@ -81,7 +81,7 @@ Konfigurasi tambahan pada Supabase Dashboard → Authentication → URL Configur
 | `/operator` | profil `operator` (atau `admin` legacy) | Beranda ruang kerja Operator global |
 | `/operator/{bus,pengemudi,siswa,penugasan,perjalanan,laporan,sekolah,wali,rute}` | Operator global | URL modul lama; dialihkan ke modul bersama `/admin/...` |
 | `/operator/laporan/export` | Operator global | Ekspor CSV perjalanan sesuai konteks area (paginasi penuh) |
-| `/pengemudi` | profil `driver` + baris pengemudi aktif | Satu halaman operasional: tugas hari ini, navigasi rute lengkap, daftar siswa, tindakan, keselamatan, akhiri perjalanan |
+| `/pengemudi` | profil `driver` + baris pengemudi aktif | Satu halaman operasional: satu tombol Mulai/Akhiri Perjalanan, dialog checklist keselamatan, navigasi rute, daftar siswa, dan GPS |
 | `/pengemudi/tugas/[id]` | profil `driver` | Dialihkan ke `/pengemudi?tugas=<id>` untuk tautan lama |
 | `/pengemudi/riwayat` | profil `driver` | Riwayat perjalanan miliknya |
 | `/wali` | profil `parent` | Hanya siswa milik wali yang masih aktif |
@@ -222,7 +222,7 @@ psql -v ON_ERROR_STOP=1 -d schoolbus_dev -f supabase/tests/migration_checks.sql
 
 Hasil validasi terakhir (10 November 2026, head branch PR #30):
 
-- `npm test`: **192 tes lulus**, 0 gagal (47 suite), termasuk isolasi Project Area, status penumpang, siklus GPS, dan kontrak tombol responsif.
+- `npm test`: **197 tes lulus**, 0 gagal (48 suite), termasuk isolasi Project Area, status penumpang, alur sesi/checklist, siklus GPS, kontrak tombol responsif, dan konsistensi layout Pengelola.
 - `npm run typecheck`: lulus tanpa galat.
 - `npm run test:operator:sql`, `test:camera:sql`, `test:location:sql`: **ketiga suite lulus** pada PGlite, termasuk seluruh migrasi dan fixture RLS.
 - `npm run build`: **production build lulus** (Next.js 15).
@@ -230,7 +230,7 @@ Hasil validasi terakhir (10 November 2026, head branch PR #30):
 
 Unit test mencakup validasi, keamanan redirect, batas role/`scopedNext`, tanggal layanan Riyadh, sanitasi CSV, alur kamera/lokasi, dan klien simulasi. Tes tersebut tidak menggantikan pengujian browser atau database hosted.
 
-**Belum diuji:** integrasi langsung ke proyek Supabase hosted (tidak ada kredensial pada lingkungan ini), alur email verifikasi nyata, Server Action lewat browser, playback kamera pada dua perangkat nyata, serta job GitHub Actions pada runner. RLS teruji pada PGlite/Postgres lokal dengan stub `auth`, **belum terverifikasi pada platform Supabase**.
+**Belum diuji:** integrasi langsung ke proyek Supabase hosted (tidak ada kredensial pada lingkungan ini), alur email verifikasi nyata, interaksi visual/klik di browser, playback kamera pada dua perangkat nyata, serta job GitHub Actions pada runner. Server Action Mulai → status siswa → tiba → checklist → **Akhiri** sudah diuji lewat POST form asli, termasuk penolakan checklist yang belum lengkap. RLS teruji pada PGlite/Postgres lokal dengan stub `auth`, **belum terverifikasi pada platform Supabase**.
 
 ## Keamanan dan batasan
 

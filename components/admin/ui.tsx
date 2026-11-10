@@ -40,7 +40,7 @@ export function PageHeader({
     <>
       {crumbs && crumbs.length > 0 && <Breadcrumbs items={crumbs} />}
       <header className="admin-page-head">
-        <div>
+        <div className="admin-page-head-copy">
           {eyebrow && <div className="eyebrow">{eyebrow}</div>}
           <h1>{title}</h1>
           <p>{description}</p>
@@ -117,6 +117,31 @@ export function StatCard({
 }
 
 /** State kosong yang dipakai di luar tabel (panel, kartu, halaman). */
+export function MetricStrip({
+  label,
+  items,
+}: {
+  label: string;
+  items: { label: string; value: ReactNode; note?: string; icon: string }[];
+}) {
+  return (
+    <section className="metric-strip" aria-label={label}>
+      {items.map((item) => (
+        <div className="metric-item" key={item.label}>
+          <span className="metric-icon" aria-hidden="true">
+            <Icon name={item.icon} size={16} />
+          </span>
+          <div className="metric-copy">
+            <span className="metric-label">{item.label}</span>
+            <strong className="metric-value">{item.value}</strong>
+            {item.note && <small>{item.note}</small>}
+          </div>
+        </div>
+      ))}
+    </section>
+  );
+}
+
 export function EmptyState({
   icon = "inbox",
   title,

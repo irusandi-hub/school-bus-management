@@ -11,7 +11,6 @@ import type { DriverMapStop } from "@/components/driver/DriverRouteMap";
 import { cameraDemoEnabled } from "@/lib/camera/demo-policy";
 import { compareStudentsByRouteOrder } from "@/lib/driver/student-order";
 import { deploymentKind } from "@/lib/dev-open-access";
-import { OpenSafetyCheckLink } from "@/components/driver/OpenSafetyCheckLink";
 import { StudentList, type StudentListRow } from "@/components/driver/StudentList";
 import { TripClosePanel } from "@/components/driver/TripClosePanel";
 import { Icon } from "@/components/ui/Icon";
@@ -28,7 +27,7 @@ import {
 import { DEFAULT_NAVIGATION_PROVIDER, buildRouteDirectionsUrl } from "@/lib/navigation/external";
 import { createServerSupabase } from "@/lib/supabase/server";
 import type { RouteStopRow, TripEventRow } from "@/lib/types";
-import { formatDate, formatDateTime, formatTime, routeDirectionLabel, serviceDateInTimeZone } from "@/lib/validation";
+import { formatDate, routeDirectionLabel, serviceDateInTimeZone } from "@/lib/validation";
 import { startTrip } from "./actions";
 
 export const metadata: Metadata = { title: "Operasional Hari Ini | Pengemudi" };
@@ -283,14 +282,6 @@ export default async function DriverOperationsPage({
   const cameraPublishingEnabled = process.env.NEXT_PUBLIC_TRIP_CAMERA_ENABLED === "1";
   const cameraEnabled =
     cameraPublishingEnabled || cameraDemoEnabled(deploymentKind(), process.env.CAMERA_DEVICE_DEMO);
-  const startReason = completed
-    ? "Perjalanan sudah selesai."
-    : inProgress
-      ? "Perjalanan sedang berlangsung."
-      : trip?.status === "cancelled"
-        ? "Perjalanan dibatalkan."
-        : "Mulai untuk membuka tindakan siswa dan kamera.";
-
   return (
     <div className="driver-ops">
       {assignments.length > 1 && (
@@ -344,36 +335,35 @@ export default async function DriverOperationsPage({
           <form action={startTrip} className="ops-start">
             <input type="hidden" name="assignment_id" value={selected.id} />
             <ConfirmSubmit
-              className="btn ops-primary-action ops-start-action"
+              className="btn ops-primary-action ops-start-action drive-main-action"
               message="Mulai Perjalanan untuk tugas ini? Waktu mulai akan dicatat."
               pendingLabel="Memulai…"
             >
-              <Icon name="trip" size={16} /> Mulai Perjalanan
+              <Icon name="trip" size={17} /> Mulai Perjalanan
             </ConfirmSubmit>
+            <small className="drive-action-hint">Waktu mulai dan pengiriman GPS dimulai setelah tombol ditekan.</small>
           </form>
         ) : inProgress ? (
-          <div className="ops-start">
-            <OpenSafetyCheckLink />
-            <small>Lengkapi pemeriksaan keselamatan.</small>
-          </div>
+          <TripClosePanel
+            assignmentId={selected.id}
+            trip={trip}
+            canEndTrip={canEndTrip}
+            unrecordedNames={unrecorded.map((row) => row.name)}
+            unclearStudents={unclearStudents}
+            totalStudents={studentRows.length}
+          />
         ) : (
-          <div className="ops-start">
-            <button className="btn ops-primary-action ops-start-action" type="button" disabled>
-              <Icon name="trip" size={16} /> Mulai Perjalanan
-            </button>
-            <small>{startReason}</small>
+          <div className="drive-session-closed">
+            <Icon name={completed ? "check" : "alert"} size={17} />
+            <strong>{completed ? "Sesi selesai" : "Perjalanan dibatalkan"}</strong>
+            <small>
+              {completed
+                ? "Sesi berikutnya mengikuti penugasan yang tersedia, tidak dimulai otomatis."
+                : "Tidak ada tindakan lanjutan untuk sesi ini."}
+            </small>
           </div>
         )}
       </DriverOpsHeader>
-
-      <TripClosePanel
-        assignmentId={selected.id}
-        trip={trip}
-        canEndTrip={canEndTrip}
-        unrecordedNames={unrecorded.map((row) => row.name)}
-        unclearStudents={unclearStudents}
-        totalStudents={studentRows.length}
-      />
 
       <div className="ops-workspace">
         <div className="ops-left">
@@ -393,7 +383,7 @@ export default async function DriverOperationsPage({
           <div>
             <h2 className="panel-title">Siswa &amp; tindakan</h2>
             <div className="panel-subtitle">
-              Urutan mengikuti rute yang {plan.started ? "terkunci" : "ditetapkan sistem"} · satu tombol per siswa
+              {plan.started ? "Urutan terkunci" : "Urutan rute"} · aksi per siswa
             </div>
           </div>
           <Pill tone={studentRows.length > 0 ? "info" : "warning"}>{studentRows.length} siswa</Pill>
@@ -441,12 +431,6 @@ export default async function DriverOperationsPage({
               ) : (
                 <p>Belum ada catatan kendala pada perjalanan ini.</p>
               )}
-              <p className="ops-review-meta">
-                {formatDate(selected.service_date)} · {routeDirectionLabel(direction)} · Bus{" "}
-                {selected.buses?.fleet_code ?? "—"}
-                {trip?.started_at ? ` · Mulai ${formatTime(trip.started_at)}` : ""}
-                {trip?.completed_at ? ` · Selesai ${formatDateTime(trip.completed_at)}` : ""}
-              </p>
               <Link className="ops-review-link" href="/pengemudi/riwayat">
                 Riwayat perjalanan <Icon name="arrowRight" size={13} />
               </Link>

@@ -333,6 +333,16 @@ describe("status terbaru dan event berulang", () => {
     assert.equal(progress.waiting, 29);
   });
 
+  it("tidak gagal ketika baris lama tidak memiliki waktu event", () => {
+    const events: TripStatusEvent[] = [
+      { student_id: "s1", event_type: "boarded", occurred_at: null as unknown as string },
+      { student_id: "s2", event_type: "absent", occurred_at: "2026-11-07T07:00:00.000Z" },
+    ];
+    const states = resolveStudentTripStates(events);
+    assert.equal(states.get("s1")?.status, "boarded");
+    assert.equal(states.get("s2")?.status, "absent");
+  });
+
   it("mengabaikan event lama yang datang setelah event lebih baru", () => {
     const events: TripStatusEvent[] = [
       { student_id: "s1", event_type: "boarded", occurred_at: "2026-11-07T06:30:00.000Z" },

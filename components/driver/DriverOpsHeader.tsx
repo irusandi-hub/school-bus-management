@@ -5,11 +5,11 @@ import type { TripProgress } from "@/lib/driver/trip-progress";
 import { formatDate, formatTime, routeDirectionLabel } from "@/lib/validation";
 
 /**
- * Header ringkas halaman operasional pengemudi.
+ * Header operasional pengemudi.
  *
- * Profil, kendaraan, waktu, arah perjalanan, dan papan progres berada pada satu
- * blok agar pengemudi tidak perlu menghitung status siswa sendiri. Papan progres
- * memakai hasil turunan yang sama dengan jumlah siswa di kendaraan dan next stop.
+ * Identitas, bus, jadwal, sekolah, jenis perjalanan, dan progres digabung dalam
+ * satu blok. Satu area aksi di kanan (desktop) atau di bawah ringkasan (ponsel)
+ * menjadi satu-satunya tempat tombol utama perjalanan berada.
  */
 export function DriverOpsHeader({
   driverName,
@@ -46,62 +46,74 @@ export function DriverOpsHeader({
 }) {
   const initial = (driverName || "P").slice(0, 1).toUpperCase();
   const shortId = driverId.slice(0, 8).toUpperCase();
-  const kind = direction === "afternoon" ? "Pengantaran" : "Penjemputan";
   const started = startedAt ? `Mulai ${formatTime(startedAt)}` : "Belum dimulai";
   const ended = completedAt ? ` · Selesai ${formatTime(completedAt)}` : arrivedAt ? ` · Tiba ${formatTime(arrivedAt)}` : "";
 
   return (
-    <section className="ops-head" aria-label="Profil pengemudi, tugas, dan progres perjalanan">
-      <div className="ops-head-top">
+    <section className="ops-head drive-hero" aria-label="Tugas dan aksi perjalanan">
+      <div className="drive-hero-top">
         <span className="ops-avatar" aria-hidden="true">
           {initial}
         </span>
         <div className="ops-ident" title={`ID ${shortId}`}>
           <strong>{driverName || "Pengemudi"}</strong>
-          <small>
-            ID {shortId} · {fleetCode || "Bus belum ditetapkan"}
-          </small>
+          <small>ID {shortId} · Akun pengemudi</small>
         </div>
         <div className="ops-head-pills">
           <TripStatusPill status={tripStatus} />
         </div>
       </div>
 
-      <div className="ops-task-row">
-        <div className="ops-task-copy">
+      <div className="drive-hero-main">
+        <div className="drive-task">
           <span className="ops-task-kicker">
-            {routeDirectionLabel(direction)} · {kind} · {formatDate(serviceDate)}
+            {routeDirectionLabel(direction)} · {progress.kindLabel} · {formatDate(serviceDate)}
           </span>
           <h1>{routeName || "Rute"}</h1>
-          <small title={schoolName || "Sekolah belum tercatat"}>
-            <Icon name="school" size={12} />
+          <p className="drive-school" title={schoolName || "Sekolah belum tercatat"}>
+            <Icon name="school" size={13} />
             {schoolName || "Sekolah belum tercatat"}
-          </small>
+          </p>
         </div>
         {children && <div className="ops-head-action">{children}</div>}
       </div>
 
-      <div className="ops-progress" aria-live="polite" aria-label={`Progres ${progress.kindLabel.toLowerCase()}`}>
-        <div className="ops-progress-grid">
-          <div className="ops-progress-cell tone-total">
-            <span>Total</span>
-            <strong>{progress.total}</strong>
-          </div>
-          <div className="ops-progress-cell tone-done">
-            <span>{progress.doneLabel}</span>
-            <strong>{progress.done}</strong>
-          </div>
-          <div className="ops-progress-cell tone-waiting">
-            <span>{progress.waitingLabel}</span>
-            <strong>{progress.waiting}</strong>
-          </div>
-          <div className="ops-progress-cell tone-onboard">
-            <span>Di kendaraan</span>
-            <strong>{progress.onboard}</strong>
-          </div>
+      <p className="drive-vehicle">
+        <span>
+          <Icon name="bus" size={13} />
+          {fleetCode || "Bus belum ditetapkan"}
+        </span>
+        <span>{plateNumber || "Plat belum tercatat"}</span>
+        <span>{capacity > 0 ? `${capacity} kursi` : "Kapasitas belum tercatat"}</span>
+        <span className="drive-clock">
+          <Icon name="clock" size={13} />
+          {started}
+          {ended}
+        </span>
+      </p>
+
+      <div className="drive-progress" aria-live="polite" aria-label={`Progres ${progress.kindLabel.toLowerCase()}`}>
+        <div className="drive-progress-line">
+          <span>
+            <b>
+              {progress.processed}/{progress.total}
+            </b>{" "}
+            diproses
+          </span>
+          <span>
+            <b>{progress.needsAction}</b> perlu tindakan
+          </span>
+          <span>
+            <b>{progress.onboard}</b> di kendaraan
+          </span>
+          {progress.absent > 0 && (
+            <span>
+              <b>{progress.absent}</b> tidak ikut
+            </span>
+          )}
         </div>
         <div
-          className="ops-progress-track"
+          className="drive-progress-track"
           role="progressbar"
           aria-valuemin={0}
           aria-valuemax={100}
@@ -110,33 +122,7 @@ export function DriverOpsHeader({
         >
           <span style={{ width: `${progress.percent}%` }} />
         </div>
-        <p className="ops-progress-line">
-          <span>
-            <b>{progress.processed}</b>/{progress.total} diproses
-          </span>
-          <span>
-            <b>{progress.needsAction}</b> perlu tindakan
-          </span>
-          <span className="ops-progress-skip">
-            <b>{progress.absent}</b> tidak ikut
-            {progress.absent > 0 && (
-              <> · {progress.noShow} tidak hadir · {progress.notRiding} tidak ikut bus</>
-            )}
-          </span>
-        </p>
       </div>
-
-      <p className="ops-meta-line">
-        <span>
-          <Icon name="bus" size={12} />
-          {plateNumber || "Plat belum tercatat"} · {capacity} kursi
-        </span>
-        <span>
-          <Icon name="clock" size={12} />
-          {started}
-          {ended}
-        </span>
-      </p>
     </section>
   );
 }

@@ -73,8 +73,8 @@ export default async function RoutesPage({
       required: true,
       defaultValue: editing?.direction ?? "morning",
       options: [
-        { value: "morning", label: "Pagi (antar ke sekolah)" },
-        { value: "afternoon", label: "Sore (jemput dari sekolah)" },
+        { value: "morning", label: "Pagi · jemput dari rumah" },
+        { value: "afternoon", label: "Sore · antar pulang" },
       ],
     },
     {

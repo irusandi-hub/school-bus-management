@@ -28,20 +28,21 @@ export async function OperatorWorkspaceLayout({ children }: { children: React.Re
         <div className="nav-group"><AdminNav /></div>
         <div className="sidebar-bottom">
           <span className="security-icon"><Icon name="shield" size={13} /></span>
-          <strong>Kendali global platform</strong>
-          <p>Operator mengelola seluruh Project Area, sekolah, armada, siswa, wali, dan perjalanan.</p>
+          <strong>Operator Utama</strong>
+          <p>Akses global seluruh Project Area.</p>
         </div>
       </aside>
       <main className="main">
         <header className="topbar">
-          <MobileMenu groups={adminGroups} rootHref="/operator" areaLabel="Operator Utama"
-            note="Seluruh data dan operasional platform berada dalam satu ruang kerja Operator." />
-          <div className="workspace-heading">
-            <BrandLogo size="sm" />
-            <div className="topbar-title">
-              <div className="eyebrow">PROJECT AREA · OPERATOR</div>
-              <div className="admin-topbar-role">Ruang Kerja Operator Utama</div>
-            </div>
+          <MobileMenu
+            groups={adminGroups}
+            rootHref="/operator"
+            areaLabel="Operator Utama"
+            note="Seluruh data dan operasional platform berada dalam satu ruang kerja Operator."
+          />
+          <div className="topbar-context">
+            <span className="topbar-kicker">Operator Utama</span>
+            <strong>Ruang kerja Project Area</strong>
           </div>
           <div className="top-actions">
             <span className="account-chip" title={viewer.email ?? undefined}>
@@ -49,7 +50,9 @@ export async function OperatorWorkspaceLayout({ children }: { children: React.Re
               <span className="account-name">{viewer.profile?.full_name || viewer.email}</span>
             </span>
             <form action={signOutAction}>
-              <button className="btn btn-ghost" type="submit"><Icon name="logout" size={15} />Keluar</button>
+              <button className="btn btn-ghost btn-sm topbar-exit" type="submit">
+                <Icon name="logout" size={15} /><span>Keluar</span>
+              </button>
             </form>
           </div>
         </header>

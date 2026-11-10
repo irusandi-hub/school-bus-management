@@ -3,9 +3,9 @@ import { Icon } from "@/components/ui/Icon";
 import type { ProjectAreaRow } from "@/lib/types";
 
 /**
- * Project Area selector shown on the manager dashboard and on area-scoped lists.
- * It is a form so switching context works without client JavaScript and the
- * selected area survives navigation through a server-side cookie.
+ * Compact Project Area selector shared by the manager dashboard and scoped
+ * lists. It stays a plain form so switching context works without JavaScript
+ * and survives navigation through the server-side cookie.
  */
 export function ProjectAreaTabs({
   areas,
@@ -19,19 +19,12 @@ export function ProjectAreaTabs({
   compact?: boolean;
 }) {
   return (
-    <section className={compact ? "area-tabs-card area-tabs-compact" : "area-tabs-card"} aria-label="Konteks Project Area">
-      <div className="area-tabs-copy">
-        <span className="area-tabs-icon" aria-hidden="true"><Icon name="pin" size={15} /></span>
-        <div>
-          <strong>Konteks Project Area</strong>
-          <small>
-            {selectedId
-              ? "Daftar, statistik, laporan, dan formulir mengikuti area yang dipilih."
-              : "Semua Area menampilkan agregasi global. Pilih area untuk mempersempit konteks kerja."}
-          </small>
-        </div>
-      </div>
-      <form action={setProjectArea} className="area-tabs" role="group" aria-label="Pilih Project Area">
+    <section className={compact ? "area-switch area-switch-compact" : "area-switch"} aria-label="Konteks Project Area">
+      <span className="area-switch-label" title="Konteks data dan formulir mengikuti area yang dipilih">
+        <Icon name="pin" size={14} />
+        <span>Area</span>
+      </span>
+      <form action={setProjectArea} className="area-switch-tabs" role="group" aria-label="Pilih Project Area">
         <input type="hidden" name="next" value={nextPath} />
         <button type="submit" name="area" value="all" className={selectedId ? "area-tab" : "area-tab active"} aria-pressed={!selectedId}>
           Semua Area
@@ -48,7 +41,7 @@ export function ProjectAreaTabs({
             {area.name}
           </button>
         ))}
-        {areas.length === 0 && <span className="area-tabs-empty">Belum ada Project Area aktif.</span>}
+        {areas.length === 0 && <span className="area-tabs-empty">Belum ada area aktif.</span>}
       </form>
     </section>
   );

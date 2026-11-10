@@ -291,9 +291,12 @@ class SimQuery implements PromiseLike<SimResult> {
       const clash = this.uniqueViolation(values);
       if (clash) return { data: null, error: clash, count: null };
 
+      const now = new Date().toISOString();
       const stored = values.map((value) => ({
         id: nextSimId(),
-        created_at: new Date().toISOString(),
+        created_at: now,
+        // Kolom dengan default database harus tetap terisi pada simulasi.
+        ...(this.tableName === "trip_student_events" ? { occurred_at: now } : {}),
         ...value,
       }));
 

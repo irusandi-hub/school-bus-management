@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { ConfigNotice, EmptyRow, Notice, PageHeader, Pill, StatCard } from "@/components/admin/ui";
+import { ConfigNotice, EmptyRow, MetricStrip, Notice, PageHeader, Pill } from "@/components/admin/ui";
 import { ProjectAreaTabs } from "@/components/admin/ProjectAreaTabs";
 import { adminReadContext } from "@/lib/admin/read";
 import { getProjectAreaContext, loadProjectAreaScope } from "@/lib/project-areas/context";
@@ -72,22 +72,20 @@ export default async function ReportsPage() {
 
       {audits.error && <Notice kind="error">Jejak audit belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
 
-      <section className="stats" aria-label="Ringkasan operasional">
-        <StatCard
-          label="Siswa layanan aktif"
-          value={activeStudents.count ?? 0}
-          note="Dasar akses portal wali"
-          icon="students"
-        />
-        <StatCard label="Wali aktif" value={guardians.count ?? 0} note="Email wali terdaftar" icon="guardian" />
-        <StatCard label="Rute aktif" value={routes.count ?? 0} note="Beserta titik jemput" icon="route" />
-        <StatCard
-          label="Penugasan hari ini"
-          value={assignmentsToday.count ?? 0}
-          note={`${completedTrips.count ?? 0} perjalanan selesai tercatat`}
-          icon="assignment"
-        />
-      </section>
+      <MetricStrip
+        label="Ringkasan operasional"
+        items={[
+          { label: "Siswa aktif", value: activeStudents.count ?? 0, note: "Layanan berjalan", icon: "students" },
+          { label: "Wali aktif", value: guardians.count ?? 0, note: "Akun terdaftar", icon: "guardian" },
+          { label: "Rute aktif", value: routes.count ?? 0, note: "Dengan titik jemput", icon: "route" },
+          {
+            label: "Penugasan hari ini",
+            value: assignmentsToday.count ?? 0,
+            note: `${completedTrips.count ?? 0} selesai`,
+            icon: "assignment",
+          },
+        ]}
+      />
 
       <div className="admin-overview-grid">
         <section className="panel">

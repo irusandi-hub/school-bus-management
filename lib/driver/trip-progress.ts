@@ -106,7 +106,8 @@ export function resolveStudentTripStates(events: TripStatusEvent[]): Map<string,
   const ordered = events
     .map((event, index) => ({ event, index }))
     .sort((left, right) => {
-      const time = left.event.occurred_at.localeCompare(right.event.occurred_at);
+      // Baris lama/simulasi bisa tidak memiliki waktu; jangan hentikan halaman.
+      const time = (left.event.occurred_at ?? "").localeCompare(right.event.occurred_at ?? "");
       return time !== 0 ? time : left.index - right.index;
     });
 
