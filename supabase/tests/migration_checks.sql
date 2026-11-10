@@ -198,6 +198,52 @@ begin
 end $$;
 reset role;
 
+-- A retained company/driver row link must not grant another ecosystem's authority.
+-- Simulate legacy links pointing at a guardian account, then verify the account
+-- receives neither Operator nor Driver powers. Links are restored afterwards.
+reset role;
+do $$
+begin
+  update public.operators set profile_id = '00000000-0000-0000-0000-000000000008'
+    where id = '00000000-0000-0000-0000-000000000101';
+  update public.drivers set profile_id = '00000000-0000-0000-0000-000000000008'
+    where id = '00000000-0000-0000-0000-000000000401';
+end $$;
+
+set role authenticated;
+select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-000000000008', false);
+do $$
+declare n int;
+begin
+  if private.current_operator_id() is not null then
+    raise exception 'Tautan perusahaan memberi identitas operator kepada akun non-operator';
+  end if;
+  if private.current_driver_id() is not null then
+    raise exception 'Tautan pengemudi memberi identitas pengemudi kepada akun non-pengemudi';
+  end if;
+  select count(*) into n from public.operators;
+  if n <> 0 then raise exception 'Akun wali membaca perusahaan melalui tautan lama: %', n; end if;
+  select count(*) into n from public.drivers;
+  if n <> 0 then raise exception 'Akun wali membaca pengemudi melalui tautan lama: %', n; end if;
+  begin
+    insert into public.buses (fleet_code, capacity) values ('LINK-BUS', 10);
+    raise exception 'Akun wali dapat menambah bus melalui tautan perusahaan';
+  exception when insufficient_privilege then null;
+  end;
+  update public.trips set status = 'completed'
+    where id = '00000000-0000-0000-0000-000000000b01';
+  if found then raise exception 'Akun wali dapat mengubah perjalanan melalui tautan pengemudi'; end if;
+end $$;
+reset role;
+
+do $$
+begin
+  update public.operators set profile_id = null
+    where id = '00000000-0000-0000-0000-000000000101';
+  update public.drivers set profile_id = '00000000-0000-0000-0000-000000000004'
+    where id = '00000000-0000-0000-0000-000000000401';
+end $$;
+
 -- No anonymous data access; parent/driver accounts cannot promote themselves.
 set role anon;
 do $$

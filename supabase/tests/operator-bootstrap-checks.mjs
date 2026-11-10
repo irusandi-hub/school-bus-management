@@ -139,7 +139,7 @@ async function applyBase(db) {
   assert.equal(profile.rows[0]?.role, "operator");
   assert.equal(profile.rows[0]?.full_name, "Operator Existing");
   await db.close();
-  process.stdout.write("PASS an existing global Operator is preserved without replacement\\n");
+  process.stdout.write("PASS an existing global Operator is preserved without replacement\n");
 }
 
 // A legacy Admin and a current Operator together are also ambiguous. The
@@ -170,7 +170,7 @@ async function applyBase(db) {
   );
   assert.equal(count.rows[0]?.n, 2);
   await db.close();
-  process.stdout.write("PASS mixed legacy Admin and current Operator are rejected without mutation\\n");
+  process.stdout.write("PASS mixed legacy Admin and current Operator are rejected without mutation\n");
 }
 
 process.stdout.write("ALL OPERATOR BOOTSTRAP CHECKS PASS\n");

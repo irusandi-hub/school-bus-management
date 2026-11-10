@@ -97,6 +97,67 @@ comment on function private.is_admin() is
   'Compatibility authorization helper: grants global Operator authority to legacy admin and current operator profiles. Driver and parent roles are excluded.';
 
 
+-- A legacy company or driver row may still point at an account for historical
+-- reference, but the linkage alone must never grant that account another
+-- ecosystem's authority. These resolvers therefore require the profile role in
+-- addition to the row link. Without the role check, a retained operators.profile_id
+-- or drivers.profile_id value would let a parent or Operator account act as a
+-- scoped company operator / driver.
+create or replace function private.current_operator_id()
+returns uuid
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select o.id
+  from public.operators o
+  join public.profiles p on p.id = o.profile_id
+  where o.profile_id = auth.uid()
+    and o.active
+    and p.role in ('admin', 'operator')
+  limit 1;
+$$;
+
+create or replace function private.current_driver_id()
+returns uuid
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select d.id
+  from public.drivers d
+  join public.profiles p on p.id = d.profile_id
+  where d.profile_id = auth.uid()
+    and d.active
+    and p.role = 'driver'
+  limit 1;
+$$;
+
+revoke all on function private.current_operator_id() from public, anon;
+revoke all on function private.current_driver_id() from public, anon;
+grant execute on function private.current_operator_id() to authenticated;
+grant execute on function private.current_driver_id() to authenticated;
+
+comment on function private.current_operator_id() is
+  'Legacy company scope. Requires an active operators row AND the admin/operator role; company link alone is not authority.';
+comment on function private.current_driver_id() is
+  'Driver scope. Requires an active drivers row AND the driver role; a stale row link alone is not authority.';
+
+-- Company rows are not identities. A profile must not read them merely because a
+-- legacy operators.profile_id points at it; the global Operator reads all rows
+-- through the is_admin() policies instead.
+drop policy if exists operators_select_self on public.operators;
+
+-- The same rule applies to the driver's own row: only an active account with the
+-- driver role may read it through this policy.
+drop policy if exists drivers_select_self on public.drivers;
+create policy drivers_select_self on public.drivers
+  for select to authenticated
+  using (id = private.current_driver_id());
+
+
 -- Company records are data for mapping and audit, not user workspaces.
 -- Retain legacy operators.profile_id values for historical reference, but prevent
 -- new Operator accounts from being created or detached through company CRUD.
