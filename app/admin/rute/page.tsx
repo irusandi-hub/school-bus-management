@@ -1,9 +1,11 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { RecordForm, type FieldDef } from "@/components/admin/RecordForm";
+import { ProjectAreaTabs } from "@/components/admin/ProjectAreaTabs";
 import { ConfigNotice, EmptyRow, Notice, PageHeader, Pill } from "@/components/admin/ui";
 import { adminReadContext } from "@/lib/admin/read";
 import { firstParam, noticeFromParams } from "@/lib/admin/query";
+import { getProjectAreaContext } from "@/lib/project-areas/context";
 import type { RouteRow } from "@/lib/types";
 import { routeDirectionLabel } from "@/lib/validation";
 import { saveRoute } from "./actions";
@@ -21,17 +23,26 @@ export default async function RoutesPage({
 
   const editId = firstParam(params.edit);
   const notice = noticeFromParams(params);
+  const areaContext = await getProjectAreaContext(supabase);
+  const selectedId = areaContext.selectedId;
 
-  const [{ data, error }, { data: schoolRows }] = await Promise.all([
-    supabase
-      .from("routes")
-      .select("id, route_name, school_name, direction, active, approved_at, route_stops(id)")
-      .order("route_name", { ascending: true }),
-    supabase.from("schools").select("name").eq("active", true).order("name", { ascending: true }),
-  ]);
+  let routesQuery = supabase
+    .from("routes")
+    .select("id, route_name, school_name, school_id, project_area_id, direction, active, approved_at, schools(name), project_areas(name), route_stops(id)")
+    .order("route_name", { ascending: true });
+  if (selectedId) routesQuery = routesQuery.eq("project_area_id", selectedId);
+
+  let schoolsQuery = supabase
+    .from("schools")
+    .select("id, name, project_area_id, active")
+    .eq("active", true)
+    .order("name", { ascending: true });
+  if (selectedId) schoolsQuery = schoolsQuery.eq("project_area_id", selectedId);
+
+  const [{ data, error }, { data: schoolRows }] = await Promise.all([routesQuery, schoolsQuery]);
 
   const routes = (data ?? []) as unknown as RouteRow[];
-  const schools = (schoolRows ?? []) as { name: string }[];
+  const schools = (schoolRows ?? []) as { id: string; name: string; project_area_id: string | null }[];
   const editing = editId ? routes.find((route) => route.id === editId) : undefined;
 
   const fields: FieldDef[] = [
@@ -44,16 +55,16 @@ export default async function RoutesPage({
       defaultValue: editing?.route_name ?? "",
     },
     {
-      name: "school_name",
+      name: "school_id",
       label: "Sekolah tujuan",
       type: "select",
       required: true,
-      defaultValue: editing?.school_name ?? "",
+      defaultValue: editing?.school_id ?? "",
       options: [
-        { value: "", label: schools.length === 0 ? "Belum ada sekolah aktif" : "Pilih sekolah" },
-        ...schools.map((school) => ({ value: school.name, label: school.name })),
+        { value: "", label: schools.length === 0 ? "Belum ada sekolah aktif di area ini" : "Pilih sekolah" },
+        ...schools.map((school) => ({ value: school.id, label: school.name })),
       ],
-      help: "Daftar sekolah berasal dari modul Sekolah yang sudah aktif.",
+      help: "Project Area rute diturunkan dari sekolah yang dipilih agar tidak terjadi pencampuran data.",
     },
     {
       name: "direction",
@@ -78,14 +89,16 @@ export default async function RoutesPage({
     <>
       <PageHeader
         title="Rute & titik jemput"
-        description="Rute menghubungkan sekolah, urutan titik jemput, dan siswa yang dilayani. Rute tidak dapat dihapus; nonaktifkan bila tidak dipakai lagi."
+        description="Rute menghubungkan sekolah, Project Area, urutan titik jemput, dan siswa yang dilayani. Rute tidak dapat dihapus; nonaktifkan bila tidak dipakai lagi."
       />
+
+      <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath="/admin/rute" compact />
 
       {error && <Notice kind="error">Daftar rute belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
       {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
       {schools.length === 0 && (
         <Notice kind="warning">
-          Belum ada sekolah aktif. Tambahkan sekolah terlebih dahulu agar rute dapat dibuat.
+          Belum ada sekolah aktif pada konteks ini. Tambahkan sekolah terlebih dahulu agar rute dapat dibuat.
         </Notice>
       )}
 
@@ -102,6 +115,7 @@ export default async function RoutesPage({
               <thead>
                 <tr>
                   <th scope="col">Rute</th>
+                  <th scope="col">Project Area</th>
                   <th scope="col">Arah</th>
                   <th scope="col">Titik</th>
                   <th scope="col">Status</th>
@@ -111,7 +125,7 @@ export default async function RoutesPage({
               <tbody>
                 {routes.length === 0 ? (
                   <EmptyRow
-                    colSpan={5}
+                    colSpan={6}
                     title="Belum ada rute"
                     detail="Tambahkan rute pertama melalui formulir di samping. Titik jemput dan siswa diatur pada halaman detail rute."
                   />
@@ -120,8 +134,9 @@ export default async function RoutesPage({
                     <tr key={route.id}>
                       <td>
                         <strong>{route.route_name}</strong>
-                        <small>{route.school_name}</small>
+                        <small>{route.schools?.name ?? route.school_name}</small>
                       </td>
+                      <td>{route.project_areas?.name ?? "Belum ditetapkan"}</td>
                       <td>{routeDirectionLabel(route.direction)}</td>
                       <td>{route.route_stops?.length ?? 0}</td>
                       <td>
@@ -161,7 +176,7 @@ export default async function RoutesPage({
               submitLabel={editing ? "Simpan perubahan" : "Tambah rute"}
               disabledReason={
                 schools.length === 0
-                  ? "Rute dapat dibuat setelah ada minimal satu sekolah aktif. Tambahkan sekolah terlebih dahulu; formulir ini tetap tersedia untuk ditinjau."
+                  ? "Rute dapat dibuat setelah ada minimal satu sekolah aktif pada area ini. Tambahkan sekolah terlebih dahulu."
                   : undefined
               }
               secondary={editing ? { href: "/admin/rute", label: "Batalkan perubahan" } : undefined}

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { publishDriverLocation } from "@/app/pengemudi/actions";
 import type { DeviceLocation } from "@/lib/driver/device-location";
+import { shouldPublishTripLocation } from "@/lib/driver/location-cycle";
 
 export type DriverLocationPublishState = "idle" | "publishing" | "shared" | "retrying";
 
@@ -48,7 +49,18 @@ export function useDriverLocationPublisher({
         timer = window.setTimeout(attempt, 500);
         return;
       }
-      if (location.timestamp <= lastSent.current) return;
+      if (
+        !shouldPublishTripLocation({
+          tripStatus: "in_progress",
+          tripId,
+          hasFix: true,
+          online: true,
+          lastSentTimestamp: lastSent.current,
+          currentTimestamp: location.timestamp,
+        })
+      ) {
+        return;
+      }
 
       if (typeof navigator !== "undefined" && !navigator.onLine) {
         setState("retrying");

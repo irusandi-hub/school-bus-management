@@ -16,9 +16,9 @@ import {
   type FieldErrors,
 } from "@/lib/validation";
 
-const path = "/admin/operator";
+const path = "/admin/area";
 
-export async function saveOperator(_prev: ActionState, formData: FormData): Promise<ActionState> {
+export async function saveProjectArea(_prev: ActionState, formData: FormData): Promise<ActionState> {
   const ctx = await adminActionContext();
   if (!ctx.ok) return ctx.state;
 
@@ -31,9 +31,9 @@ export async function saveOperator(_prev: ActionState, formData: FormData): Prom
   const contactPhone = readOptionalText(formData, "contact_phone");
 
   const errors: FieldErrors = {};
-  if (name.length < 2 || name.length > 120) errors.name = "Nama perusahaan harus 2–120 karakter.";
+  if (name.length < 2 || name.length > 120) errors.name = "Nama Project Area harus 2–120 karakter.";
   if (!/^[A-Z0-9][A-Z0-9-]{1,19}$/.test(code)) {
-    errors.code = "Kode perusahaan 2–20 karakter: huruf kapital, angka, atau tanda hubung.";
+    errors.code = "Kode area 2–20 karakter: huruf kapital, angka, atau tanda hubung.";
   }
   if (contactEmail && !isValidEmail(contactEmail)) errors.contact_email = "Format email belum benar.";
   if (contactPhone && !isValidPhone(contactPhone)) {
@@ -52,17 +52,17 @@ export async function saveOperator(_prev: ActionState, formData: FormData): Prom
   };
 
   const { error } = id
-    ? await ctx.supabase.from("operators").update(payload).eq("id", id)
-    : await ctx.supabase.from("operators").insert(payload);
+    ? await ctx.supabase.from("project_areas").update(payload).eq("id", id)
+    : await ctx.supabase.from("project_areas").insert(payload);
 
-  if (error) return writeFailure(error, { unique: "Kode perusahaan sudah dipakai. Gunakan kode lain." });
+  if (error) return writeFailure(error, { unique: "Kode Project Area sudah dipakai. Gunakan kode lain." });
 
   revalidatePath(path);
   revalidatePath("/admin");
-  return success(id ? "Data perusahaan berhasil diperbarui." : "Perusahaan baru berhasil ditambahkan.");
+  return success(id ? "Project Area berhasil diperbarui." : "Project Area baru berhasil ditambahkan.");
 }
 
-export async function setOperatorActive(formData: FormData) {
+export async function setProjectAreaActive(formData: FormData) {
   const ctx = await adminActionContext();
   if (!ctx.ok) {
     redirect(`${path}?jenis=error&pesan=${encodeURIComponent(ctx.state.message)}`);
@@ -71,11 +71,11 @@ export async function setOperatorActive(formData: FormData) {
   const id = readText(formData, "id");
   const active = readCheckbox(formData, "active");
 
-  const { error } = await ctx.supabase.from("operators").update({ active }).eq("id", id);
+  const { error } = await ctx.supabase.from("project_areas").update({ active }).eq("id", id);
 
   if (error) {
     redirect(
-      `${path}?jenis=error&pesan=${encodeURIComponent("Status perusahaan belum dapat diubah. Coba lagi atau hubungi pengelola sistem.")}`,
+      `${path}?jenis=error&pesan=${encodeURIComponent("Status Project Area belum dapat diubah. Coba lagi atau hubungi pengelola sistem.")}`,
     );
   }
 
@@ -84,8 +84,8 @@ export async function setOperatorActive(formData: FormData) {
   redirect(
     `${path}?pesan=${encodeURIComponent(
       active
-        ? "Perusahaan diaktifkan kembali."
-        : "Perusahaan dinonaktifkan. Data dan riwayat terkait tetap tersimpan.",
+        ? "Project Area diaktifkan kembali."
+        : "Project Area dinonaktifkan. Data operasional dan riwayatnya tetap tersimpan.",
     )}`,
   );
 }

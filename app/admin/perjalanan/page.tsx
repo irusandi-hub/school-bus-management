@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { ConfigNotice, EmptyRow, Notice, PageHeader, Pill } from "@/components/admin/ui";
+import { ProjectAreaTabs } from "@/components/admin/ProjectAreaTabs";
 import { adminReadContext } from "@/lib/admin/read";
+import { getProjectAreaContext, loadProjectAreaScope } from "@/lib/project-areas/context";
 import type { TripRow } from "@/lib/types";
 import {
   formatDate,
@@ -24,13 +26,28 @@ export default async function TripsPage() {
   const supabase = await adminReadContext();
   if (!supabase) return <ConfigNotice />;
 
-  const { data, error } = await supabase
+  const areaContext = await getProjectAreaContext(supabase);
+  const scope = await loadProjectAreaScope(supabase, areaContext.selectedId);
+
+  let assignmentIds: string[] = [];
+  if (areaContext.selectedId) {
+    const { data: areaAssignments } = await supabase
+      .from("trip_assignments")
+      .select("id")
+      .in("route_id", scope.routeIds);
+    assignmentIds = ((areaAssignments ?? []) as { id: string }[]).map((row) => row.id);
+  }
+
+  let tripsQuery = supabase
     .from("trips")
     .select(
-      "id, assignment_id, status, started_at, completed_at, arrived_at, created_at, trip_assignments(service_date, routes(route_name, school_name, direction), buses(fleet_code, plate_number), drivers(full_name))",
+      "id, assignment_id, status, started_at, completed_at, arrived_at, created_at, trip_assignments(service_date, routes(route_name, school_name, direction, project_areas(name)), buses(fleet_code, plate_number), drivers(full_name))",
     )
     .order("created_at", { ascending: false })
     .limit(60);
+  if (areaContext.selectedId) tripsQuery = tripsQuery.in("assignment_id", assignmentIds);
+
+  const { data, error } = await tripsQuery;
 
   const trips = (data ?? []) as unknown as TripRow[];
   const active = trips.filter((trip) => trip.status === "in_progress").length;
@@ -42,6 +59,8 @@ export default async function TripsPage() {
         description="Perjalanan dibuat dan diakhiri oleh pengemudi yang ditugaskan. Operator Utama memantau status dan waktu, bukan memulai perjalanan dari sini."
         actions={<Pill tone={active > 0 ? "info" : "neutral"}>{active} berlangsung</Pill>}
       />
+
+      <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={areaContext.selectedId} nextPath="/admin/perjalanan" compact />
 
       {error && <Notice kind="error">Daftar perjalanan belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
 
@@ -107,8 +126,8 @@ export default async function TripsPage() {
       </section>
 
       <Notice kind="info">
-        Posisi GPS dan kamera bus belum tersedia. Siaran kamera perjalanan dikelola pengemudi dan tidak ditampilkan di
-        halaman ini; halaman ini tidak menampilkan lokasi atau status perangkat yang tidak benar-benar tercatat.
+        Lokasi GPS terbaru hanya tersedia selama perjalanan berlangsung dan ditampilkan pada portal wali yang berhak.
+        Halaman ini tidak menampilkan lokasi lama sebagai posisi terkini dan tidak mengubah status kamera.
       </Notice>
     </>
   );

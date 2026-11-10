@@ -17,6 +17,7 @@ import { TripClosePanel } from "@/components/driver/TripClosePanel";
 import { Icon } from "@/components/ui/Icon";
 import { firstParam, noticeFromParams } from "@/lib/admin/query";
 import { requireDriver } from "@/lib/auth";
+import { shouldTrackTripLocation } from "@/lib/driver/location-cycle";
 import { buildFullRoute, buildNavigationPlan } from "@/lib/driver/navigation";
 import {
   buildNextStop,
@@ -273,7 +274,8 @@ export default async function DriverOperationsPage({
     return !status || status === "boarded";
   }).length;
 
-  const inProgress = trip?.status === "in_progress";
+  // GPS follows the trip status only; the roster, passenger events, and camera do not gate it.
+  const inProgress = shouldTrackTripLocation(trip?.status);
   const completed = trip?.status === "completed";
   const canStart = !trip || trip.status === "scheduled";
   const canEndTrip = Boolean(trip?.arrived_at) && unrecorded.length === 0 && !rosterResult.error && !eventsResult.error;
@@ -342,11 +344,11 @@ export default async function DriverOperationsPage({
           <form action={startTrip} className="ops-start">
             <input type="hidden" name="assignment_id" value={selected.id} />
             <ConfirmSubmit
-              className="btn ops-primary-action"
-              message="Mulai perjalanan untuk tugas ini? Waktu mulai akan dicatat."
+              className="btn ops-primary-action ops-start-action"
+              message="Mulai Perjalanan untuk tugas ini? Waktu mulai akan dicatat."
               pendingLabel="Memulai…"
             >
-              <Icon name="trip" size={16} /> Mulai perjalanan
+              <Icon name="trip" size={16} /> Mulai Perjalanan
             </ConfirmSubmit>
           </form>
         ) : inProgress ? (
@@ -356,8 +358,8 @@ export default async function DriverOperationsPage({
           </div>
         ) : (
           <div className="ops-start">
-            <button className="btn ops-primary-action" type="button" disabled>
-              <Icon name="trip" size={16} /> Mulai perjalanan
+            <button className="btn ops-primary-action ops-start-action" type="button" disabled>
+              <Icon name="trip" size={16} /> Mulai Perjalanan
             </button>
             <small>{startReason}</small>
           </div>

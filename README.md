@@ -1,14 +1,14 @@
 # School Bus Management
 
-Aplikasi manajemen transportasi bus sekolah untuk sekolah, operator bus, pengemudi, dan orang tua/wali. Pilot perencanaan: Dammam dan sekitarnya.
+Aplikasi manajemen transportasi bus sekolah untuk Project Area, sekolah, pengemudi, dan orang tua/wali. Contoh area: Dammam, Riyadh, dan Madinah.
 
 ## Status saat ini
 
-**Arsitektur tiga ekosistem sudah diimplementasikan pada branch `feat/unified-operator-global-workspace` (PR #30, masih Draft) dan tersambung ke Supabase.** Data sekolah, perusahaan bus, siswa, wali, bus, pengemudi, rute, penugasan, dan perjalanan disimpan di database dengan validasi, pencarian, filter, paginasi, serta kebijakan akses per peran (RLS).
+**Arsitektur tiga ekosistem sudah diimplementasikan pada branch `feat/unified-operator-global-workspace` (PR #30, masih Draft) dan tersambung ke Supabase.** Data Project Area, sekolah, siswa, wali, bus, pengemudi, rute, penugasan, dan perjalanan disimpan di database dengan validasi, pencarian, filter, paginasi, serta kebijakan akses per peran (RLS).
 
 Halaman pertama adalah **Main Access Gate**. Kartu hanya pintu masuk: setelah autentikasi, peran dibaca dari `profiles.role` di database, lalu pengguna diarahkan ke area miliknya. Tiga ekosistem:
 
-- **Operator Utama** (`/operator` sebagai beranda, modul di `/admin/*`): satu-satunya kendali global platform. Operator membaca dan mengubah seluruh sekolah, perusahaan, armada, pengemudi, siswa, wali, rute, penugasan, perjalanan, dan audit lintas perusahaan/sekolah. Perusahaan bus dan sekolah adalah data pemetaan/audit, bukan akun login atau batas hak akses. Selama transisi, role lama `admin` menerima ruang kerja yang sama; URL modul lama `/operator/{bus,pengemudi,siswa,penugasan,perjalanan,laporan,sekolah,wali,rute}` dialihkan ke modul bersama.
+- **Operator Utama** (`/operator` sebagai beranda, modul di `/admin/*`): satu-satunya kendali global platform. Operator membaca dan mengubah seluruh Project Area, sekolah, armada, pengemudi, siswa, wali, rute, penugasan, perjalanan, dan audit lintas area. Project Area dan sekolah adalah data operasional, bukan akun login atau batas hak akses. Dashboard menyediakan pilihan **Semua Area** dan tab per area; pilihan disimpan pada cookie sehingga konteks daftar, statistik, laporan, filter, dan formulir tetap konsisten antarhalaman. Selama transisi, role lama `admin` menerima ruang kerja yang sama; URL modul lama `/operator/{bus,pengemudi,siswa,penugasan,perjalanan,laporan,sekolah,wali,rute}` dialihkan ke modul bersama.
 - **Pengemudi** (`/pengemudi`): satu halaman operasional berisi jadwal hari ini, navigasi rute lengkap, daftar siswa dengan tindakan sesuai tahap, catatan tugas, pemeriksaan keselamatan, berbagi GPS HP selama perjalanan, dan tombol akhiri perjalanan. Hanya penugasan, siswa pada rute itu, dan perjalanan miliknya sendiri; tanpa menu administrasi. Riwayat ada di `/pengemudi/riwayat`.
 - **Orang Tua/Wali** (`/wali`): kartu anak adaptif untuk satu/lebih anak, sekolah dan layanan, status perjalanan, peta lokasi HP pengemudi selama perjalanan anak, live video perjalanan (eksperimental), detail penjemputan, dan riwayat perjalanan anak miliknya sendiri.
 
@@ -17,12 +17,12 @@ Yang **belum** aktif atau belum siap produksi:
 - Posisi GPS perangkat bus — belum ada sumber data; yang tersedia hanya GPS HP pengemudi selama perjalanan aktif.
 - Integrasi vendor streaming kamera (termasuk rekaman/DVR, audio, TURN/SFU) — belum ada. Signaling kamera perjalanan bersifat eksperimental, default mati, dan belum diuji pada Supabase hosted; lihat `docs/TRIP_CAMERA_REALTIME.md`.
 - Integrasi HERE atau penyedia routing jalan lain; peta hanya menampilkan urutan titik.
-- Penautan akun pengemudi tersedia di `/admin/pengemudi`; penautan akun perusahaan dinonaktifkan karena perusahaan bukan identitas login. Akun pengemudi yang belum tertaut diarahkan ke `/tanpa-akses`.
+- Penautan akun pengemudi tersedia di `/admin/pengemudi`; Project Area tidak memiliki akun login. Akun pengemudi yang belum tertaut diarahkan ke `/tanpa-akses`.
 - `npm audit` melaporkan 2 kerentanan dependency (1 moderate, 1 high) yang belum diperbaiki pada PR ini.
 
 Modul tersebut tetap memerlukan keputusan dan validasi teknis terpisah (lihat `docs/TECHNICAL_SPEC_REVIEW.md`).
 
-> Seluruh migrasi (delapan berkas, termasuk migrasi otoritas Operator global) sudah dijalankan berurutan pada database PGlite/Postgres lokal khusus pengembangan dan lulus pemeriksaan RLS. Migrasi **belum dijalankan** pada proyek Supabase mana pun dan tidak boleh dijalankan ke produksi tanpa persetujuan.
+> Seluruh migrasi (sembilan berkas, termasuk migrasi otoritas Operator global dan Project Area) sudah dijalankan berurutan pada database PGlite/Postgres lokal khusus pengembangan dan lulus pemeriksaan RLS. Migrasi **belum dijalankan** pada proyek Supabase mana pun dan tidak boleh dijalankan ke produksi tanpa persetujuan.
 
 ## Menjalankan secara lokal
 
@@ -65,12 +65,13 @@ Konfigurasi tambahan pada Supabase Dashboard → Authentication → URL Configur
 | `/tanpa-akses` | sesi terverifikasi | Akun tanpa peran/organisasi yang sah (mis. belum tertaut) |
 | `/akun/kata-sandi` | sesi terverifikasi | Membuat kata sandi + klaim akun wali |
 | `/admin` | profil `operator` (atau `admin` legacy) | Ringkasan data platform dan pintasan modul |
-| `/admin/sekolah` | Operator global | CRUD sekolah + pemetaan perusahaan (nonaktifkan, bukan hapus) |
-| `/admin/operator` | Operator global | CRUD perusahaan bus (data pemetaan/audit, bukan akun login) |
+| `/admin/area` | Operator global | CRUD Project Area, tambah/ubah/aktif-nonaktif |
+| `/admin/sekolah` | Operator global | CRUD sekolah + Project Area (nonaktifkan, bukan hapus) |
+| `/admin/operator` | Operator global | URL lama; dialihkan ke `/admin/area` |
 | `/admin/siswa` | Operator global | CRUD siswa + pencarian/filter |
 | `/admin/siswa/[id]` | Operator global | Detail siswa, ubah status layanan, riwayat status, roster titik jemput |
 | `/admin/wali` | Operator global | Pra-pendaftaran email wali, aktif/nonaktif |
-| `/admin/bus` | Operator global | CRUD bus lintas perusahaan |
+| `/admin/bus` | Operator global | CRUD bus per Project Area |
 | `/admin/pengemudi` | Operator global | CRUD pengemudi + penautan akun pengemudi |
 | `/admin/rute` | Operator global | CRUD rute + titik jemput + penempatan siswa pada rute |
 | `/admin/rute/[id]` | Operator global | Detail rute, stop, dan siswa yang terhubung |
@@ -79,7 +80,7 @@ Konfigurasi tambahan pada Supabase Dashboard → Authentication → URL Configur
 | `/admin/laporan` | Operator global | Rekap penggunaan layanan dan catatan audit |
 | `/operator` | profil `operator` (atau `admin` legacy) | Beranda ruang kerja Operator global |
 | `/operator/{bus,pengemudi,siswa,penugasan,perjalanan,laporan,sekolah,wali,rute}` | Operator global | URL modul lama; dialihkan ke modul bersama `/admin/...` |
-| `/operator/laporan/export` | Operator global | Ekspor CSV seluruh perjalanan (paginasi penuh) |
+| `/operator/laporan/export` | Operator global | Ekspor CSV perjalanan sesuai konteks area (paginasi penuh) |
 | `/pengemudi` | profil `driver` + baris pengemudi aktif | Satu halaman operasional: tugas hari ini, navigasi rute lengkap, daftar siswa, tindakan, keselamatan, akhiri perjalanan |
 | `/pengemudi/tugas/[id]` | profil `driver` | Dialihkan ke `/pengemudi?tugas=<id>` untuk tautan lama |
 | `/pengemudi/riwayat` | profil `driver` | Riwayat perjalanan miliknya |
@@ -91,11 +92,12 @@ Middleware memproteksi `/admin`, `/operator`, `/pengemudi`, `/wali`, `/akun`, da
 
 ## Modul Operator Utama
 
-- **Sekolah & perusahaan:** nama, kode unik, kota, alamat, kontak, dan koordinat sekolah (lintang/bujur, harus diisi berpasangan). Perusahaan hanya dipakai sebagai pemetaan/atribusi laporan. Nonaktifkan tanpa menghapus.
+- **Project Area:** nama (mis. Dammam), kode unik, kota, kontak, dan status aktif. Area bukan perusahaan, akun, atau tingkat otoritas; nonaktifkan tanpa menghapus data operasional.
+- **Sekolah:** nama, kode unik, kota, alamat, kontak, koordinat (lintang/bujur harus berpasangan), dan Project Area. Nonaktifkan tanpa menghapus.
 - **Siswa:** Admissions Number unik, nama, tanggal lahir, sekolah, satu wali, alamat rumah, koordinat rumah, catatan titik jemput, status layanan.
 - **Akun wali:** email wali didaftarkan Operator (unik, huruf kecil), nama, telepon. Email akun yang sudah aktif tidak dapat diubah dari formulir agar akses tidak tertukar.
-- **Bus:** kode armada unik, nomor polisi, kapasitas kursi (1–100), model, operator, catatan.
-- **Pengemudi:** nama, telepon, nomor SIM, operator, status aktif.
+- **Bus:** kode armada unik, nomor polisi, kapasitas kursi (1–100), model, Project Area, catatan.
+- **Pengemudi:** nama, telepon, nomor SIM, Project Area, status aktif.
 - **Status layanan siswa:** `active` (aktif), `paused` (sementara tidak menggunakan), `ended` (dihentikan). Setiap perubahan wajib menyertakan alasan dan tercatat permanen di `student_service_status_history`.
 - **Audit:** penambahan dan perubahan data ditulis otomatis oleh trigger database ke `audit_logs` (aktor, entitas, waktu); isi kolom tidak disalin agar data pribadi tidak menumpuk di log.
 
@@ -120,21 +122,29 @@ Pesan pada formulir aktivasi bersifat netral (tidak mengungkap apakah sebuah ema
 - `supabase/migrations/20261106000000_trip_camera_signaling.sql` — sesi kamera perjalanan, RPC, channel privat, dan pencabutan otomatis.
 - `supabase/migrations/20261107000000_trip_live_locations.sql` — satu baris lokasi GPS HP per perjalanan, RPC tulis/baca, dan pembersihan saat perjalanan berakhir.
 - `supabase/migrations/20261109000000_unified_operator_global_authority.sql` — role `operator`, satu identitas global, otoritas platform-wide, dan penguncian penautan akun.
+- `supabase/migrations/20261110000000_project_areas.sql` — rename Perusahaan menjadi Project Area, kolom area pada sekolah/bus/pengemudi/rute, dan trigger isolasi lintas area.
 
-Seluruh delapan migrasi sudah dijalankan berurutan pada PGlite/Postgres lokal (database pengembangan kosong) dan lulus seluruh pemeriksaan RLS di `supabase/tests/migration_checks.sql`. Penerapan pada proyek Supabase pengembangan **belum dilakukan** karena tidak ada kredensial; migrasi tidak boleh dijalankan ke produksi tanpa persetujuan.
+Seluruh sembilan migrasi sudah dijalankan berurutan pada PGlite/Postgres lokal (database pengembangan kosong) dan lulus seluruh pemeriksaan RLS di `supabase/tests/migration_checks.sql`. Penerapan pada proyek Supabase pengembangan **belum dilakukan** karena tidak ada kredensial; migrasi tidak boleh dijalankan ke produksi tanpa persetujuan.
 
-Migrasi terbaru menambahkan:
+Migrasi `20261110000000_project_areas.sql` menambahkan:
+
+- **Rename tanpa menghapus data** — `public.operators` menjadi `public.project_areas`, `operators.profile_id` menjadi referensi historis `legacy_profile_id`, dan `operator_id` pada sekolah, bus, serta pengemudi menjadi `project_area_id`.
+- **Rute terikat area** — `routes.school_id` dan `routes.project_area_id` diisi dari sekolah; trigger menolak sekolah dan area yang tidak cocok.
+- **Isolasi lintas area** — trigger menolak penugasan yang mencampur rute/bus/pengemudi dari area berbeda, menolak siswa pada rute area lain, dan menolak pemindahan siswa yang masih memiliki roster aktif di area lama.
+- **Otorisasi tetap global** — policy area-scoped lama dihapus bersama `current_operator_id()` dan helper `operator_*`; Operator memakai `private.is_admin()`, sedangkan Pengemudi/Wali tetap dibatasi penugasan/anak. Project Area bukan akun dan tidak menambah tingkatan otoritas.
+
+Migrasi kesembilan (`20261109000000_unified_operator_global_authority.sql`) menambahkan:
 
 - **Otoritas Operator global** — constraint role diperluas, satu akun Admin lama dipromosikan hanya jika datanya tidak ambigu, dan unique index parsial `profiles_single_global_operator_idx` menegakkan tepat satu identitas global lintas role `admin`/`operator`.
 - **`private.is_admin()`** kini menerima `operator` dan `admin` legacy; policy Admin yang sudah ada menjadi otoritas platform-wide Operator tanpa duplikasi policy.
-- **Penautan perusahaan dinonaktifkan untuk client** — `link_operator_account`, `unlink_operator_account`, dan `resolve_account_uid` dicabut dari `authenticated`; perusahaan tetap data pemetaan, bukan akun login.
+- **Penautan perusahaan dihapus** — `link_operator_account` dan `unlink_operator_account` kemudian dihapus pada migrasi Project Area; `resolve_account_uid` tetap internal untuk penautan pengemudi. Project Area bukan akun login.
 - **Helper scope memeriksa role** — `current_operator_id()` mensyaratkan role `admin`/`operator` dan `current_driver_id()` mensyaratkan role `driver`, sehingga tautan baris lama tidak memberi akses ekosistem lain. Policy baca baris pengemudi sendiri memakai helper yang sama.
 - **Kamera dan lokasi** — sesi kamera memakai channel privat dan pencabutan berbasis database; lokasi hanya dapat ditulis pengemudi yang ditugaskan dan dibaca wali yang terhubung.
 
 Migrasi keempat (aditif, admin-only) menambahkan:
 
 - `private.resolve_account_uid(text)` — mencari `auth.users` berdasarkan email terverifikasi.
-- `public.link_operator_account(uuid, text)`, `public.unlink_operator_account(uuid)`.
+- `public.link_operator_account(uuid, text)`, `public.unlink_operator_account(uuid)` — **dihapus** pada migrasi Project Area.
 - `public.link_driver_account(uuid, text)`, `public.unlink_driver_account(uuid)`.
 - `public.linked_account_emails(uuid[])` — daftar email akun yang tertaut untuk ditampilkan ke admin.
 
@@ -174,17 +184,18 @@ Tidak ada akun Operator yang dibuat oleh signup publik. Provisioning pertama dil
 
 Penautan akun pengemudi dilakukan Operator dari UI `/admin/pengemudi` (kolom **Akun masuk** + tombol **Tautkan** / **Lepas tautan**), bukan lewat SQL manual. Server Action memanggil RPC `link_driver_account` / `unlink_driver_account`, sehingga pemeriksaan terjadi di database: pemanggil harus Operator global, email harus milik akun `auth.users` terverifikasi, dan akun Operator/Wali (termasuk tautan wali nonaktif) tidak dapat diubah menjadi Pengemudi.
 
-Penautan akun **perusahaan** (`link_operator_account` / `unlink_operator_account`) sudah dicabut dari client karena perusahaan bukan identitas login. Data `operators.profile_id` lama dipertahankan hanya sebagai referensi historis.
+Penautan akun **Project Area** tidak ada karena area bukan identitas login. Kolom lama `project_areas.legacy_profile_id` dipertahankan hanya sebagai referensi historis dan tidak memberi akses.
 
 Akun dengan role pengemudi yang belum tertaut (atau barisnya tidak aktif) diarahkan ke `/tanpa-akses` dengan alasan yang jelas.
 
 ### Ringkasan RLS
 
-- **Operator Utama / admin legacy:** `private.is_admin()` menerima role `operator` dan `admin`, sehingga policy Admin memberi `select`, `insert`, dan `update` platform-wide pada tabel master (sekolah, perusahaan, bus, pengemudi, wali, siswa, rute, titik jemput, roster, penugasan) serta `select` pada perjalanan, peristiwa perjalanan, dan audit. Tidak ada grant `DELETE`.
-- **Batas perjalanan:** perjalanan dibuat dan diakhiri oleh pengemudi yang ditugaskan, bukan dari workspace Operator. Operator memantau status/waktu dan mengekspor laporan.
+- **Operator Utama / admin legacy:** `private.is_admin()` menerima role `operator` dan `admin`, sehingga policy Admin memberi `select`, `insert`, dan `update` platform-wide pada tabel master (Project Area, sekolah, bus, pengemudi, wali, siswa, rute, titik jemput, roster, penugasan) serta `select` pada perjalanan, peristiwa perjalanan, dan audit. Tidak ada grant `DELETE`.
+- **Batas perjalanan:** perjalanan dibuat dan diakhiri oleh pengemudi yang ditugaskan, bukan dari workspace Operator. Operator memantau status/waktu dan mengekspor laporan. GPS mengikuti status perjalanan (bukan status penumpang/kamera), dan penulisan lokasi setelah perjalanan berakhir ditolak database.
+- **Isolasi area:** data operasional terikat pada Project Area; trigger database menolak penugasan, roster, atau rute yang mencampur area. Konteks area di UI hanya menyaring tampilan dan tidak memberi akses baru.
 - **Pengemudi:** hanya penugasan/perjalanan miliknya (via `trip_assignments.driver_id`), roster titik jemput pada rute penugasan aktif, siswa pada penugasan itu, dan baris pengemudi sendiri. `trips` hanya dapat diubah untuk penugasannya; event siswa hanya dapat ditulis atas namanya sendiri pada trip miliknya.
 - **Wali:** hanya baris `students` miliknya **dan** berstatus `active`; hanya barisnya sendiri pada `guardians`; rute/stop/bus/perjalanan hanya sejauh terhubung ke siswa aktifnya; riwayat status hanya untuk siswa aktif miliknya. Lokasi dan kamera hanya untuk anak/perjalanan yang terhubung.
-- **Tautan baris bukan otoritas:** `current_operator_id()` dan `current_driver_id()` mensyaratkan role yang sesuai, sehingga tautan `operators.profile_id` atau `drivers.profile_id` lama tidak memberi akses kepada akun Wali/Operator/Pengemudi lain. Policy baca baris perusahaan sendiri sudah dihapus.
+- **Tautan baris bukan otoritas:** `current_driver_id()` mensyaratkan role `driver`; `legacy_profile_id` pada Project Area tidak dipakai untuk otorisasi. Penautan perusahaan dan helper `current_operator_id()` sudah dihapus pada migrasi Project Area.
 - **Gate tidak menambah hak:** pilihan kartu di gate atau mengubah URL tidak memengaruhi policy; setiap layout dan Server Action memeriksa sesi + role di server, dan RLS menegakkan batas yang sama di database.
 - Semua tabel modul mengaktifkan RLS dan menolak secara default bila tidak ada policy yang cocok.
 - Penulisan audit dan riwayat status dilakukan oleh trigger/fungsi `security definer`, sehingga tidak dapat dilewati dari UI.
@@ -207,11 +218,11 @@ for f in supabase/migrations/*.sql; do psql -v ON_ERROR_STOP=1 -d schoolbus_dev 
 psql -v ON_ERROR_STOP=1 -d schoolbus_dev -f supabase/tests/migration_checks.sql
 ```
 
-`supabase/tests/migration_checks.sql` membuat data uji sintetis sendiri (profil Operator/Pengemudi/Wali, perusahaan, sekolah, bus, siswa, rute, penugasan, perjalanan) lalu memeriksa: cakupan dan penulisan global Operator, penolakan tulis master data oleh Pengemudi/Wali, batas penugasan Pengemudi, isolasi Wali per anak aktif, isolasi audit/profil, penolakan `anon`, penolakan penautan akun non-Operator, dan penolakan tautan baris lama yang memberi akses lintas ekosistem. Berkas ini menolak berjalan pada database berisi data nyata; kegagalan menghentikan skrip dengan pesan spesifik.
+`supabase/tests/migration_checks.sql` membuat data uji sintetis sendiri (profil Operator/Pengemudi/Wali, Project Area, sekolah, bus, siswa, rute, penugasan, perjalanan) lalu memeriksa: cakupan dan penulisan global Operator, penolakan tulis master data oleh Pengemudi/Wali, batas penugasan Pengemudi, isolasi Wali per anak aktif, isolasi audit/profil, penolakan `anon`, penolakan penautan akun non-Operator, dan penolakan tautan baris lama yang memberi akses lintas ekosistem. Berkas ini menolak berjalan pada database berisi data nyata; kegagalan menghentikan skrip dengan pesan spesifik.
 
 Hasil validasi terakhir (10 November 2026, head branch PR #30):
 
-- `npm test`: **175 tes lulus**, 0 gagal (43 suite).
+- `npm test`: **192 tes lulus**, 0 gagal (47 suite), termasuk isolasi Project Area, status penumpang, siklus GPS, dan kontrak tombol responsif.
 - `npm run typecheck`: lulus tanpa galat.
 - `npm run test:operator:sql`, `test:camera:sql`, `test:location:sql`: **ketiga suite lulus** pada PGlite, termasuk seluruh migrasi dan fixture RLS.
 - `npm run build`: **production build lulus** (Next.js 15).

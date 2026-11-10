@@ -1,35 +1,77 @@
 import type { Metadata } from "next";
 import { RecordForm, type FieldDef } from "@/components/admin/RecordForm";
+import { ProjectAreaTabs } from "@/components/admin/ProjectAreaTabs";
 import { ConfigNotice, EmptyRow, Notice, PageHeader, Pill } from "@/components/admin/ui";
 import { adminReadContext } from "@/lib/admin/read";
+import { getProjectAreaContext, loadProjectAreaScope } from "@/lib/project-areas/context";
 import type { TripAssignmentRow } from "@/lib/types";
 import { formatDate, routeDirectionLabel, serviceDateInTimeZone, tripStatusLabel } from "@/lib/validation";
 import { saveAssignment } from "./actions";
 
 export const metadata: Metadata = { title: "Penugasan | Operator" };
 
-
 export default async function AssignmentsPage() {
   const supabase = await adminReadContext();
   if (!supabase) return <ConfigNotice />;
 
+  const areaContext = await getProjectAreaContext(supabase);
+  const scope = await loadProjectAreaScope(supabase, areaContext.selectedId);
+  const selectedId = areaContext.selectedId;
+
+  let assignmentsQuery = supabase
+    .from("trip_assignments")
+    .select(
+      "id, route_id, driver_id, bus_id, service_date, routes(route_name, school_name, direction, project_areas(name)), buses(fleet_code, plate_number), drivers(full_name), trips(id, status, started_at, completed_at, arrived_at)",
+    )
+    .order("service_date", { ascending: false })
+    .limit(60);
+  if (selectedId) assignmentsQuery = assignmentsQuery.in("route_id", scope.routeIds);
+
+  let routesQuery = supabase
+    .from("routes")
+    .select("id, route_name, school_name, direction, project_area_id, project_areas(name)")
+    .eq("active", true)
+    .order("route_name");
+  if (selectedId) routesQuery = routesQuery.eq("project_area_id", selectedId);
+
+  let driversQuery = supabase
+    .from("drivers")
+    .select("id, full_name, project_area_id")
+    .eq("active", true)
+    .order("full_name");
+  if (selectedId) driversQuery = driversQuery.eq("project_area_id", selectedId);
+
+  let busesQuery = supabase
+    .from("buses")
+    .select("id, fleet_code, plate_number, capacity, project_area_id")
+    .eq("active", true)
+    .order("fleet_code");
+  if (selectedId) busesQuery = busesQuery.eq("project_area_id", selectedId);
+
   const [assignmentsResult, routesResult, driversResult, busesResult] = await Promise.all([
-    supabase
-      .from("trip_assignments")
-      .select(
-        "id, route_id, driver_id, bus_id, service_date, routes(route_name, school_name, direction), buses(fleet_code, plate_number), drivers(full_name), trips(id, status, started_at, completed_at, arrived_at)",
-      )
-      .order("service_date", { ascending: false })
-      .limit(60),
-    supabase.from("routes").select("id, route_name, school_name, direction").eq("active", true).order("route_name"),
-    supabase.from("drivers").select("id, full_name").eq("active", true).order("full_name"),
-    supabase.from("buses").select("id, fleet_code, plate_number, capacity").eq("active", true).order("fleet_code"),
+    assignmentsQuery,
+    routesQuery,
+    driversQuery,
+    busesQuery,
   ]);
 
-  const assignments = (assignmentsResult.data ?? []) as unknown as TripAssignmentRow[];
-  const routes = (routesResult.data ?? []) as { id: string; route_name: string; school_name: string; direction: string }[];
+  const assignments = (assignmentsResult.data ?? []) as unknown as (TripAssignmentRow & {
+    routes: { project_areas: { name: string } | null } | null;
+  })[];
+  const routes = (routesResult.data ?? []) as unknown as {
+    id: string;
+    route_name: string;
+    school_name: string;
+    direction: string;
+    project_areas: { name: string } | null;
+  }[];
   const drivers = (driversResult.data ?? []) as { id: string; full_name: string }[];
-  const buses = (busesResult.data ?? []) as { id: string; fleet_code: string; plate_number: string | null; capacity: number }[];
+  const buses = (busesResult.data ?? []) as {
+    id: string;
+    fleet_code: string;
+    plate_number: string | null;
+    capacity: number;
+  }[];
 
   const ready = routes.length > 0 && drivers.length > 0 && buses.length > 0;
 
@@ -41,12 +83,15 @@ export default async function AssignmentsPage() {
       required: true,
       defaultValue: "",
       options: [
-        { value: "", label: routes.length === 0 ? "Belum ada rute aktif" : "Pilih rute" },
+        { value: "", label: routes.length === 0 ? "Belum ada rute aktif di konteks ini" : "Pilih rute" },
         ...routes.map((route) => ({
           value: route.id,
-          label: `${route.route_name} · ${route.school_name} (${routeDirectionLabel(route.direction)})`,
+          label: `${route.route_name} · ${route.school_name} (${routeDirectionLabel(route.direction)})${
+            selectedId ? "" : ` · ${route.project_areas?.name ?? "Tanpa area"}`
+          }`,
         })),
       ],
+      help: selectedId ? "Rute pada Project Area aktif." : "Pada tampilan Semua Area, rute, bus, dan pengemudi harus dari area yang sama.",
     },
     {
       name: "service_date",
@@ -62,7 +107,7 @@ export default async function AssignmentsPage() {
       required: true,
       defaultValue: "",
       options: [
-        { value: "", label: drivers.length === 0 ? "Belum ada pengemudi aktif" : "Pilih pengemudi" },
+        { value: "", label: drivers.length === 0 ? "Belum ada pengemudi aktif di konteks ini" : "Pilih pengemudi" },
         ...drivers.map((driver) => ({ value: driver.id, label: driver.full_name })),
       ],
     },
@@ -73,7 +118,7 @@ export default async function AssignmentsPage() {
       required: true,
       defaultValue: "",
       options: [
-        { value: "", label: buses.length === 0 ? "Belum ada bus aktif" : "Pilih bus" },
+        { value: "", label: buses.length === 0 ? "Belum ada bus aktif di konteks ini" : "Pilih bus" },
         ...buses.map((bus) => ({
           value: bus.id,
           label: `${bus.fleet_code}${bus.plate_number ? ` · ${bus.plate_number}` : ""} · ${bus.capacity} kursi`,
@@ -86,16 +131,18 @@ export default async function AssignmentsPage() {
     <>
       <PageHeader
         title="Penugasan"
-        description="Hubungkan rute, pengemudi, dan bus untuk satu tanggal layanan. Perjalanan baru dimulai oleh pengemudi dari halaman tugasnya."
+        description="Hubungkan rute, pengemudi, dan bus dari Project Area yang sama untuk satu tanggal layanan. Perjalanan baru dimulai oleh pengemudi dari halaman tugasnya."
       />
+
+      <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath="/admin/penugasan" compact />
 
       {assignmentsResult.error && (
         <Notice kind="error">Daftar penugasan belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>
       )}
       {!ready && (
         <Notice kind="warning">
-          Penugasan memerlukan minimal satu rute aktif, satu pengemudi aktif, dan satu bus aktif. Lengkapi data
-          tersebut terlebih dahulu.
+          Penugasan memerlukan minimal satu rute aktif, satu pengemudi aktif, dan satu bus aktif pada konteks ini.
+          Lengkapi data tersebut terlebih dahulu.
         </Notice>
       )}
 
@@ -104,7 +151,7 @@ export default async function AssignmentsPage() {
           <header className="panel-head">
             <div>
               <h2 className="panel-title">Daftar penugasan</h2>
-              <div className="panel-subtitle">60 penugasan terbaru</div>
+              <div className="panel-subtitle">60 penugasan terbaru · {areaContext.selected?.name ?? "Semua Area"}</div>
             </div>
           </header>
           <div className="admin-table-wrap">
@@ -134,6 +181,7 @@ export default async function AssignmentsPage() {
                           <strong>{assignment.routes?.route_name ?? "Rute"}</strong>
                           <small>
                             {assignment.routes?.school_name} · {routeDirectionLabel(assignment.routes?.direction ?? "")}
+                            {assignment.routes?.project_areas?.name ? ` · ${assignment.routes.project_areas.name}` : ""}
                           </small>
                         </td>
                         <td>
@@ -165,7 +213,7 @@ export default async function AssignmentsPage() {
           <header className="panel-head">
             <div>
               <h2 className="panel-title">Tambah penugasan</h2>
-              <div className="panel-subtitle">Satu pengemudi tidak dapat ditugaskan dua kali pada rute dan tanggal yang sama</div>
+              <div className="panel-subtitle">Satu pengemudi dan satu bus tidak dapat dipakai dua kali pada tanggal yang sama</div>
             </div>
           </header>
           <div className="form-body">
@@ -176,9 +224,9 @@ export default async function AssignmentsPage() {
               disabledReason={
                 ready
                   ? undefined
-                  : "Penugasan dapat dibuat setelah tersedia minimal satu rute aktif, satu pengemudi aktif, dan satu bus aktif. Lengkapi data tersebut terlebih dahulu."
+                  : "Penugasan dapat dibuat setelah tersedia rute, pengemudi, dan bus aktif pada Project Area yang sama."
               }
-              note="Pastikan pengemudi dan bus aktif. Penugasan tidak membuat data perjalanan sebelum pengemudi menekan Mulai perjalanan."
+              note="Data dari area berbeda ditolak oleh aplikasi dan database. Penugasan tidak membuat perjalanan sebelum pengemudi menekan Mulai Perjalanan."
             />
           </div>
         </section>

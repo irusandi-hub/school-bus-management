@@ -67,6 +67,13 @@ export async function saveStudent(_prev: ActionState, formData: FormData): Promi
 
   if (Object.keys(errors).length > 0) return failure("Periksa kembali isian yang ditandai.", errors);
 
+  const [{ data: school }, { data: guardian }] = await Promise.all([
+    ctx.supabase.from("schools").select("id, active").eq("id", schoolId).maybeSingle(),
+    ctx.supabase.from("guardians").select("id, active").eq("id", guardianId).maybeSingle(),
+  ]);
+  if (!school) return failure("Sekolah tidak ditemukan. Muat ulang halaman lalu pilih kembali.", { school_id: "Sekolah tidak ditemukan." });
+  if (!guardian) return failure("Wali tidak ditemukan. Muat ulang halaman lalu pilih kembali.", { guardian_id: "Wali tidak ditemukan." });
+
   const payload = {
     admissions_number: admissionsNumber,
     full_name: fullName,

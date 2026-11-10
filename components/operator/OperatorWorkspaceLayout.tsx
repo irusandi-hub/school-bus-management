@@ -29,7 +29,7 @@ export async function OperatorWorkspaceLayout({ children }: { children: React.Re
         <div className="sidebar-bottom">
           <span className="security-icon"><Icon name="shield" size={13} /></span>
           <strong>Kendali global platform</strong>
-          <p>Operator mengelola seluruh sekolah, wilayah, armada, siswa, wali, dan perjalanan.</p>
+          <p>Operator mengelola seluruh Project Area, sekolah, armada, siswa, wali, dan perjalanan.</p>
         </div>
       </aside>
       <main className="main">
@@ -39,7 +39,7 @@ export async function OperatorWorkspaceLayout({ children }: { children: React.Re
           <div className="workspace-heading">
             <BrandLogo size="sm" />
             <div className="topbar-title">
-              <div className="eyebrow">DAMMAM · PILOT</div>
+              <div className="eyebrow">PROJECT AREA · OPERATOR</div>
               <div className="admin-topbar-role">Ruang Kerja Operator Utama</div>
             </div>
           </div>
@@ -56,7 +56,7 @@ export async function OperatorWorkspaceLayout({ children }: { children: React.Re
         {children}
         <footer className="page-footer">
           <span>School Bus Management · Operator Utama</span>
-          <span>Kendali global · pemetaan wilayah · audit operasional</span>
+          <span>Kendali global · Project Area · audit operasional</span>
         </footer>
       </main>
       <BottomNav items={adminBottomNav} rootHref="/operator" ariaLabel="Navigasi Operator" />

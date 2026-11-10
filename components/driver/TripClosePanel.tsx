@@ -165,12 +165,12 @@ export function TripClosePanel({
                 )}
 
                 <ConfirmSubmit
-                  className="btn btn-primary btn-lg"
-                  message="Akhiri perjalanan ini? Status perjalanan akan menjadi selesai dan tidak dapat dimulai ulang."
+                  className="btn btn-primary btn-lg ops-end-action"
+                  message="Akhiri Perjalanan dan Periksa Keselamatan? Status perjalanan akan menjadi selesai dan tidak dapat dimulai ulang."
                   pendingLabel="Mengakhiri…"
                   disabled={!canEndTrip}
                 >
-                  Akhiri perjalanan
+                  Akhiri Perjalanan dan Periksa Keselamatan
                 </ConfirmSubmit>
                 <p className="ops-close-note">
                   {totalStudents} siswa pada rute ini harus tercatat sebelum perjalanan dapat ditutup.
@@ -193,8 +193,8 @@ export function TripClosePanel({
                 <button className="btn btn-secondary" type="button" disabled>
                   Konfirmasi tiba di sekolah
                 </button>
-                <button className="btn btn-primary btn-lg" type="button" disabled>
-                  Akhiri perjalanan
+                <button className="btn btn-primary btn-lg ops-end-action" type="button" disabled>
+                  Akhiri Perjalanan dan Periksa Keselamatan
                 </button>
                 <p className="safety-blocked">
                   Kedua tindakan sudah ditutup karena perjalanan selesai. Perjalanan berikutnya mengikuti penugasan
@@ -209,15 +209,15 @@ export function TripClosePanel({
               <button className="btn btn-secondary" type="button" disabled>
                 Konfirmasi tiba di sekolah
               </button>
-              <button className="btn btn-primary btn-lg" type="button" disabled>
-                Akhiri perjalanan
+              <button className="btn btn-primary btn-lg ops-end-action" type="button" disabled>
+                Akhiri Perjalanan dan Periksa Keselamatan
               </button>
               <p className="safety-blocked">
                 {cancelled ? (
                   "Perjalanan dibatalkan. Tidak ada kedatangan atau penutupan yang dapat dicatat untuk perjalanan ini."
                 ) : (
                   <>
-                    Perjalanan belum dimulai. Tekan <strong>Mulai perjalanan</strong> di header sebelum mencatat
+                    Perjalanan belum dimulai. Tekan <strong>Mulai Perjalanan</strong> di header sebelum mencatat
                     kedatangan atau mengakhiri perjalanan.
                   </>
                 )}

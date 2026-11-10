@@ -17,7 +17,7 @@ type SimResult = { data: unknown; error: SimError; count: number | null };
 
 const UNIQUE_COLUMNS: Record<string, string[]> = {
   schools: ["code"],
-  operators: ["code"],
+  project_areas: ["code"],
   buses: ["fleet_code", "plate_number"],
   students: ["admissions_number"],
   guardians: ["email"],
@@ -32,14 +32,19 @@ const RELATIONS: Record<string, Record<string, Relation>> = {
     schools: { table: "schools", foreignKey: "school_id", many: false },
     guardians: { table: "guardians", foreignKey: "guardian_id", many: false },
   },
-  drivers: { operators: { table: "operators", foreignKey: "operator_id", many: false } },
-  buses: { operators: { table: "operators", foreignKey: "operator_id", many: false } },
+  drivers: { project_areas: { table: "project_areas", foreignKey: "project_area_id", many: false } },
+  buses: { project_areas: { table: "project_areas", foreignKey: "project_area_id", many: false } },
   guardians: { students: { table: "students", childKey: "guardian_id", many: true } },
   audit_logs: { profiles: { table: "profiles", foreignKey: "actor_profile_id", many: false } },
   student_service_status_history: {
     profiles: { table: "profiles", foreignKey: "actor_profile_id", many: false },
   },
-  routes: { route_stops: { table: "route_stops", childKey: "route_id", many: true } },
+  schools: { project_areas: { table: "project_areas", foreignKey: "project_area_id", many: false } },
+  routes: {
+    route_stops: { table: "route_stops", childKey: "route_id", many: true },
+    schools: { table: "schools", foreignKey: "school_id", many: false },
+    project_areas: { table: "project_areas", foreignKey: "project_area_id", many: false },
+  },
   route_stops: { routes: { table: "routes", foreignKey: "route_id", many: false } },
   student_route_stops: {
     routes: { table: "routes", foreignKey: "route_id", many: false },

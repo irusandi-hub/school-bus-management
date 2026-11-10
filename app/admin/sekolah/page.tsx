@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
 import { RecordForm, type FieldDef } from "@/components/admin/RecordForm";
+import { ProjectAreaTabs } from "@/components/admin/ProjectAreaTabs";
 import {
   ConfigNotice,
   EmptyRow,
@@ -14,6 +15,7 @@ import {
 import { adminReadContext } from "@/lib/admin/read";
 import { firstParam, listHref, noticeFromParams } from "@/lib/admin/query";
 import { PAGE_SIZE, pageRange, parsePage } from "@/lib/admin/support";
+import { getProjectAreaContext } from "@/lib/project-areas/context";
 import type { SchoolRow } from "@/lib/types";
 import { sanitizeSearch } from "@/lib/validation";
 import { saveSchool, setSchoolActive } from "./actions";
@@ -22,7 +24,7 @@ export const metadata: Metadata = { title: "Sekolah | Operator" };
 
 const path = "/admin/sekolah";
 const selectColumns =
-  "id, name, code, city, address, latitude, longitude, contact_name, contact_email, contact_phone, operator_id, active";
+  "id, name, code, city, address, latitude, longitude, contact_name, contact_email, contact_phone, project_area_id, active, project_areas(name)";
 
 export default async function SekolahPage({
   searchParams,
@@ -38,6 +40,8 @@ export default async function SekolahPage({
   const editId = firstParam(params.edit);
   const page = parsePage(params.page);
   const { from, to } = pageRange(page);
+  const areaContext = await getProjectAreaContext(supabase);
+  const selectedId = areaContext.selectedId;
 
   let query = supabase
     .from("schools")
@@ -48,23 +52,23 @@ export default async function SekolahPage({
   if (q) query = query.or(`name.ilike.%${q}%,code.ilike.%${q}%,city.ilike.%${q}%`);
   if (status === "aktif") query = query.eq("active", true);
   if (status === "nonaktif") query = query.eq("active", false);
+  if (selectedId) query = query.eq("project_area_id", selectedId);
 
   const { data, count, error } = await query;
-  const rows = (data ?? []) as SchoolRow[];
+  const rows = (data ?? []) as unknown as SchoolRow[];
   const total = count ?? 0;
-
-  const { data: operatorRows } = await supabase
-    .from("operators")
-    .select("id, name")
-    .eq("active", true)
-    .order("name", { ascending: true });
-  const operators = (operatorRows ?? []) as { id: string; name: string }[];
 
   let editing: SchoolRow | null = null;
   if (editId) {
-    const { data: editRow } = await supabase.from("schools").select(selectColumns).eq("id", editId).maybeSingle();
-    editing = (editRow as SchoolRow | null) ?? null;
+    let editQuery = supabase.from("schools").select(selectColumns).eq("id", editId);
+    if (selectedId) editQuery = editQuery.eq("project_area_id", selectedId);
+    const { data: editRow } = await editQuery.maybeSingle();
+    editing = (editRow as unknown as SchoolRow | null) ?? null;
   }
+
+  const areaOptions = areaContext.areas
+    .filter((area) => area.active || area.id === editing?.project_area_id)
+    .map((area) => ({ value: area.id, label: area.active ? area.name : `${area.name} (nonaktif)` }));
 
   const notice = noticeFromParams(params);
   const baseQuery = { q, status: status || undefined };
@@ -95,15 +99,16 @@ export default async function SekolahPage({
       defaultValue: editing?.city ?? "Dammam",
     },
     {
-      name: "operator_id",
-      label: "Perusahaan bus (opsional)",
+      name: "project_area_id",
+      label: "Project Area",
       type: "select",
-      defaultValue: editing?.operator_id ?? "",
+      required: true,
+      defaultValue: editing?.project_area_id ?? selectedId ?? "",
       options: [
-        { value: "", label: "Belum ditautkan" },
-        ...operators.map((operator) => ({ value: operator.id, label: operator.name })),
+        { value: "", label: "Pilih Project Area" },
+        ...areaOptions,
       ],
-      help: "Untuk pemetaan dan audit tanggung jawab transportasi. Bukan pembatas akses; Operator Utama tetap mengelola seluruh sekolah.",
+      help: "Area operasional sekolah. Siswa dan rute sekolah ini hanya dapat dihubungkan dengan data dari area yang sama.",
       fullWidth: true,
     },
     {
@@ -159,8 +164,10 @@ export default async function SekolahPage({
     <>
       <PageHeader
         title="Sekolah"
-        description="Data sekolah yang menggunakan aplikasi. Nonaktifkan sekolah yang tidak lagi bekerja sama; data dan riwayatnya tetap tersimpan."
+        description="Data sekolah per Project Area. Nonaktifkan sekolah yang tidak lagi bekerja sama; data dan riwayatnya tetap tersimpan."
       />
+
+      <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath={path} compact />
 
       {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
       {error && <Notice kind="error">Daftar sekolah belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
@@ -189,7 +196,7 @@ export default async function SekolahPage({
                 <tr>
                   <th scope="col">Nama sekolah</th>
                   <th scope="col">Kode</th>
-                  <th scope="col">Kota</th>
+                  <th scope="col">Project Area</th>
                   <th scope="col">Kontak</th>
                   <th scope="col">Status</th>
                   <th scope="col">Tindakan</th>
@@ -216,7 +223,7 @@ export default async function SekolahPage({
                       <td>
                         <code>{row.code}</code>
                       </td>
-                      <td>{row.city}</td>
+                      <td>{row.project_areas?.name ?? row.city}</td>
                       <td>
                         {row.contact_name ?? "—"}
                         <small>{row.contact_phone ?? row.contact_email ?? "Kontak belum diisi"}</small>

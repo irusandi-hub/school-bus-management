@@ -110,10 +110,10 @@ export const DEV_VIEWER = {
   },
 } as const;
 
-/** Data perusahaan/pengemudi simulasi yang dipakai gerbang area operator dan pengemudi. */
-export const DEV_COMPANY = {
+/** Data Project Area dan pengemudi simulasi yang dipakai gerbang workspace. */
+export const DEV_PROJECT_AREA = {
   id: "51111111-0000-4000-8000-0000000001b1",
-  name: "Perusahaan Bus Contoh Nusantara",
+  name: "Project Area Dammam Contoh",
 } as const;
 export const DEV_DRIVER_RECORD = {
   id: "51111111-0000-4000-8000-0000000004e1",

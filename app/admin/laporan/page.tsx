@@ -1,7 +1,9 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ConfigNotice, EmptyRow, Notice, PageHeader, Pill, StatCard } from "@/components/admin/ui";
+import { ProjectAreaTabs } from "@/components/admin/ProjectAreaTabs";
 import { adminReadContext } from "@/lib/admin/read";
+import { getProjectAreaContext, loadProjectAreaScope } from "@/lib/project-areas/context";
 import type { AuditLogRow } from "@/lib/types";
 import { formatDateTime, serviceDateInTimeZone } from "@/lib/validation";
 
@@ -12,16 +14,43 @@ export default async function ReportsPage() {
   if (!supabase) return <ConfigNotice />;
 
   const today = serviceDateInTimeZone();
+  const areaContext = await getProjectAreaContext(supabase);
+  const scope = await loadProjectAreaScope(supabase, areaContext.selectedId);
+  const selectedId = areaContext.selectedId;
+
+  let assignmentIds: string[] = [];
+  if (selectedId) {
+    const { data: areaAssignments } = await supabase
+      .from("trip_assignments")
+      .select("id")
+      .in("route_id", scope.routeIds);
+    assignmentIds = ((areaAssignments ?? []) as { id: string }[]).map((row) => row.id);
+  }
+
+  let studentsQuery = supabase.from("students").select("id", { count: "exact", head: true }).eq("service_status", "active");
+  if (selectedId) studentsQuery = studentsQuery.in("school_id", scope.schoolIds);
+
+  let guardiansQuery = supabase.from("guardians").select("id", { count: "exact", head: true }).eq("active", true);
+  if (selectedId) guardiansQuery = guardiansQuery.in("id", scope.guardianIds);
+
+  let routesQuery = supabase.from("routes").select("id", { count: "exact", head: true }).eq("active", true);
+  if (selectedId) routesQuery = routesQuery.eq("project_area_id", selectedId);
+
+  let assignmentsQuery = supabase
+    .from("trip_assignments")
+    .select("id", { count: "exact", head: true })
+    .eq("service_date", today);
+  if (selectedId) assignmentsQuery = assignmentsQuery.in("route_id", scope.routeIds);
+
+  let completedQuery = supabase.from("trips").select("id", { count: "exact", head: true }).eq("status", "completed");
+  if (selectedId) completedQuery = completedQuery.in("assignment_id", assignmentIds);
 
   const [activeStudents, guardians, routes, assignmentsToday, completedTrips, audits] = await Promise.all([
-    supabase.from("students").select("id", { count: "exact", head: true }).eq("service_status", "active"),
-    supabase.from("guardians").select("id", { count: "exact", head: true }).eq("active", true),
-    supabase.from("routes").select("id", { count: "exact", head: true }).eq("active", true),
-    supabase
-      .from("trip_assignments")
-      .select("id", { count: "exact", head: true })
-      .eq("service_date", today),
-    supabase.from("trips").select("id", { count: "exact", head: true }).eq("status", "completed"),
+    studentsQuery,
+    guardiansQuery,
+    routesQuery,
+    assignmentsQuery,
+    completedQuery,
     supabase
       .from("audit_logs")
       .select("id, actor_profile_id, action, entity_type, entity_id, summary, created_at, profiles(full_name)")
@@ -35,8 +64,11 @@ export default async function ReportsPage() {
     <>
       <PageHeader
         title="Laporan & audit"
-        description="Ringkasan seluruh data operasional dan jejak aktivitas platform." actions={<Link className="btn btn-secondary btn-sm" href="/operator/laporan/export">Unduh CSV</Link>}
+        description={`Ringkasan data operasional dan jejak aktivitas platform. Konteks: ${areaContext.selected?.name ?? "Semua Area"}.`}
+        actions={<Link className="btn btn-secondary btn-sm" href="/operator/laporan/export">Unduh CSV</Link>}
       />
+
+      <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath="/admin/laporan" compact />
 
       {audits.error && <Notice kind="error">Jejak audit belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
 
@@ -106,7 +138,7 @@ export default async function ReportsPage() {
               jejak audit agar data pribadi tidak menumpuk di luar tabel asalnya.
             </p>
             <p>
-              Jejak audit platform dapat dibaca dan ditinjau oleh Operator Utama. Data perusahaan dan wilayah hanya menjadi pengelompokan untuk pemetaan serta audit, bukan pembatas akses.
+              Jejak audit platform dapat dibaca dan ditinjau oleh Operator Utama. Project Area hanya menjadi konteks kerja dan pengelompokan untuk pemetaan serta audit, bukan akun atau pembatas akses.
             </p>
           </div>
         </section>
@@ -116,7 +148,7 @@ export default async function ReportsPage() {
         <header className="panel-head">
           <div>
             <h2 className="panel-title">Jejak audit terbaru</h2>
-            <div className="panel-subtitle">60 catatan terakhir</div>
+            <div className="panel-subtitle">60 catatan terakhir · audit platform tidak difilter per area</div>
           </div>
         </header>
         <div className="admin-table-wrap">

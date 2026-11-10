@@ -5,7 +5,8 @@
 -- database. Do not run against a hosted or production database.
 --
 -- This fixture verifies:
---   * exactly one global Operator across all companies and schools, with platform-wide writes;
+--   * exactly one global Operator across all Project Areas and schools, with platform-wide writes;
+--   * Project Areas are data, not accounts, and cross-area records cannot be mixed;
 --   * Driver access limited to the driver's assigned route/trip, without master-data writes;
 --   * Guardian access limited to their own active child and related trip, without master-data writes;
 --   * legacy global role uniqueness and protected account-linking functions;
@@ -22,8 +23,8 @@ insert into auth.users (id, email, email_confirmed_at) values
   ('00000000-0000-0000-0000-000000000007', 'wali.b@contoh.test', now()),
   ('00000000-0000-0000-0000-000000000008', 'pengguna@contoh.test', now());
 
--- One and only one global Operator. Company rows remain ordinary data and have
--- no login identity or authority boundary.
+-- One and only one global Operator. Project Area rows remain ordinary data and
+-- have no login identity or authority boundary.
 insert into public.profiles (id, full_name, role) values
   ('00000000-0000-0000-0000-000000000001', 'Operator Utama', 'operator'),
   ('00000000-0000-0000-0000-000000000004', 'Pengemudi A', 'driver'),
@@ -32,19 +33,19 @@ insert into public.profiles (id, full_name, role) values
   ('00000000-0000-0000-0000-000000000007', 'Wali B', 'parent'),
   ('00000000-0000-0000-0000-000000000008', 'Pengguna Baru', 'parent');
 
-insert into public.operators (id, profile_id, name, code, city, active) values
-  ('00000000-0000-0000-0000-000000000101', null, 'Perusahaan A', 'OPR-A', 'Dammam', true),
-  ('00000000-0000-0000-0000-000000000102', null, 'Perusahaan B', 'OPR-B', 'Dammam', true);
+insert into public.project_areas (id, name, code, city, active) values
+  ('00000000-0000-0000-0000-000000000101', 'Area Dammam', 'AREA-DMM', 'Dammam', true),
+  ('00000000-0000-0000-0000-000000000102', 'Area Riyadh', 'AREA-RUH', 'Riyadh', true);
 
-insert into public.schools (id, operator_id, name, code, city, active) values
+insert into public.schools (id, project_area_id, name, code, city, active) values
   ('00000000-0000-0000-0000-000000000201', '00000000-0000-0000-0000-000000000101', 'Sekolah A', 'SCH-A', 'Dammam', true),
-  ('00000000-0000-0000-0000-000000000202', '00000000-0000-0000-0000-000000000102', 'Sekolah B', 'SCH-B', 'Dammam', true);
+  ('00000000-0000-0000-0000-000000000202', '00000000-0000-0000-0000-000000000102', 'Sekolah B', 'SCH-B', 'Riyadh', true);
 
-insert into public.buses (id, operator_id, fleet_code, plate_number, capacity, active) values
+insert into public.buses (id, project_area_id, fleet_code, plate_number, capacity, active) values
   ('00000000-0000-0000-0000-000000000301', '00000000-0000-0000-0000-000000000101', 'BUS-A', 'ABC-1001', 40, true),
   ('00000000-0000-0000-0000-000000000302', '00000000-0000-0000-0000-000000000102', 'BUS-B', 'ABC-2002', 40, true);
 
-insert into public.drivers (id, operator_id, profile_id, full_name, license_number, active) values
+insert into public.drivers (id, project_area_id, profile_id, full_name, license_number, active) values
   ('00000000-0000-0000-0000-000000000401', '00000000-0000-0000-0000-000000000101', '00000000-0000-0000-0000-000000000004', 'Pengemudi A', 'SIM-1001', true),
   ('00000000-0000-0000-0000-000000000402', '00000000-0000-0000-0000-000000000102', '00000000-0000-0000-0000-000000000005', 'Pengemudi B', 'SIM-2002', true);
 
@@ -57,9 +58,9 @@ insert into public.students (id, admissions_number, full_name, school_id, guardi
   ('00000000-0000-0000-0000-000000000602', 'ADM-A2', 'Siswa A Dua', '00000000-0000-0000-0000-000000000201', '00000000-0000-0000-0000-000000000501', 'paused'),
   ('00000000-0000-0000-0000-000000000603', 'ADM-B1', 'Siswa B Satu', '00000000-0000-0000-0000-000000000202', '00000000-0000-0000-0000-000000000502', 'active');
 
-insert into public.routes (id, route_name, school_name, direction, active) values
-  ('00000000-0000-0000-0000-000000000701', 'Rute Sekolah A Pagi', 'Sekolah A', 'morning', true),
-  ('00000000-0000-0000-0000-000000000702', 'Rute Sekolah B Pagi', 'Sekolah B', 'morning', true);
+insert into public.routes (id, route_name, school_name, school_id, project_area_id, direction, active) values
+  ('00000000-0000-0000-0000-000000000701', 'Rute Sekolah A Pagi', 'Sekolah A', '00000000-0000-0000-0000-000000000201', '00000000-0000-0000-0000-000000000101', 'morning', true),
+  ('00000000-0000-0000-0000-000000000702', 'Rute Sekolah B Pagi', 'Sekolah B', '00000000-0000-0000-0000-000000000202', '00000000-0000-0000-0000-000000000102', 'morning', true);
 
 insert into public.route_stops (id, route_id, stop_order, stop_name, latitude, longitude, is_school) values
   ('00000000-0000-0000-0000-000000000801', '00000000-0000-0000-0000-000000000701', 1, 'Titik Jemput A', 26.42, 50.08, false),
@@ -88,9 +89,8 @@ do $$
 declare n int;
 begin
   if not private.is_admin() then raise exception 'Operator tidak dikenali sebagai otoritas global'; end if;
-  if private.current_operator_id() is not null then raise exception 'Akun Operator tidak boleh bergantung pada tautan perusahaan'; end if;
   select count(*) into n from public.schools; if n <> 2 then raise exception 'Operator tidak melihat seluruh sekolah: %', n; end if;
-  select count(*) into n from public.operators; if n <> 2 then raise exception 'Operator tidak melihat seluruh perusahaan: %', n; end if;
+  select count(*) into n from public.project_areas; if n <> 2 then raise exception 'Operator tidak melihat seluruh Project Area: %', n; end if;
   select count(*) into n from public.buses; if n <> 2 then raise exception 'Operator tidak melihat seluruh bus: %', n; end if;
   select count(*) into n from public.drivers; if n <> 2 then raise exception 'Operator tidak melihat seluruh pengemudi: %', n; end if;
   select count(*) into n from public.guardians; if n <> 2 then raise exception 'Operator tidak melihat seluruh wali: %', n; end if;
@@ -107,12 +107,41 @@ begin
   update public.schools set name = 'Sekolah A diperbarui'
     where id = '00000000-0000-0000-0000-000000000201';
   if not found then raise exception 'Operator tidak dapat memperbarui master sekolah'; end if;
-  insert into public.operators (id, profile_id, name, code, city, active)
-    values ('00000000-0000-0000-0000-000000000103', null, 'Perusahaan C', 'OPR-C', 'Dammam', true);
-  select count(*) into n from public.operators;
-  if n <> 3 then raise exception 'Operator tidak dapat menambah data perusahaan global'; end if;
+  insert into public.project_areas (id, name, code, city, active)
+    values ('00000000-0000-0000-0000-000000000103', 'Area Madinah', 'AREA-MED', 'Madinah', true);
+  select count(*) into n from public.project_areas;
+  if n <> 3 then raise exception 'Operator tidak dapat menambah Project Area global'; end if;
 end $$;
 reset role;
+
+-- Cross-area records must be rejected by the database, not only hidden by the UI.
+reset role;
+do $$
+begin
+  begin
+    insert into public.routes (id, route_name, school_name, school_id, project_area_id, direction, active)
+    values ('00000000-0000-0000-0000-000000000703', 'Rute Campur', 'Sekolah A',
+            '00000000-0000-0000-0000-000000000201', '00000000-0000-0000-0000-000000000102', 'morning', true);
+    raise exception 'Database menerima rute dengan sekolah dan area berbeda';
+  exception when check_violation then null;
+  end;
+
+  begin
+    insert into public.trip_assignments (route_id, driver_id, bus_id, service_date, assigned_by)
+    values ('00000000-0000-0000-0000-000000000701', '00000000-0000-0000-0000-000000000402',
+            '00000000-0000-0000-0000-000000000301', current_date + 1, '00000000-0000-0000-0000-000000000001');
+    raise exception 'Database menerima penugasan lintas Project Area';
+  exception when check_violation then null;
+  end;
+
+  begin
+    insert into public.student_route_stops (student_id, route_id, stop_id, direction, active)
+    values ('00000000-0000-0000-0000-000000000603', '00000000-0000-0000-0000-000000000701',
+            '00000000-0000-0000-0000-000000000801', 'morning', true);
+    raise exception 'Database menerima siswa pada rute area lain';
+  exception when check_violation then null;
+  end;
+end $$;
 
 -- A second legacy Admin or Operator must not coexist with the global Operator.
 reset role;
@@ -198,13 +227,13 @@ begin
 end $$;
 reset role;
 
--- A retained company/driver row link must not grant another ecosystem's authority.
--- Simulate legacy links pointing at a guardian account, then verify the account
--- receives neither Operator nor Driver powers. Links are restored afterwards.
+-- A retained legacy area/driver row link must not grant another ecosystem's
+-- authority. Simulate legacy links pointing at a guardian account, then verify the
+-- account receives neither Operator nor Driver powers. Links are restored afterwards.
 reset role;
 do $$
 begin
-  update public.operators set profile_id = '00000000-0000-0000-0000-000000000008'
+  update public.project_areas set legacy_profile_id = '00000000-0000-0000-0000-000000000008'
     where id = '00000000-0000-0000-0000-000000000101';
   update public.drivers set profile_id = '00000000-0000-0000-0000-000000000008'
     where id = '00000000-0000-0000-0000-000000000401';
@@ -215,14 +244,11 @@ select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-000000000008
 do $$
 declare n int;
 begin
-  if private.current_operator_id() is not null then
-    raise exception 'Tautan perusahaan memberi identitas operator kepada akun non-operator';
-  end if;
   if private.current_driver_id() is not null then
     raise exception 'Tautan pengemudi memberi identitas pengemudi kepada akun non-pengemudi';
   end if;
-  select count(*) into n from public.operators;
-  if n <> 0 then raise exception 'Akun wali membaca perusahaan melalui tautan lama: %', n; end if;
+  select count(*) into n from public.project_areas;
+  if n <> 0 then raise exception 'Akun wali membaca Project Area melalui tautan lama: %', n; end if;
   select count(*) into n from public.drivers;
   if n <> 0 then raise exception 'Akun wali membaca pengemudi melalui tautan lama: %', n; end if;
   begin
@@ -238,7 +264,7 @@ reset role;
 
 do $$
 begin
-  update public.operators set profile_id = null
+  update public.project_areas set legacy_profile_id = null
     where id = '00000000-0000-0000-0000-000000000101';
   update public.drivers set profile_id = '00000000-0000-0000-0000-000000000004'
     where id = '00000000-0000-0000-0000-000000000401';
@@ -290,14 +316,17 @@ begin
   end;
 end $$;
 
--- Company account linking is disabled for authenticated users.
+-- Company account linking and the company-scope resolver no longer exist.
 do $$
 begin
-  if has_function_privilege('authenticated', 'public.link_operator_account(uuid,text)', 'EXECUTE') then
-    raise exception 'Fungsi link_operator_account masih dapat dipanggil client';
+  if to_regprocedure('public.link_operator_account(uuid,text)') is not null then
+    raise exception 'Fungsi link_operator_account masih ada';
   end if;
-  if has_function_privilege('authenticated', 'public.unlink_operator_account(uuid)', 'EXECUTE') then
-    raise exception 'Fungsi unlink_operator_account masih dapat dipanggil client';
+  if to_regprocedure('public.unlink_operator_account(uuid)') is not null then
+    raise exception 'Fungsi unlink_operator_account masih ada';
+  end if;
+  if to_regprocedure('private.current_operator_id()') is not null then
+    raise exception 'Resolver scope perusahaan masih ada';
   end if;
   if has_function_privilege('authenticated', 'private.resolve_account_uid(text)', 'EXECUTE') then
     raise exception 'Resolver email internal masih dapat dipanggil client';

@@ -11,7 +11,7 @@ function rows(result: Result): SimRow[] {
 
 const STUDENT_1 = "51111111-0000-4000-8000-000000000601";
 const STUDENT_2 = "51111111-0000-4000-8000-000000000602";
-const ORGANISATION = "51111111-0000-4000-8000-0000000001b1";
+const PROJECT_AREA = "51111111-0000-4000-8000-0000000001b1";
 
 describe("klien simulasi pengembangan", () => {
   beforeEach(() => {
@@ -66,12 +66,12 @@ describe("klien simulasi pengembangan", () => {
 
     const clash = (await supabase
       .from("buses")
-      .insert({ fleet_code: "SIM-BUS-01", plate_number: "SIM 1999", capacity: 20, operator_id: ORGANISATION, active: true })) as Result;
+      .insert({ fleet_code: "SIM-BUS-01", plate_number: "SIM 1999", capacity: 20, project_area_id: PROJECT_AREA, active: true })) as Result;
     assert.equal(clash.error?.code, "23505");
 
     const created = (await supabase
       .from("schools")
-      .insert({ code: "SIM-SCH-99", name: "Sekolah Contoh Baru", city: "Dammam", operator_id: null, active: true })) as Result;
+      .insert({ code: "SIM-SCH-99", name: "Sekolah Contoh Baru", city: "Dammam", project_area_id: PROJECT_AREA, active: true })) as Result;
     assert.equal(created.error, null);
 
     const listed = (await supabase.from("schools").select("id, code, name").eq("code", "SIM-SCH-99")) as Result;
@@ -169,10 +169,10 @@ describe("klien simulasi pengembangan", () => {
     assert.equal(rows(limited).length, 1);
     assert.equal(rows(limited)[0].full_name, "Siswa Contoh Tiga");
 
-    const single = (await supabase.from("operators").select("id, name").eq("id", ORGANISATION).maybeSingle()) as Result;
-    assert.equal((single.data as SimRow).name, "Perusahaan Bus Contoh Nusantara");
+    const single = (await supabase.from("project_areas").select("id, name").eq("id", PROJECT_AREA).maybeSingle()) as Result;
+    assert.equal((single.data as SimRow).name, "Project Area Dammam Contoh");
 
-    const missing = (await supabase.from("operators").select("id").eq("id", "tidak-ada").maybeSingle()) as Result;
+    const missing = (await supabase.from("project_areas").select("id").eq("id", "tidak-ada").maybeSingle()) as Result;
     assert.equal(missing.data, null);
   });
 
@@ -180,7 +180,7 @@ describe("klien simulasi pengembangan", () => {
     const writer = createSimulationClient();
     const created = (await writer
       .from("schools")
-      .insert({ code: "SIM-SCH-PERSIST", name: "Sekolah Contoh Persisten", city: "Dammam", operator_id: null, active: true })) as Result;
+      .insert({ code: "SIM-SCH-PERSIST", name: "Sekolah Contoh Persisten", city: "Dammam", project_area_id: PROJECT_AREA, active: true })) as Result;
     assert.equal(created.error, null);
 
     const reader = createSimulationClient();

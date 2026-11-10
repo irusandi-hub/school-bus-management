@@ -89,9 +89,9 @@ Hasil yang diharapkan: tepat satu baris, dengan email terverifikasi milik Operat
 
 ## Catatan implementasi
 
-- Operator Utama tidak memerlukan baris `operators` atau `schools`. Perusahaan dan sekolah adalah data pemetaan/audit, bukan identitas login atau batas hak akses.
-- Kolom lama `operators.profile_id` dipertahankan sebagai referensi historis. Tautan baris itu (dan `drivers.profile_id`) tidak lagi memberi akses dengan sendirinya karena `current_operator_id()` mensyaratkan role `admin`/`operator` dan `current_driver_id()` mensyaratkan role `driver`.
-- Penautan akun perusahaan melalui client sudah dicabut; jangan menambahkan UI atau pemanggilan RPC baru untuk itu.
+- Operator Utama tidak memerlukan baris `project_areas` atau `schools`. Project Area dan sekolah adalah data operasional, bukan identitas login atau batas hak akses.
+- Setelah migrasi Project Area, tabel `operators` menjadi `project_areas` dan kolom `profile_id` menjadi `legacy_profile_id`. Kolom itu hanya referensi historis dan tidak memberi akses; helper `current_operator_id()` sudah dihapus. `current_driver_id()` tetap mensyaratkan role `driver`.
+- Project Area tidak memiliki akun. Jangan menambahkan UI atau RPC penautan akun area; kolom lama `project_areas.legacy_profile_id` hanya referensi historis.
 - Jalankan `npm run test:operator:sql` untuk memverifikasi promosi/penolakan bootstrap pada database PGlite terisolasi. Skrip uji tersebut membuat data dan **tidak boleh** diarahkan ke database hosted/produksi.
 
 ## Batas keamanan

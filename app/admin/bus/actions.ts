@@ -25,7 +25,7 @@ export async function saveBus(_prev: ActionState, formData: FormData): Promise<A
   const plateNumber = readOptionalText(formData, "plate_number");
   const capacityRaw = readText(formData, "capacity");
   const model = readOptionalText(formData, "model");
-  const operatorId = readOptionalText(formData, "operator_id");
+  const projectAreaId = readOptionalText(formData, "project_area_id");
   const notes = readOptionalText(formData, "notes");
 
   const errors: FieldErrors = {};
@@ -43,6 +43,7 @@ export async function saveBus(_prev: ActionState, formData: FormData): Promise<A
   }
   if (model && model.length > 80) errors.model = "Model maksimal 80 karakter.";
   if (notes && notes.length > 300) errors.notes = "Catatan maksimal 300 karakter.";
+  if (!projectAreaId) errors.project_area_id = "Pilih Project Area untuk bus ini.";
 
   if (Object.keys(errors).length > 0) return failure("Periksa kembali isian yang ditandai.", errors);
 
@@ -51,7 +52,7 @@ export async function saveBus(_prev: ActionState, formData: FormData): Promise<A
     plate_number: plateNumber ? plateNumber.toUpperCase() : null,
     capacity,
     model,
-    operator_id: operatorId,
+    project_area_id: projectAreaId,
     notes,
   };
 
@@ -62,7 +63,7 @@ export async function saveBus(_prev: ActionState, formData: FormData): Promise<A
   if (error) {
     return writeFailure(error, {
       unique: "Kode armada atau nomor polisi sudah dipakai bus lain. Gunakan nilai lain.",
-      foreignKey: "Pengelola yang dipilih tidak tersedia. Muat ulang halaman lalu pilih kembali.",
+      foreignKey: "Project Area yang dipilih tidak tersedia. Muat ulang halaman lalu pilih kembali.",
     });
   }
 

@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
 import { RecordForm, type FieldDef } from "@/components/admin/RecordForm";
+import { ProjectAreaTabs } from "@/components/admin/ProjectAreaTabs";
 import {
   ConfigNotice,
   EmptyRow,
@@ -14,6 +15,7 @@ import {
 import { adminReadContext } from "@/lib/admin/read";
 import { firstParam, listHref, noticeFromParams } from "@/lib/admin/query";
 import { PAGE_SIZE, pageRange, parsePage } from "@/lib/admin/support";
+import { getProjectAreaContext, loadProjectAreaScope } from "@/lib/project-areas/context";
 import type { GuardianRow } from "@/lib/types";
 import { sanitizeSearch } from "@/lib/validation";
 import { saveGuardian, setGuardianActive } from "./actions";
@@ -37,6 +39,9 @@ export default async function WaliPage({
   const editId = firstParam(params.edit);
   const page = parsePage(params.page);
   const { from, to } = pageRange(page);
+  const areaContext = await getProjectAreaContext(supabase);
+  const scope = await loadProjectAreaScope(supabase, areaContext.selectedId);
+  const selectedId = areaContext.selectedId;
 
   let query = supabase
     .from("guardians")
@@ -47,6 +52,7 @@ export default async function WaliPage({
   if (q) query = query.or(`full_name.ilike.%${q}%,email.ilike.%${q}%`);
   if (status === "aktif") query = query.eq("active", true);
   if (status === "nonaktif") query = query.eq("active", false);
+  if (selectedId) query = query.in("id", scope.guardianIds);
 
   const { data, count, error } = await query;
   const rows = (data ?? []) as GuardianRow[];
@@ -65,7 +71,9 @@ export default async function WaliPage({
 
   let editing: GuardianRow | null = null;
   if (editId) {
-    const { data: editRow } = await supabase.from("guardians").select(selectColumns).eq("id", editId).maybeSingle();
+    let editQuery = supabase.from("guardians").select(selectColumns).eq("id", editId);
+    if (selectedId) editQuery = editQuery.in("id", scope.guardianIds);
+    const { data: editRow } = await editQuery.maybeSingle();
     editing = (editRow as GuardianRow | null) ?? null;
   }
 
@@ -109,8 +117,10 @@ export default async function WaliPage({
     <>
       <PageHeader
         title="Akun Wali"
-        description="Daftarkan email wali sebelum aktivasi akun. Wali memverifikasi email, membuat kata sandi, lalu masuk dengan email dan kata sandi tersebut."
+        description="Daftarkan email wali sebelum aktivasi akun. Wali memverifikasi email, membuat kata sandi, lalu masuk dengan email dan kata sandi tersebut. Daftar mengikuti Project Area aktif."
       />
+
+      <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath={path} compact />
 
       {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
       {error && <Notice kind="error">Daftar wali belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}

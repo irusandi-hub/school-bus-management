@@ -6,8 +6,9 @@ import { DEV_DRIVER_RECORD, DEV_VIEWER, isDevOpenAccess } from "@/lib/dev-open-a
 import { createServerSupabase } from "@/lib/supabase/server";
 import { supabaseNotConfiguredMessage } from "@/lib/supabase/env";
 import { validateDeviceLocation } from "@/lib/driver/device-location";
+import { isDuplicateStudentEvent } from "@/lib/driver/student-events";
 import { evaluateTripEnd, SAFETY_CHECKS, type SafetyFieldName } from "@/lib/driver/trip-end";
-import { failure, readText, type ActionState } from "@/lib/validation";
+import { failure, readText, success, type ActionState } from "@/lib/validation";
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -287,20 +288,30 @@ export async function publishDriverLocation(
   return { ok: true, message: "Lokasi HP dibagikan ke wali." };
 }
 
-export async function recordStudentEvent(formData: FormData) {
+type StudentEventOutcome = {
+  state: ActionState;
+  eventType?: string;
+  notes?: string | null;
+};
+
+/**
+ * Shared validation for the redirect and state-based passenger actions. The
+ * student must belong to the signed-in driver's in-progress trip, and a repeated
+ * submit of the same event within ten seconds is treated as one action so a
+ * double click cannot duplicate history rows.
+ */
+async function recordStudentEventCore(formData: FormData): Promise<StudentEventOutcome> {
   const ctx = await driverActionContext();
   const tripId = readText(formData, "trip_id");
-  const assignmentId = readText(formData, "assignment_id");
   const studentId = readText(formData, "student_id");
   const eventType = readText(formData, "event_type");
   const notes = readText(formData, "notes");
-  const target = taskPage(assignmentId);
-  if (!ctx.ok) backTo(target, ctx.state.message, "error");
+  if (!ctx.ok) return { state: ctx.state };
 
-  if (!eventTypes.includes(eventType)) backTo(target, "Jenis status siswa tidak dikenali.", "error");
-  if (!studentId) backTo(target, "Siswa tidak dikenali.", "error");
+  if (!eventTypes.includes(eventType)) return { state: failure("Jenis status siswa tidak dikenali.") };
+  if (!studentId) return { state: failure("Siswa tidak dikenali.") };
   if (eventType === "issue" && notes.length < 5) {
-    backTo(target, "Catatan kendala wajib diisi minimal 5 karakter.", "error");
+    return { state: failure("Catatan kendala wajib diisi minimal 5 karakter.") };
   }
 
   const { data: trip } = await ctx.supabase
@@ -311,10 +322,10 @@ export async function recordStudentEvent(formData: FormData) {
 
   const assignment = trip?.trip_assignments as unknown as { route_id: string; driver_id: string } | null;
   if (!trip || !assignment || assignment.driver_id !== ctx.driverId) {
-    backTo(target, "Perjalanan tidak ditemukan untuk akun Anda.", "error");
+    return { state: failure("Perjalanan tidak ditemukan untuk akun Anda.") };
   }
   if (trip.status !== "in_progress") {
-    backTo(target, "Status siswa hanya dapat dicatat selama perjalanan berlangsung.", "error");
+    return { state: failure("Status siswa hanya dapat dicatat selama perjalanan berlangsung.") };
   }
 
   // The student must be on this route's active roster; arbitrary student ids are refused.
@@ -326,7 +337,26 @@ export async function recordStudentEvent(formData: FormData) {
     .eq("active", true)
     .maybeSingle();
 
-  if (!roster) backTo(target, "Siswa tersebut tidak terdaftar pada rute perjalanan ini.", "error");
+  if (!roster) return { state: failure("Siswa tersebut tidak terdaftar pada rute perjalanan ini.") };
+
+  const { data: latest } = await ctx.supabase
+    .from("trip_student_events")
+    .select("event_type, notes, occurred_at")
+    .eq("trip_id", tripId)
+    .eq("student_id", studentId)
+    .order("occurred_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const latestEvent = latest as { event_type: string; notes: string | null; occurred_at: string } | null;
+  if (isDuplicateStudentEvent(latestEvent, eventType)) {
+    revalidatePath("/pengemudi");
+    return {
+      state: success("Status siswa tersebut sudah tercatat. Tidak ada data ganda yang dibuat."),
+      eventType,
+      notes: latestEvent?.notes ?? null,
+    };
+  }
 
   const { error } = await ctx.supabase.from("trip_student_events").insert({
     trip_id: tripId,
@@ -336,8 +366,28 @@ export async function recordStudentEvent(formData: FormData) {
     notes: notes || null,
   });
 
-  if (error) backTo(target, "Status siswa belum tersimpan. Coba lagi.", "error");
+  if (error) return { state: failure("Status siswa belum tersimpan. Coba lagi.") };
 
   revalidatePath("/pengemudi");
-  backTo(target, "Status siswa tercatat pada perjalanan ini.");
+  return {
+    state: success("Status siswa tercatat pada perjalanan ini."),
+    eventType,
+    notes: notes || null,
+  };
+}
+
+export async function recordStudentEvent(formData: FormData) {
+  const assignmentId = readText(formData, "assignment_id");
+  const target = taskPage(assignmentId);
+  const outcome = await recordStudentEventCore(formData);
+  backTo(target, outcome.state.message, outcome.state.status === "error" ? "error" : "success");
+}
+
+/** State-based variant used by the client controls to show the newest status immediately. */
+export async function recordStudentEventState(
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState & { eventType?: string; notes?: string | null }> {
+  const outcome = await recordStudentEventCore(formData);
+  return { ...outcome.state, eventType: outcome.eventType, notes: outcome.notes };
 }
