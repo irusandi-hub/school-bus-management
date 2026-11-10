@@ -166,11 +166,11 @@ export function TripClosePanel({
 
                 <ConfirmSubmit
                   className="btn btn-primary btn-lg ops-end-action"
-                  message="Akhiri Perjalanan dan Periksa Keselamatan? Status perjalanan akan menjadi selesai dan tidak dapat dimulai ulang."
+                  message="Selesaikan checklist keselamatan lalu akhiri perjalanan? Status perjalanan akan menjadi selesai dan tidak dapat dimulai ulang."
                   pendingLabel="Mengakhiri…"
                   disabled={!canEndTrip}
                 >
-                  Akhiri Perjalanan dan Periksa Keselamatan
+                  Akhiri Perjalanan
                 </ConfirmSubmit>
                 <p className="ops-close-note">
                   {totalStudents} siswa pada rute ini harus tercatat sebelum perjalanan dapat ditutup.
@@ -194,7 +194,7 @@ export function TripClosePanel({
                   Konfirmasi tiba di sekolah
                 </button>
                 <button className="btn btn-primary btn-lg ops-end-action" type="button" disabled>
-                  Akhiri Perjalanan dan Periksa Keselamatan
+                  Akhiri Perjalanan
                 </button>
                 <p className="safety-blocked">
                   Kedua tindakan sudah ditutup karena perjalanan selesai. Perjalanan berikutnya mengikuti penugasan
@@ -210,7 +210,7 @@ export function TripClosePanel({
                 Konfirmasi tiba di sekolah
               </button>
               <button className="btn btn-primary btn-lg ops-end-action" type="button" disabled>
-                Akhiri Perjalanan dan Periksa Keselamatan
+                Akhiri Perjalanan
               </button>
               <p className="safety-blocked">
                 {cancelled ? (
