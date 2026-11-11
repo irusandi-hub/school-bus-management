@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, type FormEvent } from "react";
 import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
 import { Icon } from "@/components/ui/Icon";
 import { SAFETY_CHECKS } from "@/lib/driver/trip-end";
@@ -20,7 +23,9 @@ type TripView = {
  * Ringkasan selalu terlihat agar kendali penutupan tidak hilang, sedangkan
  * formulir keselamatan dibuka saat dibutuhkan. Validasi tidak diubah:
  * kedatangan wajib dikonfirmasi, semua siswa wajib dicatat, dan pemeriksaan
- * kabin wajib dicentang sebelum perjalanan ditutup.
+ * kabin wajib dicentang sebelum perjalanan ditutup. Tombol final "Akhiri" baru
+ * aktif setelah seluruh syarat itu terpenuhi, dan Server Action tetap
+ * memvalidasi ulang semuanya di server.
  */
 export function TripClosePanel({
   assignmentId,
@@ -37,6 +42,13 @@ export function TripClosePanel({
   unclearStudents: number;
   totalStudents: number;
 }) {
+  // Status checkbox hanya dipakai untuk mengaktifkan tombol final; server tetap
+  // menjadi penentu terakhir lewat endTrip.
+  const [confirmedChecks, setConfirmedChecks] = useState<Record<string, boolean>>({});
+  const [cabinAcknowledged, setCabinAcknowledged] = useState(false);
+  const allChecksConfirmed = SAFETY_CHECKS.every((check) => confirmedChecks[check.name]);
+  const requirementsMet = canEndTrip && allChecksConfirmed && (unclearStudents === 0 || cabinAcknowledged);
+
   const inProgress = trip?.status === "in_progress";
   const completed = trip?.status === "completed";
   const cancelled = trip?.status === "cancelled";
@@ -57,6 +69,20 @@ export function TripClosePanel({
       : inProgress && unclearStudents > 0
         ? `${unclearStudents} siswa perlu diperiksa`
         : null;
+
+  function syncConfirmations(event: FormEvent<HTMLFormElement>) {
+    const form = event.currentTarget;
+    setConfirmedChecks(
+      Object.fromEntries(
+        SAFETY_CHECKS.map((check) => {
+          const field = form.elements.namedItem(check.name);
+          return [check.name, field instanceof HTMLInputElement && field.checked];
+        }),
+      ),
+    );
+    const acknowledgeOpen = form.elements.namedItem("acknowledge_open");
+    setCabinAcknowledged(acknowledgeOpen instanceof HTMLInputElement && acknowledgeOpen.checked);
+  }
 
   return (
     <section className={`panel ops-close ops-close-${trip?.status ?? "scheduled"}`} id="perjalanan-keselamatan">
@@ -115,7 +141,7 @@ export function TripClosePanel({
                 </form>
               )}
 
-              <form className="task-end-form" action={endTrip}>
+              <form className="task-end-form" action={endTrip} onChange={syncConfirmations}>
                 <input type="hidden" name="trip_id" value={trip.id} />
                 <input type="hidden" name="assignment_id" value={assignmentId} />
 
@@ -168,7 +194,7 @@ export function TripClosePanel({
                   className="btn btn-primary btn-lg ops-end-action"
                   message="Selesaikan checklist keselamatan lalu akhiri perjalanan? Status perjalanan akan menjadi selesai dan tidak dapat dimulai ulang."
                   pendingLabel="Mengakhiri…"
-                  disabled={!canEndTrip}
+                  disabled={!requirementsMet}
                 >
                   Akhiri
                 </ConfirmSubmit>

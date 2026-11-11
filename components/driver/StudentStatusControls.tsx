@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useState, type ButtonHTMLAttributes } from "react";
+import { useFormStatus } from "react-dom";
 import { Pill } from "@/components/admin/ui";
 import { Icon } from "@/components/ui/Icon";
 import { recordStudentEventState } from "@/app/pengemudi/actions";
@@ -12,6 +13,44 @@ type StudentEventState = ActionState & {
   notes?: string | null;
 };
 
+const DONE_LABEL = {
+  boarded: "Naik — selesai",
+  dropped_off: "Turun — selesai",
+  absent: "Tidak Ikut — selesai",
+} as const;
+
+type ActionKind = "board" | "drop" | "absent";
+
+type ActionButtonProps = {
+  kind: ActionKind;
+  label: string;
+  doneLabel: string;
+  done: boolean;
+  icon?: "check" | "arrowRight";
+  pending?: boolean;
+} & ButtonHTMLAttributes<HTMLButtonElement>;
+
+/** Tombol tindakan yang sama, dengan penanda selesai tanpa mengubah ukurannya. */
+function ActionButton({ kind, label, doneLabel, done, icon, pending = false, className, ...rest }: ActionButtonProps) {
+  return (
+    <button
+      {...rest}
+      className={`ops-action ${kind}${done ? " is-done" : ""}`}
+      aria-pressed={done}
+      data-done={done ? "true" : undefined}
+    >
+      {done ? <Icon name="check" size={15} /> : icon ? <Icon name={icon} size={15} /> : null}
+      {pending ? "Menyimpan…" : done ? doneLabel : label}
+    </button>
+  );
+}
+
+/** Status pending berasal dari form yang benar-benar sedang dikirim. */
+function SubmitAction(props: ActionButtonProps) {
+  const { pending } = useFormStatus();
+  return <ActionButton {...props} pending={pending} />;
+}
+
 function statusTone(status: string | null) {
   if (status === "boarded") return "success" as const;
   if (status === "dropped_off") return "info" as const;
@@ -21,10 +60,10 @@ function statusTone(status: string | null) {
 }
 
 /**
- * Passenger status controls with an immediate local status, a pending state and
- * an inline error. The server action is still the authority and appends every
- * accepted change to trip_student_events; the optimistic value only mirrors the
- * response for this student and is replaced by the revalidated page afterwards.
+ * Passenger status controls with a per-form pending state, an inline error and
+ * a completed marker on the button that was saved. The server action is still
+ * the authority and appends every accepted change to trip_student_events; the
+ * local status is only set from a successful response or the persisted row.
  */
 export function StudentStatusControls({
   studentId,
@@ -88,49 +127,90 @@ export function StudentStatusControls({
       {actions.canBoard && tripId ? (
         <form action={formAction}>
           {hidden}
-          <button className="ops-action board" type="submit" name="event_type" value="boarded" disabled={pending}>
-            <Icon name="check" size={15} /> Naik
-          </button>
+          <SubmitAction
+            kind="board"
+            label="Naik"
+            doneLabel={DONE_LABEL.boarded}
+            done={status === "boarded"}
+            type="submit"
+            name="event_type"
+            value="boarded"
+            disabled={pending}
+          />
         </form>
       ) : (
-        <button className="ops-action board" type="button" disabled title={actionHint ?? undefined}>
-          <Icon name="check" size={15} /> Naik
-        </button>
+        <ActionButton
+          kind="board"
+          label="Naik"
+          doneLabel={DONE_LABEL.boarded}
+          done={status === "boarded"}
+          type="button"
+          disabled
+          title={actionHint ?? undefined}
+        />
       )}
 
       {actions.canDrop && tripId ? (
         <form action={formAction}>
           {hidden}
-          <button className="ops-action drop" type="submit" name="event_type" value="dropped_off" disabled={pending}>
-            <Icon name="arrowRight" size={15} /> {actions.dropLabel}
-          </button>
+          <SubmitAction
+            kind="drop"
+            label={actions.dropLabel}
+            doneLabel={DONE_LABEL.dropped_off}
+            done={status === "dropped_off"}
+            icon="arrowRight"
+            type="submit"
+            name="event_type"
+            value="dropped_off"
+            disabled={pending}
+          />
         </form>
       ) : (
-        <button className="ops-action drop" type="button" disabled title={actionHint ?? undefined}>
-          <Icon name="arrowRight" size={15} /> {actions.dropLabel}
-        </button>
+        <ActionButton
+          kind="drop"
+          label={actions.dropLabel}
+          doneLabel={DONE_LABEL.dropped_off}
+          done={status === "dropped_off"}
+          icon="arrowRight"
+          type="button"
+          disabled
+          title={actionHint ?? undefined}
+        />
       )}
 
       {actions.canAbsent && tripId ? (
         <details className="ops-absent">
-          <summary>Tidak ikut</summary>
+          <summary>Tidak Ikut</summary>
           <div className="ops-absent-menu">
             {ABSENCE_REASONS.map((reason) => (
               <form action={formAction} key={reason.label}>
                 {hidden}
                 <input type="hidden" name="event_type" value="absent" />
-                <button className="ops-action absent" type="submit" name="notes" value={reason.notes} disabled={pending}>
-                  {reason.label}
-                </button>
+                <SubmitAction
+                  kind="absent"
+                  label={reason.label}
+                  doneLabel={DONE_LABEL.absent}
+                  done={status === "absent"}
+                  type="submit"
+                  name="notes"
+                  value={reason.notes}
+                  disabled={pending}
+                />
               </form>
             ))}
             <small>Dicatat sebagai tidak ikut bus, dengan alasan tersimpan pada catatan.</small>
           </div>
         </details>
       ) : (
-        <button className="ops-action absent" type="button" disabled title={actionHint ?? undefined}>
-          Tidak ikut
-        </button>
+        <ActionButton
+          kind="absent"
+          label="Tidak Ikut"
+          doneLabel={DONE_LABEL.absent}
+          done={status === "absent"}
+          type="button"
+          disabled
+          title={actionHint ?? undefined}
+        />
       )}
 
       {tripStatus === "in_progress" && tripId ? (

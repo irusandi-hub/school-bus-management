@@ -25,8 +25,8 @@
 }
 
 .operator-shell .brand-logo-mark {
-  width: 34px;
-  height: 29px;
+  width: 30px;
+  height: 30px;
 }
 
 .operator-shell .brand-logo-word {
@@ -125,6 +125,18 @@
   gap: 1px;
   flex: 1;
   min-width: 0;
+}
+
+/* Saat sidebar tersembunyi di layar kecil, identitas brand tampil di topbar. */
+.operator-shell .topbar-brand {
+  display: none;
+}
+
+@media (max-width: 960px) {
+  .operator-shell .topbar-brand {
+    display: inline-flex;
+    flex: none;
+  }
 }
 
 .operator-shell .topbar-kicker {
@@ -1657,52 +1669,12 @@
     gap: 9px;
   }
 
-  .operator-shell .topbar .menu-trigger {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    flex: none;
-    min-height: 36px;
-    padding: 0 9px;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    background: #fff;
-    color: #5f5a50;
-    font: 700 10px var(--font-body), "DM Sans", sans-serif;
-  }
-
-  .operator-shell .topbar .menu-trigger svg {
-    width: 16px;
-    height: 16px;
-  }
-
-  .operator-shell .topbar .menu-trigger span {
-    display: none;
-  }
-
   .operator-shell .topbar-kicker {
     font-size: 7.5px;
   }
 
   .operator-shell .topbar-context strong {
     font-size: 11.5px;
-  }
-
-  .operator-shell .account-name {
-    display: none;
-  }
-
-  .operator-shell .account-chip {
-    padding: 3px;
-    border: 0;
-    background: transparent;
-  }
-
-  .operator-shell .account-avatar {
-    width: 28px;
-    height: 28px;
-    font-size: 10px;
   }
 
   .operator-shell .topbar-exit span {
@@ -2241,6 +2213,77 @@
   .driver-app .drive-vehicle span + span:not(.drive-clock)::before {
     display: none;
   }
+}
+
+/* --- Navigasi Operator di layar kecil tanpa hamburger -------------------
+   Sidebar disembunyikan sampai 960px. Navigasi bawah karena itu juga tampil
+   sampai 960px, dan tombol "Menu" membuka seluruh tujuan sidebar. */
+@media (max-width: 960px) {
+  .operator-shell .mobile-nav {
+    display: flex;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 40;
+    padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--line);
+    background: #fffdf8;
+    box-shadow: 0 -8px 24px #1c140014;
+  }
+
+  .operator-shell .mobile-nav > a,
+  .operator-shell .mobile-nav > button {
+    display: grid;
+    flex: 1 1 0;
+    justify-items: center;
+    align-content: center;
+    gap: 3px;
+    min-width: 0;
+    min-height: 52px;
+    padding: 6px 8px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: #7c766a;
+    font: 700 10px 'DM Sans', Arial, sans-serif;
+    text-decoration: none;
+  }
+
+  .operator-shell .mobile-nav svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .operator-shell .mobile-nav > a.is-active,
+  .operator-shell .mobile-nav > button[aria-expanded="true"] {
+    background: var(--brand-bg);
+    color: #7a5100;
+  }
+
+  .operator-shell .mobile-nav > :is(a, button):focus-visible {
+    outline: 3px solid var(--brand);
+    outline-offset: 2px;
+  }
+}
+
+@media (min-width: 961px) {
+  .operator-shell .menu-backdrop,
+  .operator-shell .menu-sheet {
+    display: none;
+  }
+}
+
+.menu-sheet-brand {
+  min-width: 0;
+}
+
+.menu-sheet-title {
+  margin: 0;
+  padding: 0 10px;
+  color: var(--ink);
+  font: 800 15px Manrope, 'DM Sans', sans-serif;
+  letter-spacing: -.01em;
 }
 
 @media (max-width: 360px) {

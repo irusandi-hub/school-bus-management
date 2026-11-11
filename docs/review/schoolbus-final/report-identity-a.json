@@ -1,0 +1,110 @@
+[
+  {
+    "name": "landing",
+    "path": "/",
+    "widths": [
+      {
+        "width": 360,
+        "http": 200,
+        "finalPath": "/",
+        "text": "SchoolBus",
+        "logoVisible": true,
+        "mark": "42x42",
+        "wordW": 98.9,
+        "wordFont": "20px",
+        "wordColor": "rgb(15, 27, 61)",
+        "viewBox": "0 0 48 48",
+        "hamburger": false,
+        "accountAvatar": false,
+        "overflow": false
+      },
+      {
+        "width": 1440,
+        "http": 200,
+        "finalPath": "/",
+        "text": "SchoolBus",
+        "logoVisible": true,
+        "mark": "42x42",
+        "wordW": 130.5,
+        "wordFont": "26px",
+        "wordColor": "rgb(15, 27, 61)",
+        "viewBox": "0 0 48 48",
+        "hamburger": false,
+        "accountAvatar": false,
+        "overflow": false
+      }
+    ]
+  },
+  {
+    "name": "daftar",
+    "path": "/daftar",
+    "widths": [
+      {
+        "width": 360,
+        "http": 200,
+        "finalPath": "/daftar",
+        "text": "SchoolBus",
+        "logoVisible": true,
+        "mark": "36x36",
+        "wordW": 95.9,
+        "wordFont": "19px",
+        "wordColor": "rgb(15, 27, 61)",
+        "viewBox": "0 0 48 48",
+        "hamburger": false,
+        "accountAvatar": false,
+        "overflow": false
+      },
+      {
+        "width": 1440,
+        "http": 200,
+        "finalPath": "/daftar",
+        "text": "SchoolBus",
+        "logoVisible": true,
+        "mark": "36x36",
+        "wordW": 95.9,
+        "wordFont": "19px",
+        "wordColor": "rgb(15, 27, 61)",
+        "viewBox": "0 0 48 48",
+        "hamburger": false,
+        "accountAvatar": false,
+        "overflow": false
+      }
+    ]
+  },
+  {
+    "name": "pilih-peran",
+    "path": "/pilih-peran",
+    "widths": [
+      {
+        "width": 360,
+        "http": 200,
+        "finalPath": "/pilih-peran",
+        "text": "SchoolBus",
+        "logoVisible": true,
+        "mark": "36x36",
+        "wordW": 95.9,
+        "wordFont": "19px",
+        "wordColor": "rgb(15, 27, 61)",
+        "viewBox": "0 0 48 48",
+        "hamburger": false,
+        "accountAvatar": false,
+        "overflow": false
+      },
+      {
+        "width": 1440,
+        "http": 200,
+        "finalPath": "/pilih-peran",
+        "text": "SchoolBus",
+        "logoVisible": true,
+        "mark": "36x36",
+        "wordW": 95.9,
+        "wordFont": "19px",
+        "wordColor": "rgb(15, 27, 61)",
+        "viewBox": "0 0 48 48",
+        "hamburger": false,
+        "accountAvatar": false,
+        "overflow": false
+      }
+    ]
+  }
+]

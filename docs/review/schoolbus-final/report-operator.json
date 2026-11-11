@@ -1,0 +1,663 @@
+[
+  {
+    "width": 360,
+    "before": {
+      "nav": {
+        "x": 0,
+        "y": 835,
+        "w": 360,
+        "h": 65,
+        "display": "flex"
+      },
+      "navItems": [
+        "/operator",
+        "/admin/siswa",
+        "/admin/penugasan",
+        "/admin/perjalanan"
+      ],
+      "menuButton": true,
+      "sidebar": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none"
+      },
+      "sidebarLinks": [
+        "/operator",
+        "/admin/sekolah",
+        "/admin/area",
+        "/admin/siswa",
+        "/admin/wali",
+        "/admin/bus",
+        "/admin/pengemudi",
+        "/admin/rute",
+        "/admin/penugasan",
+        "/admin/perjalanan",
+        "/admin/laporan"
+      ],
+      "hamburger": false,
+      "accountAvatar": false,
+      "logout": {
+        "x": 317,
+        "y": 7.5,
+        "w": 34,
+        "h": 34,
+        "display": "inline-flex"
+      },
+      "brand": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex"
+      },
+      "topbarBrand": {
+        "x": 9,
+        "y": 9.5,
+        "w": 117.4,
+        "h": 30,
+        "display": "flex"
+      },
+      "horizontalOverflow": false
+    },
+    "after": {
+      "sheet": {
+        "x": -12.109999656677246,
+        "y": 0,
+        "w": 309.59375,
+        "h": 900
+      },
+      "dialog": "dialog/true",
+      "links": [
+        {
+          "href": "/operator",
+          "label": "Ringkasan",
+          "y": 135.7
+        },
+        {
+          "href": "/admin/sekolah",
+          "label": "Sekolah",
+          "y": 179.7
+        },
+        {
+          "href": "/admin/area",
+          "label": "Project Area",
+          "y": 223.7
+        },
+        {
+          "href": "/admin/siswa",
+          "label": "Data siswa",
+          "y": 267.7
+        },
+        {
+          "href": "/admin/wali",
+          "label": "Akun wali",
+          "y": 311.7
+        },
+        {
+          "href": "/admin/bus",
+          "label": "Bus",
+          "y": 355.7
+        },
+        {
+          "href": "/admin/pengemudi",
+          "label": "Pengemudi",
+          "y": 399.7
+        },
+        {
+          "href": "/admin/rute",
+          "label": "Rute & titik jemput",
+          "y": 479.4
+        },
+        {
+          "href": "/admin/penugasan",
+          "label": "Penugasan",
+          "y": 523.4
+        },
+        {
+          "href": "/admin/perjalanan",
+          "label": "Perjalanan",
+          "y": 567.4
+        },
+        {
+          "href": "/admin/laporan",
+          "label": "Laporan & audit",
+          "y": 611.4
+        }
+      ],
+      "closeFocused": "Tutup menu",
+      "bodyOverflow": "hidden",
+      "overflow": false,
+      "clickedPath": "/admin/sekolah",
+      "clickedTitle": "Sekolah | Operator"
+    }
+  },
+  {
+    "width": 390,
+    "before": {
+      "nav": {
+        "x": 0,
+        "y": 835,
+        "w": 390,
+        "h": 65,
+        "display": "flex"
+      },
+      "navItems": [
+        "/operator",
+        "/admin/siswa",
+        "/admin/penugasan",
+        "/admin/perjalanan"
+      ],
+      "menuButton": true,
+      "sidebar": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none"
+      },
+      "sidebarLinks": [
+        "/operator",
+        "/admin/sekolah",
+        "/admin/area",
+        "/admin/siswa",
+        "/admin/wali",
+        "/admin/bus",
+        "/admin/pengemudi",
+        "/admin/rute",
+        "/admin/penugasan",
+        "/admin/perjalanan",
+        "/admin/laporan"
+      ],
+      "hamburger": false,
+      "accountAvatar": false,
+      "logout": {
+        "x": 347,
+        "y": 7.5,
+        "w": 34,
+        "h": 34,
+        "display": "inline-flex"
+      },
+      "brand": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex"
+      },
+      "topbarBrand": {
+        "x": 9,
+        "y": 9.5,
+        "w": 117.4,
+        "h": 30,
+        "display": "flex"
+      },
+      "horizontalOverflow": false
+    },
+    "after": {
+      "sheet": {
+        "x": -12.109563827514648,
+        "y": 0,
+        "w": 326,
+        "h": 900
+      },
+      "dialog": "dialog/true",
+      "links": [
+        {
+          "href": "/operator",
+          "label": "Ringkasan",
+          "y": 135.7
+        },
+        {
+          "href": "/admin/sekolah",
+          "label": "Sekolah",
+          "y": 179.7
+        },
+        {
+          "href": "/admin/area",
+          "label": "Project Area",
+          "y": 223.7
+        },
+        {
+          "href": "/admin/siswa",
+          "label": "Data siswa",
+          "y": 267.7
+        },
+        {
+          "href": "/admin/wali",
+          "label": "Akun wali",
+          "y": 311.7
+        },
+        {
+          "href": "/admin/bus",
+          "label": "Bus",
+          "y": 355.7
+        },
+        {
+          "href": "/admin/pengemudi",
+          "label": "Pengemudi",
+          "y": 399.7
+        },
+        {
+          "href": "/admin/rute",
+          "label": "Rute & titik jemput",
+          "y": 479.4
+        },
+        {
+          "href": "/admin/penugasan",
+          "label": "Penugasan",
+          "y": 523.4
+        },
+        {
+          "href": "/admin/perjalanan",
+          "label": "Perjalanan",
+          "y": 567.4
+        },
+        {
+          "href": "/admin/laporan",
+          "label": "Laporan & audit",
+          "y": 611.4
+        }
+      ],
+      "closeFocused": "Tutup menu",
+      "bodyOverflow": "hidden",
+      "overflow": false,
+      "closedByEscape": true
+    }
+  },
+  {
+    "width": 430,
+    "before": {
+      "nav": {
+        "x": 0,
+        "y": 835,
+        "w": 430,
+        "h": 65,
+        "display": "flex"
+      },
+      "navItems": [
+        "/operator",
+        "/admin/siswa",
+        "/admin/penugasan",
+        "/admin/perjalanan"
+      ],
+      "menuButton": true,
+      "sidebar": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none"
+      },
+      "sidebarLinks": [
+        "/operator",
+        "/admin/sekolah",
+        "/admin/area",
+        "/admin/siswa",
+        "/admin/wali",
+        "/admin/bus",
+        "/admin/pengemudi",
+        "/admin/rute",
+        "/admin/penugasan",
+        "/admin/perjalanan",
+        "/admin/laporan"
+      ],
+      "hamburger": false,
+      "accountAvatar": false,
+      "logout": {
+        "x": 387,
+        "y": 7.5,
+        "w": 34,
+        "h": 34,
+        "display": "inline-flex"
+      },
+      "brand": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex"
+      },
+      "topbarBrand": {
+        "x": 9,
+        "y": 9.5,
+        "w": 117.4,
+        "h": 30,
+        "display": "flex"
+      },
+      "horizontalOverflow": false
+    },
+    "after": {
+      "sheet": {
+        "x": -14,
+        "y": 0,
+        "w": 326,
+        "h": 900
+      },
+      "dialog": "dialog/true",
+      "links": [
+        {
+          "href": "/operator",
+          "label": "Ringkasan",
+          "y": 135.7
+        },
+        {
+          "href": "/admin/sekolah",
+          "label": "Sekolah",
+          "y": 179.7
+        },
+        {
+          "href": "/admin/area",
+          "label": "Project Area",
+          "y": 223.7
+        },
+        {
+          "href": "/admin/siswa",
+          "label": "Data siswa",
+          "y": 267.7
+        },
+        {
+          "href": "/admin/wali",
+          "label": "Akun wali",
+          "y": 311.7
+        },
+        {
+          "href": "/admin/bus",
+          "label": "Bus",
+          "y": 355.7
+        },
+        {
+          "href": "/admin/pengemudi",
+          "label": "Pengemudi",
+          "y": 399.7
+        },
+        {
+          "href": "/admin/rute",
+          "label": "Rute & titik jemput",
+          "y": 479.4
+        },
+        {
+          "href": "/admin/penugasan",
+          "label": "Penugasan",
+          "y": 523.4
+        },
+        {
+          "href": "/admin/perjalanan",
+          "label": "Perjalanan",
+          "y": 567.4
+        },
+        {
+          "href": "/admin/laporan",
+          "label": "Laporan & audit",
+          "y": 611.4
+        }
+      ],
+      "closeFocused": "Tutup menu",
+      "bodyOverflow": "hidden",
+      "overflow": false,
+      "closedByEscape": true
+    }
+  },
+  {
+    "width": 768,
+    "before": {
+      "nav": {
+        "x": 0,
+        "y": 835,
+        "w": 768,
+        "h": 65,
+        "display": "flex"
+      },
+      "navItems": [
+        "/operator",
+        "/admin/siswa",
+        "/admin/penugasan",
+        "/admin/perjalanan"
+      ],
+      "menuButton": true,
+      "sidebar": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none"
+      },
+      "sidebarLinks": [
+        "/operator",
+        "/admin/sekolah",
+        "/admin/area",
+        "/admin/siswa",
+        "/admin/wali",
+        "/admin/bus",
+        "/admin/pengemudi",
+        "/admin/rute",
+        "/admin/penugasan",
+        "/admin/perjalanan",
+        "/admin/laporan"
+      ],
+      "hamburger": false,
+      "accountAvatar": false,
+      "logout": {
+        "x": 718,
+        "y": 8.5,
+        "w": 34,
+        "h": 34,
+        "display": "inline-flex"
+      },
+      "brand": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "inline-flex"
+      },
+      "topbarBrand": {
+        "x": 16,
+        "y": 10.5,
+        "w": 117.4,
+        "h": 30,
+        "display": "flex"
+      },
+      "horizontalOverflow": false
+    },
+    "after": {
+      "sheet": {
+        "x": -12.11272144317627,
+        "y": 0,
+        "w": 326,
+        "h": 900
+      },
+      "dialog": "dialog/true",
+      "links": [
+        {
+          "href": "/operator",
+          "label": "Ringkasan",
+          "y": 135.7
+        },
+        {
+          "href": "/admin/sekolah",
+          "label": "Sekolah",
+          "y": 179.7
+        },
+        {
+          "href": "/admin/area",
+          "label": "Project Area",
+          "y": 223.7
+        },
+        {
+          "href": "/admin/siswa",
+          "label": "Data siswa",
+          "y": 267.7
+        },
+        {
+          "href": "/admin/wali",
+          "label": "Akun wali",
+          "y": 311.7
+        },
+        {
+          "href": "/admin/bus",
+          "label": "Bus",
+          "y": 355.7
+        },
+        {
+          "href": "/admin/pengemudi",
+          "label": "Pengemudi",
+          "y": 399.7
+        },
+        {
+          "href": "/admin/rute",
+          "label": "Rute & titik jemput",
+          "y": 479.4
+        },
+        {
+          "href": "/admin/penugasan",
+          "label": "Penugasan",
+          "y": 523.4
+        },
+        {
+          "href": "/admin/perjalanan",
+          "label": "Perjalanan",
+          "y": 567.4
+        },
+        {
+          "href": "/admin/laporan",
+          "label": "Laporan & audit",
+          "y": 611.4
+        }
+      ],
+      "closeFocused": "Tutup menu",
+      "bodyOverflow": "hidden",
+      "overflow": false,
+      "closedByEscape": true
+    }
+  },
+  {
+    "width": 1024,
+    "before": {
+      "nav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none"
+      },
+      "navItems": [
+        "/operator",
+        "/admin/siswa",
+        "/admin/penugasan",
+        "/admin/perjalanan"
+      ],
+      "menuButton": true,
+      "sidebar": {
+        "x": 0,
+        "y": 0,
+        "w": 232,
+        "h": 900,
+        "display": "flex"
+      },
+      "sidebarLinks": [
+        "/operator",
+        "/admin/sekolah",
+        "/admin/area",
+        "/admin/siswa",
+        "/admin/wali",
+        "/admin/bus",
+        "/admin/pengemudi",
+        "/admin/rute",
+        "/admin/penugasan",
+        "/admin/perjalanan",
+        "/admin/laporan"
+      ],
+      "hamburger": false,
+      "accountAvatar": false,
+      "logout": {
+        "x": 925.5,
+        "y": 11.8,
+        "w": 72.5,
+        "h": 29,
+        "display": "inline-flex"
+      },
+      "brand": {
+        "x": 11,
+        "y": 15,
+        "w": 209,
+        "h": 30,
+        "display": "flex"
+      },
+      "topbarBrand": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none"
+      },
+      "horizontalOverflow": false
+    },
+    "after": null
+  },
+  {
+    "width": 1440,
+    "before": {
+      "nav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none"
+      },
+      "navItems": [
+        "/operator",
+        "/admin/siswa",
+        "/admin/penugasan",
+        "/admin/perjalanan"
+      ],
+      "menuButton": true,
+      "sidebar": {
+        "x": 0,
+        "y": 0,
+        "w": 232,
+        "h": 900,
+        "display": "flex"
+      },
+      "sidebarLinks": [
+        "/operator",
+        "/admin/sekolah",
+        "/admin/area",
+        "/admin/siswa",
+        "/admin/wali",
+        "/admin/bus",
+        "/admin/pengemudi",
+        "/admin/rute",
+        "/admin/penugasan",
+        "/admin/perjalanan",
+        "/admin/laporan"
+      ],
+      "hamburger": false,
+      "accountAvatar": false,
+      "logout": {
+        "x": 1341.5,
+        "y": 11.8,
+        "w": 72.5,
+        "h": 29,
+        "display": "inline-flex"
+      },
+      "brand": {
+        "x": 11,
+        "y": 15,
+        "w": 209,
+        "h": 30,
+        "display": "flex"
+      },
+      "topbarBrand": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none"
+      },
+      "horizontalOverflow": false
+    },
+    "after": null
+  }
+]

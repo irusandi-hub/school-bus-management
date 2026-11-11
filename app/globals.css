@@ -2526,18 +2526,18 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
 /* ==========================================================================
    Logo bersama — dipakai header landing dan seluruh area pengguna
    ========================================================================== */
-.brand-logo{display:inline-flex;align-items:center;gap:10px;min-width:0;color:#101b3b;text-decoration:none}
-.brand-logo-mark{display:grid;place-items:center;flex:none;width:42px;height:36px;color:var(--brand)}
-.brand-logo-mark svg{width:100%;height:100%}
+.brand-logo{display:inline-flex;align-items:center;gap:10px;min-width:0;color:#0F1B3D;text-decoration:none}
+.brand-logo-mark{display:grid;place-items:center;flex:none;width:36px;height:36px;color:#0F1B3D}
+.brand-logo-mark svg{display:block;width:100%;height:100%}
 .brand-logo-text{display:grid;gap:3px;min-width:0}
-.brand-logo-word{color:#101b3b;font:800 19px Manrope,'DM Sans',Arial,sans-serif;letter-spacing:-.8px;line-height:1}
-.brand-logo-word span{color:#efb707}
+.brand-logo-word{color:#0F1B3D;font:800 19px Manrope,'DM Sans',Arial,sans-serif;letter-spacing:-.45px;line-height:1}
+.brand-logo-word span{color:#0F1B3D}
 .brand-logo-sub{color:var(--muted);font-size:10.5px;line-height:1.2}
-.brand-logo-lg .brand-logo-mark{width:44px;height:38px}
-.brand-logo-lg .brand-logo-word{font-size:clamp(20px,2.4vw,26px)}
+.brand-logo-lg .brand-logo-mark{width:42px;height:42px}
+.brand-logo-lg .brand-logo-word{font-size:clamp(20px,2.4vw,26px);letter-spacing:-.7px}
 .brand-logo-sm{gap:9px}
-.brand-logo-sm .brand-logo-mark{width:38px;height:33px}
-.brand-logo-sm .brand-logo-word{font-size:17px;letter-spacing:-.5px}
+.brand-logo-sm .brand-logo-mark{width:32px;height:32px}
+.brand-logo-sm .brand-logo-word{font-size:17px;letter-spacing:-.35px}
 .auth-logo{margin-bottom:24px}
 
 /* Header operator: identitas dan aksi tetap terpisah pada layar sempit. */
@@ -2652,9 +2652,15 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
 .ops-student-actions button:disabled{cursor:not-allowed}
 .ops-student-actions[aria-busy="true"] .ops-action{opacity:.65}
 
+/* Indikator tindakan siswa tersimpan; hanya warna, ikon, dan label yang berubah.
+   Discope ke halaman Pengemudi karena globals.css dimuat di seluruh aplikasi. */
+.driver-app .ops-workspace .ops-action.is-done,
+.driver-app .ops-workspace .ops-action.is-done:disabled{border-color:#176B55;background:#E7F4EE;color:#14513E;box-shadow:inset 0 0 0 1px #176B55;opacity:1;white-space:normal;overflow-wrap:anywhere}
+.driver-app .ops-workspace .ops-action.is-done svg{stroke-width:2.6}
+
 /* Trip start/end actions: large, wrapping, never clipped at narrow widths */
 .ops-start-action,.ops-end-action{width:100%;max-width:100%;min-width:0;white-space:normal;overflow-wrap:anywhere;line-height:1.3;box-sizing:border-box}
-.ops-start-action{min-height:52px;font-size:14px;padding:12px 16px;border-radius:10px}
+.ops-start-action{min-height:52px;min-width:167px;font-size:14px;padding:12px 16px;border-radius:10px}
 .ops-end-action{min-height:56px;font-size:14px;padding:12px 16px;border-radius:10px;text-align:center}
 .task-end-form{min-width:0}
 .task-action-row{flex-wrap:wrap}
@@ -2665,12 +2671,12 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
   .area-tabs{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;scrollbar-width:thin}
   .area-tabs .area-tab{flex:0 0 auto}
   .area-tabs-copy small{font-size:10.5px}
-  .ops-start-action{min-height:50px;font-size:13px}
+  .ops-start-action{min-height:50px;min-width:158px;font-size:13px}
   .ops-end-action{min-height:54px;font-size:13px;padding:11px 12px}
 }
 
 @media(max-width:400px){
   .area-tab{padding:0 10px;font-size:10px}
-  .ops-start-action{font-size:12.5px;padding:10px 12px}
+  .ops-start-action{min-width:146px;font-size:12.5px;padding:10px 12px}
   .ops-end-action{font-size:12px;padding:10px 10px}
 }

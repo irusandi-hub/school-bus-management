@@ -222,7 +222,7 @@ psql -v ON_ERROR_STOP=1 -d schoolbus_dev -f supabase/tests/migration_checks.sql
 
 Hasil validasi terakhir (10 November 2026, head branch PR #30):
 
-- `npm test`: **197 tes lulus**, 0 gagal (48 suite), termasuk isolasi Project Area, status penumpang, alur sesi/checklist, siklus GPS, kontrak tombol responsif, dan konsistensi layout Pengelola.
+- `npm test`: **203 tes lulus**, 0 gagal (49 suite), termasuk isolasi Project Area, status penumpang, indikator tombol selesai, alur sesi/checklist, siklus GPS, kontrak tombol responsif, lebar tombol perjalanan, dan konsistensi layout Pengelola.
 - `npm run typecheck`: lulus tanpa galat.
 - `npm run test:operator:sql`, `test:camera:sql`, `test:location:sql`: **ketiga suite lulus** pada PGlite, termasuk seluruh migrasi dan fixture RLS.
 - `npm run build`: **production build lulus** (Next.js 15).

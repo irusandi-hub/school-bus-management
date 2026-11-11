@@ -18,6 +18,7 @@ const paths: Record<string, string[]> = {
   report: ["M6 3.5h8l4 4v13H6v-17Z", "M14 3.5v4h4", "M9 12h6M9 16h4"],
   search: ["M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14Z", "m16 16 4 4"],
   menu: ["M4 7h16M4 12h16M4 17h16"],
+  apps: ["M4 4h6v6H4z", "M14 4h6v6h-6z", "M4 14h6v6H4z", "M14 14h6v6h-6z"],
   close: ["m6 6 12 12M18 6 6 18"],
   logout: ["M15 4h3.5A1.5 1.5 0 0 1 20 5.5v13A1.5 1.5 0 0 1 18.5 20H15", "M10 8l-4 4 4 4", "M6 12h9"],
   chevronRight: ["m9.5 6 6 6-6 6"],

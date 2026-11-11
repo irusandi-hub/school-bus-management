@@ -12,7 +12,7 @@ import { Icon } from "@/components/ui/Icon";
 export function OpenSafetyCheckLink() {
   return (
     <a
-      className="btn ops-primary-action"
+      className="btn ops-primary-action ops-start-action"
       href="#perjalanan-keselamatan"
       onClick={() => {
         const details = document.querySelector<HTMLDetailsElement>(

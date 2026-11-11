@@ -1,0 +1,7 @@
+{
+  "tindakan": "Turun di sekolah (setelah tiba dikonfirmasi)",
+  "metode": "Form yang sama dengan tombol UI dikirim tanpa JavaScript ke route /pengemudi (multipart, action ID halaman), lalu HTML hasil render diperiksa.",
+  "sebelum": { "status_siswa": "Sudah naik", "label_tombol": "Turun di sekolah", "aktif": true, "error": null },
+  "sesudah": { "status_siswa": "Sudah turun", "label_selesai": "Turun — selesai", "error": null },
+  "catatan": "Klik tombol versi browser sudah mengaktifkan tombol setelah kedatangan; verifikasi status akhir dilakukan lewat form yang sama karena browser headless tidak lagi tersedia di sandbox."
+}
