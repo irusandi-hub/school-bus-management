@@ -12,6 +12,7 @@ import { cameraDemoEnabled } from "@/lib/camera/demo-policy";
 import { compareStudentsByRouteOrder } from "@/lib/driver/student-order";
 import { deploymentKind } from "@/lib/dev-open-access";
 import { OpenSafetyCheckLink } from "@/components/driver/OpenSafetyCheckLink";
+import { isCompletedAssignment, selectDriverAssignment } from "@/lib/driver/assignment-selection";
 import { StudentList, type StudentListRow } from "@/components/driver/StudentList";
 import { TripClosePanel } from "@/components/driver/TripClosePanel";
 import { Icon } from "@/components/ui/Icon";
@@ -92,15 +93,10 @@ export default async function DriverOperationsPage({
   const notice = noticeFromParams(query);
   const requestedId = firstParam(query.tugas);
 
-  // Satu tugas aktif dipilih; tugas lain tetap terjangkau lewat pemilih ringkas.
-  const activeAssignment = assignments.find((assignment) => assignment.trips?.[0]?.status === "in_progress");
-  const scheduledAssignment = assignments.find((assignment) => assignment.trips?.[0]?.status === "scheduled");
-  const selected =
-    assignments.find((assignment) => assignment.id === requestedId) ??
-    activeAssignment ??
-    scheduledAssignment ??
-    assignments[0] ??
-    null;
+  // Tugas selesai tidak pernah dipilih lagi; datanya tetap ada di riwayat.
+  const completedToday = assignments.some(isCompletedAssignment);
+  const selectableAssignments = assignments.filter((assignment) => !isCompletedAssignment(assignment));
+  const selected = selectDriverAssignment(assignments, requestedId);
 
   if (!selected) {
     return (
@@ -116,15 +112,22 @@ export default async function DriverOperationsPage({
             </div>
           </div>
           <p className="ops-empty-copy">
-            Tidak ada penugasan untuk {formatDate(date)}. Hubungi operator bila Anda seharusnya bertugas.
+            {completedToday
+              ? `Perjalanan untuk ${formatDate(date)} sudah selesai. Riwayat tetap tersimpan dan tidak ada perjalanan baru yang dibuat otomatis.`
+              : `Tidak ada penugasan untuk ${formatDate(date)}. Hubungi operator bila Anda seharusnya bertugas.`}
           </p>
         </section>
+        {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
         {error && <Notice kind="error">Tugas hari ini belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
         <section className="panel">
           <EmptyState
-            icon="inbox"
-            title="Belum ada tugas hari ini"
-            detail="Tugas dibuat oleh Operator Utama. Tidak ada jadwal contoh yang ditampilkan."
+            icon={completedToday ? "check" : "inbox"}
+            title={completedToday ? "Perjalanan hari ini selesai" : "Belum ada tugas hari ini"}
+            detail={
+              completedToday
+                ? "Tidak ada perjalanan aktif. Catatan kehadiran dan pemeriksaan keselamatan tersimpan di riwayat."
+                : "Tugas dibuat oleh Operator Utama. Tidak ada jadwal contoh yang ditampilkan."
+            }
           />
         </section>
         <p className="ops-foot-link">
@@ -293,10 +296,10 @@ export default async function DriverOperationsPage({
 
   return (
     <div className="driver-ops">
-      {assignments.length > 1 && (
+      {selectableAssignments.length > 1 && (
         <nav className="ops-switch" aria-label="Pilih tugas hari ini">
           <span>Pilih tugas</span>
-          {assignments.map((assignment) => {
+          {selectableAssignments.map((assignment) => {
             const assignmentTrip = assignment.trips?.[0];
             return (
               <Link

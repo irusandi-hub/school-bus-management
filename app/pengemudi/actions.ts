@@ -244,7 +244,8 @@ export async function endTrip(formData: FormData) {
   revalidatePath("/pengemudi");
   revalidatePath("/pengemudi/riwayat");
   revalidatePath("/admin/perjalanan");
-  backTo(target, "Perjalanan selesai. Riwayat tersimpan dan tidak dapat dihapus.");
+  // Kembali ke halaman Pengemudi tanpa memilih tugas yang baru saja selesai.
+  backTo("/pengemudi", "Perjalanan selesai. Riwayat tersimpan dan tidak dapat dihapus.");
 }
 
 const eventTypes = ["boarded", "dropped_off", "absent", "issue"];
