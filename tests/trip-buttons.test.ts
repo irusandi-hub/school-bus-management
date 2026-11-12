@@ -46,6 +46,14 @@ describe("tombol perjalanan pengemudi", () => {
     assert.doesNotMatch(panel, /Akhiri Perjalanan\s*</);
   });
 
+  it("konfirmasi semua penumpang turun divalidasi di server sebelum waktu tiba dicatat", () => {
+    const actions = fs.readFileSync("app/pengemudi/actions.ts", "utf8");
+    const confirmBlock = actions.slice(actions.indexOf("export async function confirmArrival"), actions.indexOf("function readConfirmation"));
+    assert.match(confirmBlock, /studentsStillOnBus/);
+    assert.match(confirmBlock, /stillOnBus\.length > 0/);
+    assert.match(confirmBlock, /Semua penumpang sudah turun/);
+  });
+
   it("riwayat ditampilkan sebagai tab pada dashboard, bukan halaman terpisah", () => {
     const page = fs.readFileSync("app/pengemudi/page.tsx", "utf8");
     const oldHistoryRoute = fs.readFileSync("app/pengemudi/riwayat/page.tsx", "utf8");
