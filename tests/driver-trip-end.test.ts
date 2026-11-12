@@ -43,7 +43,7 @@ describe("aturan mengakhiri perjalanan", () => {
   });
 
   it("menolak bila pemeriksaan keselamatan belum lengkap", () => {
-    const result = evaluateTripEnd({ ...base, confirmations: { ...allConfirmed, safety_headcount_ok: false } });
+    const result = evaluateTripEnd({ ...base, confirmations: { ...allConfirmed, safety_cabin_clear: false } });
     assert.equal(result.ok, false);
     assert.match(result.problems[0], /Pemeriksaan keselamatan belum lengkap/);
     assert.match(result.problems[0], /Kabin sudah diperiksa/);
@@ -62,7 +62,6 @@ describe("aturan mengakhiri perjalanan", () => {
       confirmations: { ...allConfirmed, safety_belongings_secured: false },
     });
     assert.equal(belongingsNotAcknowledged.ok, true);
-  });
   });
 
   it("menerima perjalanan yang lengkap dan menyimpan catatan", () => {
