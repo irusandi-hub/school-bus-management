@@ -41,7 +41,7 @@ describe("tindakan siswa sesuai tahap perjalanan", () => {
     const afterArrival = studentActionSet({ direction: "morning", status: "boarded", tripStatus: "in_progress", arrived: true });
     assert.equal(afterArrival.canDrop, true);
     assert.equal(afterArrival.canBoard, false);
-    assert.equal(afterArrival.canAbsent, true);
+    assert.equal(afterArrival.canAbsent, false);
     assert.equal(afterArrival.dropLabel, "Turun di sekolah");
   });
 
