@@ -43,7 +43,7 @@ export function unrecordedStudents(rosterStudentIds: string[], recordedStudentId
   return rosterStudentIds.filter((id) => !recorded.has(id));
 }
 
-/** Events harus diurutkan terbaru lebih dahulu; siswa tanpa status atau masih "boarded" belum aman. */
+/** Events harus terbaru lebih dahulu; hanya status turun/tidak ikut yang membuktikan siswa tidak di bus. */
 export function studentsStillOnBus(
   rosterStudentIds: string[],
   latestFirstEvents: { student_id: string; event_type: string }[],
@@ -52,7 +52,7 @@ export function studentsStillOnBus(
   for (const event of latestFirstEvents) {
     if (!latest.has(event.student_id)) latest.set(event.student_id, event.event_type);
   }
-  return rosterStudentIds.filter((id) => !latest.has(id) || latest.get(id) === "boarded");
+  return rosterStudentIds.filter((id) => !["dropped_off", "absent"].includes(latest.get(id) ?? ""));
 }
 
 export function evaluateTripEnd(input: TripEndInput): TripEndResult {
