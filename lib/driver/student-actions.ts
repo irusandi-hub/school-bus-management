@@ -60,7 +60,7 @@ export function studentActionSet(input: StudentActionInput): StudentActionSet {
 
   if (input.status === "boarded") {
     if (afternoon) {
-      return { canBoard: false, canDrop: true, canAbsent: false, dropLabel, hint: null };
+      return { canBoard: false, canDrop: true, canAbsent: true, dropLabel, hint: null };
     }
     if (input.arrived) {
       return { canBoard: false, canDrop: true, canAbsent: false, dropLabel, hint: null };
@@ -68,9 +68,9 @@ export function studentActionSet(input: StudentActionInput): StudentActionSet {
     return {
       canBoard: false,
       canDrop: false,
-      canAbsent: false,
+      canAbsent: true,
       dropLabel,
-      hint: "Siswa berada di bus. Catat turun setelah tiba di sekolah.",
+      hint: "Siswa sudah naik. Jika orang tua membatalkan sebelum tiba, catat Tidak Ikut untuk membatalkan keikutsertaan.",
     };
   }
 
