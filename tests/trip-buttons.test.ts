@@ -15,7 +15,7 @@ describe("tombol perjalanan pengemudi", () => {
     assert.match(header, /className="ops-head"/);
     assert.doesNotMatch(header, /drive-hero|drive-hero-main|drive-main-action/);
     assert.match(link, /Akhiri Perjalanan/);
-    // Tombol utama memakai kelas dan ukuran yang sama saat status berubah.
+    assert.match(link, /schoolbus:open-trip-safety/);
     assert.match(page, /className="btn ops-primary-action ops-start-action"/);
     assert.match(link, /className="btn ops-primary-action ops-start-action"/);
     assert.doesNotMatch(link, /Periksa keselamatan|Akhiri Perjalanan dan Periksa/);
@@ -23,13 +23,12 @@ describe("tombol perjalanan pengemudi", () => {
 
   it("memakai satu lebar tombol untuk Mulai dan Akhiri di setiap breakpoint", () => {
     const globals = fs.readFileSync("app/globals.css", "utf8");
-
     assert.match(globals, /\.ops-start-action\{min-height:52px;min-width:167px/);
     assert.match(globals, /\.ops-start-action\{min-height:50px;min-width:158px/);
     assert.match(globals, /\.ops-start-action\{min-width:146px;font-size:12\.5px/);
   });
 
-  it("mempertahankan checklist keselamatan wajib dan tombol final Akhiri yang terkunci", () => {
+  it("menampilkan checklist keselamatan dalam overlay dan mempertahankan validasi tombol final", () => {
     const panel = fs.readFileSync("components/driver/TripClosePanel.tsx", "utf8");
     assert.match(panel, /^"use client";/);
     assert.match(panel, /SAFETY_CHECKS\.map/);
@@ -42,12 +41,16 @@ describe("tombol perjalanan pengemudi", () => {
     assert.match(panel, /Semua penumpang sudah turun/);
     assert.match(panel, /disabled={Boolean\(trip\.arrived_at\)}/);
     assert.match(panel, /kecuali yang berstatus Tidak Ikut/);
+    assert.match(panel, /role="dialog"/);
+    assert.match(panel, /aria-modal="true"/);
+    assert.match(panel, /schoolbus:open-trip-safety/);
+    assert.match(panel, /aria-label="Tutup pemeriksaan"/);
+    assert.match(panel, /event\.key === "Escape"/);
     assert.doesNotMatch(panel, /arrivalReady/);
     assert.ok(panel.indexOf("if (!trip.arrived_at)") < panel.indexOf("else if (unrecordedNames.length > 0)"));
     assert.match(panel, /Belum bisa diakhiri:/);
     assert.doesNotMatch(panel, /Konfirmasi tiba di sekolah/);
     assert.doesNotMatch(panel, /Catatan pemeriksaan/);
-    assert.doesNotMatch(panel, /Akhiri Perjalanan\s*</);
   });
 
   it("konfirmasi semua penumpang turun divalidasi di server sebelum waktu tiba dicatat", () => {
