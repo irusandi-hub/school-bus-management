@@ -46,8 +46,23 @@ describe("aturan mengakhiri perjalanan", () => {
     const result = evaluateTripEnd({ ...base, confirmations: { ...allConfirmed, safety_headcount_ok: false } });
     assert.equal(result.ok, false);
     assert.match(result.problems[0], /Pemeriksaan keselamatan belum lengkap/);
-    assert.match(result.problems[0], /Jumlah siswa di bus/);
-    assert.doesNotMatch(result.problems[0], /Kondisi bus/);
+    assert.match(result.problems[0], /Kabin sudah diperiksa/);
+  });
+
+  it("mewajibkan konfirmasi kabin kosong dan tidak mewajibkan konfirmasi barang tertinggal", () => {
+    const uncheckedCabin = evaluateTripEnd({
+      ...base,
+      confirmations: { ...allConfirmed, safety_cabin_clear: false },
+    });
+    assert.equal(uncheckedCabin.ok, false);
+    assert.match(uncheckedCabin.problems[0], /Kabin sudah diperiksa/);
+
+    const belongingsNotAcknowledged = evaluateTripEnd({
+      ...base,
+      confirmations: { ...allConfirmed, safety_belongings_secured: false },
+    });
+    assert.equal(belongingsNotAcknowledged.ok, true);
+  });
   });
 
   it("menerima perjalanan yang lengkap dan menyimpan catatan", () => {
