@@ -2680,3 +2680,22 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
   .ops-start-action{min-width:146px;font-size:12.5px;padding:10px 12px}
   .ops-end-action{font-size:12px;padding:10px 10px}
 }
+
+
+/* Driver close board: compact checklist with one concise blocking reason. */
+.ops-close-compact{display:grid;gap:9px;padding:10px 12px;margin:0 0 8px}
+.ops-passengers-down{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ops-passengers-down .btn{min-height:38px;padding:7px 12px;font-size:11px}
+.ops-passengers-down small{font-size:10px;color:var(--ok);font-weight:700}
+.ops-end-compact{display:grid;gap:9px;margin:0;padding:0;border:0}
+.ops-end-compact .safety-checks{gap:7px}
+.ops-end-compact .safety-checks legend{font-size:10px;margin-bottom:1px}
+.ops-end-compact .safety-check{gap:8px;font-size:11px;line-height:1.45}
+.ops-end-compact .safety-check input{width:15px;height:15px;margin-top:1px}
+.ops-end-compact .safety-blocked{font-size:10px;line-height:1.4;padding:7px 9px}
+.ops-end-compact .ops-end-action{min-height:40px;padding:8px 14px;font-size:12px}
+@media(max-width:430px){
+  .ops-close-compact{padding:9px;gap:8px}
+  .ops-passengers-down .btn{width:100%;justify-content:center}
+  .ops-end-compact .safety-check{font-size:10.5px}
+}
