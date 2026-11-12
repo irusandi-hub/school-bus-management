@@ -450,7 +450,6 @@ export default async function DriverOperationsPage({
         canEndTrip={canEndTrip}
         unrecordedNames={unrecorded.map((row) => row.name)}
         unclearStudents={unclearStudents}
-        totalStudents={studentRows.length}
       />
 
       <div className="ops-workspace">
