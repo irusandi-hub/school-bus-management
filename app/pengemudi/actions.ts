@@ -244,8 +244,11 @@ export async function endTrip(formData: FormData) {
   revalidatePath("/pengemudi");
   revalidatePath("/pengemudi/riwayat");
   revalidatePath("/admin/perjalanan");
-  // Kembali ke halaman Pengemudi tanpa memilih tugas yang baru saja selesai.
-  backTo("/pengemudi", "Perjalanan selesai. Riwayat tersimpan dan tidak dapat dihapus.");
+  // Review perjalanan yang baru selesai; dashboard tetap tersedia lewat tombol kembali.
+  backTo(
+    `/pengemudi/review/${encodeURIComponent(tripId)}`,
+    "Perjalanan selesai. Riwayat tersimpan dan tidak dapat dihapus.",
+  );
 }
 
 const eventTypes = ["boarded", "dropped_off", "absent", "issue"];
