@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { ConfigNotice, EmptyState, Notice, Pill } from "@/components/admin/ui";
+import { ConfigNotice, EmptyRow, EmptyState, Notice, Pill, TripStatusPill } from "@/components/admin/ui";
 import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
 import { DriverAutoRefresh } from "@/components/driver/DriverAutoRefresh";
 import { DriverBroadcastPanel } from "@/components/driver/DriverBroadcastPanel";
@@ -28,7 +28,7 @@ import {
 } from "@/lib/driver/trip-progress";
 import { DEFAULT_NAVIGATION_PROVIDER, buildRouteDirectionsUrl } from "@/lib/navigation/external";
 import { createServerSupabase } from "@/lib/supabase/server";
-import type { RouteStopRow, TripEventRow } from "@/lib/types";
+import type { RouteStopRow, TripEventRow, TripRow } from "@/lib/types";
 import { formatDate, formatDateTime, formatTime, routeDirectionLabel, serviceDateInTimeZone } from "@/lib/validation";
 import { startTrip } from "./actions";
 
@@ -98,6 +98,70 @@ export default async function DriverOperationsPage({
   const selectableAssignments = assignments.filter((assignment) => !isCompletedAssignment(assignment));
   const selected = selectDriverAssignment(assignments, requestedId);
 
+  // Riwayat tampil sebagai tab pada dashboard yang sama, bukan halaman terpisah.
+  if (firstParam(query.tab) === "riwayat") {
+    const { data: historyData, error: historyError } = await supabase
+      .from("trips")
+      .select("id, assignment_id, status, started_at, completed_at, arrived_at, created_at, trip_assignments(service_date, driver_id, routes(route_name, school_name, direction), buses(fleet_code, plate_number))")
+      .order("created_at", { ascending: false })
+      .limit(50);
+    const history = ((historyData ?? []) as unknown as TripRow[]).filter(
+      (item) => (item.trip_assignments as unknown as { driver_id?: string } | null)?.driver_id === access.driver.id,
+    );
+    return (
+      <>
+        <section className="ops-head">
+          <div className="ops-head-top">
+            <span className="ops-avatar" aria-hidden="true">{(access.driver.full_name || "P").slice(0, 1).toUpperCase()}</span>
+            <div className="ops-ident">
+              <strong>{access.driver.full_name || "Pengemudi"}</strong>
+              <small>ID {access.driver.id.slice(0, 8).toUpperCase()} · Akun aktif</small>
+            </div>
+          </div>
+        </section>
+        <nav className="ops-switch" aria-label="Navigasi Pengemudi">
+          <span>Tampilan</span>
+          <Link href="/pengemudi" aria-current="false">Dashboard</Link>
+          <Link href="/pengemudi?tab=riwayat" aria-current="page">Riwayat</Link>
+        </nav>
+        {historyError && <Notice kind="error">Riwayat belum dapat dimuat. Coba lagi.</Notice>}
+        <section className="panel">
+          <header className="panel-head">
+            <div>
+              <h2 className="panel-title">Riwayat perjalanan</h2>
+              <div className="panel-subtitle">50 perjalanan terbaru yang Anda jalankan</div>
+            </div>
+          </header>
+          <div className="admin-table-wrap">
+            <table className="admin-table table-stack">
+              <thead><tr><th scope="col">Tanggal</th><th scope="col">Rute</th><th scope="col">Bus</th><th scope="col">Status</th><th scope="col">Waktu</th></tr></thead>
+              <tbody>
+                {history.length === 0 ? (
+                  <EmptyRow colSpan={5} title="Belum ada riwayat perjalanan" detail="Riwayat muncul setelah perjalanan dijalankan dan diselesaikan." />
+                ) : history.map((item) => (
+                  <tr key={item.id}>
+                    <td data-label="Tanggal">{formatDate(item.trip_assignments?.service_date ?? item.created_at)}</td>
+                    <td data-label="Rute">
+                      <strong>{item.trip_assignments?.routes?.route_name ?? "Rute"}</strong>
+                      <small>{item.trip_assignments?.routes?.school_name} · {routeDirectionLabel(item.trip_assignments?.routes?.direction ?? "")}</small>
+                    </td>
+                    <td data-label="Bus">{item.trip_assignments?.buses?.fleet_code ?? "—"}</td>
+                    <td data-label="Status"><TripStatusPill status={item.status} /></td>
+                    <td data-label="Waktu">
+                      <small>Mulai {formatTime(item.started_at)}</small>
+                      <small>Tiba {formatTime(item.arrived_at)}</small>
+                      <small>Selesai {item.completed_at ? formatDateTime(item.completed_at) : "—"}</small>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </>
+    );
+  }
+
   if (!selected) {
     return (
       <>
@@ -117,6 +181,11 @@ export default async function DriverOperationsPage({
               : `Tidak ada penugasan untuk ${formatDate(date)}. Hubungi operator bila Anda seharusnya bertugas.`}
           </p>
         </section>
+        <nav className="ops-switch" aria-label="Navigasi Pengemudi">
+          <span>Tampilan</span>
+          <Link href="/pengemudi" aria-current="page">Dashboard</Link>
+          <Link href="/pengemudi?tab=riwayat">Riwayat</Link>
+        </nav>
         {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
         {error && <Notice kind="error">Tugas hari ini belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
         <section className="panel">
@@ -131,7 +200,7 @@ export default async function DriverOperationsPage({
           />
         </section>
         <p className="ops-foot-link">
-          <Link href="/pengemudi/riwayat">
+          <Link href="/pengemudi?tab=riwayat">
             <Icon name="trip" size={14} /> Lihat riwayat perjalanan
           </Link>
         </p>
@@ -369,6 +438,12 @@ export default async function DriverOperationsPage({
         )}
       </DriverOpsHeader>
 
+      <nav className="ops-switch" aria-label="Navigasi Pengemudi">
+        <span>Tampilan</span>
+        <Link href="/pengemudi" aria-current="page">Dashboard</Link>
+        <Link href="/pengemudi?tab=riwayat">Riwayat</Link>
+      </nav>
+
       <TripClosePanel
         assignmentId={selected.id}
         trip={trip}
@@ -450,7 +525,7 @@ export default async function DriverOperationsPage({
                 {trip?.started_at ? ` · Mulai ${formatTime(trip.started_at)}` : ""}
                 {trip?.completed_at ? ` · Selesai ${formatDateTime(trip.completed_at)}` : ""}
               </p>
-              <Link className="ops-review-link" href="/pengemudi/riwayat">
+              <Link className="ops-review-link" href="/pengemudi?tab=riwayat">
                 Riwayat perjalanan <Icon name="arrowRight" size={13} />
               </Link>
             </div>
