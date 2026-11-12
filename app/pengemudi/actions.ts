@@ -149,8 +149,7 @@ export async function endTrip(formData: FormData) {
   const ctx = await driverActionContext();
   const tripId = readText(formData, "trip_id");
   const assignmentId = readText(formData, "assignment_id");
-  const acknowledged = readText(formData, "acknowledge_open");
-  const target = taskPage(assignmentId);
+   const target = taskPage(assignmentId);
   if (!ctx.ok) backTo(target, ctx.state.message, "error");
   if (!tripId) backTo(target, "Perjalanan tidak dikenali.", "error");
 
@@ -218,10 +217,16 @@ export async function endTrip(formData: FormData) {
     if (!latest.has(event.student_id)) latest.set(event.student_id, event.event_type);
   }
   const openStudents = rosterIds.filter((id) => !latest.has(id) || latest.get(id) === "boarded").length;
-  if (openStudents > 0 && acknowledged !== "1") {
-    backTo(target, `${openStudents} siswa masih berstatus naik. Periksa kabin dan konfirmasi status siswa sebelum mengakhiri perjalanan.`, "error");
+  if (openStudents > 0) {
+    backTo(
+      target,
+      `${openStudents} siswa masih berstatus naik atau belum dipastikan turun. Catat status seluruh siswa dan pastikan tidak ada penumpang tertinggal di dalam bus sebelum mengakhiri perjalanan.`,
+      "error",
+    );
   }
-  const exceptionNote = openStudents > 0 ? `Pemeriksaan kabin dikonfirmasi untuk ${openStudents} siswa dengan status naik.` : null;
+  const belongingsNote = confirmations.safety_belongings_secured
+    ? "Barang yang diketahui tertinggal di dalam bus diamankan; ketentuan tanggung jawab pengemudi telah dikonfirmasi."
+    : null;
   const now = new Date().toISOString();
   const { data, error } = await ctx.supabase
     .from("trips")
@@ -229,7 +234,7 @@ export async function endTrip(formData: FormData) {
       status: "completed",
       completed_at: now,
       safety_checked_at: now,
-      safety_check_notes: [verdict.notes, exceptionNote].filter(Boolean).join(" ") || null,
+      safety_check_notes: [verdict.notes, belongingsNote].filter(Boolean).join(" ") || null,
       student_count_confirmed: verdict.studentCount,
     })
     .eq("id", tripId)
@@ -244,7 +249,7 @@ export async function endTrip(formData: FormData) {
   revalidatePath("/pengemudi");
   revalidatePath("/pengemudi/riwayat");
   revalidatePath("/admin/perjalanan");
-  // Review perjalanan yang baru selesai; dashboard tetap tersedia lewat tombol kembali.
+  // Review perjalanan yang baru selesai ditampilkan sebagai papan mengambang di atas dashboard.
   backTo(
     `/pengemudi/review/${encodeURIComponent(tripId)}`,
     "Perjalanan selesai. Riwayat tersimpan dan tidak dapat dihapus.",
