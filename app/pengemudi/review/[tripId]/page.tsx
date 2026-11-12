@@ -143,6 +143,11 @@ export default async function DriverTripReviewPage({
   const assignment = trip.trip_assignments;
   const direction = assignment?.routes?.direction ?? "";
   const safetyRecorded = Boolean(trip.safety_checked_at);
+  const belongingsAcknowledged = Boolean(
+    trip.safety_check_notes?.includes(
+      "Barang yang diketahui tertinggal di dalam bus diamankan; ketentuan tanggung jawab pengemudi telah dikonfirmasi.",
+    ),
+  );
 
   return (
     <>
@@ -259,12 +264,15 @@ export default async function DriverTripReviewPage({
           </header>
           <div className="ops-review-body">
             <ul className="safety-checks">
-              {SAFETY_CHECKS.map((check) => (
-                <li className="safety-check" key={check.name}>
-                  <Icon name={safetyRecorded ? "check" : "clock"} size={16} />
-                  <span>{check.label}</span>
-                </li>
-              ))}
+              {SAFETY_CHECKS.map((check) => {
+                const confirmed = check.required ? safetyRecorded : belongingsAcknowledged;
+                return (
+                  <li className="safety-check" key={check.name}>
+                    <Icon name={confirmed ? "check" : "clock"} size={16} />
+                    <span>{check.label}</span>
+                  </li>
+                );
+              })}
             </ul>
             <p className="ops-review-meta">
               {safetyRecorded
