@@ -9,10 +9,10 @@ function assignment(id: string, status: string) {
   return { id, trips: [{ status }] };
 }
 
-describe("pemilihan tugas aktif Pengemudi", () => {
-  it("tidak pernah memilih tugas yang perjalanannya sudah selesai", () => {
+describe("pemilihan tugas dashboard Pengemudi", () => {
+  it("memilih tugas selesai sebagai tampilan baca-saja bila tidak ada tugas lain", () => {
     assert.equal(isCompletedAssignment(assignment("selesai", "completed")), true);
-    assert.equal(selectDriverAssignment([assignment("selesai", "completed")]), null);
+    assert.equal(selectDriverAssignment([assignment("selesai", "completed")])?.id, "selesai");
   });
 
   it("melewati tugas selesai dan memilih tugas terjadwal berikutnya", () => {
@@ -35,6 +35,14 @@ describe("pemilihan tugas aktif Pengemudi", () => {
       selectDriverAssignment([assignment("terjadwal", "scheduled")])?.id,
       "terjadwal",
     );
+  });
+
+  it("mempertahankan tugas selesai sebagai fallback hanya setelah tidak ada tugas aktif", () => {
+    const selected = selectDriverAssignment([
+      assignment("selesai", "completed"),
+      assignment("berikutnya", "scheduled"),
+    ]);
+    assert.equal(selected?.id, "berikutnya");
   });
 });
 
