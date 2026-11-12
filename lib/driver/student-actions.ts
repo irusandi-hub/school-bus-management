@@ -34,7 +34,7 @@ export const ABSENCE_REASONS = [
 
 export function studentActionSet(input: StudentActionInput): StudentActionSet {
   const afternoon = input.direction === "afternoon";
-  const dropLabel = afternoon ? "Turun di titik" : "Turun di sekolah";
+  const dropLabel = "Turun";
 
   if (input.tripStatus === "completed") {
     return { canBoard: false, canDrop: false, canAbsent: false, dropLabel, hint: "Perjalanan sudah selesai; status akhir tidak dapat diubah." };
