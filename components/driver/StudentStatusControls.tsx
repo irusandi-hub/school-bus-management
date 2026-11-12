@@ -105,8 +105,8 @@ export function StudentStatusControls({
     actions.hint ??
     (!actions.canDrop
       ? direction === "afternoon"
-        ? "Turun di titik aktif setelah siswa tercatat naik."
-        : "Turun di sekolah aktif setelah siswa tercatat naik dan kedatangan dikonfirmasi."
+        ? "Turun setelah siswa tercatat naik."
+        : "Turun setelah siswa tercatat naik dan kedatangan dikonfirmasi."
       : null);
 
   const hidden = (
