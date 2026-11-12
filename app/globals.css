@@ -2729,6 +2729,8 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
 .ops-ident small{font-size:9px;margin-top:1px}
 .ops-head-pills{flex:0 0 auto}
 .driver-tabs{flex:0 0 auto;gap:4px;margin:0 0 0 auto;padding:0;overflow:visible}
+.driver-app .driver-tabs{margin:0 0 0 auto;gap:4px}
+.driver-app .driver-tabs a{min-height:28px;padding:4px 9px;font-size:9.5px}
 .driver-tabs>span{display:none}
 .driver-tabs a{min-height:28px;padding:4px 9px;font-size:9.5px}
 .ops-task-row{margin-top:6px;align-items:center}
