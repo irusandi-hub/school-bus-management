@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { evaluateTripEnd, SAFETY_CHECKS, unrecordedStudents } from "../lib/driver/trip-end.ts";
+import { evaluateTripEnd, SAFETY_CHECKS, studentsStillOnBus, unrecordedStudents } from "../lib/driver/trip-end.ts";
 
 const allConfirmed = Object.fromEntries(SAFETY_CHECKS.map((check) => [check.name, true])) as Record<
   (typeof SAFETY_CHECKS)[number]["name"],
@@ -79,5 +79,20 @@ describe("aturan mengakhiri perjalanan", () => {
 
   it("menghitung siswa yang belum tercatat tanpa duplikasi", () => {
     assert.deepEqual(unrecordedStudents(["a", "b", "c"], ["b", "b"]), ["a", "c"]);
+  });
+
+  it("memblokir penutupan bila ada siswa belum tercatat atau masih berstatus naik", () => {
+    assert.deepEqual(
+      studentsStillOnBus(["a", "b", "c"], [
+        { student_id: "a", event_type: "dropped_off" },
+        { student_id: "b", event_type: "boarded" },
+        { student_id: "c", event_type: "absent" },
+      ]),
+      ["b"],
+    );
+    assert.deepEqual(
+      studentsStillOnBus(["a", "b"], [{ student_id: "a", event_type: "dropped_off" }]),
+      ["b"],
+    );
   });
 });
