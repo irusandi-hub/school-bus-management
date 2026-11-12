@@ -2741,12 +2741,12 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
   .ops-head{padding:9px 10px}
   .ops-head-top{gap:6px}
   .ops-avatar{width:32px;height:32px}
-  .ops-ident{flex:1 1 70px}
+  .ops-ident{flex:1 1 40px}
   .ops-ident strong{font-size:12px}
   .ops-ident small{font-size:8px}
   .driver-tabs{gap:3px}
   .driver-tabs a{min-height:27px;padding:4px 7px;font-size:9px}
-  .ops-head-pills{display:none}
+  .ops-head-pills{display:flex;flex:0 0 auto}
   .ops-task-row{align-items:center;gap:6px}
   .driver-app .ops-head-action{max-width:48%}
 }
