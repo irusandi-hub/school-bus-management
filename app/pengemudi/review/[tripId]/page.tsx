@@ -269,7 +269,7 @@ export default async function DriverTripReviewPage({
                 return (
                   <li className="safety-check" key={check.name}>
                     <Icon name={confirmed ? "check" : "clock"} size={16} />
-                    <span>{check.label}</span>
+                    <span>{check.label} <small>{check.required ? "Wajib" : "Opsional"}</small></span>
                   </li>
                 );
               })}
