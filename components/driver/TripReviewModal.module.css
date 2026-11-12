@@ -2,12 +2,13 @@
   position: fixed;
   inset: 0;
   margin: auto;
-  width: min(960px, calc(100% - 24px));
+  width: min(720px, calc(100% - 32px));
   max-width: none;
-  max-height: calc(100dvh - 24px);
+  max-height: min(78dvh, 720px);
+  height: fit-content;
   padding: 0;
   border: 1px solid #dce2eb;
-  border-radius: 16px;
+  border-radius: 18px;
   background: #f5f7fb;
   color: inherit;
   box-shadow: 0 24px 80px rgb(15 27 61 / 28%);
@@ -16,7 +17,7 @@
 }
 
 .dialog::backdrop {
-  background: rgb(15 27 61 / 55%);
+  background: rgb(15 27 61 / 48%);
 }
 
 .toolbar {
@@ -25,23 +26,23 @@
   z-index: 1;
   display: flex;
   justify-content: flex-end;
-  padding: 8px 12px;
+  padding: 6px 8px 0;
   background: #f5f7fb;
-  border-bottom: 1px solid #dce2eb;
 }
 
 .close {
   display: grid;
   place-items: center;
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   padding: 0;
   border: 1px solid #cbd5e1;
-  border-radius: 10px;
+  border-radius: 50%;
   background: white;
   color: #0f1b3d;
   font: inherit;
-  font-size: 30px;
+  font-size: 28px;
+  line-height: 1;
   cursor: pointer;
 }
 
@@ -52,6 +53,25 @@
 
 .content {
   display: grid;
-  gap: 16px;
-  padding: 16px;
+  gap: 12px;
+  padding: 4px 16px 16px;
+}
+
+@media (max-width: 640px) {
+  .dialog {
+    width: calc(100% - 24px);
+    max-height: 82dvh;
+    border-radius: 15px;
+  }
+
+  .content {
+    gap: 10px;
+    padding: 2px 10px 12px;
+  }
+
+  .close {
+    width: 36px;
+    height: 36px;
+    font-size: 25px;
+  }
 }
