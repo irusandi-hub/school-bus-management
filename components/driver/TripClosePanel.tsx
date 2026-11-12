@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
 import { SAFETY_CHECKS } from "@/lib/driver/trip-end";
 import { confirmArrival, endTrip } from "@/app/pengemudi/actions";
@@ -10,14 +11,16 @@ type TripView = { id: string; status: string; arrived_at: string | null };
 
 /** Pemeriksaan akhir ditampilkan sebagai overlay agar tidak menggeser dashboard operasional. */
 export function TripClosePanel({
-  assignmentId, trip, canEndTrip, unrecordedNames, unclearStudents,
+  assignmentId, trip, canEndTrip, unrecordedNames, unclearStudents, initialOpen = false,
 }: {
   assignmentId: string;
   trip: TripView | null;
+  initialOpen?: boolean;
   canEndTrip: boolean;
   unrecordedNames: string[];
   unclearStudents: number;
 }) {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [confirmedChecks, setConfirmedChecks] = useState<Record<string, boolean>>({});
   const allRequiredChecksConfirmed = SAFETY_CHECKS.every(
@@ -27,9 +30,18 @@ export function TripClosePanel({
   const requirementsMet = canEndTrip && allRequiredChecksConfirmed && unclearStudents === 0;
 
   useEffect(() => {
+    if (initialOpen) setIsOpen(true);
+  }, [initialOpen]);
+
+  function closePanel() {
+    setIsOpen(false);
+    router.replace(`/pengemudi?tugas=${encodeURIComponent(assignmentId)}`, { scroll: false });
+  }
+
+  useEffect(() => {
     const openPanel = () => setIsOpen(true);
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setIsOpen(false);
+      if (event.key === "Escape") closePanel();
     };
     window.addEventListener("schoolbus:open-trip-safety", openPanel);
     window.addEventListener("keydown", closeOnEscape);
@@ -69,7 +81,7 @@ export function TripClosePanel({
 
   return (
     <div className="ops-safety-overlay" onMouseDown={(event) => {
-      if (event.target === event.currentTarget) setIsOpen(false);
+      if (event.target === event.currentTarget) closePanel();
     }}>
       <section
         className="panel ops-close ops-close-compact ops-safety-dialog"
@@ -80,7 +92,7 @@ export function TripClosePanel({
       >
         <header className="ops-safety-dialog-head">
           <h2 id="perjalanan-keselamatan-title">Akhiri Perjalanan</h2>
-          <button type="button" className="ops-safety-close" aria-label="Tutup pemeriksaan" onClick={() => setIsOpen(false)}>
+          <button type="button" className="ops-safety-close" aria-label="Tutup pemeriksaan" onClick={closePanel}>
             <Icon name="x" size={20} />
           </button>
         </header>
