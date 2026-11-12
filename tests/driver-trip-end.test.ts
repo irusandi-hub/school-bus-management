@@ -81,7 +81,7 @@ describe("aturan mengakhiri perjalanan", () => {
     assert.deepEqual(unrecordedStudents(["a", "b", "c"], ["b", "b"]), ["a", "c"]);
   });
 
-  it("memblokir penutupan bila ada siswa belum tercatat atau masih berstatus naik", () => {
+  it("mendeteksi status siswa yang perlu dituntaskan oleh konfirmasi massal", () => {
     assert.deepEqual(
       studentsStillOnBus(["a", "b", "c"], [
         { student_id: "a", event_type: "dropped_off" },
