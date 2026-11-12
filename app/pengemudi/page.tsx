@@ -117,13 +117,12 @@ export default async function DriverOperationsPage({
               <strong>{access.driver.full_name || "Pengemudi"}</strong>
               <small>ID {access.driver.id.slice(0, 8).toUpperCase()} · Akun aktif</small>
             </div>
+            <nav className="driver-tabs" aria-label="Navigasi Pengemudi">
+              <Link href="/pengemudi">Dashboard</Link>
+              <Link href="/pengemudi?tab=riwayat" aria-current="page">Riwayat</Link>
+            </nav>
           </div>
         </section>
-        <nav className="driver-tabs" aria-label="Navigasi Pengemudi">
-          <span>Tampilan</span>
-          <Link href="/pengemudi" aria-current="false">Dashboard</Link>
-          <Link href="/pengemudi?tab=riwayat" aria-current="page">Riwayat</Link>
-        </nav>
         {historyError && <Notice kind="error">Riwayat belum dapat dimuat. Coba lagi.</Notice>}
         <section className="panel">
           <header className="panel-head">
@@ -174,6 +173,10 @@ export default async function DriverOperationsPage({
               <strong>{access.driver.full_name || "Pengemudi"}</strong>
               <small>ID {access.driver.id.slice(0, 8).toUpperCase()} · Akun aktif</small>
             </div>
+            <nav className="driver-tabs" aria-label="Navigasi Pengemudi">
+              <Link href="/pengemudi" aria-current="page">Dashboard</Link>
+              <Link href="/pengemudi?tab=riwayat">Riwayat</Link>
+            </nav>
           </div>
           <p className="ops-empty-copy">
             {completedToday
@@ -181,11 +184,6 @@ export default async function DriverOperationsPage({
               : `Tidak ada penugasan untuk ${formatDate(date)}. Hubungi operator bila Anda seharusnya bertugas.`}
           </p>
         </section>
-        <nav className="driver-tabs" aria-label="Navigasi Pengemudi">
-          <span>Tampilan</span>
-          <Link href="/pengemudi" aria-current="page">Dashboard</Link>
-          <Link href="/pengemudi?tab=riwayat">Riwayat</Link>
-        </nav>
         {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
         {error && <Notice kind="error">Tugas hari ini belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
         <section className="panel">
@@ -420,7 +418,7 @@ export default async function DriverOperationsPage({
               message="Mulai Perjalanan untuk tugas ini? Waktu mulai akan dicatat."
               pendingLabel="Memulai…"
             >
-              <Icon name="trip" size={16} /> Mulai Perjalanan
+              <Icon name="bus" size={16} /> Mulai Perjalanan
             </ConfirmSubmit>
           </form>
         ) : inProgress ? (
@@ -437,12 +435,6 @@ export default async function DriverOperationsPage({
           </div>
         )}
       </DriverOpsHeader>
-
-      <nav className="driver-tabs" aria-label="Navigasi Pengemudi">
-        <span>Tampilan</span>
-        <Link href="/pengemudi" aria-current="page">Dashboard</Link>
-        <Link href="/pengemudi?tab=riwayat">Riwayat</Link>
-      </nav>
 
       <TripClosePanel
         assignmentId={selected.id}
