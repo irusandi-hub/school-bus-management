@@ -29,10 +29,10 @@ describe("aturan mengakhiri perjalanan", () => {
     assert.match(result.problems[0], /belum berjalan atau sudah selesai/);
   });
 
-  it("menolak bila kedatangan di sekolah belum dikonfirmasi", () => {
+  it("menolak bila status seluruh penumpang belum dituntaskan", () => {
     const result = evaluateTripEnd({ ...base, arrivedAt: null });
     assert.equal(result.ok, false);
-    assert.match(result.problems[0], /kedatangan di sekolah/);
+    assert.match(result.problems[0], /status seluruh penumpang/);
   });
 
   it("menolak bila masih ada siswa tanpa catatan status", () => {
