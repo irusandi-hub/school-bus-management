@@ -42,6 +42,8 @@ describe("tombol perjalanan pengemudi", () => {
     assert.match(panel, /Semua penumpang sudah turun/);
     assert.match(panel, /disabled={Boolean\(trip\.arrived_at\)}/);
     assert.match(panel, /kecuali yang berstatus Tidak Ikut/);
+    assert.doesNotMatch(panel, /arrivalReady/);
+    assert.ok(panel.indexOf("if (!trip.arrived_at)") < panel.indexOf("else if (unrecordedNames.length > 0)"));
     assert.match(panel, /Belum bisa diakhiri:/);
     assert.doesNotMatch(panel, /Konfirmasi tiba di sekolah/);
     assert.doesNotMatch(panel, /Catatan pemeriksaan/);
