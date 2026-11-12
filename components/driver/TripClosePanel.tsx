@@ -35,12 +35,12 @@ export function TripClosePanel({
   if (!inProgress || !trip) return null;
 
   let blockingReason = "";
-  if (unrecordedNames.length > 0) {
+  if (!trip.arrived_at) {
+    blockingReason = "Belum bisa diakhiri: gunakan tombol di atas untuk menuntaskan status seluruh penumpang.";
+  } else if (unrecordedNames.length > 0) {
     blockingReason = `Belum bisa diakhiri: catat status ${unrecordedNames.length} siswa yang belum tercatat.`;
   } else if (unclearStudents > 0) {
     blockingReason = `Belum bisa diakhiri: ${unclearStudents} penumpang belum dipastikan turun dari bus.`;
-  } else if (!trip.arrived_at) {
-    blockingReason = "Belum bisa diakhiri: gunakan tombol di atas untuk menuntaskan status seluruh penumpang.";
   } else if (!allRequiredChecksConfirmed) {
     blockingReason = "Belum bisa diakhiri: checklist pemeriksaan kabin wajib dicentang.";
   }
