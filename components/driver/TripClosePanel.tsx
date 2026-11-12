@@ -16,7 +16,6 @@ export function TripClosePanel({
   canEndTrip: boolean;
   unrecordedNames: string[];
   unclearStudents: number;
-  totalStudents: number;
 }) {
   const [confirmedChecks, setConfirmedChecks] = useState<Record<string, boolean>>({});
   const allRequiredChecksConfirmed = SAFETY_CHECKS.every(
