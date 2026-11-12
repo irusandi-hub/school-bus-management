@@ -33,10 +33,10 @@ describe("tombol perjalanan pengemudi", () => {
     const panel = fs.readFileSync("components/driver/TripClosePanel.tsx", "utf8");
     assert.match(panel, /^"use client";/);
     assert.match(panel, /SAFETY_CHECKS\.map/);
-    assert.match(panel, /name={check\.name} required/);
+    assert.match(panel, /name={check\.name} required={check\.required}/);
     assert.match(panel, /onChange={syncConfirmations}/);
-    assert.match(panel, /const allChecksConfirmed = SAFETY_CHECKS\.every/);
-    assert.match(panel, /const requirementsMet =\s*canEndTrip && allChecksConfirmed/);
+    assert.match(panel, /const allRequiredChecksConfirmed = SAFETY_CHECKS\.every/);
+    assert.match(panel, /const requirementsMet = canEndTrip && allRequiredChecksConfirmed && unclearStudents === 0/);
     assert.match(panel, /disabled={!requirementsMet}/);
     assert.match(panel, />\s*Akhiri\s*</);
     assert.doesNotMatch(panel, />\s*Akhiri Perjalanan\s*</);
