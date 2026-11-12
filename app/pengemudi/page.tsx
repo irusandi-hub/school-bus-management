@@ -119,7 +119,7 @@ export default async function DriverOperationsPage({
             </div>
           </div>
         </section>
-        <nav className="ops-switch" aria-label="Navigasi Pengemudi">
+        <nav className="driver-tabs" aria-label="Navigasi Pengemudi">
           <span>Tampilan</span>
           <Link href="/pengemudi" aria-current="false">Dashboard</Link>
           <Link href="/pengemudi?tab=riwayat" aria-current="page">Riwayat</Link>
@@ -181,7 +181,7 @@ export default async function DriverOperationsPage({
               : `Tidak ada penugasan untuk ${formatDate(date)}. Hubungi operator bila Anda seharusnya bertugas.`}
           </p>
         </section>
-        <nav className="ops-switch" aria-label="Navigasi Pengemudi">
+        <nav className="driver-tabs" aria-label="Navigasi Pengemudi">
           <span>Tampilan</span>
           <Link href="/pengemudi" aria-current="page">Dashboard</Link>
           <Link href="/pengemudi?tab=riwayat">Riwayat</Link>
@@ -438,7 +438,7 @@ export default async function DriverOperationsPage({
         )}
       </DriverOpsHeader>
 
-      <nav className="ops-switch" aria-label="Navigasi Pengemudi">
+      <nav className="driver-tabs" aria-label="Navigasi Pengemudi">
         <span>Tampilan</span>
         <Link href="/pengemudi" aria-current="page">Dashboard</Link>
         <Link href="/pengemudi?tab=riwayat">Riwayat</Link>
