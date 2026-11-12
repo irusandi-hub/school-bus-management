@@ -1,9 +1,9 @@
 /**
- * Memilih tugas Pengemudi yang masih boleh tampil sebagai perjalanan aktif.
+ * Memilih tugas untuk dashboard Pengemudi.
  *
- * Tugas yang perjalanannya sudah selesai tidak pernah dipilih kembali: datanya
- * tetap tersimpan dan hanya ditampilkan lewat halaman riwayat. Tugas berjalan
- * diutamakan, lalu tugas terjadwal, lalu tugas lain yang belum selesai.
+ * Tugas yang selesai tidak diprioritaskan selama masih ada tugas berjalan
+ * atau terjadwal. Jika semua tugas hari ini selesai, tugas terakhir tetap
+ * dipilih dalam mode baca-saja agar dashboard utama tetap tampil setelah review.
  */
 export type DriverAssignmentLike = {
   id: string;
@@ -26,6 +26,7 @@ export function selectDriverAssignment<T extends DriverAssignmentLike>(
     selectable.find((assignment) => assignment.trips?.[0]?.status === "in_progress") ??
     selectable.find((assignment) => assignment.trips?.[0]?.status === "scheduled") ??
     selectable[0] ??
+    assignments.find(isCompletedAssignment) ??
     null
   );
 }
