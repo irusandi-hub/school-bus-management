@@ -22,8 +22,8 @@ type TripView = {
  *
  * Ringkasan selalu terlihat agar kendali penutupan tidak hilang, sedangkan
  * formulir keselamatan dibuka saat dibutuhkan. Validasi tidak diubah:
- * kedatangan wajib dikonfirmasi, semua siswa wajib dicatat, dan pemeriksaan
- * kabin wajib dicentang sebelum perjalanan ditutup. Tombol final "Akhiri" baru
+ * kedatangan wajib dikonfirmasi, semua siswa wajib dicatat, dan konfirmasi
+ * kabin kosong wajib dicentang sebelum perjalanan ditutup. Tombol final "Akhiri" baru
  * aktif setelah seluruh syarat itu terpenuhi, dan Server Action tetap
  * memvalidasi ulang semuanya di server.
  */
@@ -81,7 +81,7 @@ export function TripClosePanel({
         }),
       ),
     );
-   }
+  }
 
   return (
     <section className={`panel ops-close ops-close-${trip?.status ?? "scheduled"}`} id="perjalanan-keselamatan">
