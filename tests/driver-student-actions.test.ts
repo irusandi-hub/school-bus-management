@@ -35,17 +35,20 @@ describe("tindakan siswa sesuai tahap perjalanan", () => {
     const beforeArrival = studentActionSet({ direction: "morning", status: "boarded", tripStatus: "in_progress", arrived: false });
     assert.equal(beforeArrival.canDrop, false);
     assert.equal(beforeArrival.canBoard, false);
-    assert.match(beforeArrival.hint ?? "", /di bus/);
+    assert.equal(beforeArrival.canAbsent, true);
+    assert.match(beforeArrival.hint ?? "", /membatalkan keikutsertaan/);
 
     const afterArrival = studentActionSet({ direction: "morning", status: "boarded", tripStatus: "in_progress", arrived: true });
     assert.equal(afterArrival.canDrop, true);
     assert.equal(afterArrival.canBoard, false);
+    assert.equal(afterArrival.canAbsent, true);
     assert.equal(afterArrival.dropLabel, "Turun di sekolah");
   });
 
   it("sore: menawarkan turun di titik untuk siswa yang sudah naik", () => {
     const actions = studentActionSet({ direction: "afternoon", status: "boarded", tripStatus: "in_progress", arrived: true });
     assert.equal(actions.canDrop, true);
+    assert.equal(actions.canAbsent, true);
     assert.equal(actions.dropLabel, "Turun di titik");
   });
 
