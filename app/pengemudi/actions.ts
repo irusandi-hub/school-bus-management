@@ -127,19 +127,21 @@ export async function confirmArrival(formData: FormData) {
 
   const { data: tripData, error: tripError } = await ctx.supabase
     .from("trips")
-    .select("id, status, trip_assignments(route_id, driver_id, routes(direction))")
+    .select("id, status, arrived_at, trip_assignments(route_id, driver_id, routes(direction))")
     .eq("id", tripId)
     .eq("assignment_id", assignmentId)
     .maybeSingle();
   const trip = tripData as unknown as {
     id: string;
     status: string;
+    arrived_at: string | null;
     trip_assignments: { route_id: string; driver_id: string; routes: { direction: string } | null } | null;
   } | null;
   if (tripError || !trip || !trip.trip_assignments || trip.trip_assignments.driver_id !== ctx.driverId) {
     backTo(target, "Perjalanan tidak ditemukan untuk akun Anda.", "error");
   }
   if (trip.status !== "in_progress") backTo(target, "Perjalanan tidak sedang berlangsung.", "error");
+  if (trip.arrived_at) backTo(target, "Status seluruh penumpang sudah dituntaskan.", "success");
 
   const routeId = trip.trip_assignments.route_id;
   const direction = trip.trip_assignments.routes?.direction ?? "morning";
@@ -152,29 +154,41 @@ export async function confirmArrival(formData: FormData) {
   if (rosterResult.error || eventsResult.error) {
     backTo(target, "Status seluruh penumpang belum dapat diperiksa. Coba lagi.", "error");
   }
-  const rosterIds = ((rosterResult.data ?? []) as { student_id: string }[]).map((row) => row.student_id);
-  const stillOnBus = studentsStillOnBus(
-    rosterIds,
-    (eventsResult.data ?? []) as { student_id: string; event_type: string }[],
+
+  const rosterIds = [...new Set(((rosterResult.data ?? []) as { student_id: string }[]).map((row) => row.student_id))];
+  const latestStatus = new Map<string, string>();
+  for (const event of (eventsResult.data ?? []) as { student_id: string; event_type: string }[]) {
+    if (!latestStatus.has(event.student_id)) latestStatus.set(event.student_id, event.event_type);
+  }
+
+  // Satu tindakan massal: pertahankan siswa Tidak Ikut dan status Turun yang sudah ada,
+  // lalu catat Turun untuk semua siswa lain. Event lama tetap tersimpan sebagai riwayat.
+  const studentsToMarkDown = rosterIds.filter((studentId) =>
+    !["absent", "dropped_off"].includes(latestStatus.get(studentId) ?? ""),
   );
-  if (stillOnBus.length > 0) {
-    backTo(
-      target,
-      `Belum bisa dikonfirmasi: ${stillOnBus.length} penumpang belum memiliki status turun atau tidak ikut.`,
-      "error",
+  if (studentsToMarkDown.length > 0) {
+    const { error: insertError } = await ctx.supabase.from("trip_student_events").insert(
+      studentsToMarkDown.map((studentId) => ({
+        trip_id: tripId,
+        student_id: studentId,
+        event_type: "dropped_off",
+        recorded_by: ctx.userId,
+        notes: "Status Turun dikonfirmasi sekaligus oleh pengemudi.",
+      })),
     );
+    if (insertError) backTo(target, "Status Turun seluruh penumpang belum tersimpan. Coba lagi.", "error");
   }
 
   const { data, error } = await ctx.supabase.from("trips")
     .update({ arrived_at: new Date().toISOString() })
     .eq("id", tripId).eq("status", "in_progress").is("arrived_at", null)
     .select("id");
-  if (error) backTo(target, "Konfirmasi semua penumpang turun belum tersimpan. Coba lagi.", "error");
+  if (error) backTo(target, "Konfirmasi seluruh penumpang belum tersimpan. Coba lagi.", "error");
   if (!data || data.length === 0) backTo(target, "Konfirmasi tidak dapat dicatat. Muat ulang halaman.", "error");
 
   revalidatePath("/pengemudi");
   revalidatePath("/admin/perjalanan");
-  backTo(target, "Semua penumpang sudah turun. Lanjutkan pemeriksaan akhir.");
+  backTo(target, `Status Turun berhasil dicatat untuk ${studentsToMarkDown.length} siswa. Status Tidak Ikut tetap dipertahankan.`);
 }
 
 function readConfirmation(formData: FormData, name: SafetyFieldName) {
