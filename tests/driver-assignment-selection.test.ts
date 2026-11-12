@@ -37,3 +37,17 @@ describe("pemilihan tugas aktif Pengemudi", () => {
     );
   });
 });
+
+describe("tugas setelah review pagi ditutup", () => {
+  it("tetap memilih penjemputan sore tanpa menghapus riwayat atau membuat tugas", () => {
+    const assignments = [
+      { ...assignment("pagi-selesai", "completed"), direction: "morning" },
+      { ...assignment("jemput-sore", "scheduled"), direction: "afternoon" },
+    ];
+    const before = structuredClone(assignments);
+    const selected = selectDriverAssignment(assignments);
+    assert.equal(selected?.id, "jemput-sore");
+    assert.equal(selected?.direction, "afternoon");
+    assert.deepEqual(assignments, before);
+  });
+});

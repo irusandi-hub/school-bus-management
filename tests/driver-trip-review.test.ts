@@ -35,3 +35,29 @@ describe("review perjalanan pengemudi", () => {
     assert.match(page, /Lihat riwayat perjalanan/);
   });
 });
+
+describe("review sebagai overlay dashboard", () => {
+  it("memuat dashboard asli di belakang review, termasuk saat URL dibuka langsung", () => {
+    const page = fs.readFileSync("app/pengemudi/review/[tripId]/page.tsx", "utf8");
+    assert.match(page, /import DriverOperationsPage from "@\/app\/pengemudi\/page"/);
+    assert.equal((page.match(/<DriverOperationsPage searchParams=\{Promise.resolve\(\{\}\)\} \/>/g) ?? []).length, 2);
+    assert.equal((page.match(/<TripReviewModal>/g) ?? []).length, 2);
+    assert.ok(page.indexOf('trip.status !== "completed"') < page.lastIndexOf("<TripReviewModal>"));
+  });
+
+  it("X dan Escape menuju dashboard secara langsung tanpa navigasi kembali", () => {
+    const modal = fs.readFileSync("components/driver/TripReviewModal.tsx", "utf8");
+    assert.match(modal, /router.replace\("\/pengemudi"\)/);
+    assert.match(modal, /router.refresh\(\)/);
+    assert.doesNotMatch(modal, /router.back\(/);
+    assert.match(modal, /aria-label="Tutup review dan kembali ke halaman utama Pengemudi"/);
+    assert.match(modal, /onClick=\{closeReview\}/);
+    assert.match(modal, /onCancel=/);
+    assert.match(modal, /showModal\(\)/);
+    assert.match(modal, /autoFocus/);
+    const css = fs.readFileSync("components/driver/TripReviewModal.module.css", "utf8");
+    assert.match(css, /position: sticky/);
+    assert.match(css, /justify-content: flex-end/);
+    assert.match(css, /::backdrop/);
+  });
+});

@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import DriverOperationsPage from "@/app/pengemudi/page";
+import { TripReviewModal } from "@/components/driver/TripReviewModal";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import {
@@ -90,16 +92,19 @@ export default async function DriverTripReviewPage({
   if (tripError) {
     return (
       <>
+        <DriverOperationsPage searchParams={Promise.resolve({})} />
+        <TripReviewModal>
         <PageHeader
           title="Review perjalanan"
           description="Ringkasan tugas yang sudah selesai dan tersimpan."
         />
         <Notice kind="error">Review perjalanan belum dapat dimuat. Muat ulang halaman atau coba lagi.</Notice>
         <p className="ops-foot-link">
-          <Link href="/pengemudi">
+          <Link href="/pengemudi" replace>
             <Icon name="arrowLeft" size={14} /> Kembali ke Halaman Utama Pengemudi
           </Link>
         </p>
+        </TripReviewModal>
       </>
     );
   }
@@ -147,10 +152,12 @@ export default async function DriverTripReviewPage({
 
   return (
     <>
+      <DriverOperationsPage searchParams={Promise.resolve({})} />
+      <TripReviewModal>
       <PageHeader
         title="Review perjalanan"
         description="Ringkasan tugas yang sudah selesai. Data diambil dari perjalanan dan catatan yang tersimpan."
-        actions={<Link className="btn btn-secondary btn-sm" href="/pengemudi">Halaman utama</Link>}
+        actions={<Link className="btn btn-secondary btn-sm" href="/pengemudi" replace>Halaman utama</Link>}
       />
 
       {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
@@ -286,7 +293,7 @@ export default async function DriverTripReviewPage({
       <section className="panel">
         <div className="ops-review-body">
           <div className="task-action-row">
-            <Link className="btn btn-primary" href="/pengemudi">
+            <Link className="btn btn-primary" href="/pengemudi" replace>
               <Icon name="arrowLeft" size={16} /> Kembali ke Halaman Utama Pengemudi
             </Link>
             <Link className="btn btn-secondary" href="/pengemudi/riwayat">
@@ -295,6 +302,7 @@ export default async function DriverTripReviewPage({
           </div>
         </div>
       </section>
+      </TripReviewModal>
     </>
   );
 }
