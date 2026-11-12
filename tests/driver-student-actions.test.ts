@@ -42,14 +42,14 @@ describe("tindakan siswa sesuai tahap perjalanan", () => {
     assert.equal(afterArrival.canDrop, true);
     assert.equal(afterArrival.canBoard, false);
     assert.equal(afterArrival.canAbsent, true);
-    assert.equal(afterArrival.dropLabel, "Turun di sekolah");
+    assert.equal(afterArrival.dropLabel, "Turun");
   });
 
   it("sore: menawarkan turun di titik untuk siswa yang sudah naik", () => {
     const actions = studentActionSet({ direction: "afternoon", status: "boarded", tripStatus: "in_progress", arrived: true });
     assert.equal(actions.canDrop, true);
     assert.equal(actions.canAbsent, true);
-    assert.equal(actions.dropLabel, "Turun di titik");
+    assert.equal(actions.dropLabel, "Turun");
   });
 
   it("menonaktifkan semua tindakan untuk status akhir", () => {
