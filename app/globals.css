@@ -2699,3 +2699,13 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
   .ops-passengers-down .btn{width:100%;justify-content:center}
   .ops-end-compact .safety-check{font-size:10.5px}
 }
+
+
+/* Header tabs stay readable and remain inside the existing driver workspace. */
+.driver-tabs{display:flex;align-items:center;gap:7px;overflow-x:auto;margin:0 0 9px;padding:0 0 2px}
+.driver-tabs>span{flex-shrink:0;font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.driver-tabs a{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:6px 13px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--muted);font-size:11px;font-weight:800;text-decoration:none}
+.driver-tabs a[aria-current="page"]{background:#2B2416;border-color:#2B2416;color:#FFD670}
+.driver-app .driver-tabs{gap:6px;margin:0 0 8px}
+.driver-app .driver-tabs>span{font-size:9px}
+.driver-app .driver-tabs a{min-height:34px;padding:6px 12px;font-size:11px}
