@@ -525,9 +525,6 @@ export default async function DriverOperationsPage({
                 {trip?.started_at ? ` · Mulai ${formatTime(trip.started_at)}` : ""}
                 {trip?.completed_at ? ` · Selesai ${formatDateTime(trip.completed_at)}` : ""}
               </p>
-              <Link className="ops-review-link" href="/pengemudi?tab=riwayat">
-                Riwayat perjalanan <Icon name="arrowRight" size={13} />
-              </Link>
             </div>
           </details>
         </section>
