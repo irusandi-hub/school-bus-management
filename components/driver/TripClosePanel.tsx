@@ -133,7 +133,7 @@ export function TripClosePanel({
             pendingLabel="Mengakhiri…"
             disabled={!requirementsMet}
           >
-            Akhiri
+            <Icon name="bus" size={16} style={{ color: "#F5C542" }} /> Akhiri
           </ConfirmSubmit>
         </form>
       </section>
