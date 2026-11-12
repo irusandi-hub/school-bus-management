@@ -7,7 +7,7 @@ import { createServerSupabase } from "@/lib/supabase/server";
 import { supabaseNotConfiguredMessage } from "@/lib/supabase/env";
 import { validateDeviceLocation } from "@/lib/driver/device-location";
 import { isDuplicateStudentEvent } from "@/lib/driver/student-events";
-import { evaluateTripEnd, SAFETY_CHECKS, type SafetyFieldName } from "@/lib/driver/trip-end";
+import { evaluateTripEnd, SAFETY_CHECKS, studentsStillOnBus, type SafetyFieldName } from "@/lib/driver/trip-end";
 import { failure, readText, success, type ActionState } from "@/lib/validation";
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -149,7 +149,7 @@ export async function endTrip(formData: FormData) {
   const ctx = await driverActionContext();
   const tripId = readText(formData, "trip_id");
   const assignmentId = readText(formData, "assignment_id");
-   const target = taskPage(assignmentId);
+  const target = taskPage(assignmentId);
   if (!ctx.ok) backTo(target, ctx.state.message, "error");
   if (!tripId) backTo(target, "Perjalanan tidak dikenali.", "error");
 
@@ -212,11 +212,10 @@ export async function endTrip(formData: FormData) {
     backTo(target, verdict.problems[0], "error");
   }
 
-  const latest = new Map<string, string>();
-  for (const event of (eventsResult.data ?? []) as { student_id: string; event_type: string }[]) {
-    if (!latest.has(event.student_id)) latest.set(event.student_id, event.event_type);
-  }
-  const openStudents = rosterIds.filter((id) => !latest.has(id) || latest.get(id) === "boarded").length;
+  const openStudents = studentsStillOnBus(
+    rosterIds,
+    (eventsResult.data ?? []) as { student_id: string; event_type: string }[],
+  ).length;
   if (openStudents > 0) {
     backTo(
       target,
