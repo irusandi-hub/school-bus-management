@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
 import { TripStatusPill } from "@/components/admin/ui";
 import { Icon } from "@/components/ui/Icon";
 import type { TripProgress } from "@/lib/driver/trip-progress";
@@ -27,6 +28,7 @@ export function DriverOpsHeader({
   capacity,
   progress,
   children,
+  activeTab = "dashboard",
 }: {
   driverName: string;
   driverId: string;
@@ -43,6 +45,7 @@ export function DriverOpsHeader({
   capacity: number;
   progress: TripProgress;
   children?: ReactNode;
+  activeTab?: "dashboard" | "riwayat";
 }) {
   const initial = (driverName || "P").slice(0, 1).toUpperCase();
   const shortId = driverId.slice(0, 8).toUpperCase();
@@ -65,6 +68,10 @@ export function DriverOpsHeader({
         <div className="ops-head-pills">
           <TripStatusPill status={tripStatus} />
         </div>
+        <nav className="driver-tabs" aria-label="Navigasi Pengemudi">
+          <Link href="/pengemudi" aria-current={activeTab === "dashboard" ? "page" : undefined}>Dashboard</Link>
+          <Link href="/pengemudi?tab=riwayat" aria-current={activeTab === "riwayat" ? "page" : undefined}>Riwayat</Link>
+        </nav>
       </div>
 
       <div className="ops-task-row">
