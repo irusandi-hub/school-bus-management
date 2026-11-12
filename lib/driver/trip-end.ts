@@ -12,16 +12,14 @@
 
 export const SAFETY_CHECKS = [
   {
-    name: "safety_vehicle_ok",
-    label: "Kondisi bus diperiksa: rem, pintu, lampu, dan jalur keluar aman.",
+    name: "safety_cabin_clear",
+    label: "Kabin sudah diperiksa, tidak ada penumpang yang tertinggal di dalam bus.",
+    required: true,
   },
   {
-    name: "safety_headcount_ok",
-    label: "Jumlah siswa di bus sudah dihitung dan cocok dengan catatan kehadiran.",
-  },
-  {
-    name: "safety_no_student_left",
-    label: "Tidak ada siswa yang tertinggal di bus maupun di titik jemput.",
+    name: "safety_belongings_secured",
+    label: "Barang yang diketahui tertinggal di dalam bus akan diamankan, dan bukan tanggung jawab pengemudi jika kehilangan.",
+    required: false,
   },
 ] as const;
 
@@ -63,7 +61,7 @@ export function evaluateTripEnd(input: TripEndInput): TripEndResult {
     );
   }
 
-  const unchecked = SAFETY_CHECKS.filter((check) => !input.confirmations[check.name]);
+  const unchecked = SAFETY_CHECKS.filter((check) => check.required && !input.confirmations[check.name]);
   if (unchecked.length > 0) {
     problems.push(
       `Pemeriksaan keselamatan belum lengkap: ${unchecked.map((check) => check.label).join(" ")}`,
