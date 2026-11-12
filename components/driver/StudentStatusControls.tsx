@@ -179,28 +179,48 @@ export function StudentStatusControls({
       )}
 
       {actions.canAbsent && tripId ? (
-        <details className="ops-absent">
-          <summary>Tidak Ikut</summary>
-          <div className="ops-absent-menu">
-            {ABSENCE_REASONS.map((reason) => (
-              <form action={formAction} key={reason.label}>
-                {hidden}
-                <input type="hidden" name="event_type" value="absent" />
-                <SubmitAction
-                  kind="absent"
-                  label={reason.label}
-                  doneLabel={DONE_LABEL.absent}
-                  done={status === "absent"}
-                  type="submit"
-                  name="notes"
-                  value={reason.notes}
-                  disabled={pending}
-                />
-              </form>
-            ))}
-            <small>Dicatat sebagai tidak ikut bus, dengan alasan tersimpan pada catatan.</small>
-          </div>
-        </details>
+        status === "boarded" ? (
+          <form action={formAction}>
+            {hidden}
+            <input type="hidden" name="event_type" value="absent" />
+            <input
+              type="hidden"
+              name="notes"
+              value="Keikutsertaan dibatalkan setelah siswa naik, sebelum perjalanan tiba."
+            />
+            <SubmitAction
+              kind="absent"
+              label="Tidak Ikut"
+              doneLabel={DONE_LABEL.absent}
+              done={false}
+              type="submit"
+              disabled={pending}
+            />
+          </form>
+        ) : (
+          <details className="ops-absent">
+            <summary>Tidak Ikut</summary>
+            <div className="ops-absent-menu">
+              {ABSENCE_REASONS.map((reason) => (
+                <form action={formAction} key={reason.label}>
+                  {hidden}
+                  <input type="hidden" name="event_type" value="absent" />
+                  <SubmitAction
+                    kind="absent"
+                    label={reason.label}
+                    doneLabel={DONE_LABEL.absent}
+                    done={status === "absent"}
+                    type="submit"
+                    name="notes"
+                    value={reason.notes}
+                    disabled={pending}
+                  />
+                </form>
+              ))}
+              <small>Dicatat sebagai tidak ikut bus, dengan alasan tersimpan pada catatan.</small>
+            </div>
+          </details>
+        )
       ) : (
         <ActionButton
           kind="absent"
