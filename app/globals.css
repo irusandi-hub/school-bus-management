@@ -2719,3 +2719,32 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
 .ops-safety-close{display:grid;place-items:center;width:40px;height:40px;flex:0 0 40px;border:1px solid var(--line);border-radius:50%;background:#fff;color:var(--ink);cursor:pointer}
 .ops-safety-dialog .task-end-form{margin-top:14px}
 @media(max-width:480px){.ops-safety-overlay{padding:10px;align-items:center}.ops-safety-dialog{max-height:88dvh;padding:14px;border-radius:16px}}
+
+
+/* Header Pengemudi dipadatkan: identitas, navigasi, tugas, dan progres dalam satu blok. */
+.ops-head{padding:10px 12px;margin-bottom:8px;border-radius:14px}
+.ops-head-top{gap:8px;flex-wrap:nowrap}
+.ops-avatar{width:36px;height:36px;border-radius:11px;font-size:15px}
+.ops-ident strong{font-size:13px;line-height:1.2}
+.ops-ident small{font-size:9px;margin-top:1px}
+.ops-head-pills{flex:0 0 auto}
+.driver-tabs{flex:0 0 auto;gap:4px;margin:0 0 0 auto;padding:0;overflow:visible}
+.driver-tabs>span{display:none}
+.driver-tabs a{min-height:28px;padding:4px 9px;font-size:9.5px}
+.ops-task-row{margin-top:6px;align-items:center}
+.ops-task-copy h1{font-size:15px}
+.ops-progress{margin-top:4px}
+.ops-meta-line{margin-top:4px}
+@media(max-width:520px){
+  .ops-head{padding:9px 10px}
+  .ops-head-top{gap:6px}
+  .ops-avatar{width:32px;height:32px}
+  .ops-ident{flex:1 1 70px}
+  .ops-ident strong{font-size:12px}
+  .ops-ident small{font-size:8px}
+  .driver-tabs{gap:3px}
+  .driver-tabs a{min-height:27px;padding:4px 7px;font-size:9px}
+  .ops-head-pills{display:none}
+  .ops-task-row{align-items:center;gap:6px}
+  .driver-app .ops-head-action{max-width:48%}
+}
