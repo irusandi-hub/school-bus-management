@@ -23,7 +23,6 @@ export function TripClosePanel({
   );
   const inProgress = trip?.status === "in_progress";
   const requirementsMet = canEndTrip && allRequiredChecksConfirmed && unclearStudents === 0;
-  const arrivalReady = unrecordedNames.length === 0 && unclearStudents === 0;
 
   function syncConfirmations(event: FormEvent<HTMLFormElement>) {
     const form = event.currentTarget;
@@ -41,7 +40,7 @@ export function TripClosePanel({
   } else if (unclearStudents > 0) {
     blockingReason = `Belum bisa diakhiri: ${unclearStudents} penumpang belum dipastikan turun dari bus.`;
   } else if (!trip.arrived_at) {
-    blockingReason = "Belum bisa diakhiri: konfirmasikan bahwa semua penumpang sudah turun.";
+    blockingReason = "Belum bisa diakhiri: gunakan tombol di atas untuk menuntaskan status seluruh penumpang.";
   } else if (!allRequiredChecksConfirmed) {
     blockingReason = "Belum bisa diakhiri: checklist pemeriksaan kabin wajib dicentang.";
   }
@@ -55,11 +54,11 @@ export function TripClosePanel({
           className="btn btn-secondary"
           message="Pastikan seluruh penumpang sudah turun dan tidak ada yang tertinggal di dalam bus."
           pendingLabel="Memeriksa…"
-          disabled={Boolean(trip.arrived_at) || !arrivalReady}
+          disabled={Boolean(trip.arrived_at)}
         >
           Semua penumpang sudah turun
         </ConfirmSubmit>
-        {trip.arrived_at && <small>Sudah dikonfirmasi.</small>}
+        <small>{trip.arrived_at ? "Status seluruh penumpang sudah dituntaskan." : "Satu kali tekan akan mencatat Turun untuk semua siswa, kecuali yang berstatus Tidak Ikut."}</small>
       </form>
 
       <form className="task-end-form ops-end-compact" action={endTrip} onChange={syncConfirmations}>
