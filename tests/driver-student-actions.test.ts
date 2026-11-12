@@ -31,12 +31,12 @@ describe("tindakan siswa sesuai tahap perjalanan", () => {
     }
   });
 
-  it("pagi: hanya menawarkan turun di sekolah setelah kedatangan dicatat", () => {
+  it("pagi: menawarkan turun setelah kedatangan dikonfirmasi", () => {
     const beforeArrival = studentActionSet({ direction: "morning", status: "boarded", tripStatus: "in_progress", arrived: false });
     assert.equal(beforeArrival.canDrop, false);
     assert.equal(beforeArrival.canBoard, false);
     assert.equal(beforeArrival.canAbsent, true);
-    assert.match(beforeArrival.hint ?? "", /membatalkan keikutsertaan/);
+    assert.match(beforeArrival.hint ?? "", /keikutsertaan dibatalkan/);
 
     const afterArrival = studentActionSet({ direction: "morning", status: "boarded", tripStatus: "in_progress", arrived: true });
     assert.equal(afterArrival.canDrop, true);
@@ -45,7 +45,7 @@ describe("tindakan siswa sesuai tahap perjalanan", () => {
     assert.equal(afterArrival.dropLabel, "Turun");
   });
 
-  it("sore: menawarkan turun di titik untuk siswa yang sudah naik", () => {
+  it("sore: menawarkan turun untuk siswa yang sudah naik", () => {
     const actions = studentActionSet({ direction: "afternoon", status: "boarded", tripStatus: "in_progress", arrived: true });
     assert.equal(actions.canDrop, true);
     assert.equal(actions.canAbsent, true);
