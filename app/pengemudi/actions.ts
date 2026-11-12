@@ -121,7 +121,7 @@ export async function confirmArrival(formData: FormData) {
   const ctx = await driverActionContext();
   const tripId = readText(formData, "trip_id");
   const assignmentId = readText(formData, "assignment_id");
-  const target = taskPage(assignmentId);
+  const target = `${taskPage(assignmentId)}&panel=keselamatan`;
   if (!ctx.ok) backTo(target, ctx.state.message, "error");
   if (!tripId) backTo(target, "Perjalanan tidak dikenali.", "error");
 
