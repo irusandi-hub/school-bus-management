@@ -123,22 +123,58 @@ export async function confirmArrival(formData: FormData) {
   const assignmentId = readText(formData, "assignment_id");
   const target = taskPage(assignmentId);
   if (!ctx.ok) backTo(target, ctx.state.message, "error");
+  if (!tripId) backTo(target, "Perjalanan tidak dikenali.", "error");
 
-  const { data, error } = await ctx.supabase
+  const { data: tripData, error: tripError } = await ctx.supabase
     .from("trips")
-    .update({ arrived_at: new Date().toISOString() })
+    .select("id, status, trip_assignments(route_id, driver_id, routes(direction))")
     .eq("id", tripId)
-    .eq("status", "in_progress")
-    .select("id");
-
-  if (error) backTo(target, "Konfirmasi tiba belum tersimpan. Coba lagi.", "error");
-  if (!data || data.length === 0) {
-    backTo(target, "Konfirmasi tiba tidak dapat dicatat karena perjalanan ini sedang berlangsung.", "error");
+    .eq("assignment_id", assignmentId)
+    .maybeSingle();
+  const trip = tripData as unknown as {
+    id: string;
+    status: string;
+    trip_assignments: { route_id: string; driver_id: string; routes: { direction: string } | null } | null;
+  } | null;
+  if (tripError || !trip || trip.trip_assignments?.driver_id !== ctx.driverId) {
+    backTo(target, "Perjalanan tidak ditemukan untuk akun Anda.", "error");
   }
+  if (trip.status !== "in_progress") backTo(target, "Perjalanan tidak sedang berlangsung.", "error");
+
+  const routeId = trip.trip_assignments.route_id;
+  const direction = trip.trip_assignments.routes?.direction ?? "morning";
+  const [rosterResult, eventsResult] = await Promise.all([
+    ctx.supabase.from("student_route_stops").select("student_id")
+      .eq("route_id", routeId).eq("direction", direction).eq("active", true),
+    ctx.supabase.from("trip_student_events").select("student_id, event_type, occurred_at")
+      .eq("trip_id", tripId).order("occurred_at", { ascending: false }),
+  ]);
+  if (rosterResult.error || eventsResult.error) {
+    backTo(target, "Status seluruh penumpang belum dapat diperiksa. Coba lagi.", "error");
+  }
+  const rosterIds = ((rosterResult.data ?? []) as { student_id: string }[]).map((row) => row.student_id);
+  const stillOnBus = studentsStillOnBus(
+    rosterIds,
+    (eventsResult.data ?? []) as { student_id: string; event_type: string }[],
+  );
+  if (stillOnBus.length > 0) {
+    backTo(
+      target,
+      `Belum bisa dikonfirmasi: ${stillOnBus.length} penumpang belum memiliki status turun atau tidak ikut.`,
+      "error",
+    );
+  }
+
+  const { data, error } = await ctx.supabase.from("trips")
+    .update({ arrived_at: new Date().toISOString() })
+    .eq("id", tripId).eq("status", "in_progress").is("arrived_at", null)
+    .select("id");
+  if (error) backTo(target, "Konfirmasi semua penumpang turun belum tersimpan. Coba lagi.", "error");
+  if (!data || data.length === 0) backTo(target, "Konfirmasi tidak dapat dicatat. Muat ulang halaman.", "error");
 
   revalidatePath("/pengemudi");
   revalidatePath("/admin/perjalanan");
-  backTo(target, "Tiba di sekolah tercatat. Lanjutkan penurunan siswa bila diperlukan.");
+  backTo(target, "Semua penumpang sudah turun. Lanjutkan pemeriksaan akhir.");
 }
 
 function readConfirmation(formData: FormData, name: SafetyFieldName) {
