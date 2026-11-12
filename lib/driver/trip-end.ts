@@ -5,7 +5,7 @@
  * 1. perjalanan memang sedang berjalan,
  * 2. kedatangan di sekolah sudah dikonfirmasi,
  * 3. seluruh siswa aktif pada rute sudah dicatat statusnya, dan
- * 4. tiga pemeriksaan keselamatan wajib dikonfirmasi pengemudi.
+ * 4. konfirmasi kabin kosong wajib; pernyataan barang tertinggal bersifat tambahan.
  *
  * Fungsi ini murni agar aturan yang sama dapat diuji tanpa database.
  */
