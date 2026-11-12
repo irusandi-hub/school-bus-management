@@ -22,7 +22,7 @@ describe("review perjalanan pengemudi", () => {
     assert.match(page, /notFound\(\)/);
   });
 
-  it("menampilkan status siswa, pemeriksaan keselamatan, dan tombol kembali ke dashboard", () => {
+  it("menampilkan status siswa dan pemeriksaan keselamatan tanpa tautan kembali di papan review", () => {
     const page = fs.readFileSync("app/pengemudi/review/[tripId]/page.tsx", "utf8");
 
     assert.match(page, /\.from\("trip_student_events"\)/);
@@ -30,9 +30,9 @@ describe("review perjalanan pengemudi", () => {
     assert.match(page, /SAFETY_CHECKS/);
     assert.match(page, /safety_checked_at/);
     assert.match(page, /student_count_confirmed/);
-    assert.match(page, /Kembali ke Halaman Utama Pengemudi/);
-    assert.match(page, /href="\/pengemudi"/);
-    assert.match(page, /Lihat riwayat perjalanan/);
+    assert.doesNotMatch(page, /Kembali ke Halaman Utama Pengemudi/);
+    assert.doesNotMatch(page, /href="\/pengemudi"/);
+    assert.doesNotMatch(page, /Lihat riwayat perjalanan/);
   });
 });
 
@@ -56,7 +56,9 @@ describe("review sebagai overlay dashboard", () => {
     assert.match(modal, /showModal\(\)/);
     assert.match(modal, /autoFocus/);
     const css = fs.readFileSync("components/driver/TripReviewModal.module.css", "utf8");
-    assert.match(css, /position: sticky/);
+    assert.match(css, /width: min\(720px/);
+    assert.match(css, /max-height: min\(78dvh, 720px\)/);
+    assert.match(css, /height: fit-content/);
     assert.match(css, /justify-content: flex-end/);
     assert.match(css, /::backdrop/);
   });
