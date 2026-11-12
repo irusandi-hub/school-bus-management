@@ -94,5 +94,12 @@ describe("aturan mengakhiri perjalanan", () => {
       studentsStillOnBus(["a", "b"], [{ student_id: "a", event_type: "dropped_off" }]),
       ["b"],
     );
+    assert.deepEqual(
+      studentsStillOnBus(["a", "b"], [
+        { student_id: "a", event_type: "issue" },
+        { student_id: "b", event_type: "absent" },
+      ]),
+      ["a"],
+    );
   });
 });
