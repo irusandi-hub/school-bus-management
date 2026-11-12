@@ -450,6 +450,7 @@ export default async function DriverOperationsPage({
         canEndTrip={canEndTrip}
         unrecordedNames={unrecorded.map((row) => row.name)}
         unclearStudents={unclearStudents}
+        initialOpen={firstParam(query.panel) === "keselamatan"}
       />
 
       <div className="ops-workspace">
