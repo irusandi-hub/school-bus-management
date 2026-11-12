@@ -45,9 +45,10 @@ export function TripClosePanel({
   // Status checkbox hanya dipakai untuk mengaktifkan tombol final; server tetap
   // menjadi penentu terakhir lewat endTrip.
   const [confirmedChecks, setConfirmedChecks] = useState<Record<string, boolean>>({});
-  const [cabinAcknowledged, setCabinAcknowledged] = useState(false);
-  const allChecksConfirmed = SAFETY_CHECKS.every((check) => confirmedChecks[check.name]);
-  const requirementsMet = canEndTrip && allChecksConfirmed && (unclearStudents === 0 || cabinAcknowledged);
+  const allRequiredChecksConfirmed = SAFETY_CHECKS.every(
+    (check) => !check.required || confirmedChecks[check.name],
+  );
+  const requirementsMet = canEndTrip && allRequiredChecksConfirmed && unclearStudents === 0;
 
   const inProgress = trip?.status === "in_progress";
   const completed = trip?.status === "completed";
@@ -80,9 +81,7 @@ export function TripClosePanel({
         }),
       ),
     );
-    const acknowledgeOpen = form.elements.namedItem("acknowledge_open");
-    setCabinAcknowledged(acknowledgeOpen instanceof HTMLInputElement && acknowledgeOpen.checked);
-  }
+   }
 
   return (
     <section className={`panel ops-close ops-close-${trip?.status ?? "scheduled"}`} id="perjalanan-keselamatan">
@@ -146,16 +145,12 @@ export function TripClosePanel({
                 <input type="hidden" name="assignment_id" value={assignmentId} />
 
                 {unclearStudents > 0 && (
-                  <div className="close-warning">
-                    <strong>Masih ada {unclearStudents} siswa berstatus naik atau belum dicatat.</strong>
+                  <div className="close-warning" role="alert">
+                    <strong>Masih ada {unclearStudents} siswa yang belum dipastikan turun dari bus.</strong>
                     <p>
-                      Periksa kabin dan pastikan status setiap siswa benar. Siswa tanpa catatan tetap wajib dicatat
-                      terlebih dahulu.
+                      Periksa kabin dan catat status setiap siswa sampai tidak ada penumpang yang tertinggal di dalam bus.
+                      Perjalanan belum dapat diakhiri selama masih ada siswa berstatus naik atau belum jelas.
                     </p>
-                    <label className="close-check">
-                      <input type="checkbox" name="acknowledge_open" value="1" required />
-                      <span>Saya sudah memeriksa kabin dan memastikan status siswa tersebut benar.</span>
-                    </label>
                   </div>
                 )}
 
@@ -163,7 +158,7 @@ export function TripClosePanel({
                   <legend>Pemeriksaan keselamatan wajib</legend>
                   {SAFETY_CHECKS.map((check) => (
                     <label key={check.name} className="safety-check">
-                      <input type="checkbox" name={check.name} required />
+                      <input type="checkbox" name={check.name} required={check.required} />
                       <span>{check.label}</span>
                     </label>
                   ))}
@@ -186,6 +181,9 @@ export function TripClosePanel({
                         Catat status {unrecordedNames.length} siswa berikut sebelum mengakhiri:{" "}
                         {unrecordedNames.join(", ")}.
                       </span>
+                    )}
+                    {unclearStudents > 0 && (
+                      <span> Pastikan seluruh penumpang sudah turun dan tidak ada yang tertinggal di dalam bus.</span>
                     )}
                   </p>
                 )}
