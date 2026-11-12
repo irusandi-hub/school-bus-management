@@ -41,7 +41,10 @@ export function TripClosePanel({
   useEffect(() => {
     const openPanel = () => setIsOpen(true);
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") closePanel();
+      if (event.key === "Escape") {
+        setIsOpen(false);
+        router.replace(`/pengemudi?tugas=${encodeURIComponent(assignmentId)}`, { scroll: false });
+      }
     };
     window.addEventListener("schoolbus:open-trip-safety", openPanel);
     window.addEventListener("keydown", closeOnEscape);
@@ -49,7 +52,7 @@ export function TripClosePanel({
       window.removeEventListener("schoolbus:open-trip-safety", openPanel);
       window.removeEventListener("keydown", closeOnEscape);
     };
-  }, []);
+  }, [assignmentId, router]);
 
   useEffect(() => {
     if (!isOpen) return;
