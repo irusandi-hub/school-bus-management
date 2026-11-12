@@ -40,6 +40,8 @@ describe("tombol perjalanan pengemudi", () => {
     assert.match(panel, /disabled={!requirementsMet}/);
     assert.match(panel, />\s*Akhiri\s*</);
     assert.match(panel, /Semua penumpang sudah turun/);
+    assert.match(panel, /disabled={Boolean\(trip\.arrived_at\)}/);
+    assert.match(panel, /kecuali yang berstatus Tidak Ikut/);
     assert.match(panel, /Belum bisa diakhiri:/);
     assert.doesNotMatch(panel, /Konfirmasi tiba di sekolah/);
     assert.doesNotMatch(panel, /Catatan pemeriksaan/);
@@ -49,9 +51,11 @@ describe("tombol perjalanan pengemudi", () => {
   it("konfirmasi semua penumpang turun divalidasi di server sebelum waktu tiba dicatat", () => {
     const actions = fs.readFileSync("app/pengemudi/actions.ts", "utf8");
     const confirmBlock = actions.slice(actions.indexOf("export async function confirmArrival"), actions.indexOf("function readConfirmation"));
-    assert.match(confirmBlock, /studentsStillOnBus/);
-    assert.match(confirmBlock, /stillOnBus\.length > 0/);
-    assert.match(confirmBlock, /Semua penumpang sudah turun/);
+    assert.match(confirmBlock, /studentsToMarkDown/);
+    assert.match(confirmBlock, /event_type: "dropped_off"/);
+    assert.match(confirmBlock, /!\["absent", "dropped_off"\]/);
+    assert.match(confirmBlock, /recorded_by: ctx\.userId/);
+    assert.doesNotMatch(confirmBlock, /stillOnBus\.length > 0/);
   });
 
   it("riwayat ditampilkan sebagai tab pada dashboard, bukan halaman terpisah", () => {
