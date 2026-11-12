@@ -44,6 +44,8 @@ describe("tombol perjalanan pengemudi", () => {
     assert.match(panel, /role="dialog"/);
     assert.match(panel, /aria-modal="true"/);
     assert.match(panel, /schoolbus:open-trip-safety/);
+    assert.match(panel, /initialOpen/);
+    assert.match(panel, /router\.replace\(`\/pengemudi\?tugas=/);
     assert.match(panel, /aria-label="Tutup pemeriksaan"/);
     assert.match(panel, /event\.key === "Escape"/);
     assert.doesNotMatch(panel, /arrivalReady/);
@@ -57,6 +59,7 @@ describe("tombol perjalanan pengemudi", () => {
     const actions = fs.readFileSync("app/pengemudi/actions.ts", "utf8");
     const confirmBlock = actions.slice(actions.indexOf("export async function confirmArrival"), actions.indexOf("function readConfirmation"));
     assert.match(confirmBlock, /studentsToMarkDown/);
+    assert.match(confirmBlock, /panel=keselamatan/);
     assert.match(confirmBlock, /event_type: "dropped_off"/);
     assert.match(confirmBlock, /!\["absent", "dropped_off"\]/);
     assert.match(confirmBlock, /recorded_by: ctx\.userId/);
