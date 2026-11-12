@@ -62,15 +62,14 @@ export function studentActionSet(input: StudentActionInput): StudentActionSet {
     if (afternoon) {
       return { canBoard: false, canDrop: true, canAbsent: true, dropLabel, hint: null };
     }
-    if (input.arrived) {
-      return { canBoard: false, canDrop: true, canAbsent: false, dropLabel, hint: null };
-    }
     return {
       canBoard: false,
-      canDrop: false,
+      canDrop: input.arrived,
       canAbsent: true,
       dropLabel,
-      hint: "Siswa sudah naik. Jika orang tua membatalkan sebelum tiba, catat Tidak Ikut untuk membatalkan keikutsertaan.",
+      hint: input.arrived
+        ? "Siswa sudah naik. Catat Tidak Ikut hanya jika keikutsertaan memang dibatalkan."
+        : "Siswa sudah naik. Jika keikutsertaan dibatalkan, tekan Tidak Ikut untuk membatalkan status Naik.",
     };
   }
 
