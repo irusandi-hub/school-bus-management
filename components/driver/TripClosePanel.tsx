@@ -155,11 +155,11 @@ export function TripClosePanel({
                 )}
 
                 <fieldset className="safety-checks">
-                  <legend>Pemeriksaan keselamatan wajib</legend>
+                  <legend>Pemeriksaan keselamatan</legend>
                   {SAFETY_CHECKS.map((check) => (
                     <label key={check.name} className="safety-check">
                       <input type="checkbox" name={check.name} required={check.required} />
-                      <span>{check.label}</span>
+                      <span>{check.label} <small>{check.required ? "Wajib" : "Opsional"}</small></span>
                     </label>
                   ))}
                   <label className="safety-notes">
