@@ -39,7 +39,20 @@ describe("tombol perjalanan pengemudi", () => {
     assert.match(panel, /const requirementsMet = canEndTrip && allRequiredChecksConfirmed && unclearStudents === 0/);
     assert.match(panel, /disabled={!requirementsMet}/);
     assert.match(panel, />\s*Akhiri\s*</);
-    assert.doesNotMatch(panel, />\s*Akhiri Perjalanan\s*</);
+    assert.match(panel, /Semua penumpang sudah turun/);
+    assert.match(panel, /Belum bisa diakhiri:/);
+    assert.doesNotMatch(panel, /Konfirmasi tiba di sekolah/);
+    assert.doesNotMatch(panel, /Catatan pemeriksaan/);
+    assert.doesNotMatch(panel, /Akhiri Perjalanan\s*</);
+  });
+
+  it("riwayat ditampilkan sebagai tab pada dashboard, bukan halaman terpisah", () => {
+    const page = fs.readFileSync("app/pengemudi/page.tsx", "utf8");
+    const oldHistoryRoute = fs.readFileSync("app/pengemudi/riwayat/page.tsx", "utf8");
+    assert.match(page, /tab=riwayat/);
+    assert.match(page, /firstParam\(query\.tab\) === "riwayat"/);
+    assert.match(page, /Navigasi Pengemudi/);
+    assert.match(oldHistoryRoute, /redirect\("\/pengemudi\?tab=riwayat"\)/);
   });
 
   it("stylesheet redesign hanya dimuat pada layout Pengelola", () => {
