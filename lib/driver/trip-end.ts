@@ -3,7 +3,7 @@
  *
  * Perjalanan hanya boleh diakhiri setelah:
  * 1. perjalanan memang sedang berjalan,
- * 2. kedatangan di sekolah sudah dikonfirmasi,
+ * 2. status seluruh penumpang sudah dituntaskan melalui konfirmasi massal,
  * 3. seluruh siswa aktif pada rute sudah dicatat statusnya, dan
  * 4. konfirmasi kabin kosong wajib; pernyataan barang tertinggal bersifat tambahan.
  *
@@ -64,7 +64,7 @@ export function evaluateTripEnd(input: TripEndInput): TripEndResult {
   }
 
   if (!input.arrivedAt) {
-    problems.push("Konfirmasi kedatangan di sekolah sebelum mengakhiri perjalanan.");
+    problems.push("Tuntaskan status seluruh penumpang sebelum mengakhiri perjalanan.");
   }
 
   if (missing.length > 0) {
