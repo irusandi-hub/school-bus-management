@@ -136,7 +136,7 @@ export async function confirmArrival(formData: FormData) {
     status: string;
     trip_assignments: { route_id: string; driver_id: string; routes: { direction: string } | null } | null;
   } | null;
-  if (tripError || !trip || trip.trip_assignments?.driver_id !== ctx.driverId) {
+  if (tripError || !trip || !trip.trip_assignments || trip.trip_assignments.driver_id !== ctx.driverId) {
     backTo(target, "Perjalanan tidak ditemukan untuk akun Anda.", "error");
   }
   if (trip.status !== "in_progress") backTo(target, "Perjalanan tidak sedang berlangsung.", "error");
