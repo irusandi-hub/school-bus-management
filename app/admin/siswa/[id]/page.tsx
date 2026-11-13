@@ -6,6 +6,8 @@ import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
 import { RecordForm, type FieldDef } from "@/components/admin/RecordForm";
 import { Breadcrumbs, ConfigNotice, Notice, PageHeader, Pill } from "@/components/admin/ui";
 import { adminReadContext } from "@/lib/admin/read";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 import { getProjectAreaContext, loadProjectAreaScope } from "@/lib/project-areas/context";
 import type { StatusHistoryRow, StudentRow } from "@/lib/types";
 import {
@@ -31,6 +33,8 @@ function statusTone(status: string) {
 
 export default async function StudentDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const locale = await getRequestLocale();
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
   const supabase = await adminReadContext();
   if (!supabase) return <ConfigNotice />;
 
@@ -121,7 +125,7 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
 
       <PageHeader
         title={student.full_name}
-        description={`Nomor induk siswa ${student.admissions_number}`}
+        description={`${c("Nomor induk siswa")} ${student.admissions_number}`}
         actions={
           <Link className="btn btn-secondary" href={`/admin/siswa?edit=${student.id}`}>
             Ubah data siswa
