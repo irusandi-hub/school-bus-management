@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { BrandLogo } from "@/components/brand-logo";
 import { Icon } from "@/components/ui/Icon";
+import { LocalizedText } from "@/components/i18n/LocaleProvider";
 import { signOutAction } from "@/lib/auth-actions";
 import type { TripProgress } from "@/lib/driver/trip-progress";
 
@@ -69,18 +70,18 @@ export function DriverOpsHeader({
       </div>
 
       <nav className="portal-nav compact-driver-tabs" aria-label="Navigasi Pengemudi">
-        <Link href="/pengemudi" aria-current={activeTab === "dashboard" ? "page" : undefined}>Data Pengemudi</Link>
-        <Link href="/pengemudi?tab=riwayat" aria-current={activeTab === "riwayat" ? "page" : undefined}>Riwayat</Link>
+        <Link href="/pengemudi" aria-current={activeTab === "dashboard" ? "page" : undefined}><LocalizedText k="driverData" /></Link>
+        <Link href="/pengemudi?tab=riwayat" aria-current={activeTab === "riwayat" ? "page" : undefined}><LocalizedText k="history" /></Link>
       </nav>
       {/* Baris 2: angka tetap berasal dari TripProgress; handler CTA tetap children. */}
       <div className="compact-action-row">
         <div className="compact-counters" aria-live="polite" aria-label={`Progres ${progress.kindLabel.toLowerCase()}`}>
-          <span className="compact-counter">Total: <b>{progress.total}</b></span>
+          <span className="compact-counter"><LocalizedText k="total" />: <b>{progress.total}</b></span>
           <span className="compact-counter" aria-label={`${progress.doneLabel}: ${progress.done}`}>
-            {progress.kind === "dropoff" ? "Diantar" : "Dijemput"}: <b>{progress.done}</b>
+            {progress.kind === "dropoff" ? <LocalizedText k="droppedOff" /> : <LocalizedText k="pickedUp" />}: <b>{progress.done}</b>
           </span>
-          <span className="compact-counter" aria-label={`${progress.waitingLabel}: ${progress.waiting}`}>Sisa: <b>{progress.waiting}</b></span>
-          <span className="compact-counter compact-onboard">Di Bus: <b>{progress.onboard}</b></span>
+          <span className="compact-counter" aria-label={`${progress.waitingLabel}: ${progress.waiting}`}><LocalizedText k="remaining" />: <b>{progress.waiting}</b></span>
+          <span className="compact-counter compact-onboard"><LocalizedText k="onBus" />: <b>{progress.onboard}</b></span>
         </div>
         {children && <div className="ops-head-action">{children}</div>}
       </div>
