@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { BrandLogo } from "@/components/brand-logo";
 import "./landing.css";
 import { LandingControls, LandingDownloads, LandingRoleArrow } from "@/components/landing-controls";
+import { LocalizedText } from "@/components/i18n/LocaleProvider";
 
 import { isDevOpenAccess } from "@/lib/dev-open-access";
 
@@ -21,11 +22,7 @@ export const metadata: Metadata = {
 const STRIP_ITEMS = [
   {
     label: (
-      <>
-        Perjalanan{" "}
-        <br />
-        Terpantau
-      </>
+<LocalizedText k="tripMonitored" />
     ),
     icon: (
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -47,11 +44,7 @@ const STRIP_ITEMS = [
   },
   {
     label: (
-      <>
-        Posisi Bus{" "}
-        <br />
-        Diketahui
-      </>
+<LocalizedText k="busPosition" />
     ),
     icon: (
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -67,11 +60,7 @@ const STRIP_ITEMS = [
   },
   {
     label: (
-      <>
-        Kedatangan{" "}
-        <br />
-        Terinformasikan
-      </>
+<LocalizedText k="arrivalUpdates" />
     ),
     icon: (
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -330,10 +319,10 @@ export default function LandingPage() {
         <section className="landing-hero" aria-labelledby="landing-title">
           <div className="landing-hero-copy">
             <h1 id="landing-title" className="landing-title">
-              Perjalanan Anak,
+              <LocalizedText k="landingTitle" />
               <br />
               <span className="landing-title-accent">
-                Terpantau Setiap Saat.
+                <LocalizedText k="landingTitleAccent" />
                 <svg
                   className="landing-title-underline"
                   viewBox="0 0 240 14"
@@ -351,7 +340,7 @@ export default function LandingPage() {
               </span>
             </h1>
             <p className="landing-lead">
-              Informasi perjalanan yang jelas bagi orang tua, pengemudi, dan pengelola layanan bus sekolah.
+              <LocalizedText k="landingLead" />
             </p>
             <LandingDownloads />
           </div>
@@ -399,9 +388,9 @@ export default function LandingPage() {
                   <span className="landing-role-badge" aria-hidden="true">
                     {role.badge}
                   </span>
-                  <h2 className="landing-role-title">{role.title}</h2>
+                  <h2 className="landing-role-title">{role.id === "parent" ? <LocalizedText k="parent" /> : role.id === "driver" ? <LocalizedText k="driver" /> : <LocalizedText k="manager" />}</h2>
                 </div>
-                <p className="landing-role-desc">{role.description}</p>
+                <p className="landing-role-desc">{role.id === "parent" ? <LocalizedText k="parentBenefit" /> : role.id === "driver" ? <LocalizedText k="driverBenefit" /> : <LocalizedText k="managerBenefit" />}</p>
                 <div className="landing-chips" aria-hidden="true">
                   {role.chips.map((chip, index) => (
                     <span className="landing-chip" key={index}>
@@ -437,13 +426,13 @@ export default function LandingPage() {
           </div>
 
           <h2 id="landing-cta-title" className="landing-cta-title">
-            Satu Pintu untuk Setiap Peran.
+            <LocalizedText k="oneDoor" />
             <br />
-            <span>Satu Layanan Perjalanan Sekolah.</span>
+            <span><LocalizedText k="oneService" /></span>
           </h2>
 
           <div className="landing-entry-copy">
-            Pilih kartu sesuai peran Anda untuk melanjutkan ke ruang layanan yang tepat.
+            <LocalizedText k="chooseRole" />
           </div>
         </section>
 
