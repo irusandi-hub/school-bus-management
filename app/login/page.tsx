@@ -14,20 +14,9 @@ const reasons: Record<string, string> = {
 };
 
 const doors: Record<string, { label: string; detail: string }> = {
-  operator: {
-    label: "Operator Utama",
-    detail: "Gunakan akun Operator Utama untuk mengelola seluruh data dan operasional platform.",
-  },
-  pengemudi: {
-    label: "Pengemudi",
-    detail:
-      "Gunakan akun pengemudi yang sudah ditautkan Operator. Setelah masuk, Anda diarahkan ke tugas hari ini.",
-  },
-  wali: {
-    label: "Orang Tua/Wali",
-    detail:
-      "Gunakan email dan kata sandi akun wali. Akun harus didaftarkan Operator dan memiliki siswa dengan layanan aktif.",
-  },
+  operator: { labelKey: "operator", detailKey: "loginOperatorDetail" },
+  pengemudi: { labelKey: "driverArea", detailKey: "loginDriverDetail" },
+  wali: { labelKey: "guardianPortal", detailKey: "loginGuardianDetail" },
 };
 
 export const dynamic = "force-dynamic";
@@ -59,8 +48,8 @@ export default async function LoginPage({
         <h1><LocalizedText k="loginTitle" /></h1>
         {door ? (
           <p className="auth-door">
-            <strong>{door.label}</strong>
-            <span>{door.detail}</span>
+            <strong><LocalizedText k={door.labelKey} /></strong>
+            <span><LocalizedText k={door.detailKey} /></span>
           </p>
         ) : (
           <p className="auth-copy"><LocalizedText k="loginCopy" /></p>
