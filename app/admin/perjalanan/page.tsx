@@ -69,7 +69,7 @@ export default async function TripsPage() {
         <header className="panel-head">
           <div>
             <h2 className="panel-title"><AdminCopy value="60 perjalanan terbaru" /></h2>
-            <div className="panel-subtitle">Waktu mulai, tiba di sekolah, dan selesai dicatat oleh sistem</div>
+            <div className="panel-subtitle"><AdminCopy value="Waktu mulai, tiba di sekolah, dan selesai dicatat oleh sistem" /></div>
           </div>
         </header>
         <div className="admin-table-wrap">
