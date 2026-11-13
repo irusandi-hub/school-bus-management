@@ -620,6 +620,19 @@ const copy: Record<string, Record<Locale, string>> = {
   "Mulai navigasi": { id: "Mulai navigasi", en: "Start navigation", ar: "بدء التنقل" },
   "Titik ini belum memiliki koordinat tersimpan. Navigasi tidak dibuka karena alamat tidak boleh ditebak.": { id: "Titik ini belum memiliki koordinat tersimpan. Navigasi tidak dibuka karena alamat tidak boleh ditebak.", en: "This point has no saved coordinates. Navigation is unavailable because addresses must not be guessed.", ar: "لا توجد إحداثيات محفوظة لهذه النقطة. لن يتم فتح التنقل لأنه لا يجوز تخمين العناوين." },
   "Status titik berasal dari urutan rute dan catatan kehadiran siswa. Posisi bus belum dilacak karena integrasi GPS belum aktif, dan navigasi eksternal tidak mengubah status siswa.": { id: "Status titik berasal dari urutan rute dan catatan kehadiran siswa. Posisi bus belum dilacak karena integrasi GPS belum aktif, dan navigasi eksternal tidak mengubah status siswa.", en: "Stop status comes from route order and student attendance records. Bus position is not tracked because GPS integration is not active, and external navigation does not change student status.", ar: "تستند حالة النقطة إلى ترتيب المسار وسجلات حضور الطلاب. لا يتم تتبع موقع الحافلة لأن تكامل GPS غير نشط، كما أن التنقل الخارجي لا يغير حالة الطالب." },
+  "GPS HP": { id: "GPS HP", en: "Phone GPS", ar: "GPS الهاتف" },
+  "Mencari GPS HP. Tunggu sampel lokasi pertama.": { id: "Mencari GPS HP. Tunggu sampel lokasi pertama.", en: "Locating phone GPS. Wait for the first location sample.", ar: "جارٍ تحديد موقع GPS الهاتف. انتظر عينة الموقع الأولى." },
+  "Peta tidak dapat dimuat": { id: "Peta tidak dapat dimuat", en: "Map could not be loaded", ar: "تعذر تحميل الخريطة" },
+  "Memuat peta OpenStreetMap…": { id: "Memuat peta OpenStreetMap…", en: "Loading OpenStreetMap…", ar: "جارٍ تحميل OpenStreetMap…" },
+  "Koordinat tetap tersedia di daftar titik. Periksa koneksi lalu muat ulang.": { id: "Koordinat tetap tersedia di daftar titik. Periksa koneksi lalu muat ulang.", en: "Coordinates remain available in the stop list. Check your connection and reload.", ar: "تظل الإحداثيات متاحة في قائمة النقاط. تحقق من الاتصال ثم أعد التحميل." },
+  "Menunggu ubin peta dari OpenStreetMap.": { id: "Menunggu ubin peta dari OpenStreetMap.", en: "Waiting for map tiles from OpenStreetMap.", ar: "بانتظار مربعات الخريطة من OpenStreetMap." },
+  "bukan jalur jalan. Navigasi belokan belum tersedia.": { id: "bukan jalur jalan. Navigasi belokan belum tersedia.", en: "not a road route. Turn-by-turn navigation is not available yet.", ar: "ليس مساراً للطرق. التنقل خطوة بخطوة غير متاح بعد." },
+  "titik tanpa koordinat tidak ditampilkan.": { id: "titik tanpa koordinat tidak ditampilkan.", en: "stops without coordinates are not displayed.", ar: "لا يتم عرض النقاط التي لا تحتوي على إحداثيات." },
+  "Pusatkan peta ke posisi HP pengemudi": { id: "Pusatkan peta ke posisi HP pengemudi", en: "Center map on driver's phone location", ar: "توسيط الخريطة على موقع هاتف السائق" },
+  "Pusatkan ke posisi HP": { id: "Pusatkan ke posisi HP", en: "Center on phone location", ar: "توسيط الخريطة على موقع الهاتف" },
+  "Peta": { id: "Peta", en: "Map", ar: "الخريطة" },
+  "titik rute dari koordinat tersimpan; dapat digeser dan diperbesar, bukan navigasi belokan": { id: "titik rute dari koordinat tersimpan; dapat digeser dan diperbesar, bukan navigasi belokan", en: "route stops from saved coordinates; can be dragged and zoomed, not turn-by-turn navigation", ar: "نقاط المسار من الإحداثيات المحفوظة؛ يمكن سحبها وتكبيرها، وليست تنقلاً خطوة بخطوة" },
+  "Siswa": { id: "Siswa", en: "Students", ar: "الطلاب" },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
