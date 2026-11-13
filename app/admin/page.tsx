@@ -73,10 +73,10 @@ export default async function AdminHomePage() {
       <MetricStrip
         label={`${t("activeData")} ${contextLabel}`}
         items={[
-          { label: t("schoolNotSet") === "Sekolah belum ditetapkan" ? "Sekolah" : locale === "en" ? "Schools" : "المدارس", value: schoolRows.count ?? 0, note: t("active"), icon: "school" },
-          { label: locale === "id" ? "Siswa" : locale === "en" ? "Students" : "الطلاب", value: studentRows.count ?? 0, note: t("activeService"), icon: "students" },
-          { label: t("bus"), value: busRows.count ?? 0, note: locale === "id" ? "Armada aktif" : locale === "en" ? "Active fleet" : "الحافلات النشطة", icon: "bus" },
-          { label: t("driver"), value: driverRows.count ?? 0, note: t("activeAccountLabel"), icon: "driver" },
+          { label: t("schoolLabel"), value: schoolRows.count ?? 0, note: t("active"), icon: "school" },
+          { label: t("studentsLabel"), value: studentRows.count ?? 0, note: t("activeService"), icon: "students" },
+          { label: t("busesLabel"), value: busRows.count ?? 0, note: t("fleetActive"), icon: "bus" },
+          { label: t("driversLabel"), value: driverRows.count ?? 0, note: t("activeAccountLabel"), icon: "driver" },
           { label: t("areaContext"), value: areaContext.activeAreas.length, note: t("activeArea"), icon: "operator" },
         ]}
       />
