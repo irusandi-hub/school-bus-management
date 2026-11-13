@@ -633,6 +633,16 @@ const copy: Record<string, Record<Locale, string>> = {
   "Peta": { id: "Peta", en: "Map", ar: "الخريطة" },
   "titik rute dari koordinat tersimpan; dapat digeser dan diperbesar, bukan navigasi belokan": { id: "titik rute dari koordinat tersimpan; dapat digeser dan diperbesar, bukan navigasi belokan", en: "route stops from saved coordinates; can be dragged and zoomed, not turn-by-turn navigation", ar: "نقاط المسار من الإحداثيات المحفوظة؛ يمكن سحبها وتكبيرها، وليست تنقلاً خطوة بخطوة" },
   "Siswa": { id: "Siswa", en: "Students", ar: "الطلاب" },
+  "belum memiliki koordinat tersimpan. Navigasi tidak dibuka karena alamat tidak boleh ditebak.": { id: "belum memiliki koordinat tersimpan. Navigasi tidak dibuka karena alamat tidak boleh ditebak.", en: "has no saved coordinates. Navigation is unavailable because addresses must not be guessed.", ar: "لا توجد إحداثيات محفوظة. لن يتم فتح التنقل لأنه لا يجوز تخمين العناوين." },
+  "Perjalanan selesai": { id: "Perjalanan selesai", en: "Trip completed", ar: "اكتملت الرحلة" },
+  "Belum ada titik tujuan": { id: "Belum ada titik tujuan", en: "No destination stop", ar: "لا توجد نقطة وجهة" },
+  "Navigasi ditutup karena perjalanan sudah ditutup pengemudi.": { id: "Navigasi ditutup karena perjalanan sudah ditutup pengemudi.", en: "Navigation is closed because the driver has ended the trip.", ar: "تم إغلاق التنقل لأن السائق أنهى الرحلة." },
+  "Rute ini belum memiliki titik jemput. Hubungi Operator Utama.": { id: "Rute ini belum memiliki titik jemput. Hubungi Operator Utama.", en: "This route has no pickup stops yet. Contact the Main Operator.", ar: "لا يحتوي هذا المسار على نقاط صعود بعد. تواصل مع المشغّل الرئيسي." },
+  "Perjalanan selesai tetap tersimpan. Status ini berasal dari catatan pengemudi, bukan dari GPS.": { id: "Perjalanan selesai tetap tersimpan. Status ini berasal dari catatan pengemudi, bukan dari GPS.", en: "The completed trip remains saved. This status comes from the driver's records, not GPS.", ar: "تظل الرحلة المكتملة محفوظة. تأتي هذه الحالة من سجلات السائق وليس من GPS." },
+  "Tidak ada tujuan yang dapat dibuka.": { id: "Tidak ada tujuan yang dapat dibuka.", en: "There is no destination to open.", ar: "لا توجد وجهة يمكن فتحها." },
+  "Buka navigasi ke": { id: "Buka navigasi ke", en: "Open navigation to", ar: "افتح التنقل إلى" },
+  "tujuan": { id: "tujuan", en: "destination", ar: "الوجهة" },
+  "titik dari": { id: "titik dari", en: "stops out of", ar: "نقاط من" },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
