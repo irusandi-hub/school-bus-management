@@ -5,7 +5,6 @@ import { BrandLogo } from "@/components/brand-logo";
 import "./landing.css";
 import { LandingControls, LandingDownloads, LandingRoleArrow } from "@/components/landing-controls";
 
-import { isDevOpenAccess } from "@/lib/dev-open-access";
 
 const HERO_IMAGE = {
   src: "/assets/landing/hero-bus.webp",
@@ -96,7 +95,7 @@ const STRIP_ITEMS = [
 const ROLE_CARDS = [
   {
     id: "parent",
-    href: "/wali",
+    href: "/login",
     entryLabel: "Masuk sebagai Orang Tua",
     title: "Untuk Orang Tua",
     description: "Pantau perjalanan anak secara langsung, kapan saja.",
@@ -170,7 +169,7 @@ const ROLE_CARDS = [
   },
   {
     id: "driver",
-    href: "/pengemudi",
+    href: "/login",
     entryLabel: "Masuk sebagai Pengemudi",
     title: "Untuk Pengemudi",
     description: "Dapatkan tugas dan navigasi rute dengan mudah.",
@@ -248,7 +247,7 @@ const ROLE_CARDS = [
   },
   {
     id: "operator",
-    href: "/operator",
+    href: "/login",
     entryLabel: "Masuk sebagai Pengelola",
     title: "Untuk Pengelola",
     description: "Kelola armada, pengemudi, dan jadwal perjalanan.",
@@ -318,8 +317,8 @@ const ROLE_CARDS = [
 ];
 
 export default function LandingPage() {
-  // Masa depan: panah aktif setelah pengguna registrasi/masuk. Saat ini akses dibuka untuk pengembangan.
-  const ROLE_ENTRY_ENABLED = isDevOpenAccess();
+  // Semua panah pada kartu jenis pengguna masuk melalui satu alur OTP.
+  const ROLE_ENTRY_ENABLED = true;
   return (
     <div className="landing">
       <LandingControls>
