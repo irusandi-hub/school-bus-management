@@ -3,6 +3,7 @@ import Link from "next/link";
 import { BrandLogo } from "@/components/brand-logo";
 import { Icon } from "@/components/ui/Icon";
 import { LocalizedText } from "@/components/i18n/LocaleProvider";
+import { LocalizedText } from "@/components/i18n/LocaleProvider";
 import { signOutAction } from "@/lib/auth-actions";
 import type { TripProgress } from "@/lib/driver/trip-progress";
 
@@ -55,15 +56,15 @@ export function DriverOpsHeader({
         <div className="compact-brand-route">
           <BrandLogo href="/pengemudi" size="sm" />
           <h1 className="compact-route" title={`${routeName} • ${shortDate}`}>
-            <span>{routeName || "Rute"}</span><time dateTime={serviceDate}> • {shortDate}</time>
+            <span>{routeName || <LocalizedText k="route" />}</span><time dateTime={serviceDate}> • {shortDate}</time>
           </h1>
         </div>
         <div className="compact-driver-identity">
-          <strong>{driverName || "Pengemudi"}</strong>
-          <span>ID {shortId} • {plateNumber || "Plat belum tercatat"}</span>
+          <strong>{driverName || <LocalizedText k="driver" />}</strong>
+          <span>ID {shortId} • {plateNumber || <LocalizedText k="plateNotRecorded" />}</span>
         </div>
         <form action={signOutAction} className="compact-logout-form">
-          <button className="compact-logout" type="submit" aria-label="Keluar" title="Keluar">
+          <button className="compact-logout" type="submit" aria-label="Sign out" title="Sign out">
             <Icon name="logout" size={17} />
           </button>
         </form>
