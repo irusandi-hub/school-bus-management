@@ -33,7 +33,7 @@ import {
 import { DEFAULT_NAVIGATION_PROVIDER, buildRouteDirectionsUrl } from "@/lib/navigation/external";
 import { createServerSupabase } from "@/lib/supabase/server";
 import type { RouteStopRow, TripEventRow, TripRow } from "@/lib/types";
-import { formatDate, formatDateTime, formatTime, routeDirectionLabel, serviceDateInTimeZone } from "@/lib/validation";
+import { formatDate, formatDateTime, formatTime, serviceDateInTimeZone } from "@/lib/validation";
 import { startTrip } from "./actions";
 
 export const metadata: Metadata = { title: "Operasional Hari Ini | Pengemudi" };
@@ -80,6 +80,7 @@ export default async function DriverOperationsPage({
   const savedLocale = cookieStore.get("sbm_locale")?.value;
   const locale = isLocale(savedLocale) ? savedLocale : defaultLocale;
   const t = (key: MessageKey) => translate(locale, key);
+  const directionLabel = (value: string) => value === "morning" ? t("morningDirection") : value === "afternoon" ? t("afternoonDirection") : t("directionNotRecorded");
   const access = await requireDriver();
   if (access.status === "unconfigured") return <ConfigNotice />;
 
@@ -135,7 +136,7 @@ export default async function DriverOperationsPage({
             </nav>
           </div>
         </section>
-        {historyError && <Notice kind="error">Riwayat belum dapat dimuat. Coba lagi.</Notice>}
+        {historyError && <Notice kind="error">{t("historyLoadError")}</Notice>}
         <section className="panel">
           <header className="panel-head">
             <div>
@@ -154,7 +155,7 @@ export default async function DriverOperationsPage({
                     <td data-label="Tanggal">{formatDate(item.trip_assignments?.service_date ?? item.created_at)}</td>
                     <td data-label="Rute">
                       <strong>{item.trip_assignments?.routes?.route_name ?? "Rute"}</strong>
-                      <small>{item.trip_assignments?.routes?.school_name} · {routeDirectionLabel(item.trip_assignments?.routes?.direction ?? "")}</small>
+                      <small>{item.trip_assignments?.routes?.school_name} · {directionLabel(item.trip_assignments?.routes?.direction ?? "")}</small>
                     </td>
                     <td data-label="Bus">{item.trip_assignments?.buses?.fleet_code ?? "—"}</td>
                     <td data-label="Status"><TripStatusPill status={item.status} /></td>
@@ -192,8 +193,8 @@ export default async function DriverOperationsPage({
           </div>
           <p className="ops-empty-copy">
             {completedToday
-              ? `Perjalanan untuk ${formatDate(date)} sudah selesai. Riwayat tetap tersimpan dan tidak ada perjalanan baru yang dibuat otomatis.`
-              : `Tidak ada penugasan untuk ${formatDate(date)}. Hubungi operator bila Anda seharusnya bertugas.`}
+              ? t("completedTripForDate").replace("{date}", formatDate(date))
+              : t("noAssignmentForDate").replace("{date}", formatDate(date))}
           </p>
         </section>
         {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
@@ -201,11 +202,11 @@ export default async function DriverOperationsPage({
         <section className="panel">
           <EmptyState
             icon={completedToday ? "check" : "inbox"}
-            title={completedToday ? "Perjalanan hari ini selesai" : "Belum ada tugas hari ini"}
+            title={completedToday ? t("tripTodayDone") : t("noTasksToday")}
             detail={
               completedToday
-                ? "Tidak ada perjalanan aktif. Catatan kehadiran dan pemeriksaan keselamatan tersimpan di riwayat."
-                : "Tugas dibuat oleh Operator Utama. Tidak ada jadwal contoh yang ditampilkan."
+                ? t("noActiveTrip")
+                : t("tasksByOperator")
             }
           />
         </section>
@@ -388,7 +389,7 @@ export default async function DriverOperationsPage({
                 href={`/pengemudi?tugas=${assignment.id}`}
                 aria-current={assignment.id === selected.id ? "page" : undefined}
               >
-                {assignment.routes?.route_name ?? t("routeFallback")} · {routeDirectionLabel(assignment.routes?.direction ?? "")} ·{" "}
+                {assignment.routes?.route_name ?? t("routeFallback")} · {directionLabel(assignment.routes?.direction ?? "")} ·{" "}
                 {assignmentTrip?.status === "in_progress"
                   ? t("inProgress")
                   : assignmentTrip?.status === "completed"
