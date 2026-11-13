@@ -306,6 +306,11 @@ const copy: Record<string, Record<Locale, string>> = {
   "Tindakan tidak sesuai status siswa. Muat ulang halaman.": { id: "Tindakan tidak sesuai status siswa. Muat ulang halaman.", en: "This action does not match the student's status. Reload the page.", ar: "هذا الإجراء لا يتوافق مع حالة الطالب. أعد تحميل الصفحة." },
   "Status siswa belum tersimpan. Coba lagi.": { id: "Status siswa belum tersimpan. Coba lagi.", en: "Student status was not saved. Try again.", ar: "لم يتم حفظ حالة الطالب. حاول مرة أخرى." },
   "Status siswa tercatat pada perjalanan ini.": { id: "Status siswa tercatat pada perjalanan ini.", en: "Student status recorded for this trip.", ar: "تم تسجيل حالة الطالب في هذه الرحلة." },
+  "Sudah naik": { id: "Sudah naik", en: "Boarded", ar: "صعد" },
+  "Sudah turun": { id: "Sudah turun", en: "Dropped off", ar: "نزل" },
+  "Tidak ikut": { id: "Tidak ikut", en: "Not riding", ar: "لن يستقل" },
+  "Kendala": { id: "Kendala", en: "Issue", ar: "مشكلة" },
+  "Belum dicatat": { id: "Belum dicatat", en: "Not recorded", ar: "لم يتم التسجيل" },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
