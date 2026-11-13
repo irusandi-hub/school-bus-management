@@ -3,6 +3,7 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { useConfirm } from "@/components/ui/DialogProvider";
 import { useFormStatus } from "react-dom";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 
 type Props = {
   children: ReactNode;
@@ -18,13 +19,14 @@ type Props = {
 export function ConfirmSubmit({
   children,
   message,
-  title = "Konfirmasi tindakan",
-  confirmText = "Lanjutkan",
-  cancelText = "Batal",
+  title,
+  confirmText,
+  cancelText,
   className = "btn btn-danger",
   pendingLabel = "Memproses…",
   disabled = false,
 }: Props) {
+  const { t } = useLocale();
   const { pending } = useFormStatus();
   const confirm = useConfirm();
   const locked = useRef(false);
@@ -42,7 +44,7 @@ export function ConfirmSubmit({
         const form = button.form;
         if (!form) return;
         locked.current = true;
-        const accepted = await confirm({ title, message, confirmText, cancelText });
+        const accepted = await confirm({ title: title ?? t("confirmAction"), message, confirmText: confirmText ?? t("continue"), cancelText: cancelText ?? t("cancelLabel") });
         if (!accepted || !button.isConnected || !form.isConnected) { locked.current = false; return; }
         if (!form.noValidate && !form.reportValidity()) { locked.current = false; return; }
         form.requestSubmit(button);
