@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ConfigNotice } from "@/components/admin/ui";
 import { BrandLogo } from "@/components/brand-logo";
 import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
+import { LocalizedText } from "@/components/i18n/LocaleProvider";
 import { BottomNav } from "@/components/ui/BottomNav";
 import { signOutAction } from "@/lib/auth-actions";
 import { driverBottomNav } from "@/components/ui/nav-config";
@@ -22,7 +23,7 @@ export default async function DriverLayout({ children }: { children: React.React
         <BrandLogo href="/pengemudi" subtitle="Area Pengemudi" size="sm" />
         <span>{name}</span>
         <LocaleSwitcher compact />
-        <form action={signOutAction}><button className="btn btn-ghost btn-sm" type="submit">Keluar</button></form>
+        <form action={signOutAction}><button className="btn btn-ghost btn-sm" type="submit"><LocalizedText k="signOut" /></button></form>
       </header>
       <main className="driver-main">{children}</main>
       <footer className="driver-foot">
