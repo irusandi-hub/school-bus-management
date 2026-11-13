@@ -167,12 +167,12 @@ export function RecordForm({ action, fields, submitLabel, hidden, note, secondar
 
               {field.help && (
                 <p className="field-hint" id={helpId}>
-                  {field.help}
+                  {copy(field.help)}
                 </p>
               )}
               {error && (
                 <p className="field-error" id={errorId}>
-                  {error}
+                  {copy(error)}
                 </p>
               )}
             </div>
@@ -189,7 +189,7 @@ export function RecordForm({ action, fields, submitLabel, hidden, note, secondar
       )}
       {state.status === "success" && (
         <p className="form-alert success" role="status">
-          {state.message}
+          {copy(state.message) ?? state.message}
         </p>
       )}
 
