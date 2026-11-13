@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdminCopy } from "@/components/i18n/AdminCopy";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { RecordForm, type FieldDef } from "@/components/admin/RecordForm";
@@ -145,10 +146,10 @@ export default async function RouteDetailPage({
             <table className="admin-table admin-table-compact">
               <thead>
                 <tr>
-                  <th scope="col">Urutan</th>
-                  <th scope="col">Titik</th>
+                  <th scope="col"><AdminCopy value="Urutan" /></th>
+                  <th scope="col"><AdminCopy value="Titik" /></th>
                   <th scope="col">Koordinat</th>
-                  <th scope="col">Tindakan</th>
+                  <th scope="col"><AdminCopy value="Tindakan" /></th>
                 </tr>
               </thead>
               <tbody>
@@ -166,7 +167,7 @@ export default async function RouteDetailPage({
                       </td>
                       <td>
                         <strong>{stop.stop_name}</strong>
-                        {stop.is_school && <small>Gerbang sekolah</small>}
+                        {stop.is_school && <small><AdminCopy value="Gerbang sekolah" /></small>}
                       </td>
                       <td>
                         <code>
@@ -269,9 +270,9 @@ export default async function RouteDetailPage({
             <thead>
               <tr>
                 <th scope="col">Siswa</th>
-                <th scope="col">Titik</th>
-                <th scope="col">Arah</th>
-                <th scope="col">Tindakan</th>
+                <th scope="col"><AdminCopy value="Titik" /></th>
+                <th scope="col"><AdminCopy value="Arah" /></th>
+                <th scope="col"><AdminCopy value="Tindakan" /></th>
               </tr>
             </thead>
             <tbody>
