@@ -66,7 +66,7 @@ export default async function ReportsPage() {
       <PageHeader
         title="Laporan & audit"
         description={`Ringkasan data operasional dan jejak aktivitas platform. Konteks: ${areaContext.selected?.name ?? "Semua Area"}.`}
-        actions={<Link className="btn btn-secondary btn-sm" href="/operator/laporan/export">Unduh CSV</Link>}
+        actions={<Link className="btn btn-secondary btn-sm" href="/operator/laporan/export"><AdminCopy value="Unduh CSV" /></Link>}
       />
 
       <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath="/admin/laporan" compact />
@@ -93,13 +93,13 @@ export default async function ReportsPage() {
           <header className="panel-head">
             <div>
               <h2 className="panel-title"><AdminCopy value="Status modul" /></h2>
-              <div className="panel-subtitle">Fitur yang belum tersedia tidak ditampilkan sebagai tombol berjalan</div>
+              <div className="panel-subtitle"><AdminCopy value="Fitur yang belum tersedia tidak ditampilkan sebagai tombol berjalan" /></div>
             </div>
             <Pill tone="warning">Terbatas</Pill>
           </header>
           <ul className="check-list">
             <li>
-              <strong>Data induk &amp; akun wali</strong>
+              <strong><AdminCopy value="Data induk & akun wali" /></strong>
               <span>✓</span>
               <small><AdminCopy value="Perubahan mengikuti hak akses akun. Riwayat status tetap tersimpan." /></small>
             </li>
@@ -109,7 +109,7 @@ export default async function ReportsPage() {
               <small><AdminCopy value="Rute dan penugasan dikelola Operator Utama; perjalanan dijalankan pengemudi yang ditugaskan." /></small>
             </li>
             <li>
-              <strong>GPS langsung &amp; kamera bus</strong>
+              <strong><AdminCopy value="GPS langsung & kamera bus" /></strong>
               <span>—</span>
               <small>
                 GPS dan kamera bus belum terintegrasi. Siaran kamera perjalanan mengikuti status dan izin pengemudi,
@@ -128,7 +128,7 @@ export default async function ReportsPage() {
           <header className="panel-head">
             <div>
               <h2 className="panel-title"><AdminCopy value="Prinsip audit" /></h2>
-              <div className="panel-subtitle">Dicatat otomatis saat ada perubahan</div>
+              <div className="panel-subtitle"><AdminCopy value="Dicatat otomatis saat ada perubahan" /></div>
             </div>
           </header>
           <div className="audit-note">
@@ -147,7 +147,7 @@ export default async function ReportsPage() {
         <header className="panel-head">
           <div>
             <h2 className="panel-title"><AdminCopy value="Jejak audit terbaru" /></h2>
-            <div className="panel-subtitle">60 catatan terakhir · audit platform tidak difilter per area</div>
+            <div className="panel-subtitle"><AdminCopy value="60 catatan terakhir · audit platform tidak difilter per area" /></div>
           </div>
         </header>
         <div className="admin-table-wrap">
