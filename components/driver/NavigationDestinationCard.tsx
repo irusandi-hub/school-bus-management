@@ -5,11 +5,9 @@ import { Pill } from "@/components/admin/ui";
 import {
   STOP_STATUS_LABEL,
   STOP_STATUS_TONE,
-  describeTarget,
   navigationDestination,
   type NavigationPlan,
 } from "@/lib/driver/navigation";
-import { formatCoordinates } from "@/lib/navigation/external";
 import { CoordinateLine, DriverNavigationButton } from "./DriverNavigationButton";
 
 function studentList(names: string[]) {
@@ -35,7 +33,6 @@ export async function NavigationDestinationCard({
   const locale = await getRequestLocale();
   const c = (value: string) => translateAdminCopy(value, locale) ?? value;
   const destination = navigationDestination(plan);
-  const coordinates = destination ? formatCoordinates(destination) : null;
   const targetLabel = !destination
     ? c(plan.stops.length === 0 ? "Rute belum memiliki titik" : "Perjalanan selesai")
     : plan.target
@@ -99,7 +96,7 @@ export async function NavigationDestinationCard({
           <div>
             <small>{c("Lokasi awal")}</small>
             <strong>{c(plan.origin.label)}</strong>
-            <span>{c(plan.origin.detail)}</span>
+            <span>{plan.origin.detail.includes(" · titik awal rute sore") ? `${plan.origin.detail.split(" · ")[0]} · ${c("titik awal rute sore")}` : c(plan.origin.detail)}</span>
           </div>
         </div>
 
