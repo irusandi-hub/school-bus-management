@@ -1,4 +1,5 @@
 import { Icon } from "@/components/ui/Icon";
+import { LocalizedText } from "@/components/i18n/LocaleProvider";
 import { StudentStatusControls } from "./StudentStatusControls";
 
 export type StudentListRow = {
@@ -54,9 +55,9 @@ export function StudentList({
               </small>
               {row.address && (
                 <details className="ops-student-more">
-                  <summary>Alamat</summary>
+                  <summary><LocalizedText k="address" /></summary>
                   <small className="ops-student-addr">
-                    <Icon name="home" size={12} /> {row.address} <span className="ops-data-note">data induk</span>
+                    <Icon name="home" size={12} /> {row.address} <span className="ops-data-note"><LocalizedText k="masterData" /></span>
                   </small>
                 </details>
               )}
