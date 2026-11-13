@@ -1,4 +1,7 @@
 import { canOpenRouteNavigation } from "@/lib/driver/navigation-availability";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translate } from "@/lib/i18n/messages";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 import { nextPickupMessage } from "@/lib/ui/copy";
 import { Icon } from "@/components/ui/Icon";
 import type { FullRoute, NavigationPlan } from "@/lib/driver/navigation";
@@ -16,7 +19,7 @@ import { NavigationStopList } from "./NavigationStopList";
  * Panel dibuat ringkas agar dapat berdampingan dengan tindakan siswa pada
  * ponsel. Daftar titik dan catatan rinci tersedia lewat area yang dapat dibuka.
  */
-export function FullRouteNavigator({
+export async function FullRouteNavigator({
   plan,
   route,
   mapUrl,
@@ -31,43 +34,47 @@ export function FullRouteNavigator({
   tripStatus: string;
   nextStop: NextStopResult;
 }) {
+  const locale = await getRequestLocale();
+  const t = (key: Parameters<typeof translate>[1]) => translate(locale, key);
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
+  const directionLabel = direction === "morning" ? t("morningDirection") : direction === "afternoon" ? t("afternoonDirection") : t("directionNotRecorded");
   const completed = plan.completed;
   const navigationEnabled = canOpenRouteNavigation(tripStatus, mapUrl);
   const activeCount = route.activeStops.length;
   const hasStudents = plan.stops.some((stop) => stop.students.length > 0);
   const showNextStudent = tripStatus === "in_progress" && Boolean(nextStop.target);
-  const noTargetTitle = nextPickupMessage(tripStatus, hasStudents, direction);
+  const noTargetTitle = c(nextPickupMessage(tripStatus, hasStudents, direction) ?? "");
   const skipReasons = Object.fromEntries(
     route.stops
       .filter((entry) => entry.skipReason)
       .map((entry) => [entry.stop.id, entry.skipReason as string]),
   );
   const ctaReason = completed
-    ? "Perjalanan selesai."
+    ? c("Perjalanan selesai.")
     : tripStatus !== "in_progress"
-      ? "Mulai perjalanan untuk membuka navigasi."
+      ? c("Mulai perjalanan untuk membuka navigasi.")
     : activeCount === 0
-      ? "Tidak ada titik tersisa."
+      ? c("Tidak ada titik tersisa.")
       : !mapUrl
-        ? "Koordinat titik belum lengkap."
-        : `${activeCount} titik · ${route.pendingStudents} siswa`;
+        ? c("Koordinat titik belum lengkap.")
+        : `${activeCount} ${locale === "en" ? "stops" : locale === "ar" ? "نقاط" : "titik"} · ${route.pendingStudents} ${t("studentCountLabel")}`;
 
   return (
-    <section className="route-card ops-nav-panel" aria-label="Navigasi rute lengkap">
+    <section className="route-card ops-nav-panel" aria-label={c("Navigasi rute lengkap")}>
       <header className="route-head">
         <div className="route-head-top">
           <span className="ops-panel-eyebrow">
-            <Icon name="navigation" size={13} /> Navigasi rute
+            <Icon name="navigation" size={13} /> {c("Navigasi rute")}
           </span>
-          <span className="route-direction">{routeDirectionLabel(direction)}</span>
+          <span className="route-direction">{directionLabel}</span>
         </div>
         <h2>
-          {completed ? "Rute sudah selesai" : `${activeCount} titik aktif`}
-          <span className="ops-panel-count">{route.pendingStudents} siswa</span>
+          {completed ? c("Rute sudah selesai") : `${activeCount} ${locale === "en" ? "active stops" : locale === "ar" ? "نقاط نشطة" : "titik aktif"}`}
+          <span className="ops-panel-count">{route.pendingStudents} {t("studentCountLabel")}</span>
         </h2>
-        <p className="route-lock" title={route.locked ? "Urutan titik terkunci sejak perjalanan dimulai." : "Urutan titik ditetapkan sistem sebelum perjalanan dimulai."}>
+        <p className="route-lock" title={route.locked ? c("Urutan titik terkunci sejak perjalanan dimulai.") : c("Urutan titik ditetapkan sistem sebelum perjalanan dimulai.")}>
           <Icon name={route.locked ? "shield" : "route"} size={12} />
-          {route.locked ? "Urutan terkunci." : "Urutan ditetapkan sistem."}
+          {route.locked ? (locale === "en" ? "Order locked." : locale === "ar" ? "الترتيب ثابت." : "Urutan terkunci.") : (locale === "en" ? "System-defined order." : locale === "ar" ? "الترتيب محدد من النظام." : "Urutan ditetapkan sistem.")}
         </p>
       </header>
 
@@ -77,7 +84,7 @@ export function FullRouteNavigator({
             <Icon name="check" size={19} />
           </span>
           <span className="route-cta-copy">
-            <strong>Buka Navigasi</strong>
+            <strong>{c("Buka Navigasi")}</strong>
             <small>{ctaReason}</small>
           </span>
         </button>
@@ -107,13 +114,13 @@ export function FullRouteNavigator({
       <section
         className={`ops-next${showNextStudent ? " is-active" : " is-complete"}${nextStop.closedReason ? " is-closed" : ""}`}
         aria-live="polite"
-        aria-label="Informasi siswa berikutnya"
+        aria-label={locale === "en" ? "Next student information" : locale === "ar" ? "معلومات الطالب التالي" : "Informasi siswa berikutnya"}
       >
         {showNextStudent && nextStop.target ? (
           <>
             <span className="ops-next-eyebrow"><Icon name="pin" size={12} />{nextStop.target.kindLabel}</span>
             <div className="ops-next-heading">
-              <strong>{nextStop.target.students.map((student) => `${student.name} • ${student.admissionsNumber ?? "Nomor induk belum tercatat"}`).join(", ")}</strong>
+              <strong>{nextStop.target.students.map((student) => `${student.name} • ${student.admissionsNumber ?? c("Nomor induk belum tercatat")}`).join(", ")}</strong>
             </div>
           </>
         ) : (
@@ -127,7 +134,7 @@ export function FullRouteNavigator({
         <details className="route-warn" role="alert">
           <summary>
             <Icon name="alert" size={14} />
-            <strong>{route.missingCoordinateStops.length} titik tanpa koordinat</strong>
+            <strong>{route.missingCoordinateStops.length} {locale === "en" ? "stops without coordinates" : locale === "ar" ? "نقاط بلا إحداثيات" : "titik tanpa koordinat"}</strong>
           </summary>
           <p>
             {route.missingCoordinateStops.map((stop) => `${stop.order}. ${stop.name}`).join(", ")}. Titik ini tidak
@@ -140,11 +147,10 @@ export function FullRouteNavigator({
         <details className="route-warn" role="alert">
           <summary>
             <Icon name="info" size={14} />
-            <strong>{route.omittedStops.length} titik tidak dikirim ke peta</strong>
+            <strong>{route.omittedStops.length} {locale === "en" ? "stops not sent to the map" : locale === "ar" ? "نقاط لم تُرسل إلى الخريطة" : "titik tidak dikirim ke peta"}</strong>
           </summary>
           <p>
-            Aplikasi peta menerima {route.mapStops.length} dari {activeCount} titik pada demo ini. Titik lain tetap
-            tampil berurutan di aplikasi dan tidak diklaim sudah terkirim.
+            {locale === "en" ? `The map app receives ${route.mapStops.length} of ${activeCount} stops in this demo. Other stops remain in order in the app and are not claimed as sent.` : locale === "ar" ? `يستقبل تطبيق الخرائط ${route.mapStops.length} من أصل ${activeCount} نقطة في هذا العرض. وتظل النقاط الأخرى مرتبة في التطبيق دون الادعاء بإرسالها.` : `Aplikasi peta menerima ${route.mapStops.length} dari ${activeCount} titik pada demo ini. Titik lain tetap tampil berurutan di aplikasi dan tidak diklaim sudah terkirim.`}
           </p>
         </details>
       )}
@@ -152,7 +158,7 @@ export function FullRouteNavigator({
       <details className="route-stops">
         <summary>
           <span>
-            <Icon name="pin" size={14} /> Titik pemberhentian
+            <Icon name="pin" size={14} /> {c("Titik pemberhentian")}
           </span>
           <span>{route.stops.length}</span>
         </summary>
@@ -162,7 +168,7 @@ export function FullRouteNavigator({
       </details>
 
       <details className="route-note">
-        <summary>Catatan rute dan aplikasi peta</summary>
+        <summary>{c("Catatan rute dan aplikasi peta")}</summary>
         <ul>
           <li>
             Rute dibuka di Google Maps sebagai <strong>satu tautan</strong> berisi {route.mapStops.length} titik pada
@@ -181,8 +187,8 @@ export function FullRouteNavigator({
       </details>
 
       <p className="route-foot">
-        <Icon name="info" size={12} /> {tripStatus === "scheduled" ? "Navigasi aktif setelah perjalanan dimulai. " : ""}
-        GPS HP aktif selama perjalanan; jarak dan ETA belum tersedia.
+        <Icon name="info" size={12} /> {tripStatus === "scheduled" ? "{locale === "en" ? "Navigation is active after the trip starts. " : locale === "ar" ? "تُفعّل الملاحة بعد بدء الرحلة. " : "Navigasi aktif setelah perjalanan dimulai. "}" : ""}
+        {c("GPS HP aktif selama perjalanan; jarak dan ETA belum tersedia.")}
       </p>
     </section>
   );
