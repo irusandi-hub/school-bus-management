@@ -6,7 +6,6 @@ import { nextPickupMessage } from "@/lib/ui/copy";
 import { Icon } from "@/components/ui/Icon";
 import type { FullRoute, NavigationPlan } from "@/lib/driver/navigation";
 import type { NextStopResult } from "@/lib/driver/trip-progress";
-import { routeDirectionLabel } from "@/lib/validation";
 import { NavigationStopList } from "./NavigationStopList";
 
 /**
@@ -94,7 +93,7 @@ export async function FullRouteNavigator({
             <Icon name="navigation" size={19} />
           </span>
           <span className="route-cta-copy">
-            <strong>Buka Navigasi</strong>
+            <strong>{c("Buka Navigasi")}</strong>
             <small>{ctaReason}</small>
           </span>
           <Icon name="arrowRight" size={17} />
@@ -137,8 +136,7 @@ export async function FullRouteNavigator({
             <strong>{route.missingCoordinateStops.length} {locale === "en" ? "stops without coordinates" : locale === "ar" ? "نقاط بلا إحداثيات" : "titik tanpa koordinat"}</strong>
           </summary>
           <p>
-            {route.missingCoordinateStops.map((stop) => `${stop.order}. ${stop.name}`).join(", ")}. Titik ini tidak
-            dikirim ke aplikasi peta; lengkapi koordinat lewat Operator Utama.
+            {route.missingCoordinateStops.map((stop) => `${stop.order}. ${stop.name}`).join(", ")}. {c("Titik ini tidak dikirim ke aplikasi peta; lengkapi koordinat lewat Operator Utama.")}
           </p>
         </details>
       )}
@@ -171,23 +169,19 @@ export async function FullRouteNavigator({
         <summary>{c("Catatan rute dan aplikasi peta")}</summary>
         <ul>
           <li>
-            Rute dibuka di Google Maps sebagai <strong>satu tautan</strong> berisi {route.mapStops.length} titik pada
-            demo ini: maksimal 3 titik antara sesuai urutan rute, ditambah tujuan akhir. Titik lain tetap tampil di
-            aplikasi dan tidak diklaim sudah terkirim.
+            {locale === "en" ? `The route opens in Google Maps as one link containing ${route.mapStops.length} stops in this demo: up to 3 intermediate stops in route order, plus the final destination. Other stops remain visible in the app and are not claimed as sent.` : locale === "ar" ? `يفتح المسار في خرائط Google كرابط واحد يتضمن ${route.mapStops.length} نقطة في هذا العرض: حتى 3 نقاط وسيطة حسب ترتيب المسار، بالإضافة إلى الوجهة النهائية. وتظل النقاط الأخرى ظاهرة في التطبيق دون الادعاء بإرسالها.` : `Rute dibuka di Google Maps sebagai satu tautan berisi ${route.mapStops.length} titik pada demo ini: maksimal 3 titik antara sesuai urutan rute, ditambah tujuan akhir. Titik lain tetap tampil berurutan di aplikasi dan tidak diklaim sudah terkirim.`}
           </li>
           <li>
-            Aplikasi peta hanya menghitung jalur jalan antartitik. Urutan relatif titik yang tersisa tidak boleh
-            berubah, dan rute belum diverifikasi untuk ukuran bus — ikuti rambu dan kondisi jalan.
+            {c("Aplikasi peta hanya menghitung jalur jalan antartitik. Urutan relatif titik yang tersisa tidak boleh berubah, dan rute belum diverifikasi untuk ukuran bus — ikuti rambu dan kondisi jalan.")}
           </li>
           <li>
-            Status titik berasal dari urutan rute dan catatan pengemudi, bukan GPS. Membuka navigasi tidak mengubah
-            status siswa maupun menyelesaikan titik.
+            {c("Status titik berasal dari urutan rute dan catatan pengemudi, bukan GPS. Membuka navigasi tidak mengubah status siswa maupun menyelesaikan titik.")}
           </li>
         </ul>
       </details>
 
       <p className="route-foot">
-        <Icon name="info" size={12} /> {tripStatus === "scheduled" ? "{locale === "en" ? "Navigation is active after the trip starts. " : locale === "ar" ? "تُفعّل الملاحة بعد بدء الرحلة. " : "Navigasi aktif setelah perjalanan dimulai. "}" : ""}
+        <Icon name="info" size={12} /> {tripStatus === "scheduled" ? (locale === "en" ? "Navigation is active after the trip starts. " : locale === "ar" ? "تُفعّل الملاحة بعد بدء الرحلة. " : "Navigasi aktif setelah perjalanan dimulai. ") : ""}
         {c("GPS HP aktif selama perjalanan; jarak dan ETA belum tersedia.")}
       </p>
     </section>
