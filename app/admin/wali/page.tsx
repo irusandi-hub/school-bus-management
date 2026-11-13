@@ -139,7 +139,7 @@ export default async function WaliPage({
             filters={
               <select name="status" defaultValue={status} aria-label="Filter status wali">
                 <LocalizedOption value="" label="Semua status" />
-                <option value="aktif">Aktif</option>
+                <LocalizedOption value="aktif" label="Aktif" />
                 <LocalizedOption value="nonaktif" label="Nonaktif" />
               </select>
             }
