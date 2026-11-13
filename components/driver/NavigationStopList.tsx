@@ -78,7 +78,7 @@ export async function NavigationStopList({
                   ))}
                   <p className={`nav-stop-coord${coordinates ? "" : " is-missing"}`}>
                     <Icon name={coordinates ? "pin" : "gpsOff"} size={12} />
-                    {coordinates ?? "{c("Koordinat belum tersedia")}"}
+                    {coordinates ?? c("Koordinat belum tersedia")}
                   </p>
                   {mapUrl ? (
                     <a
