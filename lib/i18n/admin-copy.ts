@@ -460,6 +460,7 @@ const copy: Record<string, Record<Locale, string>> = {
   "Filter status Area Operasional": { id: "Filter status Area Operasional", en: "Filter operational area status", ar: "تصفية حالة منطقة التشغيل" },
   "Nama area": { id: "Nama area", en: "Area name", ar: "اسم المنطقة" },
   "Nonaktifkan area yang tidak dipakai lagi. Bus, pengemudi, rute, siswa, dan riwayat tidak dihapus.": { id: "Nonaktifkan area yang tidak dipakai lagi. Bus, pengemudi, rute, siswa, dan riwayat tidak dihapus.", en: "Deactivate areas that are no longer used. Buses, drivers, routes, students and history are not deleted.", ar: "عطّل المناطق التي لم تعد مستخدمة. لن يتم حذف الحافلات أو السائقين أو المسارات أو الطلاب أو السجل." },
+  "Semua tujuan sidebar tersedia di sini.": { id: "Semua tujuan sidebar tersedia di sini.", en: "All sidebar destinations are available here.", ar: "جميع عناصر قائمة الشريط الجانبي متاحة هنا." },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
