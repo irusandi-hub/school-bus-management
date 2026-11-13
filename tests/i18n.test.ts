@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { defaultLocale, getDirection, isLocale } from "../lib/i18n/config.ts";
 import { translate } from "../lib/i18n/messages.ts";
+import { translateNavigationLabel } from "../lib/i18n/navigation.ts";
 
 test("Indonesian remains the default locale", () => {
   assert.equal(defaultLocale, "id");
@@ -27,4 +28,11 @@ test("essential workspace labels exist in all locales", () => {
     assert.ok(translate(locale, "operator").length > 0);
     assert.ok(translate(locale, "parent").length > 0);
   }
+});
+
+test("shared navigation labels are translated without changing route identity", () => {
+  assert.equal(translateNavigationLabel("Ringkasan", "en"), "Overview");
+  assert.equal(translateNavigationLabel("Pengemudi", "ar"), "السائقون");
+  assert.equal(translateNavigationLabel("Ringkasan", "id"), "Ringkasan");
+  assert.equal(translateNavigationLabel("Unmapped custom label", "en"), "Unmapped custom label");
 });
