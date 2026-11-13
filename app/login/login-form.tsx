@@ -1,6 +1,8 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { verifyDemoOtp } from "./actions";
 
 const DEMO_CODES = [
   { label: "Operator Utama", code: "123456", detail: "Akses pengelolaan aplikasi" },
@@ -11,6 +13,7 @@ const DEMO_CODES = [
 ];
 
 export function LoginForm({ next, reason }: { next: string; reason?: string }) {
+  const router = useRouter();
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<"phone" | "otp">("phone");
