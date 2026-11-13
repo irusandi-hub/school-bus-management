@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { DEMO_OTP_COOKIE, createDemoOtpToken, demoAccountForCode } from "@/lib/demo-otp-session";
 
 export async function verifyDemoOtp(code: string) {
-  const normalized = code.replace(/\\D/g, "");
+  const normalized = code.trim();
   if (normalized.length !== 6) {
     return { ok: false as const, message: "Masukkan kode OTP 6 digit." };
   }
