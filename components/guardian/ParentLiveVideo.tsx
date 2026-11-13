@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { useLocale } from "@/components/i18n/LocaleProvider";
-import { LIVE_STATE_COPY, resolveLivePlayback, type LiveVideoState } from "@/lib/guardian/live";
+import { resolveLivePlayback, type LiveVideoState } from "@/lib/guardian/live";
 import { tripCamera } from "@/lib/camera/trip-connection";
 import { CameraStatus } from "./CameraStatus";
 
@@ -58,7 +58,6 @@ export function ParentLiveVideo({
   const playback = resolveLivePlayback({ state, streamUrl, simulated });
   const displayState = media ? "live" : connection.includes("berakhir") ? "ended" : playback.state;
   const isLive = Boolean(media) || playback.canPlay;
-  const copy = LIVE_STATE_COPY[displayState];
   const copyTitle = t(({ "awaiting-boarding": "awaitingChildOnBus", "on-board-camera-off": "cameraNotConnected", ended: "cameraEnded", live: "liveStream" } as const)[displayState]);
   const copyDetail = t(({ "awaiting-boarding": "cameraAccessAfterBoarding", "on-board-camera-off": "cameraBoardedNoStream", ended: "cameraNoRecording", live: "cameraNoRecording" } as const)[displayState]);
   const isGuardianCard = presentation === "guardian-card";
@@ -99,7 +98,7 @@ export function ParentLiveVideo({
   return (
     <section
       className={`live-video${compact ? " is-compact" : ""}${isGuardianCard ? " guardian-camera-panel" : ""}`}
-      aria-label={`Kamera perjalanan ${childName}`}
+      aria-label={`${t("cameraTitle")} ${childName}`}
     >
       <header className="live-head">
         <div className="live-title">
@@ -147,7 +146,7 @@ export function ParentLiveVideo({
           className="btn btn-secondary btn-sm live-expand"
           type="button"
           disabled={!isLive}
-          title={isLive ? undefined : copy.detail}
+          title={isLive ? undefined : copyDetail}
           onClick={() => setExpanded(true)}
         >
           <Icon name="expand" size={14} />
@@ -190,7 +189,7 @@ export function ParentLiveVideo({
 
           <div className="live-fullscreen-stage">{stage}</div>
           <p className="live-fullscreen-note">
-            {copy.detail} Tekan Esc atau {t("close")} untuk kembali.
+            {copyDetail} Tekan Esc atau {t("close")} untuk kembali.
           </p>
         </div>
       )}
