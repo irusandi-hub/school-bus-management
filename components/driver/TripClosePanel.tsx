@@ -29,9 +29,12 @@ export function TripClosePanel({
   const inProgress = trip?.status === "in_progress";
   const requirementsMet = canEndTrip && allRequiredChecksConfirmed && unclearStudents === 0;
 
+  // Setiap pergantian sesi/status mengosongkan checklist dan menutup overlay lama.
+  // Jika URL memang meminta panel keselamatan, buka kembali setelah state direset.
   useEffect(() => {
-    if (initialOpen) setIsOpen(true);
-  }, [initialOpen]);
+    setConfirmedChecks({});
+    setIsOpen(initialOpen);
+  }, [trip?.id, trip?.status, initialOpen]);
 
   function closePanel() {
     setIsOpen(false);
