@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useActionState, useRef } from "react";
 import { useConfirm } from "@/components/ui/DialogProvider";
 import { idleState, type ActionState } from "@/lib/validation";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 
 export type FieldDef = {
   name: string;
@@ -36,6 +37,7 @@ type Props = {
 };
 
 export function RecordForm({ action, fields, submitLabel, hidden, note, secondary, confirmMessage, disabledReason }: Props) {
+  const { t } = useLocale();
   const [state, formAction, pending] = useActionState<ActionState, FormData>(action, idleState);
   const confirm = useConfirm();
   const confirming = useRef(false);
@@ -51,7 +53,7 @@ export function RecordForm({ action, fields, submitLabel, hidden, note, secondar
       const form = event.currentTarget;
       const submitter = (event.nativeEvent as SubmitEvent).submitter;
       confirming.current = true;
-      const accepted = await confirm({ title: "Konfirmasi perubahan", message: confirmMessage, confirmText: "Simpan", cancelText: "Batal" });
+      const accepted = await confirm({ title: t("confirmChange"), message: confirmMessage, confirmText: t("save"), cancelText: t("cancelLabel") });
       confirming.current = false;
       if (!accepted || !form.isConnected) return;
       approved.current = true;
@@ -195,7 +197,7 @@ export function RecordForm({ action, fields, submitLabel, hidden, note, secondar
           type="submit"
           disabled={pending || formDisabled}
         >
-          {pending ? "Menyimpan…" : submitLabel}
+          {pending ? t("savingLabel") : submitLabel}
         </button>
         {secondary && (
           <Link className="btn btn-ghost" href={secondary.href}>
