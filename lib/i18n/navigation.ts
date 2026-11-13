@@ -1,6 +1,9 @@
 import type { Locale } from "./config";
 
 const labels: Record<string, Record<Locale, string>> = {
+  "Detail Siswa": { id: "Detail Siswa", en: "Student details", ar: "تفاصيل الطالب" },
+  "Detail Rute": { id: "Detail Rute", en: "Route details", ar: "تفاصيل المسار" },
+  "Rute": { id: "Rute", en: "Route", ar: "المسار" },
   "Data induk": { id: "Data induk", en: "Core data", ar: "البيانات الأساسية" },
   "Operasional": { id: "Operasional", en: "Operations", ar: "العمليات" },
   "Operasional harian": { id: "Operasional harian", en: "Daily operations", ar: "العمليات اليومية" },
