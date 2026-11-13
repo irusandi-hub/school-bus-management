@@ -2,7 +2,6 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { isDevOpenAccess } from "@/lib/dev-open-access";
 import { supabaseConfig } from "@/lib/supabase/env";
-import { getDemoOtpAccountFromRequest } from "@/lib/demo-otp-session";
 
 const protectedPrefixes = ["/admin", "/operator", "/pengemudi", "/wali", "/akun", "/tanpa-akses"];
 
