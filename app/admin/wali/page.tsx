@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LocalizedOption } from "@/components/i18n/LocalizedOption";
 import { AdminCopy } from "@/components/i18n/AdminCopy";
 import type { Metadata } from "next";
 import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
@@ -137,9 +138,9 @@ export default async function WaliPage({
             resetHref={path}
             filters={
               <select name="status" defaultValue={status} aria-label="Filter status wali">
-                <option value="">Semua status</option>
+                <LocalizedOption value="" label="Semua status" />
                 <option value="aktif">Aktif</option>
-                <option value="nonaktif">Nonaktif</option>
+                <LocalizedOption value="nonaktif" label="Nonaktif" />
               </select>
             }
           />
