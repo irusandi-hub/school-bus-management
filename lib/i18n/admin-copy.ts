@@ -479,6 +479,7 @@ const copy: Record<string, Record<Locale, string>> = {
   "Orang Tua": { id: "Orang Tua", en: "Parent", ar: "ولي الأمر" },
   "Pengelola": { id: "Pengelola", en: "Operator", ar: "المشغّل" },
   "Tutup layar penuh kamera": { id: "Tutup layar penuh kamera", en: "Close full-screen camera", ar: "إغلاق عرض الكاميرا بملء الشاشة" },
+  "Ringkasan data operasional dan jejak aktivitas platform. Konteks:": { id: "Ringkasan data operasional dan jejak aktivitas platform. Konteks:", en: "Operational data summary and platform activity log. Context:", ar: "ملخص البيانات التشغيلية وسجل نشاط المنصة. السياق:" },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
