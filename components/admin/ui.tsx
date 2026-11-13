@@ -3,7 +3,6 @@ import { getRequestLocale } from "@/lib/i18n/server";
 import { translate } from "@/lib/i18n/messages";
 import { translateNavigationLabel } from "@/lib/i18n/navigation";
 import { translateAdminCopy } from "@/lib/i18n/admin-copy";
-import { UI_COPY } from "@/lib/ui/copy";
 import type { ReactNode } from "react";
 import { Icon } from "@/components/ui/Icon";
 
@@ -14,7 +13,7 @@ export type Crumb = { href?: string; label: string };
 export async function Breadcrumbs({ items }: { items: Crumb[] }) {
   const locale = await getRequestLocale();
   return (
-    <nav className="crumbs" aria-label="Posisi halaman">
+    <nav className="crumbs" aria-label={translate(locale, "pagePosition")}>
       {items.map((item, index) => (
         <span key={`${item.label}-${index}`} style={{ display: "contents" }}>
           {index > 0 && <span className="crumb-sep" aria-hidden="true">/</span>}
@@ -50,7 +49,7 @@ export async function PageHeader({
         <div className="admin-page-head-copy">
           {eyebrow && <div className="eyebrow">{eyebrow}</div>}
           <h1>{translateNavigationLabel(title, locale)}</h1>
-          <p>{description}</p>
+          <p>{translateAdminCopy(description, locale)}</p>
         </div>
         {actions && <div className="admin-page-actions">{actions}</div>}
       </header>
@@ -66,7 +65,7 @@ export async function Notice({
   children: ReactNode;
 }) {
   const locale = await getRequestLocale();
-  const message = typeof children === "string" && /^(Data|Daftar) belum dapat dimuat\./.test(children) ? UI_COPY.loadFailed : typeof children === "string" ? translateAdminCopy(children, locale) : children;
+  const message = typeof children === "string" && /^(Data|Daftar) belum dapat dimuat\./.test(children) ? translate(locale, "loadFailed") : typeof children === "string" ? translateAdminCopy(children, locale) : children;
   return (
     <p className={`form-alert ${kind}`} role={kind === "error" ? "alert" : "status"}>
       {message}
@@ -287,11 +286,11 @@ export async function ConfigNotice() {
       <section className="panel config-card">
         <EmptyState
           icon="alert"
-          title="Database belum dikonfigurasi"
-          detail="Modul ini memerlukan koneksi Supabase. Hubungi pengelola sistem untuk mengisi NEXT_PUBLIC_SUPABASE_URL dan NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY, lalu terapkan migrasi yang tersedia di repository."
+          title={translate(await getRequestLocale(), "databaseNotConfigured")}
+          detail={translate(await getRequestLocale(), "supabaseRequired")}
         />
         <Link className="btn btn-primary" href="/">
-          Kembali ke beranda
+          {translate(await getRequestLocale(), "backHome")}
         </Link>
       </section>
     </main>
