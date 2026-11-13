@@ -34,7 +34,7 @@ export async function ProjectAreaTabs({
       <form action={setProjectArea} className="area-switch-tabs" role="group" aria-label={t("chooseArea")}>
         <input type="hidden" name="next" value={nextPath} />
         <button type="submit" name="area" value="all" className={selectedId ? "area-tab" : "area-tab active"} aria-pressed={!selectedId}>
-          Semua Area
+          {t("allAreas")}
         </button>
         {areas.map((area) => (
           <button
