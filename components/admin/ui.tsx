@@ -1,4 +1,8 @@
 import Link from "next/link";
+import { cookies } from "next/headers";
+import { defaultLocale, isLocale } from "@/lib/i18n/config";
+import { translate } from "@/lib/i18n/messages";
+import { translateNavigationLabel } from "@/lib/i18n/navigation";
 import { UI_COPY } from "@/lib/ui/copy";
 import type { ReactNode } from "react";
 import { Icon } from "@/components/ui/Icon";
@@ -24,7 +28,7 @@ export function Breadcrumbs({ items }: { items: Crumb[] }) {
   );
 }
 
-export function PageHeader({
+export async function PageHeader({
   title,
   description,
   actions,
@@ -37,13 +41,16 @@ export function PageHeader({
   crumbs?: Crumb[];
   eyebrow?: string;
 }) {
+  const cookieStore = await cookies();
+  const savedLocale = cookieStore.get("sbm_locale")?.value;
+  const locale = isLocale(savedLocale) ? savedLocale : defaultLocale;
   return (
     <>
       {crumbs && crumbs.length > 0 && <Breadcrumbs items={crumbs} />}
       <header className="admin-page-head">
         <div className="admin-page-head-copy">
           {eyebrow && <div className="eyebrow">{eyebrow}</div>}
-          <h1>{title}</h1>
+          <h1>{translateNavigationLabel(title, locale)}</h1>
           <p>{description}</p>
         </div>
         {actions && <div className="admin-page-actions">{actions}</div>}
@@ -78,17 +85,27 @@ export function Pill({
 }
 
 /** Status perjalanan memakai satu pemetaan warna di seluruh area. */
-export function TripStatusPill({ status }: { status: string | null | undefined }) {
-  if (!status || status === "scheduled") return <Pill tone="neutral">Belum dimulai</Pill>;
+export async function TripStatusPill({ status }: { status: string | null | undefined }) {
+  const cookieStore = await cookies();
+  const savedLocale = cookieStore.get("sbm_locale")?.value;
+  const locale = isLocale(savedLocale) ? savedLocale : defaultLocale;
+  const t = (key: Parameters<typeof translate>[1]) => translate(locale, key);
+  if (!status || status === "scheduled") return <Pill tone="neutral">{t("notStarted")}</Pill>;
   const tone =
     status === "completed" ? "success" : status === "in_progress" ? "info" : status === "cancelled" ? "danger" : "warning";
-  return <Pill tone={tone}>{tripStatusLabel(status)}</Pill>;
+  const statusKey = status === "in_progress" ? "inProgress" : status === "completed" ? "completed" : status === "cancelled" ? "tripCancelledLabel" : status === "delayed" ? "tripDelayed" : "status";
+  return <Pill tone={tone}>{t(statusKey)}</Pill>;
 }
 
 /** Status layanan siswa: aktif, jeda, dan berakhir dibedakan jelas. */
-export function ServiceStatusPill({ status }: { status: string }) {
+export async function ServiceStatusPill({ status }: { status: string }) {
+  const cookieStore = await cookies();
+  const savedLocale = cookieStore.get("sbm_locale")?.value;
+  const locale = isLocale(savedLocale) ? savedLocale : defaultLocale;
+  const t = (key: Parameters<typeof translate>[1]) => translate(locale, key);
   const tone = status === "active" ? "success" : status === "paused" ? "warning" : "neutral";
-  return <Pill tone={tone}>{serviceStatusLabel(status)}</Pill>;
+  const label = status === "active" ? t("statusActive") : status === "paused" ? (locale === "id" ? "Sementara tidak aktif" : locale === "en" ? "Temporarily paused" : "متوقف مؤقتاً") : (locale === "id" ? "Dihentikan" : locale === "en" ? "Ended" : "منتهية");
+  return <Pill tone={tone}>{label}</Pill>;
 }
 
 export function StatCard({
@@ -177,7 +194,7 @@ export function EmptyState({
  * Search and filter are a plain GET form: they work without JavaScript, keep the URL
  * shareable and never mix client-side filtering with server-side pagination.
  */
-export function ListToolbar({
+export async function ListToolbar({
   action,
   q,
   placeholder,
@@ -192,6 +209,10 @@ export function ListToolbar({
   total: number;
   resetHref?: string;
 }) {
+  const cookieStore = await cookies();
+  const savedLocale = cookieStore.get("sbm_locale")?.value;
+  const locale = isLocale(savedLocale) ? savedLocale : defaultLocale;
+  const t = (key: Parameters<typeof translate>[1]) => translate(locale, key);
   return (
     <form className="list-toolbar" method="get" action={action}>
       <div className="list-search">
@@ -207,12 +228,12 @@ export function ListToolbar({
           Reset
         </Link>
       )}
-      <span className="toolbar-count">{total} data</span>
+      <span className="toolbar-count">{total} {t("dataCount")}</span>
     </form>
   );
 }
 
-export function Pagination({
+export async function Pagination({
   page,
   total,
   pageSize,
@@ -226,15 +247,19 @@ export function Pagination({
   nextHref?: string;
 }) {
   if (total === 0) return null;
+  const cookieStore = await cookies();
+  const savedLocale = cookieStore.get("sbm_locale")?.value;
+  const locale = isLocale(savedLocale) ? savedLocale : defaultLocale;
+  const t = (key: Parameters<typeof translate>[1]) => translate(locale, key);
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
   return (
-    <nav className="pagination" aria-label="Navigasi halaman data">
-      {prevHref ? <Link href={prevHref}>‹ Sebelumnya</Link> : <span className="pagination-disabled">‹ Sebelumnya</span>}
+    <nav className="pagination" aria-label={t("dataNavigation")}>
+      {prevHref ? <Link href={prevHref}>‹ {t("previous")}</Link> : <span className="pagination-disabled">‹ Sebelumnya</span>}
       <span>
-        Halaman {page} dari {totalPages}
+        {t("page")} {page} {t("of")} {totalPages}
       </span>
-      {nextHref ? <Link href={nextHref}>Berikutnya ›</Link> : <span className="pagination-disabled">Berikutnya ›</span>}
+      {nextHref ? <Link href={nextHref}>{t("next")} ›</Link> : <span className="pagination-disabled">Berikutnya ›</span>}
     </nav>
   );
 }
