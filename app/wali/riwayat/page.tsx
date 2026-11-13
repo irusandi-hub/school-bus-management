@@ -24,7 +24,7 @@ export default async function GuardianHistoryPage() {
   const savedLocale = cookieStore.get("sbm_locale")?.value;
   const locale = isLocale(savedLocale) ? savedLocale : defaultLocale;
   const t = (key: Parameters<typeof translate>[1]) => translate(locale, key);
-  const dateLocale = locale === "ar" ? "ar-SA" : locale === "en" ? "en-GB" : "id-ID";
+  const dateLocale = locale === "ar" ? "ar-SA-u-ca-gregory" : locale === "en" ? "en-GB" : "id-ID";
   const formatLocalDate = (value: string) => new Intl.DateTimeFormat(dateLocale, { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Riyadh" }).format(new Date(`${value.slice(0, 10)}T12:00:00+03:00`));
   const formatLocalTime = (value: string | null) => value ? new Intl.DateTimeFormat(dateLocale, { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Riyadh" }).format(new Date(value)) : "—";
   const directionLabel = (value: string) => value === "morning" ? t("morningDirection") : value === "afternoon" ? t("afternoonDirection") : t("directionNotRecorded");
