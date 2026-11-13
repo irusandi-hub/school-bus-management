@@ -31,5 +31,8 @@ const labels: Record<string, Record<Locale, string>> = {
 };
 
 export function translateNavigationLabel(label: string, locale: Locale): string {
-  return labels[label]?.[locale] ?? label;
+  const exact = labels[label];
+  if (exact) return exact[locale];
+  const normalized = Object.keys(labels).find((key) => key.toLocaleLowerCase() === label.toLocaleLowerCase());
+  return normalized ? labels[normalized][locale] : label;
 }
