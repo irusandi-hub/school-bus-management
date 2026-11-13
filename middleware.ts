@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { isDevOpenAccess } from "@/lib/dev-open-access";
 import { supabaseConfig } from "@/lib/supabase/env";
+import { getDemoOtpAccountFromRequest } from "@/lib/demo-otp-session";
 
 const protectedPrefixes = ["/admin", "/operator", "/pengemudi", "/wali", "/akun", "/tanpa-akses"];
 
@@ -14,6 +15,7 @@ export async function middleware(request: NextRequest) {
   // gerbang di setiap layout dan Server Action tetap berjalan. Mode ini tidak pernah
   // aktif di produksi dan tidak memakai klien Supabase sama sekali.
   if (isDevOpenAccess()) return NextResponse.next();
+  // Cookie demo ditandatangani server dan hanya valid pada Preview dengan secret khusus.\n  if (getDemoOtpAccountFromRequest(request)) return NextResponse.next();
 
   const config = supabaseConfig();
   if (!config) return NextResponse.next();
