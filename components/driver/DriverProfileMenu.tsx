@@ -5,8 +5,6 @@ import { Icon } from "@/components/ui/Icon";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 import { signOutAction } from "@/lib/auth-actions";
-import { useLocale } from "@/components/i18n/LocaleProvider";
-import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 export function DriverProfileMenu({ name, children }: { name: string; children?: ReactNode }) {
   const { locale } = useLocale();
