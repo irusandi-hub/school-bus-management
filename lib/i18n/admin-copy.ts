@@ -684,6 +684,15 @@ const copy: Record<string, Record<Locale, string>> = {
   "Versi": { id: "Versi", en: "Version", ar: "الإصدار" },
   "Pintasan area demo": { id: "Pintasan area demo", en: "Demo area shortcuts", ar: "اختصارات أقسام العرض التجريبي" },
   "Login dan hak akses akan diaktifkan di tahap berikutnya.": { id: "Login dan hak akses akan diaktifkan di tahap berikutnya.", en: "Login and access permissions will be enabled in a later phase.", ar: "سيتم تفعيل تسجيل الدخول وأذونات الوصول في مرحلة لاحقة." },
+  "Aktif menggunakan layanan": { id: "Aktif menggunakan layanan", en: "Actively using the service", ar: "يستخدم الخدمة بنشاط" },
+  "Sementara tidak menggunakan": { id: "Sementara tidak menggunakan", en: "Temporarily not using the service", ar: "لا يستخدم الخدمة مؤقتاً" },
+  "Layanan dihentikan": { id: "Layanan dihentikan", en: "Service ended", ar: "تم إنهاء الخدمة" },
+  "Sementara tidak aktif": { id: "Sementara tidak aktif", en: "Temporarily inactive", ar: "غير نشط مؤقتاً" },
+  "Dihentikan": { id: "Dihentikan", en: "Ended", ar: "منتهٍ" },
+  "Tidak diketahui": { id: "Tidak diketahui", en: "Unknown", ar: "غير معروف" },
+  "Dijadwalkan": { id: "Dijadwalkan", en: "Scheduled", ar: "مجدول" },
+  "Dibatalkan": { id: "Dibatalkan", en: "Cancelled", ar: "ملغاة" },
+  "Tertunda": { id: "Tertunda", en: "Delayed", ar: "متأخرة" },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
