@@ -62,7 +62,7 @@ describe("Project Area", () => {
       .select("id, full_name, school_id")
       .in("school_id", dammam.schoolIds)) as { data: { id: string }[] | null };
 
-    assert.equal(result.data?.length, 3);
+    assert.equal(result.data?.length, 6);
     assert.equal(result.data?.some((row) => row.id === "51111111-0000-4000-8000-000000000604"), false);
   });
 
