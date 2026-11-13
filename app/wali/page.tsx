@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { defaultLocale, isLocale } from "@/lib/i18n/config";
+import { translate } from "@/lib/i18n/messages";
 import { ConfigNotice, EmptyState, Notice } from "@/components/admin/ui";
 import { ChildOverviewCard } from "@/components/guardian/ChildOverviewCard";
 import { GuardianOpsHeader } from "@/components/guardian/GuardianOpsHeader";
@@ -94,7 +95,7 @@ export default async function GuardianHomePage() {
 
       <section className="guardian-children" aria-labelledby="guardian-children-title">
         <h1 className="guardian-visually-hidden" id="guardian-children-title">
-          Status perjalanan anak
+          {translate(locale, "childJourneyStatus")}
         </h1>
 
         {children.length === 0 ? (
@@ -102,12 +103,12 @@ export default async function GuardianHomePage() {
             <section className="panel guardian-empty">
               <EmptyState
                 icon="guardian"
-                title="Belum ada anak aktif yang terhubung"
-                detail="Portal wali hanya menampilkan siswa berstatus layanan aktif yang terhubung dengan akun ini. Hubungi Operator Utama untuk memeriksa layanan atau penautan anak."
+                title={translate(locale, "noActiveChild")}
+                detail={translate(locale, "noActiveChildDetail")}
               />
             </section>
             <Notice kind="info">
-              Halaman ini tidak menampilkan anak dari akun lain dan tidak memakai data contoh sebagai data nyata.
+              {translate(locale, "noSampleData")}
             </Notice>
           </>
         ) : (
