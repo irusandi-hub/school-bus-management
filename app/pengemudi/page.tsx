@@ -428,7 +428,7 @@ export default async function DriverOperationsPage({
               cancelText="Batal"
               pendingLabel="Memulai…"
             >
-              <Icon name="bus" size={16} style={{ color: "#F5C542" }} /> Mulai Perjalanan
+              <Icon name="steeringWheel" size={21} style={{ color: "#F5C542" }} /> Mulai Perjalanan
             </ConfirmSubmit>
           </form>
         ) : inProgress ? (
@@ -439,7 +439,7 @@ export default async function DriverOperationsPage({
         ) : (
           <div className="ops-start">
             <button className="btn ops-primary-action ops-start-action" type="button" disabled>
-              <Icon name="bus" size={16} style={{ color: "#F5C542" }} /> Mulai Perjalanan
+              <Icon name="steeringWheel" size={21} style={{ color: "#F5C542" }} /> Mulai Perjalanan
             </button>
             <small>{startReason}</small>
           </div>
