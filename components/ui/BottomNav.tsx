@@ -90,7 +90,7 @@ export function BottomNav({
             onClick={() => setOpen(true)}
           >
             <Icon name="apps" />
-            Menu
+            {translateNavigationLabel("Menu", locale)}
           </button>
         ) : null}
       </nav>
@@ -117,7 +117,7 @@ export function BottomNav({
                 type="button"
                 className="menu-close"
                 onClick={closeMenu}
-                aria-label="Tutup menu"
+                aria-label={t("closeMenu")}
               >
                 <Icon name="close" />
               </button>
@@ -149,7 +149,7 @@ export function BottomNav({
             </div>
 
             <div className="menu-sheet-foot">
-              Sidik jari &amp; wilayah kerja: {areaLabel}. Semua tujuan sidebar tersedia di sini.
+              {areaLabel}. Semua tujuan sidebar tersedia di sini.
             </div>
           </div>
         </>
