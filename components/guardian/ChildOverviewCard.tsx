@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
+import { LocalizedText } from "@/components/i18n/LocaleProvider";
 import { ChildBusLocationPanel } from "@/components/guardian/ChildBusLocationPanel";
 import { ParentLiveVideo } from "@/components/guardian/ParentLiveVideo";
 import type { ChildOverview, Placement, TodayTrip } from "@/lib/guardian/data";
@@ -79,7 +80,7 @@ export function ChildOverviewCard({
                 {school}
               </span>
               <Link className="guardian-child-detail" href={`/wali/anak/${student.id}`}>
-                Detail anak
+                <LocalizedText k="detailChild" />
                 <Icon name="arrowRight" size={13} />
               </Link>
             </div>
@@ -90,7 +91,7 @@ export function ChildOverviewCard({
               <Icon name={journey.icon} size={24} />
             </span>
             <div className="guardian-journey-copy">
-              <small className="guardian-journey-eyebrow">Status saat ini</small>
+              <small className="guardian-journey-eyebrow"><LocalizedText k="currentStatus" /></small>
               <strong>{journey.label}</strong>
               <p>{journey.detail}</p>
               <span className="guardian-journey-time">
@@ -113,7 +114,7 @@ export function ChildOverviewCard({
             <div className="guardian-fact">
               <dt>
                 <Icon name="bus" size={17} />
-                <span>Bus</span>
+                <span><LocalizedText k="bus" /></span>
               </dt>
               <dd>
                 <strong>{bus}</strong>
@@ -123,7 +124,7 @@ export function ChildOverviewCard({
             <div className="guardian-fact">
               <dt>
                 <Icon name="route" size={17} />
-                <span>Rute</span>
+                <span><LocalizedText k="route" /></span>
               </dt>
               <dd>
                 <strong>{route}</strong>
@@ -133,7 +134,7 @@ export function ChildOverviewCard({
             <div className="guardian-fact">
               <dt>
                 <Icon name="pin" size={17} />
-                <span>Titik jemput</span>
+                <span><LocalizedText k="pickupPoint" /></span>
               </dt>
               <dd>
                 <strong>{stop}</strong>
@@ -142,7 +143,7 @@ export function ChildOverviewCard({
             <div className="guardian-fact">
               <dt>
                 <Icon name="driver" size={17} />
-                <span>Pengemudi</span>
+                <span><LocalizedText k="driver" /></span>
               </dt>
               <dd>
                 <strong>{driver}</strong>
