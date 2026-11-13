@@ -424,3 +424,12 @@ Lihat `TECHNICAL_SPEC_REVIEW.md`, bagian 19 pada `MASTER_SPEC.md`, serta `OPERAT
 - Tindakan siswa, perjalanan, integrasi peta, akses, dan database tidak diubah.
 - Verifikasi: 235 tes lulus, TypeScript dan build lulus. Chromium 102 kombinasi (17 URL × 360/390/430/768/1024/1440), tanpa overflow halaman atau pemotongan keterangan yang diperiksa. Dua sesi, pemuatan ulang, pesan semua siswa selesai, dan riwayat lulus pada proses uji terisolasi.
 - Batas bukti: browser memakai lingkungan uji bawaan yang telah ada, bukan database hosted. Pemeriksaan otomatis bukan jaminan semua teks/status dinamis telah ditinjau visual manual. Timeout awal menunggu networkidle/h1 dan benturan sesi uji ditangani dengan menunggu render serta mengisolasi proses; hasil di atas berasal dari pengujian ulang.
+
+## DEC-046 — Dialog custom bersama (2026-11-13)
+- Audit sebelum edit: 2 pemanggilan `window.confirm`, pada ConfirmSubmit dan RecordForm; tidak ada pemanggilan native alert/prompt pada sumber aplikasi.
+- ConfirmDialog reusable memakai elemen dialog HTML dengan konten custom kuning-hitam, overlay, ARIA, fokus awal, siklus Tab, Esc/overlay batal, dan pemulihan fokus setelah portal dilepas. Bukan window dialog dan tidak memiliki fallback native.
+- DialogProvider menyediakan useConfirm → Promise<boolean>, useAlert → Promise<void>, usePrompt → Promise<string|null>. Permintaan antre, tiap penyelesaian dijaga sekali; provider dilepas menyelesaikan seluruh antrean sebagai batal.
+- Konfirmasi Mulai memakai redaksi yang diminta. ConfirmSubmit meneruskan requestSubmit pada form asli hanya setelah persetujuan; RecordForm mencegat submit (termasuk keyboard) tanpa mengubah validasi server.
+- Batas: tanpa perubahan bisnis/tindakan siswa/navigasi/database/autentikasi. Tidak menambah pemakai alert/prompt ke halaman; API diuji melalui harness komponen asli terisolasi.
+- Bukti: 237 tes; TypeScript; uji Chromium confirm/cancel/Esc/overlay/alert/prompt/null/input kosong/antrean/fokus/Tab/klik ganda dan enam lebar 360–1440. Integrasi perjalanan: pembatalan nol POST, konfirmasi satu POST dan reload aktif (lingkungan uji bawaan, bukan hosted DB). Lint via alat terisolasi karena repository belum memiliki script/config lint; nol error, satu warning existing unused eslint-disable pada GuardianDriverMap. Perbaikan fokus/wrapping diuji ulang sebelum commit.
+- Tambahan uji harness: RecordForm dibatalkan tanpa aksi, Enter membuka konfirmasi, persetujuan ganda hanya satu aksi, provider unmount menyelesaikan Promise pending. Semua lulus.

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { DialogProvider } from "@/components/ui/DialogProvider";
 import { DevModeBanner } from "@/components/DevModeBanner";
 import "./globals.css";
 
@@ -15,7 +16,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="id">
       <body>
         <DevModeBanner />
-        {children}
+        <DialogProvider>{children}</DialogProvider>
       </body>
     </html>
   );

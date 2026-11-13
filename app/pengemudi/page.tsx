@@ -421,7 +421,10 @@ export default async function DriverOperationsPage({
             <input type="hidden" name="assignment_id" value={selected.id} />
             <ConfirmSubmit
               className="btn ops-primary-action ops-start-action"
-              message="Mulai Perjalanan untuk tugas ini? Waktu mulai akan dicatat."
+              title="Mulai Perjalanan"
+              message="Waktu mulai perjalanan akan dicatat."
+              confirmText="Mulai"
+              cancelText="Batal"
               pendingLabel="Memulai…"
             >
               <Icon name="bus" size={16} style={{ color: "#F5C542" }} /> Mulai Perjalanan
