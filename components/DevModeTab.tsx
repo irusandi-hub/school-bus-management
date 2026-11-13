@@ -3,11 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 const areas = [["/", "Beranda"], ["/wali", "Orang Tua"], ["/pengemudi", "Pengemudi"], ["/operator", "Pengelola"]] as const;
 
 // Panel ini hanya untuk masa pengembangan.
 export function DevModeTab({ environment, sha, branch }: { environment: string; sha?: string; branch?: string }) {
+  const { locale } = useLocale();
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const root = useRef<HTMLDivElement>(null);
@@ -31,13 +35,13 @@ export function DevModeTab({ environment, sha, branch }: { environment: string; 
       <span className="dev-mode-tab-face"><span className="dev-mode-indicator" aria-hidden="true" /><span className="dev-mode-short" aria-hidden="true">DEMO</span></span>
     </button>
     {open && <section className="dev-mode-panel" id="dev-mode-panel" aria-labelledby="dev-mode-title">
-      <header><h2 id="dev-mode-title">Mode demo</h2><button ref={close} type="button" aria-label="Tutup informasi mode demo" onClick={() => { setOpen(false); trigger.current?.focus({ preventScroll: true }); }}>×</button></header>
-      <p>Ini versi uji coba. Akses dibuka tanpa login dan data yang tampil adalah data contoh.</p>
-      <dl><div><dt>Lingkungan</dt><dd>{environment}</dd></div><div><dt>Akses</dt><dd>Dibuka</dd></div><div><dt>Data</dt><dd>Contoh</dd></div><div><dt>Area saat ini</dt><dd>{area}</dd></div>
-        {(sha || branch) && <div><dt>Versi</dt><dd>{[sha?.slice(0, 7), branch].filter(Boolean).join(" · ")}</dd></div>}
+      <header><h2 id="dev-mode-title">{c("Mode demo")}</h2><button ref={close} type="button" aria-label={c("Tutup informasi mode demo")} onClick={() => { setOpen(false); trigger.current?.focus({ preventScroll: true }); }}>×</button></header>
+      <p>{c("Ini versi uji coba. Akses dibuka tanpa login dan data yang tampil adalah data contoh.")}</p>
+      <dl><div><dt>{c("Lingkungan")}</dt><dd>{environment}</dd></div><div><dt>{c("Akses")}</dt><dd>{c("Dibuka")}</dd></div><div><dt>{c("Data")}</dt><dd>{c("Contoh")}</dd></div><div><dt>{c("Area saat ini")}</dt><dd>{c(area)}</dd></div>
+        {(sha || branch) && <div><dt>{c("Versi")}</dt><dd>{[sha?.slice(0, 7), branch].filter(Boolean).join(" · ")}</dd></div>}
       </dl>
-      <nav aria-label="Pintasan area demo">{areas.map(([href, label]) => <Link key={href} href={href} onClick={() => setOpen(false)}>{label}</Link>)}</nav>
-      <p>Login dan hak akses akan diaktifkan di tahap berikutnya.</p>
+      <nav aria-label={c("Pintasan area demo")}>{areas.map(([href, label]) => <Link key={href} href={href} onClick={() => setOpen(false)}>{c(label)}</Link>)}</nav>
+      <p>{c("Login dan hak akses akan diaktifkan di tahap berikutnya.")}</p>
     </section>}
   </div>;
 }
