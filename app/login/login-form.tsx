@@ -48,9 +48,16 @@ export function LoginForm({ next, reason }: { next: string; reason?: string }) {
     inputRefs.current[Math.min(pasted.length, 5)]?.focus();
   }
 
-  function verifyCode(event: React.FormEvent<HTMLFormElement>) {
+  async function verifyCode(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setNotice("Tampilan OTP simulasi siap. Validasi kode dan pembuatan sesi autentikasi akan dihubungkan pada tahap implementasi auth.");
+    setNotice("Memeriksa kode OTP...");
+    const result = await verifyDemoOtp(otp);
+    if (!result.ok) {
+      setNotice(result.message);
+      return;
+    }
+    router.replace(result.destination);
+    router.refresh();
   }
 
   async function copyCode(code: string) {
