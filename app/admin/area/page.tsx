@@ -219,7 +219,7 @@ export default async function ProjectAreaPage({
         <aside className="panel admin-form-panel" id="form">
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">{editing ? "Ubah Area Operasional" : "Tambah Area Operasional"}</h2>
+              <h2 className="panel-title"><AdminCopy value={editing ? "Ubah Area Operasional" : "Tambah Area Operasional"} /></h2>
               <div className="panel-subtitle">
                 {editing ? `Memperbarui ${editing.name}` : "Area operasional baru"}
               </div>
