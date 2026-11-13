@@ -659,6 +659,8 @@ const copy: Record<string, Record<Locale, string>> = {
   "Koneksi kamera tidak tersedia": { id: "Koneksi kamera tidak tersedia", en: "Camera connection unavailable", ar: "اتصال الكاميرا غير متاح" },
   "Akses kamera ditolak atau belum tersedia": { id: "Akses kamera ditolak atau belum tersedia", en: "Camera access denied or unavailable", ar: "تم رفض الوصول إلى الكاميرا أو أنه غير متاح" },
   "Perbesar": { id: "Perbesar", en: "Enlarge", ar: "تكبير" },
+  "Koneksi": { id: "Koneksi", en: "Connection", ar: "الاتصال" },
+  "Balasan": { id: "Balasan", en: "Answer", ar: "الرد" },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
