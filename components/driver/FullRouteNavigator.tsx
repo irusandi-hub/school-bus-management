@@ -1,3 +1,4 @@
+import { canOpenRouteNavigation } from "@/lib/driver/navigation-availability";
 import { Icon } from "@/components/ui/Icon";
 import type { FullRoute, NavigationPlan } from "@/lib/driver/navigation";
 import type { NextStopResult } from "@/lib/driver/trip-progress";
@@ -30,6 +31,7 @@ export function FullRouteNavigator({
   nextStop: NextStopResult;
 }) {
   const completed = plan.completed;
+  const navigationEnabled = canOpenRouteNavigation(tripStatus, mapUrl);
   const activeCount = route.activeStops.length;
   const hasStudents = plan.stops.some((stop) => stop.students.length > 0);
   const noTargetTitle = nextStop.closedReason === "cancelled"
@@ -53,6 +55,8 @@ export function FullRouteNavigator({
   );
   const ctaReason = completed
     ? "Perjalanan selesai."
+    : tripStatus !== "in_progress"
+      ? "Mulai perjalanan untuk membuka navigasi."
     : activeCount === 0
       ? "Tidak ada titik tersisa."
       : !mapUrl
@@ -78,7 +82,7 @@ export function FullRouteNavigator({
         </p>
       </header>
 
-      {completed ? (
+      {tripStatus !== "in_progress" ? (
         <button className="route-cta route-cta-disabled" type="button" disabled>
           <span className="route-cta-icon" aria-hidden="true">
             <Icon name="check" size={19} />
@@ -88,7 +92,7 @@ export function FullRouteNavigator({
             <small>{ctaReason}</small>
           </span>
         </button>
-      ) : mapUrl ? (
+      ) : navigationEnabled && mapUrl ? (
         <a className="route-cta" href={mapUrl} target="_blank" rel="noopener noreferrer">
           <span className="route-cta-icon" aria-hidden="true">
             <Icon name="navigation" size={19} />
@@ -192,7 +196,7 @@ export function FullRouteNavigator({
       </details>
 
       <p className="route-foot">
-        <Icon name="info" size={12} /> {tripStatus === "scheduled" ? "Rute dapat dilihat sebelum mulai. " : ""}
+        <Icon name="info" size={12} /> {tripStatus === "scheduled" ? "Navigasi aktif setelah perjalanan dimulai. " : ""}
         GPS HP aktif selama perjalanan; jarak dan ETA belum tersedia.
       </p>
     </section>
