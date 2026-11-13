@@ -227,7 +227,7 @@ export default async function WaliPage({
         <aside className="panel admin-form-panel" id="form">
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">{editing ? "Ubah data wali" : "Daftarkan email wali"}</h2>
+              <h2 className="panel-title"><AdminCopy value={editing ? "Ubah data wali" : "Daftarkan email wali"} /></h2>
               <div className="panel-subtitle">
                 {editing ? `Memperbarui ${editing.full_name}` : "Prasyarat aktivasi akun wali"}
               </div>
