@@ -161,7 +161,7 @@ export default async function AssignmentsPage() {
                 <tr>
                   <th scope="col"><AdminCopy value="Tanggal" /></th>
                   <th scope="col"><AdminCopy value="Rute" /></th>
-                  <th scope="col"><AdminCopy value="Pengemudi &amp; bus" /></th>
+                  <th scope="col"><AdminCopy value="Pengemudi & bus" /></th>
                   <th scope="col"><AdminCopy value="Perjalanan" /></th>
                 </tr>
               </thead>
