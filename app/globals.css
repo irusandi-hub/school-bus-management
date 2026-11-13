@@ -2901,3 +2901,26 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 }
+
+
+/* Internationalization: compact language control and logical RTL adjustments. */
+.locale-switcher{display:inline-flex;align-items:center;gap:7px;color:var(--muted);font-size:11px;font-weight:700;white-space:nowrap}
+.locale-switcher select{max-width:150px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);padding:7px 9px;font:600 12px 'DM Sans',Arial,sans-serif}
+.locale-switcher-compact .locale-switcher-label{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.locale-switcher-compact select{max-width:132px}
+html[dir="rtl"] body{direction:rtl}
+html[dir="rtl"] .sidebar{border-right:0;border-left:1px solid var(--line)}
+html[dir="rtl"] .nav-item{text-align:right}
+html[dir="rtl"] .nav-icon{margin-inline-start:0}
+html[dir="rtl"] .topbar-context{text-align:right}
+html[dir="rtl"] .top-actions,html[dir="rtl"] .portal-account{direction:rtl}
+html[dir="rtl"] .portal-nav{direction:rtl}
+html[dir="rtl"] .driver-head{direction:rtl}
+html[dir="rtl"] .mobile-nav{direction:rtl}
+html[dir="rtl"] .menu-sheet{direction:rtl;text-align:right}
+html[dir="rtl"] .menu-link{direction:rtl}
+html[dir="rtl"] .landing-controls{direction:rtl}
+html[dir="rtl"] .landing-hero-copy,html[dir="rtl"] .landing-cta{text-align:right}
+html[dir="rtl"] .landing-role-head{direction:rtl}
+html[dir="rtl"] .landing-footer-meta{direction:rtl}
+@media(max-width:640px){.locale-switcher-compact select{max-width:112px;padding:6px 7px;font-size:11px}}
