@@ -355,6 +355,13 @@ const copy: Record<string, Record<Locale, string>> = {
   "Riwayat": { id: "Riwayat", en: "History", ar: "السجل" },
   "Operator Utama": { id: "Operator Utama", en: "Main Operator", ar: "المشغّل الرئيسي" },
   "Kelola siswa, sekolah, wali, dan titik jemput. Ubah status layanan melalui detail siswa.": { id: "Kelola siswa, sekolah, wali, dan titik jemput. Ubah status layanan melalui detail siswa.", en: "Manage students, schools, guardians and pickup points. Change service status from the student details page.", ar: "إدارة الطلاب والمدارس وأولياء الأمور ونقاط الصعود. غيّر حالة الخدمة من صفحة تفاصيل الطالب." },
+  "Kontak": { id: "Kontak", en: "Contact", ar: "جهة الاتصال" },
+  "Pengemudi & bus": { id: "Pengemudi & bus", en: "Driver & bus", ar: "السائق والحافلة" },
+  "Perjalanan": { id: "Perjalanan", en: "Trip", ar: "الرحلة" },
+  "Tambah penugasan": { id: "Tambah penugasan", en: "Add assignment", ar: "إضافة تكليف" },
+  "Nama wali": { id: "Nama wali", en: "Guardian name", ar: "اسم ولي الأمر" },
+  "Nama pengemudi": { id: "Nama pengemudi", en: "Driver name", ar: "اسم السائق" },
+  "Nomor SIM": { id: "Nomor SIM", en: "Driver licence number", ar: "رقم رخصة القيادة" },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
