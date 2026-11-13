@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
-import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 
 type Notice = { id: string; message: string } | null;
@@ -23,7 +22,7 @@ export function LandingControls({ children }: { children: ReactNode }) {
     document.addEventListener("keydown", escape);
     return () => { clearTimeout(timer); document.removeEventListener("pointerdown", dismiss); document.removeEventListener("keydown", escape); };
   }, [active]);
-  return <NoticeContext.Provider value={{ active, show }}><div ref={root} className="landing-controls"><div className="landing-locale"><LocaleSwitcher /></div>{children}</div></NoticeContext.Provider>;
+  return <NoticeContext.Provider value={{ active, show }}><div ref={root} className="landing-controls">{children}</div></NoticeContext.Provider>;
 }
 
 // Tooltip absolut tidak ikut menentukan tinggi wrapper tombol.
