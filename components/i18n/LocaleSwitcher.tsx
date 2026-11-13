@@ -18,9 +18,9 @@ export function LocaleSwitcher({ compact = false }: { compact?: boolean }) {
           document.documentElement.dir = getDirection(next);
         }}
       >
-        <option value="id">🇮🇩 {t("languageId")}</option>
-        <option value="en">🇬🇧 {t("languageEn")}</option>
-        <option value="ar">🇸🇦 {t("languageAr")}</option>
+        <option value="id" dir="auto">🇮🇩 Bahasa Indonesia</option>
+        <option value="en" dir="auto">🇬🇧 English</option>
+        <option value="ar" dir="auto">🇸🇦 العربية</option>
       </select>
     </label>
   );
