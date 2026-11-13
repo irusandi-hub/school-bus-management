@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { DialogProvider } from "@/components/ui/DialogProvider";
 import { DevModeBanner } from "@/components/DevModeBanner";
+import { LocaleProvider } from "@/components/i18n/LocaleProvider";
+import { defaultLocale, getDirection, isLocale } from "@/lib/i18n/config";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -11,12 +14,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const cookieStore = await cookies();
+  const savedLocale = cookieStore.get("sbm_locale")?.value;
+  const locale = isLocale(savedLocale) ? savedLocale : defaultLocale;
+
   return (
-    <html lang="id">
+    <html lang={locale} dir={getDirection(locale)}>
       <body>
-        <DevModeBanner />
-        <DialogProvider>{children}</DialogProvider>
+        <LocaleProvider initialLocale={locale}>
+          <DevModeBanner />
+          <DialogProvider>{children}</DialogProvider>
+        </LocaleProvider>
       </body>
     </html>
   );
