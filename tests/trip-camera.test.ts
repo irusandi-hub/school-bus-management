@@ -6,7 +6,7 @@ import ts from 'typescript';
 
 function harness(publisher = false) {
   const intervals: Array<() => void> = [];
-  const peers: any[] = [], channels: any[] = [], calls: string[] = [], statuses: string[] = [];
+  const peers: any[] = [], peerConfigs: any[] = [], channels: any[] = [], calls: string[] = [], statuses: string[] = [];
   let allowed = true, now = 0, pendingHeartbeat = false;
   const db = {
     realtime: { setAuth: async () => {} },
@@ -25,7 +25,7 @@ function harness(publisher = false) {
   };
   class Peer {
     closed = false; localDescription: any; remoteDescription: any;
-    constructor() { peers.push(this); }
+    constructor(config: any) { peers.push(this); peerConfigs.push(config); }
     addTrack() {}
     close() { this.closed = true; }
     async createOffer() { return { type: 'offer' }; }
@@ -39,13 +39,14 @@ function harness(publisher = false) {
   const context: any = { exports: {}, createClient: () => db, RTCPeerConnection: Peer, Date: { now: () => now }, setInterval: (fn: () => void) => { intervals.push(fn); return intervals.length; }, clearInterval: () => {}, MediaStream: class {} };
   vm.runInNewContext(js, context);
   const stop = context.exports.tripCamera({ tripId: 'trip', studentId: 'student', stream: publisher ? { getTracks: () => [] } : undefined, onStatus: (s: string) => statuses.push(s) });
-  return { peers, channels, calls, statuses, intervals, stop, revoke: () => { allowed = false; }, hang: () => { pendingHeartbeat = true; }, advance: () => { now = 11000; } };
+  return { peers, peerConfigs, channels, calls, statuses, intervals, stop, revoke: () => { allowed = false; }, hang: () => { pendingHeartbeat = true; }, advance: () => { now = 11000; } };
 }
 const flush = async () => { for (let i = 0; i < 25; i++) await Promise.resolve(); };
 
 test('viewer sends ready and automatically answers offer; revoke closes peer/channel', async () => {
   const h = harness(); await flush();
   assert.ok(h.calls.includes('camera_open'));
+  assert.deepEqual(h.peerConfigs[0].iceServers, [{ urls: 'stun:stun.cloudflare.com:3478' }]);
   assert.ok(h.calls.includes('camera_signal'));
   await h.channels[0].handler({ payload: { sender: 'publisher', kind: 'offer', body: { type: 'offer' } } });
   assert.equal(h.peers[0].localDescription.type, 'answer');
