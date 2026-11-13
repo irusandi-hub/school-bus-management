@@ -658,6 +658,7 @@ const copy: Record<string, Record<Locale, string>> = {
   "Akses kamera telah berakhir atau koneksi terputus": { id: "Akses kamera telah berakhir atau koneksi terputus", en: "Camera access ended or connection lost", ar: "انتهى الوصول إلى الكاميرا أو انقطع الاتصال" },
   "Koneksi kamera tidak tersedia": { id: "Koneksi kamera tidak tersedia", en: "Camera connection unavailable", ar: "اتصال الكاميرا غير متاح" },
   "Akses kamera ditolak atau belum tersedia": { id: "Akses kamera ditolak atau belum tersedia", en: "Camera access denied or unavailable", ar: "تم رفض الوصول إلى الكاميرا أو أنه غير متاح" },
+  "Perbesar": { id: "Perbesar", en: "Enlarge", ar: "تكبير" },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
