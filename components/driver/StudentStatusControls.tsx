@@ -92,11 +92,11 @@ export function StudentStatusControls({
     if (state.status !== "success" || !state.eventType) return;
     window.dispatchEvent(new Event("schoolbus:student-saved"));
     if (state.eventType === "issue") {
-      setIssueNote(state.notes ?? "Kendala tercatat.");
+      setIssueNote(state.notes ?? t("issueRecorded"));
       return;
     }
     setStatus(state.eventType);
-  }, [state]);
+  }, [state, t]);
 
   const actions = studentActionSet({ direction, status, tripStatus, arrived });
   const actionHint =
