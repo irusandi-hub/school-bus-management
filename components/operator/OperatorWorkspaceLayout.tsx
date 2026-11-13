@@ -47,8 +47,8 @@ export async function OperatorWorkspaceLayout({ children }: { children: React.Re
         </header>
         {children}
         <footer className="page-footer">
-          <span>School Bus Management · Operator Utama</span>
-          <span>Kendali global · Area Operasional · audit operasional</span>
+          <span>School Bus Management · <LocalizedText k="operator" /></span>
+          <span><LocalizedText k="operatorFooter" /></span>
         </footer>
       </main>
       <BottomNav
