@@ -8,7 +8,7 @@ import { safeNextPath } from "@/lib/paths";
 
 const reasons: Record<string, string> = {
   "sesi-berakhir": "Sesi Anda sudah berakhir. Silakan masuk kembali untuk melanjutkan.",
-  "belum-aktivasi": "Akun Anda belum diaktifkan. Selesaikan verifikasi email dan pembuatan kata sandi terlebih dahulu.",
+  "belum-aktivasi": "Akun Anda belum diaktifkan. Hubungi Pengelola untuk memeriksa akses akun Anda.",
   auth_callback: "Tautan verifikasi tidak dapat diproses. Minta tautan baru dari halaman Aktivasi Akun.",
 };
 
@@ -26,7 +26,7 @@ const doors: Record<string, { label: string; detail: string }> = {
   wali: {
     label: "Orang Tua/Wali",
     detail:
-      "Gunakan email dan kata sandi akun wali. Akun harus didaftarkan Pengelola dan memiliki siswa dengan layanan aktif.",
+      "Masuk menggunakan nomor HP terdaftar dan kode OTP. Akun harus memiliki siswa dengan layanan aktif.",
   },
 };
 
@@ -64,16 +64,14 @@ export default async function LoginPage({
           </p>
         ) : (
           <p className="auth-copy">
-            Gunakan email dan kata sandi akun Anda. Hak akses dibaca dari peran akun di database, bukan dari
-            halaman ini.
+            Masukkan nomor HP yang terdaftar untuk menerima kode OTP simulasi. Hak akses tetap mengikuti identitas akun, bukan pilihan peran di halaman ini.
           </p>
         )}
 
         <LoginForm next={safeNextPath(rawNext, "")} reason={reason} />
 
         <p className="auth-footnote">
-          Peran akun ditentukan dari data pengguna di server. Lupa kata sandi? Hubungi Pengelola untuk pemulihan
-          akses.
+          Kode OTP simulasi digunakan untuk keperluan demo. Nomor HP harus sesuai dengan akun yang terdaftar. Untuk bantuan akses, hubungi Pengelola.
         </p>
 
         <div className="auth-links">
