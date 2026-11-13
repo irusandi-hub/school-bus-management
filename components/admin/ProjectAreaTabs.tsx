@@ -1,4 +1,7 @@
 import { setProjectArea } from "@/lib/project-areas/actions";
+import { cookies } from "next/headers";
+import { defaultLocale, isLocale } from "@/lib/i18n/config";
+import { translate } from "@/lib/i18n/messages";
 import { Icon } from "@/components/ui/Icon";
 import type { ProjectAreaRow } from "@/lib/types";
 
@@ -7,7 +10,7 @@ import type { ProjectAreaRow } from "@/lib/types";
  * lists. It stays a plain form so switching context works without JavaScript
  * and survives navigation through the server-side cookie.
  */
-export function ProjectAreaTabs({
+export async function ProjectAreaTabs({
   areas,
   selectedId,
   nextPath,
@@ -18,13 +21,17 @@ export function ProjectAreaTabs({
   nextPath: string;
   compact?: boolean;
 }) {
+  const cookieStore = await cookies();
+  const savedLocale = cookieStore.get("sbm_locale")?.value;
+  const locale = isLocale(savedLocale) ? savedLocale : defaultLocale;
+  const t = (key: Parameters<typeof translate>[1]) => translate(locale, key);
   return (
-    <section className={compact ? "area-switch area-switch-compact" : "area-switch"} aria-label="Konteks Area Operasional">
-      <span className="area-switch-label" title="Konteks data dan formulir mengikuti area yang dipilih">
+    <section className={compact ? "area-switch area-switch-compact" : "area-switch"} aria-label={t("areaContext")}>
+      <span className="area-switch-label" title={t("areaContextHelp")}>
         <Icon name="pin" size={14} />
-        <span>Area</span>
+        <span>{t("area")}</span>
       </span>
-      <form action={setProjectArea} className="area-switch-tabs" role="group" aria-label="Pilih Area Operasional">
+      <form action={setProjectArea} className="area-switch-tabs" role="group" aria-label={t("chooseArea")}>
         <input type="hidden" name="next" value={nextPath} />
         <button type="submit" name="area" value="all" className={selectedId ? "area-tab" : "area-tab active"} aria-pressed={!selectedId}>
           Semua Area
@@ -41,7 +48,7 @@ export function ProjectAreaTabs({
             {area.name}
           </button>
         ))}
-        {areas.length === 0 && <span className="area-tabs-empty">Belum ada area aktif.</span>}
+        {areas.length === 0 && <span className="area-tabs-empty">{t("noActiveAreas")}</span>}
       </form>
     </section>
   );
