@@ -37,6 +37,7 @@ export function TripClosePanel({
   }, [trip?.id, trip?.status, initialOpen]);
 
   function closePanel() {
+    setConfirmedChecks({});
     setIsOpen(false);
     router.replace(`/pengemudi?tugas=${encodeURIComponent(assignmentId)}`, { scroll: false });
   }
@@ -44,10 +45,7 @@ export function TripClosePanel({
   useEffect(() => {
     const openPanel = () => setIsOpen(true);
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setIsOpen(false);
-        router.replace(`/pengemudi?tugas=${encodeURIComponent(assignmentId)}`, { scroll: false });
-      }
+      if (event.key === "Escape") closePanel();
     };
     window.addEventListener("schoolbus:open-trip-safety", openPanel);
     window.addEventListener("keydown", closeOnEscape);
