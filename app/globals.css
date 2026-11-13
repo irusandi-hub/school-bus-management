@@ -1176,6 +1176,7 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
 .ops-issue{width:100%}
 .ops-issue summary{font-size:10.5px;font-weight:700;color:var(--muted);cursor:pointer;min-height:34px;display:flex;align-items:center}
 .ops-issue-form{display:grid;gap:7px;margin-top:5px;max-width:420px}
+.ops-issue-disabled{display:inline-flex;align-items:center;min-height:34px;padding:0 2px;color:#89949A;font-size:10.5px;font-weight:700;cursor:not-allowed}
 .ops-issue-form textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:8px 10px;font:inherit;font-size:12px;resize:vertical;outline-color:var(--brand)}
 .ops-student-hint{margin:0;font-size:10.5px;line-height:1.5;color:var(--muted)}
 
