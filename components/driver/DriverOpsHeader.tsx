@@ -49,7 +49,7 @@ export async function DriverOpsHeader({
   const locale = isLocale(savedLocale) ? savedLocale : defaultLocale;
   const shortId = driverId.slice(0, 8).toUpperCase();
   const date = new Date(`${serviceDate}T12:00:00Z`);
-  const shortDate = Number.isNaN(date.getTime()) ? serviceDate : new Intl.DateTimeFormat(locale === "ar" ? "ar-SA" : locale === "en" ? "en-GB" : "id-ID", {
+  const shortDate = Number.isNaN(date.getTime()) ? serviceDate : new Intl.DateTimeFormat(locale === "ar" ? "ar-SA-u-ca-gregory" : locale === "en" ? "en-GB" : "id-ID", {
     day: "numeric", month: "short", timeZone: "UTC",
   }).format(date);
 
