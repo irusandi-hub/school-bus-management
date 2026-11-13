@@ -144,7 +144,7 @@ export function CameraDeviceDemo({ publisherOnly = false }: { publisherOnly?: bo
       <option value="publisher">{c("HP pengirim kamera")}</option><option value="viewer">{c("Perangkat penonton")}</option>
     </select></label>}
     <p role="status">{c(status)}</p>
-    <p>{active && role === "publisher" ? "{c("● Sesi kamera aktif — hentikan setelah pengujian.")}" : ""} {playing && role === "viewer" ? "{c("● LIVE · video sedang diputar")}" : ""}</p>
+    <p>{active && role === "publisher" ? c("● Sesi kamera aktif — hentikan setelah pengujian.") : ""} {playing && role === "viewer" ? c("● LIVE · video sedang diputar") : ""}</p>
     <video ref={video} style={{ width: "100%", background: "#111", aspectRatio: "16/9" }} controls autoPlay muted playsInline
       onPlaying={() => setPlaying(true)} onWaiting={() => setPlaying(false)} onStalled={() => setPlaying(false)} onPause={() => setPlaying(false)} onEnded={() => stop("Video berakhir.")} onError={() => stop("Pemutaran video gagal.")} />
     <p>{c("1. Pengirim menekan Mulai, lalu menyalin kode koneksi. 2. Penonton menempel kode koneksi dan membuat kode balasan. 3. Pengirim menempel kode balasan dan menekan Sambungkan. Tukarkan kode lewat kanal privat pada perangkat lain agar halaman kamera tetap aktif.")}</p>
@@ -158,7 +158,7 @@ export function CameraDeviceDemo({ publisherOnly = false }: { publisherOnly?: bo
       <textarea id="signal-output" readOnly autoComplete="off" spellCheck={false} value={output} rows={5} style={{ width: "100%" }} onFocus={(event) => event.target.select()} />
       <button onClick={() => void navigator.clipboard?.writeText(output).then(() => setStatus("Kode disalin. Bagikan hanya kepada penguji yang diizinkan.")).catch(() => setStatus("Pilih dan salin kode secara manual."))}>{c("Salin kode")}</button>
     </div>}
-    <p><button disabled={!active && !busy} onClick={() => stop()}>{publisherOnly ? "Hentikan siaran" : "Hentikan / cabut koneksi"}</button></p>
+    <p><button disabled={!active && !busy} onClick={() => stop()}>{c(publisherOnly ? "Hentikan siaran" : "Hentikan / cabut koneksi")}</button></p>
     <p>{c("Hentikan menutup koneksi dan melepas kamera lokal. Perangkat penonton akan kehilangan koneksi saat siaran dihentikan. Ini bukan bukti pencabutan akses wali oleh server. Tidak ada kode koneksi yang dikirim ke server aplikasi atau disimpan aplikasi.")}</p>
   </section>;
 }
