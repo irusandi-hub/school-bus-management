@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdminCopy } from "@/components/i18n/AdminCopy";
 import type { Metadata } from "next";
 import { RecordForm, type FieldDef } from "@/components/admin/RecordForm";
 import { ProjectAreaTabs } from "@/components/admin/ProjectAreaTabs";
@@ -106,7 +107,7 @@ export default async function RoutesPage({
         <section className="panel">
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">Daftar rute</h2>
+              <h2 className="panel-title"><AdminCopy value="Daftar rute" /></h2>
               <div className="panel-subtitle">{routes.length} rute tercatat</div>
             </div>
           </header>
@@ -114,12 +115,12 @@ export default async function RoutesPage({
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th scope="col">Rute</th>
-                  <th scope="col">Area Operasional</th>
-                  <th scope="col">Arah</th>
-                  <th scope="col">Titik</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Tindakan</th>
+                  <th scope="col"><AdminCopy value="Rute" /></th>
+                  <th scope="col"><AdminCopy value="Area Operasional" /></th>
+                  <th scope="col"><AdminCopy value="Arah" /></th>
+                  <th scope="col"><AdminCopy value="Titik" /></th>
+                  <th scope="col"><AdminCopy value="Status" /></th>
+                  <th scope="col"><AdminCopy value="Tindakan" /></th>
                 </tr>
               </thead>
               <tbody>
