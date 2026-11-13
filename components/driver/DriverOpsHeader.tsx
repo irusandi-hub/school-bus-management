@@ -67,8 +67,6 @@ export function DriverOpsHeader({
           </button>
         </form>
       </div>
-        <form action={signOutAction}><button className="btn btn-ghost btn-sm" type="submit">Keluar</button></form>
-      </div>
 
       <nav className="portal-nav compact-driver-tabs" aria-label="Navigasi Pengemudi">
         <Link href="/pengemudi" aria-current={activeTab === "dashboard" ? "page" : undefined}>Data Pengemudi</Link>
