@@ -4,10 +4,12 @@ import { useActionState } from "react";
 import { loginAction } from "@/lib/auth-actions";
 import { idleState, type ActionState } from "@/lib/validation";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 export function LoginForm({ next, reason }: { next: string; reason?: string }) {
   const [state, formAction, pending] = useActionState<ActionState, FormData>(loginAction, idleState);
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
+  const copy = (value: string) => translateAdminCopy(value, locale) ?? value;
   const emailError = state.fieldErrors?.email;
   const passwordError = state.fieldErrors?.password;
 
@@ -29,7 +31,7 @@ export function LoginForm({ next, reason }: { next: string; reason?: string }) {
       />
       {emailError && (
         <p className="field-error" id="email-error">
-          {emailError}
+          {copy(emailError)}
         </p>
       )}
 
@@ -45,18 +47,18 @@ export function LoginForm({ next, reason }: { next: string; reason?: string }) {
       />
       {passwordError && (
         <p className="field-error" id="password-error">
-          {passwordError}
+          {copy(passwordError)}
         </p>
       )}
 
       {state.status === "error" && (
         <p className="form-alert error" role="alert">
-          {state.message}
+          {copy(state.message)}
         </p>
       )}
       {state.status === "idle" && reason && (
         <p className="form-alert info" role="status">
-          {reason}
+          {copy(reason)}
         </p>
       )}
 
