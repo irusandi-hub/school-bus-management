@@ -14,12 +14,6 @@ type StudentEventState = ActionState & {
   notes?: string | null;
 };
 
-const DONE_LABEL = {
-  boarded: "Naik — selesai",
-  dropped_off: "Turun — selesai",
-  absent: "Tidak Ikut — selesai",
-} as const;
-
 type ActionKind = "board" | "drop" | "absent";
 
 type ActionButtonProps = {
