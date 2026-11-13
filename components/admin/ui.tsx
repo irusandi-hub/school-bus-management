@@ -49,7 +49,7 @@ export async function PageHeader({
         <div className="admin-page-head-copy">
           {eyebrow && <div className="eyebrow">{eyebrow}</div>}
           <h1>{translateNavigationLabel(title, locale)}</h1>
-          <p>{translateAdminCopy(description, locale)}</p>
+          <p>{description.startsWith("Ringkasan data operasional dan jejak aktivitas platform. Konteks: ") ? `${translateAdminCopy("Ringkasan data operasional dan jejak aktivitas platform. Konteks:", locale)} ${description.slice("Ringkasan data operasional dan jejak aktivitas platform. Konteks: ".length)}` : translateAdminCopy(description, locale)}</p>
         </div>
         {actions && <div className="admin-page-actions">{actions}</div>}
       </header>
