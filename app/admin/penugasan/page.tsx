@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AdminCopy } from "@/components/i18n/AdminCopy";
 import { RecordForm, type FieldDef } from "@/components/admin/RecordForm";
 import { ProjectAreaTabs } from "@/components/admin/ProjectAreaTabs";
 import { ConfigNotice, EmptyRow, Notice, PageHeader, Pill } from "@/components/admin/ui";
@@ -150,7 +151,7 @@ export default async function AssignmentsPage() {
         <section className="panel">
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">Daftar penugasan</h2>
+              <h2 className="panel-title"><AdminCopy value="Daftar penugasan" /></h2>
               <div className="panel-subtitle">60 penugasan terbaru · {areaContext.selected?.name ?? "Semua Area"}</div>
             </div>
           </header>
@@ -158,10 +159,10 @@ export default async function AssignmentsPage() {
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th scope="col">Tanggal</th>
-                  <th scope="col">Rute</th>
-                  <th scope="col">Pengemudi &amp; bus</th>
-                  <th scope="col">Perjalanan</th>
+                  <th scope="col"><AdminCopy value="Tanggal" /></th>
+                  <th scope="col"><AdminCopy value="Rute" /></th>
+                  <th scope="col"><AdminCopy value="Pengemudi &amp; bus" /></th>
+                  <th scope="col"><AdminCopy value="Perjalanan" /></th>
                 </tr>
               </thead>
               <tbody>
@@ -212,7 +213,7 @@ export default async function AssignmentsPage() {
         <section className="panel admin-form-panel">
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">Tambah penugasan</h2>
+              <h2 className="panel-title"><AdminCopy value="Tambah penugasan" /></h2>
               <div className="panel-subtitle">Satu pengemudi dan satu bus tidak dapat dipakai dua kali pada tanggal yang sama</div>
             </div>
           </header>
