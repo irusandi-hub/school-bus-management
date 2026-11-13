@@ -1,6 +1,9 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ConfigNotice, Notice, Pill } from "@/components/admin/ui";
+import { cookies } from "next/headers";
+import { defaultLocale, isLocale } from "@/lib/i18n/config";
+import { translate } from "@/lib/i18n/messages";
 import { LocalizedText } from "@/components/i18n/LocaleProvider";
 import { requireGuardian } from "@/lib/auth";
 import { createServerSupabase } from "@/lib/supabase/server";
@@ -17,6 +20,10 @@ function tripTone(status: string) {
 }
 
 export default async function GuardianHistoryPage() {
+  const cookieStore = await cookies();
+  const savedLocale = cookieStore.get("sbm_locale")?.value;
+  const locale = isLocale(savedLocale) ? savedLocale : defaultLocale;
+  const t = (key: Parameters<typeof translate>[1]) => translate(locale, key);
   const access = await requireGuardian();
   if (access.status === "unconfigured") return <ConfigNotice />;
 
@@ -85,22 +92,22 @@ export default async function GuardianHistoryPage() {
               ) : (
                 rows.map(({ child, trip }) => (
                   <tr key={`${child.student.id}-${trip.id}`}>
-                    <td data-label="Tanggal">{formatDate(trip.serviceDate)}</td>
-                    <td data-label="Anak">
+                    <td data-label={t("date")}>{formatDate(trip.serviceDate)}</td>
+                    <td data-label={t("child")}>
                       <Link className="row-link" href={`/wali/anak/${child.student.id}`}>
                         {child.student.full_name}
                       </Link>
                     </td>
-                    <td data-label="Rute">
+                    <td data-label={t("route")}>
                       <strong>{trip.routeName}</strong>
                       <small>
                         {trip.schoolName} · {routeDirectionLabel(trip.direction)}
                       </small>
                     </td>
-                    <td data-label="Status">
+                    <td data-label={t("status")}>
                       <Pill tone={tripTone(trip.status)}>{tripStatusLabel(trip.status)}</Pill>
                     </td>
-                    <td data-label="Waktu">
+                    <td data-label={t("time")}>
                       <small><LocalizedText k="start" /> {formatTime(trip.startedAt)}</small>
                       <small><LocalizedText k="arrive" /> {formatTime(trip.arrivedAt)}</small>
                     </td>
