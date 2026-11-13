@@ -2,6 +2,7 @@ import "@/app/workspace-redesign.css";
 import { BrandLogo } from "@/components/brand-logo";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { ConfigNotice } from "@/components/admin/ui";
+import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
 import { BottomNav } from "@/components/ui/BottomNav";
 import { Icon } from "@/components/ui/Icon";
 import { adminBottomNav, adminGroups } from "@/components/ui/nav-config";
@@ -37,6 +38,7 @@ export async function OperatorWorkspaceLayout({ children }: { children: React.Re
             <strong>Ruang kerja Area Operasional</strong>
           </div>
           <div className="top-actions">
+            <LocaleSwitcher compact />
             <form action={signOutAction}>
               <button className="btn btn-ghost btn-sm topbar-exit" type="submit">
                 <Icon name="logout" size={15} /><span>Keluar</span>
