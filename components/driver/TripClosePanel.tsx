@@ -116,7 +116,7 @@ export function TripClosePanel({
           >
             {copy("Semua penumpang sudah turun")}
           </ConfirmSubmit>
-          <small>{trip.arrived_at ? "{copy("Status seluruh penumpang sudah dituntaskan.")}" : "{copy("Satu kali tekan akan mencatat Turun untuk semua siswa, kecuali yang berstatus Tidak Ikut.")}"}</small>
+          <small>{trip.arrived_at ? copy("Status seluruh penumpang sudah dituntaskan.") : copy("Satu kali tekan akan mencatat Turun untuk semua siswa, kecuali yang berstatus Tidak Ikut.")}</small>
         </form>
 
         <form className="task-end-form ops-end-compact" action={endTrip} onChange={syncConfirmations}>
