@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { BrandLogo } from "@/components/brand-logo";
 import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
+import { LocalizedText } from "@/components/i18n/LocaleProvider";
 import { LoginForm } from "./login-form";
 import { homeForRole } from "@/lib/access";
 import { getViewerState } from "@/lib/auth";
@@ -57,29 +58,23 @@ export default async function LoginPage({
         <div className="auth-locale"><LocaleSwitcher compact /></div>
         <BrandLogo href="/" ariaLabel="Kembali ke gerbang akses" className="auth-logo" />
         <p className="eyebrow">SCHOOL BUS MANAGEMENT</p>
-        <h1>Masuk ke akun</h1>
+        <h1><LocalizedText k="loginTitle" /></h1>
         {door ? (
           <p className="auth-door">
             <strong>{door.label}</strong>
             <span>{door.detail}</span>
           </p>
         ) : (
-          <p className="auth-copy">
-            Gunakan email dan kata sandi akun Anda. Hak akses dibaca dari peran akun di database, bukan dari
-            halaman ini.
-          </p>
+          <p className="auth-copy"><LocalizedText k="loginCopy" /></p>
         )}
 
         <LoginForm next={safeNextPath(rawNext, "")} reason={reason} />
 
-        <p className="auth-footnote">
-          Peran akun ditentukan dari data pengguna di server. Lupa kata sandi? Hubungi Operator untuk pemulihan
-          akses.
-        </p>
+        <p className="auth-footnote"><LocalizedText k="loginFootnote" /></p>
 
         <div className="auth-links">
           <Link className="auth-back" href="/daftar">
-            Aktivasi akun wali
+            <LocalizedText k="activateGuardian" />
           </Link>
         </div>
       </section>
