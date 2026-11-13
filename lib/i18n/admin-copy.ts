@@ -745,6 +745,7 @@ const copy: Record<string, Record<Locale, string>> = {
   "Tiba di sekolah": { id: "Tiba di sekolah", en: "Arrived at school", ar: "الوصول إلى المدرسة" },
   "Ditutup": { id: "Ditutup", en: "Closed", ar: "تم الإنهاء" },
   "Status siswa": { id: "Status siswa", en: "Student status", ar: "حالة الطالب" },
+  "Tugas hari ini belum dapat dimuat. Coba lagi.": { id: "Tugas hari ini belum dapat dimuat. Coba lagi.", en: "Today's tasks could not be loaded. Try again.", ar: "تعذر تحميل مهام اليوم. حاول مرة أخرى." },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
