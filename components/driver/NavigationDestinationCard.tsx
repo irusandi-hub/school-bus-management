@@ -36,6 +36,11 @@ export async function NavigationDestinationCard({
   const c = (value: string) => translateAdminCopy(value, locale) ?? value;
   const destination = navigationDestination(plan);
   const coordinates = destination ? formatCoordinates(destination) : null;
+  const targetLabel = !destination
+    ? c(plan.stops.length === 0 ? "Rute belum memiliki titik" : "Perjalanan selesai")
+    : plan.target
+      ? `${c("Tujuan berikutnya")} · ${c("titik")} ${destination.order}`
+      : `${c("Titik pertama")} · ${destination.order} ${c("dari")} ${plan.stops.length}`;
 
   if (compact) {
     return (
@@ -43,7 +48,7 @@ export async function NavigationDestinationCard({
         <div className="nav-compact-main">
           <span className="nav-compact-kicker">
             <Icon name="navigation" size={13} />
-            {c(describeTarget(plan))}
+            {targetLabel}
           </span>
           <strong>{destination ? destination.name : plan.completed ? c("Perjalanan selesai") : c("Rute belum memiliki titik")}</strong>
           <small>
@@ -60,10 +65,10 @@ export async function NavigationDestinationCard({
           <DriverNavigationButton
             destination={destination}
             destinationName={destination.name}
-            label="Navigasi"
+            label={c("Navigasi")}
             size="sm"
             variant="secondary"
-            disabledMessage={`Titik ${destination.order} belum memiliki koordinat tersimpan.`}
+            disabledMessage={`${c("Titik")} ${destination.order} ${c("belum memiliki koordinat tersimpan.")}`}
           />
         )}
       </div>
@@ -75,7 +80,7 @@ export async function NavigationDestinationCard({
       <header className="nav-dest-head">
         <div>
           <p className="eyebrow">{c("NAVIGASI")}</p>
-          <h2 className="nav-dest-title">{describeTarget(plan)}</h2>
+          <h2 className="nav-dest-title">{targetLabel}</h2>
         </div>
         {destination ? (
           <Pill tone={STOP_STATUS_TONE[destination.status]}>{c(STOP_STATUS_LABEL[destination.status])}</Pill>
@@ -93,8 +98,8 @@ export async function NavigationDestinationCard({
           </span>
           <div>
             <small>{c("Lokasi awal")}</small>
-            <strong>{plan.origin.label}</strong>
-            <span>{plan.origin.detail}</span>
+            <strong>{c(plan.origin.label)}</strong>
+            <span>{c(plan.origin.detail)}</span>
           </div>
         </div>
 
@@ -155,7 +160,7 @@ export async function NavigationDestinationCard({
             destination={destination}
             destinationName={destination.name}
             showAlternatives
-            disabledMessage={`${destination.name} belum memiliki koordinat tersimpan, sehingga rute tidak dapat dibuka. Minta Operator Utama melengkapi koordinat titik ini — alamat tidak boleh ditebak.`}
+            disabledMessage={`${destination.name} ${c("belum memiliki koordinat tersimpan, sehingga rute tidak dapat dibuka. Minta Operator Utama melengkapi koordinat titik ini — alamat tidak boleh ditebak.")}`}
           />
         </div>
       ) : (
