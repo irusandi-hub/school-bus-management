@@ -2939,3 +2939,46 @@ html[dir="rtl"] .auth-locale{justify-content:flex-start}
 /* Arabic typography uses a dedicated family with full Arabic-script coverage. */
 html[lang="ar"] body{font-family:'Noto Sans Arabic','DM Sans',Arial,sans-serif}
 html[lang="ar"] .page-title,html[lang="ar"] .welcome h2,html[lang="ar"] .panel-title,html[lang="ar"] .landing-title,html[lang="ar"] .landing-cta-title{font-family:'Noto Sans Arabic',Arial,sans-serif;letter-spacing:0}
+
+
+/* One shared language control: fixed in the same viewport position on every route. */
+.global-locale-switcher{
+  position:fixed;
+  top:12px;
+  right:16px;
+  z-index:1000;
+  display:flex;
+  align-items:center;
+  padding:5px 7px;
+  border:1px solid rgba(220,229,226,.95);
+  border-radius:12px;
+  background:rgba(255,255,255,.96);
+  box-shadow:0 5px 18px rgba(15,27,61,.10);
+  backdrop-filter:blur(10px);
+}
+.global-locale-switcher .locale-switcher{gap:0}
+.global-locale-switcher .locale-switcher select{
+  max-width:166px;
+  min-height:34px;
+  padding:6px 9px;
+  border:0;
+  background:transparent;
+  font-family:'Noto Sans Arabic','DM Sans',Arial,sans-serif;
+  font-size:12px;
+  font-weight:700;
+  color:var(--ink);
+}
+.global-locale-switcher .locale-switcher select:focus-visible{
+  outline:2px solid var(--primary);
+  outline-offset:2px;
+}
+.topbar{padding-right:190px}
+.portal-head{padding-right:190px}
+.driver-head{padding-right:190px}
+@media(max-width:640px){
+  .global-locale-switcher{top:8px;right:10px;padding:3px 5px}
+  .global-locale-switcher .locale-switcher select{max-width:150px;min-height:32px;padding:5px 7px;font-size:11px}
+  .topbar{padding-right:165px}
+  .portal-head{padding-right:165px}
+  .driver-head{padding-right:165px}
+}
