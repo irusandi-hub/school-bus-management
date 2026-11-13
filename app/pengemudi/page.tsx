@@ -331,8 +331,9 @@ export default async function DriverOperationsPage({
       stopOrder: entry.route_stops?.stop_order ?? 0,
       stopName: entry.route_stops?.stop_name ?? "Titik jemput",
       address: entry.students?.home_address ?? null,
-      status: state?.status ?? null,
-      issueNote: state?.issueNote ?? null,
+      // Status tindakan hanya milik sesi aktif; sesi selesai kembali ke tampilan awal.
+      status: trip?.status === "in_progress" ? state?.status ?? null : null,
+      issueNote: trip?.status === "in_progress" ? state?.issueNote ?? null : null,
     };
   });
 
