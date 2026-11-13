@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdminCopy } from "@/components/i18n/AdminCopy";
 import type { Metadata } from "next";
 import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
 import { RecordForm, type FieldDef } from "@/components/admin/RecordForm";
@@ -142,11 +143,11 @@ export default async function ProjectAreaPage({
               <thead>
                 <tr>
                   <th scope="col">Nama area</th>
-                  <th scope="col">Kode</th>
-                  <th scope="col">Kota</th>
-                  <th scope="col">Kontak</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Tindakan</th>
+                  <th scope="col"><AdminCopy value="Kode" /></th>
+                  <th scope="col"><AdminCopy value="Kota" /></th>
+                  <th scope="col"><AdminCopy value="Kontak" /></th>
+                  <th scope="col"><AdminCopy value="Status" /></th>
+                  <th scope="col"><AdminCopy value="Tindakan" /></th>
                 </tr>
               </thead>
               <tbody>
