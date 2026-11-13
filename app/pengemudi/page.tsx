@@ -2,6 +2,7 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import { defaultLocale, isLocale } from "@/lib/i18n/config";
 import { translate, type MessageKey } from "@/lib/i18n/messages";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 import { orderDriverSessions } from "@/lib/driver/session-selection";
 import type { Metadata } from "next";
 import { ConfigNotice, EmptyRow, EmptyState, Notice, Pill, TripStatusPill } from "@/components/admin/ui";
@@ -80,6 +81,7 @@ export default async function DriverOperationsPage({
   const savedLocale = cookieStore.get("sbm_locale")?.value;
   const locale = isLocale(savedLocale) ? savedLocale : defaultLocale;
   const t = (key: MessageKey) => translate(locale, key);
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
   const directionLabel = (value: string) => value === "morning" ? t("morningDirection") : value === "afternoon" ? t("afternoonDirection") : t("directionNotRecorded");
   const dateLocale = locale === "ar" ? "ar-SA-u-ca-gregory" : locale === "en" ? "en-GB" : "id-ID";
   const formatDateLocalized = (value: string) => new Intl.DateTimeFormat(dateLocale, { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Riyadh" }).format(new Date(`${value.slice(0, 10)}T12:00:00+03:00`));
@@ -165,7 +167,7 @@ export default async function DriverOperationsPage({
                     <td data-label="Status"><TripStatusPill status={item.status} /></td>
                     <td data-label="Waktu">
                       <small>{t("start")} {formatTimeLocalized(item.started_at)}</small>
-                      <small>{t("arrive")} {formatTime(item.arrived_at)}</small>
+                      <small>{t("arrive")} {formatTimeLocalized(item.arrived_at)}</small>
                       <small>{t("finish")} {item.completed_at ? formatDateTimeLocalized(item.completed_at) : "—"}</small>
                     </td>
                   </tr>
@@ -373,17 +375,17 @@ export default async function DriverOperationsPage({
   const cameraEnabled =
     cameraPublishingEnabled || cameraDemoEnabled(deploymentKind(), process.env.CAMERA_DEVICE_DEMO);
   const startReason = completed
-    ? "Perjalanan sudah selesai."
+    ? c("Perjalanan sudah selesai.")
     : inProgress
-      ? "Perjalanan sedang berlangsung."
+      ? c("Perjalanan sedang berlangsung.")
       : trip?.status === "cancelled"
-        ? "Perjalanan dibatalkan."
-        : "Mulai untuk membuka tindakan siswa dan kamera.";
+        ? c("Perjalanan dibatalkan.")
+        : c("Mulai untuk membuka tindakan siswa dan kamera.");
 
   return (
     <div className="driver-ops">
       {selectableAssignments.length > 1 && (
-        <nav className="ops-switch" aria-label="Pilih tugas hari ini">
+        <nav className="ops-switch" aria-label={c("Pilih tugas hari ini")}>
           <span>{t("selectTask")}</span>
           {selectableAssignments.map((assignment) => {
             const assignmentTrip = assignment.trips?.[0];
@@ -440,18 +442,18 @@ export default async function DriverOperationsPage({
               cancelText="Batal"
               pendingLabel="Memulai…"
             >
-              <Icon name="steeringWheel" size={21} style={{ color: "#F5C542" }} /> Mulai Perjalanan
+              <Icon name="steeringWheel" size={21} style={{ color: "#F5C542" }} /> {c("Mulai Perjalanan")}
             </ConfirmSubmit>
           </form>
         ) : inProgress ? (
           <div className="ops-start">
             <OpenSafetyCheckLink />
-            <small>Lengkapi pemeriksaan keselamatan.</small>
+            <small>{c("Lengkapi pemeriksaan keselamatan.")}</small>
           </div>
         ) : (
           <div className="ops-start">
             <button className="btn ops-primary-action ops-start-action" type="button" disabled>
-              <Icon name="steeringWheel" size={21} style={{ color: "#F5C542" }} /> Mulai Perjalanan
+              <Icon name="steeringWheel" size={21} style={{ color: "#F5C542" }} /> {c("Mulai Perjalanan")}
             </button>
             <small>{startReason}</small>
           </div>
@@ -480,7 +482,7 @@ export default async function DriverOperationsPage({
           <DriverMapPanel stops={mapStops} active={inProgress} tripId={trip?.id ?? null} />
         </div>
 
-        <section className="panel ops-manifest" aria-label="Daftar siswa dan tindakan">
+        <section className="panel ops-manifest" aria-label={c("Daftar siswa dan tindakan")}>
         <header className="panel-head">
           <div>
             <h2 className="panel-title">{t("studentActions")}</h2>
@@ -536,8 +538,8 @@ export default async function DriverOperationsPage({
               <p className="ops-review-meta">
                 {formatDate(selected.service_date)} · {routeDirectionLabel(direction)} · Bus{" "}
                 {selected.buses?.fleet_code ?? "—"}
-                {trip?.started_at ? ` · Mulai ${formatTime(trip.started_at)}` : ""}
-                {trip?.completed_at ? ` · Selesai ${formatDateTime(trip.completed_at)}` : ""}
+                {trip?.started_at ? ` · Mulai ${formatTimeLocalized(trip.started_at)}` : ""}
+                {trip?.completed_at ? ` · Selesai ${formatDateTimeLocalized(trip.completed_at)}` : ""}
               </p>
             </div>
           </details>
