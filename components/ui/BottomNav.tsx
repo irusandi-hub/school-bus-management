@@ -8,6 +8,7 @@ import { Icon } from "./Icon";
 import { isNavItemActive, type NavItem, type NavGroup } from "./nav-config";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { translateNavigationLabel } from "@/lib/i18n/navigation";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 /**
  * Navigasi bawah bersama untuk keempat area, dengan penanda halaman aktif.
@@ -149,7 +150,7 @@ export function BottomNav({
             </div>
 
             <div className="menu-sheet-foot">
-              {areaLabel}. Semua tujuan sidebar tersedia di sini.
+              {areaLabel}. {translateAdminCopy("Semua tujuan sidebar tersedia di sini.", locale)}
             </div>
           </div>
         </>
