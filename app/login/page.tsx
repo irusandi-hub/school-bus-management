@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { BrandLogo } from "@/components/brand-logo";
-import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
 import { LocalizedText } from "@/components/i18n/LocaleProvider";
 import { LoginForm } from "./login-form";
 import { homeForRole } from "@/lib/access";
@@ -55,7 +54,6 @@ export default async function LoginPage({
   return (
     <main className="auth-page">
       <section className="auth-card">
-        <div className="auth-locale"><LocaleSwitcher compact /></div>
         <BrandLogo href="/" ariaLabel="Kembali ke gerbang akses" className="auth-logo" />
         <p className="eyebrow">SCHOOL BUS MANAGEMENT</p>
         <h1><LocalizedText k="loginTitle" /></h1>
