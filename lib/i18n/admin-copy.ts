@@ -661,6 +661,16 @@ const copy: Record<string, Record<Locale, string>> = {
   "Perbesar": { id: "Perbesar", en: "Enlarge", ar: "تكبير" },
   "Koneksi": { id: "Koneksi", en: "Connection", ar: "الاتصال" },
   "Balasan": { id: "Balasan", en: "Answer", ar: "الرد" },
+  "Area Pengelola": { id: "Area Pengelola", en: "Operator area", ar: "منطقة المشغّل" },
+  "Area Pengemudi": { id: "Area Pengemudi", en: "Driver area", ar: "منطقة السائق" },
+  "Portal Wali": { id: "Portal Wali", en: "Guardian portal", ar: "بوابة ولي الأمر" },
+  "belum dapat dimuat.": { id: "belum dapat dimuat.", en: "could not be loaded.", ar: "تعذر تحميلها." },
+  "Coba lagi": { id: "Coba lagi", en: "Try again", ar: "حاول مرة أخرى" },
+  "Kembali ke ringkasan": { id: "Kembali ke ringkasan", en: "Back to overview", ar: "العودة إلى النظرة العامة" },
+  "Kode galat:": { id: "Kode galat:", en: "Error code:", ar: "رمز الخطأ:" },
+  "Memuat data pengelola…": { id: "Memuat data pengelola…", en: "Loading operator data…", ar: "جارٍ تحميل بيانات المشغّل…" },
+  "Memuat tugas…": { id: "Memuat tugas…", en: "Loading tasks…", ar: "جارٍ تحميل المهام…" },
+  "Memuat data anak…": { id: "Memuat data anak…", en: "Loading child data…", ar: "جارٍ تحميل بيانات الطفل…" },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
