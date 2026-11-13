@@ -4,10 +4,12 @@ import { useActionState } from "react";
 import { requestSignupAction } from "@/lib/auth-actions";
 import { idleState, type ActionState } from "@/lib/validation";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 export function SignupForm() {
   const [state, formAction, pending] = useActionState<ActionState, FormData>(requestSignupAction, idleState);
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
+  const copy = (value: string) => translateAdminCopy(value, locale) ?? value;
   const emailError = state.fieldErrors?.email;
 
   return (
@@ -26,13 +28,13 @@ export function SignupForm() {
       />
       {emailError && (
         <p className="field-error" id="email-error">
-          {emailError}
+          {copy(emailError)}
         </p>
       )}
 
       {state.status === "error" && (
         <p className="form-alert error" role="alert">
-          {state.message}
+          {copy(state.message)}
         </p>
       )}
       {state.status === "success" && (
