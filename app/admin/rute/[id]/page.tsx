@@ -6,6 +6,8 @@ import { RecordForm, type FieldDef } from "@/components/admin/RecordForm";
 import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
 import { Breadcrumbs, ConfigNotice, EmptyRow, Notice, PageHeader, Pill } from "@/components/admin/ui";
 import { adminReadContext } from "@/lib/admin/read";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 import { firstParam, noticeFromParams } from "@/lib/admin/query";
 import { getProjectAreaContext } from "@/lib/project-areas/context";
 import type { RouteRow, RouteStopRow, StudentRouteStopRow } from "@/lib/types";
@@ -22,6 +24,8 @@ export default async function RouteDetailPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { id } = await params;
+  const locale = await getRequestLocale();
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
   const query = await searchParams;
   const supabase = await adminReadContext();
   if (!supabase) return <ConfigNotice />;
@@ -128,7 +132,7 @@ export default async function RouteDetailPage({
 
       <PageHeader
         title={route.route_name}
-        description={`${route.project_areas?.name ?? "Area Operasional"} · ${route.schools?.name ?? route.school_name} · ${routeDirectionLabel(route.direction)} · ${stops.length} titik`}
+        description={`${route.project_areas?.name ?? c("Area Operasional")} · ${route.schools?.name ?? route.school_name} · ${c(routeDirectionLabel(route.direction))} · ${stops.length} ${c("titik")}`}
         actions={<Pill tone={route.active ? "success" : "neutral"}>{route.active ? "Rute aktif" : "Rute nonaktif"}</Pill>}
       />
 
