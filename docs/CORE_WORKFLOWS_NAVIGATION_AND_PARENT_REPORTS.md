@@ -22,20 +22,20 @@ Keberhasilan alur inti dinilai dari:
 
 | Aktor | Tanggung jawab utama dalam alur inti | Tidak boleh |
 |---|---|---|
-| Admin sekolah/operator sesuai kewenangan | Mengelola data dan penugasan yang menjadi tanggung jawab organisasinya; meninjau dan menyetujui rute; menangani koreksi yang beralasan. | Mengakses organisasi lain tanpa hak; mengubah perjalanan aktif secara diam-diam. |
+| Operator Utama | Mengelola seluruh data dan penugasan lintas sekolah/wilayah; meninjau dan menyetujui rute; menangani koreksi yang beralasan. | Mengubah perjalanan aktif secara diam-diam; membatasi akses Operator berdasarkan wilayah/organisasi. |
 | Pengemudi | Memeriksa tugas dan rute; menjalankan stop sesuai urutan; merekam status siswa; melaporkan data salah atau kendala; menyelesaikan pemeriksaan akhir perjalanan/kabin. | Mengubah data induk siswa/wali; mengubah urutan stop yang disetujui; mengesahkan status dengan GPS tidak memenuhi syarat tanpa pengecualian resmi. |
 | Orang tua/wali | Melihat status anak, informasi perjalanan, lokasi bus beserta waktu pembaruan, serta riwayat/laporan anak yang berhak diakses. | Melihat anak lain, mengubah catatan operasional, atau menganggap lokasi usang sebagai posisi terkini. |
-| Sistem | Memvalidasi hak akses, konsistensi status, GPS, versi rute, waktu pembaruan, audit, dan batas organisasi. | Menampilkan data lama seolah-olah real-time atau menganggap status yang tidak diketahui sebagai berhasil. |
+| Sistem | Memvalidasi hak akses, konsistensi status, GPS, versi rute, waktu pembaruan, audit, serta batas Pengemudi/Wali; Operator memiliki akses global. | Menampilkan data lama seolah-olah real-time atau menganggap status yang tidak diketahui sebagai berhasil. |
 
-Sekolah dan perusahaan/operator dapat memakai aplikasi bersama atau secara terpisah. Izin akses harus mengikuti model operasional dan penugasan yang dikonfigurasi; jangan memberi akses lintas organisasi secara otomatis.
+Satu Operator Utama mengelola seluruh sekolah dan operasi. Sekolah dan perusahaan bus adalah data/entitas, bukan akun atau tenant terpisah. Jangan membatasi akses Operator berdasarkan sekolah, organisasi, atau wilayah; batas akses hanya berlaku untuk Pengemudi (penugasan) dan Orang Tua/Wali (relasi anak).
 
 ## 3. Alur sebelum perjalanan
 
-1. Organisasi yang berwenang memastikan data siswa, wali, titik jemput, bus, pengemudi, dan jadwal yang diperlukan sudah tersedia.
+1. Operator memastikan data siswa, wali, titik jemput, bus, pengemudi, dan jadwal yang diperlukan sudah tersedia.
 2. Sistem membedakan perjalanan pagi dan sore sebagai perjalanan terpisah.
 3. Ketika data relevan berubah, sistem menyiapkan versi rute untuk perjalanan mendatang.
 4. Rute menampilkan urutan stop, jalur jalan, estimasi jarak/waktu, profil bus yang digunakan, waktu perhitungan, serta status versi.
-5. Admin yang berwenang meninjau rute dan menyetujui atau meminta perbaikan. Rute yang belum disetujui tidak boleh ditampilkan sebagai rute operasional final.
+5. Operator meninjau rute dan menyetujui atau meminta perbaikan. Rute yang belum disetujui tidak boleh ditampilkan sebagai rute operasional final.
 6. Pengemudi melihat tugas, bus, jadwal, daftar siswa/stop, dan versi rute yang disetujui sebelum mulai.
 7. Jika penugasan, kendaraan, atau data penting berubah setelah persetujuan, sistem menunjukkan bahwa rute perlu ditinjau ulang untuk perjalanan mendatang. Jangan mengganti rute aktif diam-diam.
 
@@ -46,7 +46,7 @@ Sekolah dan perusahaan/operator dapat memakai aplikasi bersama atau secara terpi
 - Penutupan jalan boleh memicu perhitungan jalur alternatif di antara stop, tetapi urutan stop tetap.
 - Jika tidak ada jalur yang dapat dipastikan aman atau layanan routing gagal, tampilkan peringatan yang jelas dan arahkan ke prosedur operasional; jangan mengklaim rute aman.
 - Rute yang masuk akal untuk mobil penumpang tidak otomatis dianggap layak untuk bus besar. Dukungan kendaraan dan kondisi jalan di area pilot wajib dibuktikan.
-- Saran menggabungkan titik jemput berdekatan bukan perubahan otomatis; persetujuan admin dan status tiap siswa tetap terpisah.
+- Saran menggabungkan titik jemput berdekatan bukan perubahan otomatis; persetujuan Operator dan status tiap siswa tetap terpisah.
 
 ## 4. Alur selama perjalanan
 
@@ -117,8 +117,8 @@ Sediakan tampilan ringkas per anak dan periode, dengan jumlah status yang jelas:
 
 Jangan memasukkan status belum dikonfirmasi ke jumlah ikut atau tidak ikut. Jangan menyamakan pembatalan perjalanan dengan siswa tidak ikut sebelum aturan bisnisnya diputuskan.
 
-### Laporan admin
-Admin yang berwenang dapat memeriksa rekap per sekolah/operator, bus, perjalanan, dan periode sesuai lingkup aksesnya. Laporan harus dapat ditelusuri ke catatan sumber. Ekspor perlu membatasi data pribadi yang tidak dibutuhkan.
+### Laporan Operator
+Operator dapat memeriksa rekap per sekolah/wilayah, bus, perjalanan, dan periode untuk seluruh data aplikasi. Laporan harus dapat ditelusuri ke catatan sumber. Ekspor perlu membatasi data pribadi yang tidak dibutuhkan.
 
 ### Format dan koreksi
 - PDF untuk laporan yang dibaca manusia; CSV untuk data tabular, sesuai kebutuhan yang disetujui.
@@ -155,12 +155,12 @@ Admin yang berwenang dapat memeriksa rekap per sekolah/operator, bus, perjalanan
 - [ ] Status yang ditampilkan kepada wali cocok dengan catatan operasional dan menampilkan waktu yang relevan.
 - [ ] Rekap dapat ditelusuri ke data sumber dan membedakan status tidak ikut, belum dikonfirmasi, pengecualian, dan pembatalan bila status pembatalan sudah didefinisikan.
 - [ ] Koreksi historis menyimpan alasan, aktor, waktu, dan perubahan yang relevan.
-- [ ] Ekspor dan akses laporan dicatat serta dibatasi berdasarkan peran/organisasi.
+- [ ] Ekspor dan akses laporan dicatat serta dibatasi berdasarkan peran; Operator global, Pengemudi/Wali hanya data yang berhak.
 - [ ] Penutupan sesi memeriksa status siswa dan hasil pemeriksaan kabin.
 - [ ] Fitur kamera belum dikonfigurasi tidak menghalangi pengujian alur inti.
 
 ### QA keamanan
-- [ ] Uji API langsung untuk wali yang tidak terhubung, relasi wali dicabut, organisasi lain, pengemudi yang tidak ditugaskan, dan sesi yang sudah berakhir.
+- [ ] Uji API langsung untuk wali yang tidak terhubung, relasi wali dicabut, pengemudi yang tidak ditugaskan, pengemudi/wali lain, dan sesi yang sudah berakhir.
 - [ ] Uji duplikasi, urutan kedatangan data, waktu server/sumber, koneksi terputus, sinkronisasi, serta koreksi data.
 - [ ] Uji skenario sintetis 20/30/40+ stop dan profil kendaraan yang ditentukan sebelum menyatakan routing lulus.
 - [ ] Tidak menggunakan data anak nyata dalam tes tanpa izin dan perlindungan yang sesuai.
@@ -180,7 +180,7 @@ Admin yang berwenang dapat memeriksa rekap per sekolah/operator, bus, perjalanan
 
 ## 11. Tahap pelaksanaan yang disarankan
 
-1. Finalisasi status operasional, kewenangan organisasi, dan alur pengecualian.
+1. Finalisasi status operasional, kewenangan Operator, dan alur pengecualian.
 2. Verifikasi pilihan routing dan sumber GPS pada skenario Dammam; lakukan proof-of-compatibility tanpa data anak nyata.
 3. Tinjau model data, versi rute, status siswa-perjalanan, timestamp lokasi, audit, dan kontrol akses.
 4. Bangun fondasi akses, master data, penugasan, dan audit.

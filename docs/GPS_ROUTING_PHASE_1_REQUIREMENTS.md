@@ -38,7 +38,7 @@
 
 ## 5. Bukti routing sebelum memilih vendor
 
-Rute perjalanan mendatang dihitung dari stop dan profil kendaraan, lalu ditinjau/disetujui admin. Saat perjalanan dimulai, pengemudi memuat versi yang disetujui; urutan stop tidak dioptimalkan ulang secara diam-diam.
+Rute perjalanan mendatang dihitung dari stop dan profil kendaraan, lalu ditinjau/disetujui Operator. Saat perjalanan dimulai, pengemudi memuat versi yang disetujui; urutan stop tidak dioptimalkan ulang secara diam-diam.
 
 Uji harus mencakup:
 - cakupan jalan Dammam dan sekitarnya;

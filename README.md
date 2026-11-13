@@ -1,5 +1,11 @@
 # School Bus Management
 
+## Target arsitektur produk — DEC-033
+
+Aplikasi hanya memiliki tiga ekosistem pengguna: **Operator, Pengemudi, dan Orang Tua/Wali**. Satu Operator Utama mengelola seluruh aplikasi dengan akses global. Sekolah, perusahaan bus, dan Project Area adalah data/entitas operasional, bukan akun, tenant, atau batas akses Operator. Pengemudi dibatasi pada penugasan/perjalanannya; Orang Tua/Wali dibatasi pada anak dan perjalanan yang sah terhubung dengannya.
+
+Kode dan dokumentasi historis yang masih menyebut Admin Pusat atau pembatasan Operator berdasarkan organisasi/wilayah adalah **legacy**, bukan target produk. Refactor role, route, otorisasi server, RLS, dan tes masih harus diselesaikan; catatan ini tidak menyatakan refactor tersebut sudah selesai.
+
 Aplikasi manajemen transportasi bus sekolah untuk Project Area, sekolah, pengemudi, dan orang tua/wali. Contoh area: Dammam, Riyadh, dan Madinah.
 
 ## Status saat ini
@@ -239,6 +245,8 @@ Jangan masukkan data pribadi siswa/orang tua, kredensial, token, API key, atau d
 Risiko yang masih terbuka dan perlu ditangani sebelum produksi: rate limiting khusus formulir aktivasi (saat ini bergantung pada batas bawaan Supabase Auth), pemulihan kata sandi mandiri, verifikasi ulang email saat admin mengganti email wali, serta tinjauan PDPL dan kewajiban Saudi terkait data anak dan lokasi.
 
 ## Dokumen acuan
+
+- [Arsitektur tiga ekosistem](docs/PRODUCT_ARCHITECTURE_THREE_ECOSYSTEMS.md)
 
 - [Master specification](docs/MASTER_SPEC.md)
 - [Tinjauan spesifikasi teknis](docs/TECHNICAL_SPEC_REVIEW.md)

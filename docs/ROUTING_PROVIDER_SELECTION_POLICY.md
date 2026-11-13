@@ -40,7 +40,7 @@ HERE adalah prioritas PoC; HudHud adalah cadangan. Keduanya belum disetujui untu
 1. Routing harus berjalan untuk Dammam dan sekitarnya, bukan hanya wilayah yang didukung secara umum.
 2. Rute mobil penumpang tidak boleh dianggap otomatis layak untuk bus. Uji profil kendaraan aktual yang tersedia, termasuk dimensi dan batas akses yang relevan.
 3. Sistem harus mendukung perencanaan dengan 20, 30, dan 40+ stop. Jika layanan membatasi jumlah waypoint per permintaan, rancangan harus menangani batas tersebut tanpa mengubah urutan stop yang disetujui; hasil penggabungan segmen harus diuji.
-4. Admin meninjau dan menyetujui versi rute. Pengemudi memuat versi tersebut saat mulai perjalanan. Jangan mengurutkan ulang stop secara diam-diam.
+4. Operator meninjau dan menyetujui versi rute. Pengemudi memuat versi tersebut saat mulai perjalanan. Jangan mengurutkan ulang stop secara diam-diam.
 5. Perubahan kondisi jalan dapat memicu jalur alternatif antartitik, tetapi urutan stop tetap dipertahankan. Jika kelayakan jalur tidak dapat dipastikan, tampilkan peringatan.
 6. Catat versi rute, waktu perhitungan, profil kendaraan, jarak, ETA, dan peringatan pembatasan yang dikembalikan layanan.
 7. Kegagalan atau batas layanan harus ditangani dengan pesan yang jelas; jangan menampilkan rute seolah-olah terjamin aman.

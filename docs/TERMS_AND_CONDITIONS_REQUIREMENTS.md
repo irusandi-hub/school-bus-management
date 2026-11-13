@@ -5,27 +5,29 @@
 **Skala perencanaan awal:** sekitar 100 bus.  
 **Persetujuan final:** BELUM DIPUTUSKAN — perlu ditinjau penasihat hukum yang kompeten di wilayah peluncuran.
 
+> **DEC-033:** aplikasi hanya memiliki tiga ekosistem pengguna — Operator, Pengemudi, dan Orang Tua/Wali. Satu Operator Utama mengelola seluruh aplikasi. Sekolah dan perusahaan bus adalah data/entitas, bukan akun atau tenant. Wilayah/organisasi bukan batas akses Operator. Dokumen ini masih draf persyaratan, bukan T&C final.
+
 ## 1. Tujuan dan batas layanan
 
-Penyedia menyediakan aplikasi perangkat lunak untuk membantu sekolah, perusahaan/operator bus sekolah, pengemudi, serta orang tua/wali mengakses fungsi sesuai kewenangan masing-masing. Penyedia aplikasi bukan otomatis pihak yang mengoperasikan layanan transportasi, mengelola armada, mempekerjakan pengemudi, atau mengambil keputusan operasional atas nama sekolah/operator.
+Penyedia menyediakan aplikasi perangkat lunak untuk membantu Operator, Pengemudi, dan Orang Tua/Wali mengakses fungsi sesuai kewenangan masing-masing. Penyedia aplikasi bukan otomatis pihak yang mengoperasikan layanan transportasi, mengelola armada, mempekerjakan pengemudi, atau mengambil keputusan operasional atas nama Operator.
 
-Sekolah dan operator dapat menggunakan aplikasi secara bersama atau terpisah, sesuai model kerja dan kewenangan mereka. Akses dalam aplikasi harus dibatasi sesuai organisasi, kontrak/penugasan yang berlaku, dan tujuan penggunaan.
+Satu Operator Utama mengelola sekolah dan perusahaan bus sebagai data/entitas dalam aplikasi. Sekolah dan perusahaan tidak memperoleh akun atau tenant terpisah. Akses Operator bersifat global; pembatasan akses hanya berlaku untuk Pengemudi (penugasan) dan Orang Tua/Wali (relasi anak), bukan berdasarkan wilayah atau organisasi Operator.
 
 ## 2. Izin dan kewenangan pengguna
 
 **Pokok klausul yang perlu dimasukkan:**
-- Setiap organisasi dan pengguna yang menjalankan kegiatan operasional melalui aplikasi menyatakan bahwa mereka memiliki izin, kewenangan, persetujuan, dan hak yang diperlukan berdasarkan peraturan yang berlaku di wilayah operasinya.
-- Organisasi bertanggung jawab memastikan bahwa kegiatan transportasi, kendaraan, pengemudi, penugasan, dan aktivitas lain yang berada di bawah kendalinya memenuhi ketentuan yang berlaku.
+- Operator dan setiap pengguna yang menjalankan kegiatan operasional melalui aplikasi menyatakan bahwa mereka memiliki izin, kewenangan, persetujuan, dan hak yang diperlukan berdasarkan peraturan yang berlaku di wilayah operasinya.
+- Operator bertanggung jawab memastikan bahwa kegiatan transportasi, kendaraan, pengemudi, penugasan, dan aktivitas lain yang berada di bawah kendalinya memenuhi ketentuan yang berlaku.
 - Pengguna tidak boleh menggunakan aplikasi untuk kegiatan yang melanggar hukum atau melampaui kewenangannya.
-- Pengguna/organisasi harus segera memberi tahu penyedia apabila izin, kewenangan, hubungan kontraktual, penugasan, atau hak akses yang relevan berubah, ditangguhkan, atau berakhir.
+- Operator dan pengguna harus segera memberi tahu penyedia apabila izin, kewenangan, hubungan kontraktual, penugasan, atau hak akses yang relevan berubah, ditangguhkan, atau berakhir.
 - Penyedia dapat membatasi atau menangguhkan akses jika terdapat dasar yang wajar bahwa akses digunakan tanpa kewenangan atau menimbulkan risiko keselamatan/keamanan, dengan proses pemberitahuan dan peninjauan yang sesuai hukum.
 - Penggunaan aplikasi tidak menggantikan izin, lisensi, persetujuan, atau kewajiban lain yang diwajibkan otoritas terkait.
 
-**BELUM DIPUTUSKAN:** apakah saat pendaftaran cukup dengan pernyataan/konfirmasi organisasi atau perlu verifikasi dokumen/nomor izin; kapan pemeriksaan ulang diperlukan; prosedur banding dan pemulihan akses.
+**BELUM DIPUTUSKAN:** apakah saat pendaftaran Operator cukup dengan pernyataan/konfirmasi kewenangan atau perlu verifikasi dokumen/nomor izin; kapan pemeriksaan ulang diperlukan; prosedur banding dan pemulihan akses.
 
-## 3. Tanggung jawab organisasi dan pengguna
+## 3. Tanggung jawab Operator dan pengguna
 
-- Sekolah/operator bertanggung jawab atas keakuratan dan dasar kewenangan data yang dimasukkan, termasuk data siswa, wali, bus, pengemudi, rute, dan penugasan yang berada dalam kendalinya.
+- Operator bertanggung jawab atas keakuratan dan dasar kewenangan data yang dimasukkan, termasuk data siswa, wali, bus, pengemudi, rute, dan penugasan yang berada dalam kendalinya.
 - Setiap pihak hanya boleh mengakses dan menggunakan data yang diperlukan untuk tujuan yang sah dan sesuai perannya.
 - Pengguna wajib menjaga kredensial, melaporkan akses tidak sah, tidak membagikan akun, dan menggunakan fungsi aplikasi sesuai instruksi serta kewenangannya.
 - Keputusan operasional yang memerlukan penilaian manusia—terutama keselamatan anak, kesiapan kendaraan, kondisi jalan, dan tindakan darurat—tetap mengikuti prosedur pihak berwenang dan peraturan yang berlaku. Aplikasi tidak boleh diposisikan sebagai jaminan keselamatan atau pengganti kewajiban profesional.
@@ -45,7 +47,7 @@ Terms & Conditions tidak menggantikan Privacy Notice atau perjanjian pemrosesan 
 ## 6. Perubahan, penangguhan, dan penghentian
 
 Ketentuan final perlu mengatur:
-- perubahan atau berakhirnya kontrak antara sekolah dan operator;
+- perubahan atau berakhirnya hubungan kerja sama dengan sekolah/perusahaan;
 - penonaktifan akun staf/pengemudi saat kewenangan berakhir;
 - pencabutan relasi wali atau penugasan;
 - pengembalian/ekspor dan penghapusan data setelah penghentian layanan;
@@ -54,14 +56,15 @@ Ketentuan final perlu mengatur:
 
 ## 7. Pembatasan tanggung jawab
 
-Jangan menggunakan klausul umum seperti “penyedia tidak bertanggung jawab dalam keadaan apa pun” sebagai pengganti analisis hukum. Naskah final perlu membedakan tanggung jawab sekolah/operator atas kegiatan operasional, kewajiban pengguna atas akun dan data, serta kewajiban penyedia aplikasi yang berlaku menurut hukum dan kontrak. Setiap pembatasan harus ditinjau penasihat hukum dan tidak boleh menyatakan penghapusan kewajiban yang tidak dapat dikesampingkan secara hukum.
+Jangan menggunakan klausul umum seperti “penyedia tidak bertanggung jawab dalam keadaan apa pun” sebagai pengganti analisis hukum.Naskah final perlu membedakan tanggung jawab Operator atas kegiatan operasional, kewajiban pengguna atas akun dan data, serta kewajiban penyedia aplikasi yang berlaku menurut hukum dan kontrak.
+ Setiap pembatasan harus ditinjau penasihat hukum dan tidak boleh menyatakan penghapusan kewajiban yang tidak dapat dikesampingkan secara hukum.
 
 ## 8. Pertanyaan yang harus diselesaikan sebelum finalisasi
 
-- Apakah onboarding organisasi menggunakan deklarasi, nomor izin, dokumen bukti, atau pemeriksaan pihak ketiga?
-- Siapa yang dapat membuat organisasi sekolah/operator, dan bagaimana hubungan organisasi bersama atau terpisah disetujui?
+- Apakah onboarding Operator menggunakan deklarasi, nomor izin, dokumen bukti, atau pemeriksaan pihak ketiga?
+- Siapa yang dapat membuat akun Operator dan menetapkan data sekolah/perusahaan, serta bagaimana kewenangannya diverifikasi?
 - Bagaimana akses dibatasi dan dicabut saat izin atau kontrak berakhir?
-- Siapa yang menentukan dasar hukum dan pemberitahuan untuk data siswa/kamera dalam setiap model operasi?
+- Siapa yang menentukan dasar hukum dan pemberitahuan untuk data siswa/kamera dalam model satu Operator?
 - Apakah ada kebutuhan bahasa Arab dan bahasa Inggris, serta versi bahasa mana yang berlaku jika terdapat perbedaan?
 - Bagaimana proses keluhan, sengketa, penghapusan/ekspor, dan respons insiden?
 - Bagaimana klausul diselaraskan dengan ketentuan Arab Saudi yang berlaku pada tanggal peluncuran?
@@ -70,7 +73,7 @@ Jangan menggunakan klausul umum seperti “penyedia tidak bertanggung jawab dala
 
 Dokumen ini hanya daftar persyaratan dan pokok klausul. Jangan menampilkannya sebagai Terms & Conditions yang mengikat pengguna sebelum:
 1. tinjauan hukum/privacy untuk Arab Saudi selesai;
-2. alur organisasi, kewenangan, dan pencabutan akses ditetapkan;
+2. alur Operator, kewenangan, dan pencabutan akses ditetapkan;
 3. Privacy Notice dan kontrak pemrosesan data yang relevan diselaraskan;
 4. fitur teknis yang dijanjikan—terutama akses/pencabutan kamera—telah diverifikasi; dan
 5. pemilik produk menyetujui naskah final.

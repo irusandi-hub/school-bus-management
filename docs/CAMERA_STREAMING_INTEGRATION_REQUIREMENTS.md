@@ -33,11 +33,11 @@ Jika salah satu kemampuan tidak tersedia, catat sebagai keterbatasan eksplisit. 
 
 ## 3. Otorisasi aplikasi
 
-Aplikasi harus memeriksa hak akses pada server untuk setiap permintaan pembuatan atau penggunaan sesi stream. Izin ditentukan oleh pengguna, organisasi, bus, tugas/perjalanan, dan status anak sesuai kebijakan produk.
+Aplikasi harus memeriksa hak akses pada server untuk setiap permintaan pembuatan atau penggunaan sesi stream. Operator memiliki akses global; Pengemudi dibatasi penugasan; Orang Tua/Wali dibatasi relasi anak dan status perjalanan. Jangan memakai organisasi/wilayah sebagai filter akses Operator.
 
 - Pengemudi: akses sesuai sesi kerja aktif dan kewenangannya.
 - Orang tua/wali: hanya akses yang sah ketika anak yang terkait telah dikonfirmasi berada di bus; akses berakhir saat anak turun atau hak dicabut.
-- Admin: akses sesuai peran, kebutuhan kerja, dan audit.
+- Operator: akses global sesuai kebutuhan kerja dan audit; Pengemudi/Wali dibatasi peran dan penugasan/relasi.
 
 URL publik permanen atau kredensial perangkat yang dibagikan ke aplikasi klien tidak boleh dijadikan satu-satunya pengaman. Utamakan sesi/token singkat dan terikat pada pengguna/izin, server-side authorization, serta proxy/relay terproteksi jika dibutuhkan. Uji apakah stream yang sudah dibuka atau token lama tetap bekerja setelah akses dicabut; dokumentasikan batas waktu pencabutan aktual.
 

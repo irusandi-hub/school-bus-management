@@ -53,7 +53,7 @@ Ask the provider to answer each item explicitly:
 - [ ] Are one-way roads, prohibited turns, U-turn restrictions, closures, restricted roads, and access restrictions represented and current?
 - [ ] Can a route handle 20, 30, 40, and more stops? State documented limits, waypoint limits, request limits, and optimization limits.
 - [ ] Can the service optimize stop order for a school bus, or only find a path through a fixed ordered list?
-- [ ] Can the application preserve an admin-approved stop order while recalculating only the road path between stops?
+- [ ] Can the application preserve an Operator-approved stop order while recalculating only the road path between stops?
 - [ ] What traffic data is available in Saudi Arabia, at what times, and with what freshness? Is it included in the proposed plan?
 - [ ] Are ETA, distance, route geometry/polyline, warnings, and reason codes returned?
 - [ ] What happens when no feasible route is found, restrictions conflict, or a road is closed?
@@ -98,12 +98,14 @@ Ask the provider to answer each item explicitly:
 
 These are diligence questions, not a legal opinion. Obtain qualified Saudi legal/privacy advice before production use.
 
+**Product access model (DEC-033):** the application has one Operator with global access, plus Drivers and Guardians with scoped access. School/company is data, not an application tenant. Vendor tenancy or organization isolation must not be used to reintroduce Operator restrictions by school, organization, or region; it is relevant only where the vendor serves multiple customers.
+
 - [ ] Identify hosting provider, contracting entity, primary region, backup region, disaster-recovery region, and all material subprocessors.
 - [ ] List where identity data, child/student records, guardian contacts, precise location, route history, audit logs, and video/stream metadata are stored or processed.
 - [ ] Confirm whether any personal data is transferred or remotely accessed from outside Saudi Arabia; document the transfer mechanism and assessment required for the actual case.
 - [ ] Provide a data-processing agreement covering purpose, instructions, confidentiality, security, subprocessors, assistance with data-subject requests, deletion/return, and termination.
 - [ ] Document encryption in transit/at rest, key management, secrets management, administrative MFA, least privilege, and privileged-access logging.
-- [ ] Explain tenant/school/company isolation and provide evidence that one organization cannot access another organization's students, routes, or camera streams.
+- [ ] Explain how the vendor isolates data between its customers and between application roles. The product's Operator is global; do not treat school/company isolation as an Operator restriction.
 - [ ] Explain incident detection, notification timelines, investigation support, and evidence preservation.
 - [ ] Document backup frequency, recovery objectives, restore testing, and deletion from backups.
 - [ ] Provide retention/deletion controls for accounts, student records, precise location, trip history, logs, and video-related data.
@@ -114,18 +116,18 @@ These are diligence questions, not a legal opinion. Obtain qualified Saudi legal
 
 **Required proof:** contract/DPA draft, current architecture/data-flow diagram, region and subprocessors list, security documentation, retention/deletion evidence, incident terms, and written responses specific to the proposed service.
 
-## 6. Identity, guardian links, and organizational access
+## 6. Identity, guardian links, and access boundaries
 
 - [ ] Can authentication be integrated using documented standards (OIDC/OAuth 2.0/SAML where applicable), with MFA options for privileged users?
 - [ ] Can accounts be deactivated and sessions/tokens revoked promptly?
-- [ ] Can school and transport-company staff be scoped to assigned organizations, buses, routes, and duties?
+- [ ] Can Operator staff (if any) access all schools/regions as required, while Drivers are scoped to assigned buses, routes, and duties?
 - [ ] Can one guardian be linked to multiple students and a student to multiple approved guardians without exposing unrelated students?
 - [ ] Does the vendor support application-enforced permissions, or does it require the project to implement all authorization independently?
 - [ ] Can privileged access and sensitive data access be audited?
 - [ ] What account recovery, phone-number change, verification, and anti-abuse controls exist?
 - [ ] Can access be revoked when employment, school contract, bus assignment, or guardian relationship ends?
 
-**Required proof:** access-control matrix, API documentation, tenant-isolation design, and tests using separate test organizations and test accounts. Phone verification alone must not be treated as proof of guardian relationship.
+**Required proof:** access-control matrix, API documentation, vendor tenant-isolation design where applicable, and tests using separate test accounts. Tests must prove Operator global access plus Driver/Guardian isolation. Phone verification alone must not be treated as proof of guardian relationship.
 
 ## 7. Noor / government and school-system integration
 
@@ -133,7 +135,7 @@ These are diligence questions, not a legal opinion. Obtain qualified Saudi legal
 - [ ] Who owns/operates the interface, and who can authorize access?
 - [ ] Are written permission, a contract, credentials, sandbox, and technical documentation available?
 - [ ] What data fields, scopes, rate limits, audit requirements, and service terms apply?
-- [ ] Is the proposed integration supported for the intended school/operator type?
+- [ ] Is the proposed integration supported for the intended Operator/school data model?
 - [ ] If no authorized interface is available, what approved manual/import workflow can be used?
 
 **Required proof:** official documentation and written authorization from the system owner. A public website or online registration service is not evidence that an API is available or that automated access is permitted. Do not scrape or bypass access controls.
@@ -165,7 +167,7 @@ Run only after the pilot city and test permissions are agreed. Use synthetic dat
 | GPS accuracy/radius | Invalid or low-quality fixes cannot be treated as valid confirmation | Test coordinates, accuracy, calculated distance, result |
 | Camera authorization | Only eligible user/session can open the intended stream | Authorization logs and test account matrix |
 | Camera revocation | Previously issued access stops working within the agreed limit | Timed test, token behavior, server logs |
-| Organization isolation | School/company A cannot access B's students, trips, routes, or camera | Negative API tests and logs |
+| Access isolation | Operator can reach all schools/regions; Driver/Guardian cannot reach unassigned/unrelated data | Positive/negative API tests and logs |
 | Account/session revocation | Disabled user cannot continue through old sessions/tokens beyond documented limits | Test timestamps and results |
 | Export and deletion | Export is authorized; deletion/termination behavior matches contract | Sample export, deletion evidence, audit log |
 | Outage and recovery | Clear unavailable state; recovery does not invent fresh location/video | Timeline, logs, UI captures |
@@ -182,7 +184,7 @@ For each capability, record:
 | GPS/AVL source and update quality | BELUM TERVERIFIKASI | — | Hardware/source undecided | Define source options and test requirements |
 | Camera/AV stream integration and revocation | BELUM TERVERIFIKASI | — | Existing device and AV app/platform inventory not yet supplied; direct versus mediated stream not decided | Inventory existing stack; compare official authorized direct-device and AV-platform handoff options; test authorization and revocation |
 | Hosting region and data transfers | BELUM TERVERIFIKASI | — | Deployment undecided | Obtain data-flow and subprocessor details |
-| Identity / organization isolation | BELUM TERVERIFIKASI | — | Architecture not selected | Define access model and validate proposed services |
+| Identity / access isolation | BELUM TERVERIFIKASI | — | Architecture not selected | Validate Operator global plus Driver/Guardian scoped access |
 | Noor integration | BELUM TERVERIFIKASI | — | Authorization/API unknown | Request official confirmation |
 | Licensing and operational responsibilities | BELUM TERVERIFIKASI | — | Operating entity/model details unresolved | Confirm with responsible authority and qualified counsel |
 | Commercial and support fit | BELUM TERVERIFIKASI | — | Target around 100 buses; concurrent usage and detailed service profile undecided | Request comparable written quotes for this scale |
