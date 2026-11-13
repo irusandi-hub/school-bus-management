@@ -449,6 +449,17 @@ const copy: Record<string, Record<Locale, string>> = {
   "Perjalanan akan muncul setelah pengemudi memulai tugas yang ditugaskan. Tidak ada perjalanan contoh yang ditampilkan.": { id: "Perjalanan akan muncul setelah pengemudi memulai tugas yang ditugaskan. Tidak ada perjalanan contoh yang ditampilkan.", en: "Trips will appear after a driver starts an assigned task. No sample trips are displayed.", ar: "ستظهر الرحلات بعد أن يبدأ السائق مهمة مكلّفاً بها. لا يتم عرض رحلات تجريبية." },
   "Mulai": { id: "Mulai", en: "Start", ar: "البدء" },
   "Lokasi GPS terbaru hanya tersedia selama perjalanan berlangsung dan ditampilkan pada portal wali yang berhak. Halaman ini tidak menampilkan lokasi lama sebagai posisi terkini dan tidak mengubah status kamera.": { id: "Lokasi GPS terbaru hanya tersedia selama perjalanan berlangsung dan ditampilkan pada portal wali yang berhak. Halaman ini tidak menampilkan lokasi lama sebagai posisi terkini dan tidak mengubah status kamera.", en: "The latest GPS location is available only while a trip is in progress and is shown to eligible guardians. This page does not present an old location as current or change camera status.", ar: "يتوفر أحدث موقع GPS أثناء الرحلة فقط ويُعرض لأولياء الأمور المخولين. لا تعرض هذه الصفحة موقعاً قديماً على أنه الموقع الحالي ولا تغيّر حالة الكاميرا." },
+  "Identitas siswa yang unik. Bukan username dan bukan kredensial login.": { id: "Identitas siswa yang unik. Bukan username dan bukan kredensial login.", en: "A unique student identifier. It is not a username or login credential.", ar: "معرّف فريد للطالب. ليس اسم مستخدم ولا بيانات تسجيل دخول." },
+  "Nama Area Operasional": { id: "Nama Area Operasional", en: "Operational area name", ar: "اسم منطقة التشغيل" },
+  "Nama area operasional yang dipakai pada dashboard, rute, dan laporan.": { id: "Nama area operasional yang dipakai pada dashboard, rute, dan laporan.", en: "The operational area name used on dashboards, routes and reports.", ar: "اسم منطقة التشغيل المستخدم في لوحات المعلومات والمسارات والتقارير." },
+  "Kode area": { id: "Kode area", en: "Area code", ar: "رمز المنطقة" },
+  "Huruf kapital, angka, dan tanda hubung. Harus unik.": { id: "Huruf kapital, angka, dan tanda hubung. Harus unik.", en: "Use uppercase letters, numbers and hyphens. Must be unique.", ar: "استخدم الأحرف الكبيرة والأرقام والواصلات. يجب أن يكون فريداً." },
+  "Nama kontak area": { id: "Nama kontak area", en: "Area contact name", ar: "اسم جهة اتصال المنطقة" },
+  "Batalkan": { id: "Batalkan", en: "Cancel", ar: "إلغاء" },
+  "Semua status": { id: "Semua status", en: "All statuses", ar: "جميع الحالات" },
+  "Filter status Area Operasional": { id: "Filter status Area Operasional", en: "Filter operational area status", ar: "تصفية حالة منطقة التشغيل" },
+  "Nama area": { id: "Nama area", en: "Area name", ar: "اسم المنطقة" },
+  "Nonaktifkan area yang tidak dipakai lagi. Bus, pengemudi, rute, siswa, dan riwayat tidak dihapus.": { id: "Nonaktifkan area yang tidak dipakai lagi. Bus, pengemudi, rute, siswa, dan riwayat tidak dihapus.", en: "Deactivate areas that are no longer used. Buses, drivers, routes, students and history are not deleted.", ar: "عطّل المناطق التي لم تعد مستخدمة. لن يتم حذف الحافلات أو السائقين أو المسارات أو الطلاب أو السجل." },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
