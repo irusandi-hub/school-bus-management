@@ -107,7 +107,7 @@ export function TripClosePanel({
             className="btn btn-secondary"
             message="Pastikan seluruh penumpang sudah turun dan tidak ada yang tertinggal di dalam bus."
             pendingLabel="Memeriksa…"
-            disabled={Boolean(trip.arrived_at)}
+            disabled={unclearStudents === 0 && Boolean(trip.arrived_at)}
           >
             Semua penumpang sudah turun
           </ConfirmSubmit>

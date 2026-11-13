@@ -39,7 +39,7 @@ describe("tombol perjalanan pengemudi", () => {
     assert.match(panel, /disabled={!requirementsMet}/);
     assert.match(panel, />\s*Akhiri\s*</);
     assert.match(panel, /Semua penumpang sudah turun/);
-    assert.match(panel, /disabled={Boolean\(trip\.arrived_at\)}/);
+    assert.match(panel, /disabled={unclearStudents === 0 && Boolean\(trip\.arrived_at\)}/);
     assert.match(panel, /kecuali yang berstatus Tidak Ikut/);
     assert.match(panel, /role="dialog"/);
     assert.match(panel, /aria-modal="true"/);

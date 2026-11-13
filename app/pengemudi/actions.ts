@@ -6,6 +6,8 @@ import { DEV_DRIVER_RECORD, DEV_VIEWER, isDevOpenAccess } from "@/lib/dev-open-a
 import { createServerSupabase } from "@/lib/supabase/server";
 import { supabaseNotConfiguredMessage } from "@/lib/supabase/env";
 import { validateDeviceLocation } from "@/lib/driver/device-location";
+import { canRecordStudentStatus } from "@/lib/driver/student-actions";
+import { resolveStudentTripStates } from "@/lib/driver/trip-progress";
 import { isDuplicateStudentEvent } from "@/lib/driver/student-events";
 import { evaluateTripEnd, SAFETY_CHECKS, studentsStillOnBus, type SafetyFieldName } from "@/lib/driver/trip-end";
 import { failure, readText, success, type ActionState } from "@/lib/validation";
@@ -140,7 +142,6 @@ export async function confirmArrival(formData: FormData) {
     backTo(target, "Perjalanan tidak ditemukan untuk akun Anda.", "error");
   }
   if (trip.status !== "in_progress") backTo(target, "Perjalanan tidak sedang berlangsung.", "error");
-  if (trip.arrived_at) backTo(target, "Status seluruh penumpang sudah dituntaskan.", "success");
 
   const routeId = trip.trip_assignments.route_id;
   const direction = trip.trip_assignments.routes?.direction ?? "morning";
@@ -155,10 +156,8 @@ export async function confirmArrival(formData: FormData) {
   }
 
   const rosterIds = [...new Set(((rosterResult.data ?? []) as { student_id: string }[]).map((row) => row.student_id))];
-  const latestStatus = new Map<string, string>();
-  for (const event of (eventsResult.data ?? []) as { student_id: string; event_type: string }[]) {
-    if (!latestStatus.has(event.student_id)) latestStatus.set(event.student_id, event.event_type);
-  }
+  const states = resolveStudentTripStates((eventsResult.data ?? []) as {student_id:string;event_type:string;occurred_at:string}[]);
+  const latestStatus = new Map([...states].map(([id, state]) => [id, state.status]));
 
   // Satu tindakan massal: pertahankan siswa Tidak Ikut dan status Turun yang sudah ada,
   // lalu catat Turun untuk semua siswa lain. Event lama tetap tersimpan sebagai riwayat.
@@ -180,7 +179,7 @@ export async function confirmArrival(formData: FormData) {
 
   const { data, error } = await ctx.supabase.from("trips")
     .update({ arrived_at: new Date().toISOString() })
-    .eq("id", tripId).eq("status", "in_progress").is("arrived_at", null)
+    .eq("id", tripId).eq("status", "in_progress")
     .select("id");
   if (error) backTo(target, "Konfirmasi seluruh penumpang belum tersimpan. Coba lagi.", "error");
   if (!data || data.length === 0) backTo(target, "Konfirmasi tidak dapat dicatat. Muat ulang halaman.", "error");
@@ -396,16 +395,18 @@ async function recordStudentEventCore(formData: FormData): Promise<StudentEventO
 
   if (!roster) return { state: failure("Siswa tersebut tidak terdaftar pada rute perjalanan ini.") };
 
-  const { data: latest } = await ctx.supabase
+  const { data: attendance, error: attendanceError } = await ctx.supabase
     .from("trip_student_events")
     .select("event_type, notes, occurred_at")
     .eq("trip_id", tripId)
     .eq("student_id", studentId)
     .order("occurred_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    ;
 
-  const latestEvent = latest as { event_type: string; notes: string | null; occurred_at: string } | null;
+  if (attendanceError) return { state: failure("Status siswa belum dapat diperiksa. Coba lagi.") };
+  const events = (attendance ?? []) as {event_type:string;notes:string|null;occurred_at:string}[];
+  const latestEvent = events[0] ?? null;
+  const status = events.find((event) => ["boarded", "dropped_off", "absent"].includes(event.event_type))?.event_type ?? null;
   if (isDuplicateStudentEvent(latestEvent, eventType)) {
     revalidatePath("/pengemudi");
     return {
@@ -415,6 +416,9 @@ async function recordStudentEventCore(formData: FormData): Promise<StudentEventO
     };
   }
 
+  if (!canRecordStudentStatus(status, eventType)) {
+    return { state: failure(status === "dropped_off" ? "Siswa sudah turun. Status akhir tidak dapat diubah." : "Tindakan tidak sesuai status siswa. Muat ulang halaman.") };
+  }
   const { error } = await ctx.supabase.from("trip_student_events").insert({
     trip_id: tripId,
     student_id: studentId,

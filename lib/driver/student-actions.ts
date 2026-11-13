@@ -51,26 +51,13 @@ export function studentActionSet(input: StudentActionInput): StudentActionSet {
   }
 
   if (input.status === "absent") {
-    return { canBoard: false, canDrop: false, canAbsent: false, dropLabel, hint: "Siswa tercatat tidak ikut bus pada perjalanan ini." };
+    return { canBoard: true, canDrop: false, canAbsent: false, dropLabel, hint: "Tekan Naik jika siswa ikut kembali." };
   }
-
   if (input.status === "dropped_off") {
-    return { canBoard: false, canDrop: false, canAbsent: false, dropLabel, hint: "Siswa sudah tercatat turun." };
+    return { canBoard: false, canDrop: false, canAbsent: false, dropLabel, hint: "Siswa sudah turun." };
   }
-
   if (input.status === "boarded") {
-    if (afternoon) {
-      return { canBoard: false, canDrop: true, canAbsent: true, dropLabel, hint: null };
-    }
-    return {
-      canBoard: false,
-      canDrop: input.arrived,
-      canAbsent: true,
-      dropLabel,
-      hint: input.arrived
-        ? "Siswa sudah naik. Catat Tidak Ikut hanya jika keikutsertaan memang dibatalkan."
-        : "Siswa sudah naik. Jika keikutsertaan dibatalkan, tekan Tidak Ikut untuk membatalkan status Naik.",
-    };
+    return { canBoard: false, canDrop: true, canAbsent: true, dropLabel, hint: null };
   }
 
   return {
@@ -80,4 +67,10 @@ export function studentActionSet(input: StudentActionInput): StudentActionSet {
     dropLabel,
     hint: afternoon ? "Catat naik saat siswa masuk bus di sekolah." : null,
   };
+}
+
+/** Shared server/client transition rules; issue events do not replace attendance. */
+export function canRecordStudentStatus(status: string | null, event: string): boolean {
+  const actions = studentActionSet({direction:"morning",status,tripStatus:"in_progress",arrived:false});
+  return event === "boarded" ? actions.canBoard : event === "dropped_off" ? actions.canDrop : event === "absent" ? actions.canAbsent : event === "issue";
 }

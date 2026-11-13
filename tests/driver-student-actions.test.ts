@@ -31,12 +31,12 @@ describe("tindakan siswa sesuai tahap perjalanan", () => {
     }
   });
 
-  it("pagi: menawarkan turun setelah kedatangan dikonfirmasi", () => {
+  it("pagi: turun langsung aktif setelah naik tanpa menunggu massal", () => {
     const beforeArrival = studentActionSet({ direction: "morning", status: "boarded", tripStatus: "in_progress", arrived: false });
-    assert.equal(beforeArrival.canDrop, false);
+    assert.equal(beforeArrival.canDrop, true);
     assert.equal(beforeArrival.canBoard, false);
     assert.equal(beforeArrival.canAbsent, true);
-    assert.match(beforeArrival.hint ?? "", /keikutsertaan dibatalkan/);
+    assert.equal(beforeArrival.hint, null);
 
     const afterArrival = studentActionSet({ direction: "morning", status: "boarded", tripStatus: "in_progress", arrived: true });
     assert.equal(afterArrival.canDrop, true);
@@ -53,7 +53,7 @@ describe("tindakan siswa sesuai tahap perjalanan", () => {
   });
 
   it("menonaktifkan semua tindakan untuk status akhir", () => {
-    for (const status of ["absent", "dropped_off"]) {
+    for (const status of ["dropped_off"]) {
       const actions = studentActionSet({ direction: "morning", status, tripStatus: "in_progress", arrived: true });
       assert.equal(actions.canBoard || actions.canDrop || actions.canAbsent, false);
     }
@@ -65,4 +65,14 @@ describe("tindakan siswa sesuai tahap perjalanan", () => {
       ["Tidak hadir", "Tidak ikut bus", "Diantar orang tua ke sekolah"],
     );
   });
+});
+
+it("Tidak Ikut can return to Naik, while Turun is terminal for both directions", () => {
+  for (const direction of ["morning", "afternoon"]) {
+    const absent = studentActionSet({direction,status:"absent",tripStatus:"in_progress",arrived:true});
+    assert.equal(absent.canBoard,true);
+    assert.equal(absent.canDrop || absent.canAbsent,false);
+    const boarded = studentActionSet({direction,status:"boarded",tripStatus:"in_progress",arrived:false});
+    assert.equal(boarded.canDrop && boarded.canAbsent,true);
+  }
 });
