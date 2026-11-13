@@ -97,7 +97,7 @@ export function RecordForm({ action, fields, submitLabel, hidden, note, secondar
                 )}
                 {error && (
                   <p className="field-error" id={errorId}>
-                    {error}
+                    {copy(error)}
                   </p>
                 )}
               </div>
@@ -149,7 +149,7 @@ export function RecordForm({ action, fields, submitLabel, hidden, note, secondar
                   required={field.required}
                   readOnly={field.readOnly}
                   disabled={formDisabled}
-                  placeholder={field.placeholder}
+                  placeholder={copy(field.placeholder)}
                   step={field.step ?? (type === "number" ? "any" : undefined)}
                   min={field.min}
                   max={field.max}
@@ -184,7 +184,7 @@ export function RecordForm({ action, fields, submitLabel, hidden, note, secondar
 
       {state.status === "error" && (
         <p className="form-alert error" role="alert">
-          {state.message}
+          {copy(state.message) ?? state.message}
         </p>
       )}
       {state.status === "success" && (
