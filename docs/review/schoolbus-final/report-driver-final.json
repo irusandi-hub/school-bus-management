@@ -1,0 +1,1208 @@
+{
+  "scheduled": [
+    {
+      "width": 360,
+      "label": "Mulai Perjalanan",
+      "main": {
+        "x": 200,
+        "y": 76.6,
+        "w": 146,
+        "h": 50,
+        "font": "12.5px",
+        "padding": "10px 12px",
+        "radius": "10px"
+      },
+      "head": {
+        "x": 6,
+        "y": 45.6,
+        "w": 348,
+        "h": 142.7,
+        "font": "16px",
+        "padding": "5px 7px",
+        "radius": "10px"
+      },
+      "workspace": {
+        "x": 6,
+        "y": 226.3,
+        "w": 348,
+        "h": 594.7,
+        "font": "16px",
+        "padding": "0px",
+        "radius": "0px"
+      },
+      "students": [
+        {
+          "status": "Belum dicatat",
+          "actions": [
+            {
+              "t": "Naik",
+              "w": 74.8,
+              "h": 29,
+              "done": false
+            },
+            {
+              "t": "Turun di sekolah",
+              "w": 74.8,
+              "h": 29,
+              "done": false
+            },
+            {
+              "t": "Tidak Ikut",
+              "w": 74.8,
+              "h": 29,
+              "done": false
+            },
+            {
+              "t": "Catat kendala",
+              "w": 74.8,
+              "h": 29,
+              "done": false
+            }
+          ]
+        },
+        {
+          "status": "Belum dicatat",
+          "actions": [
+            {
+              "t": "Naik",
+              "w": 74.8,
+              "h": 29,
+              "done": false
+            },
+            {
+              "t": "Turun di sekolah",
+              "w": 74.8,
+              "h": 29,
+              "done": false
+            },
+            {
+              "t": "Tidak Ikut",
+              "w": 74.8,
+              "h": 29,
+              "done": false
+            },
+            {
+              "t": "Catat kendala",
+              "w": 74.8,
+              "h": 29,
+              "done": false
+            }
+          ]
+        }
+      ],
+      "overflow": false,
+      "logo": "32x32"
+    },
+    {
+      "width": 390,
+      "label": "Mulai Perjalanan",
+      "main": {
+        "x": 230,
+        "y": 76.6,
+        "w": 146,
+        "h": 50,
+        "font": "12.5px",
+        "padding": "10px 12px",
+        "radius": "10px"
+      },
+      "head": {
+        "x": 6,
+        "y": 45.6,
+        "w": 378,
+        "h": 142.7,
+        "font": "16px",
+        "padding": "5px 7px",
+        "radius": "10px"
+      },
+      "workspace": {
+        "x": 6,
+        "y": 226.3,
+        "w": 378,
+        "h": 594.7,
+        "font": "16px",
+        "padding": "0px",
+        "radius": "0px"
+      },
+      "students": [
+        {
+          "status": "Belum dicatat",
+          "actions": [
+            {
+              "t": "Naik",
+              "w": 81.9,
+              "h": 29,
+              "done": false
+            },
+            {
+              "t": "Turun di sekolah",
+              "w": 81.9,
+              "h": 29,
+              "done": false
+            },
+            {
+              "t": "Tidak Ikut",
+              "w": 81.9,
+              "h": 29,
+              "done": false
+            },
+            {
+              "t": "Catat kendala",
+              "w": 81.9,
+              "h": 29,
+              "done": false
+            }
+          ]
+        },
+        {
+          "status": "Belum dicatat",
+          "actions": [
+            {
+              "t": "Naik",
+              "w": 81.9,
+              "h": 29,
+              "done": false
+            },
+            {
+              "t": "Turun di sekolah",
+              "w": 81.9,
+              "h": 29,
+              "done": false
+            },
+            {
+              "t": "Tidak Ikut",
+              "w": 81.9,
+              "h": 29,
+              "done": false
+            },
+            {
+              "t": "Catat kendala",
+              "w": 81.9,
+              "h": 29,
+              "done": false
+            }
+          ]
+        }
+      ],
+      "overflow": false,
+      "logo": "32x32"
+    },
+    {
+      "width": 430,
+      "label": "Mulai Perjalanan",
+      "main": {
+        "x": 258,
+        "y": 76.6,
+        "w": 158,
+        "h": 50,
+        "font": "13px",
+        "padding": "12px 16px",
+        "radius": "10px"
+      },
+      "head": {
+        "x": 6,
+        "y": 45.6,
+        "w": 418,
+        "h": 142.7,
+        "font": "16px",
+        "padding": "5px 7px",
+        "radius": "10px"
+      },
+      "workspace": {
+        "x": 6,
+        "y": 226.3,
+        "w": 418,
+        "h": 594.7,
+        "font": "16px",
+        "padding": "0px",
+        "radius": "0px"
+      },
+      "students": [
+        {
+          "status": "Belum dicatat",
+          "actions": [
+            {
+              "t": "Naik",
+              "w": 91.3,
+              "h": 29,
+              "done": false
+            },
+            {
+              "t": "Turun di sekolah",
+              "w": 91.3,
+              "h": 29,
+              "done": false
+            },
+            {
+              "t": "Tidak Ikut",
+              "w": 91.3,
+              "h": 29,
+              "done": false
+            },
+            {
+              "t": "Catat kendala",
+              "w": 91.3,
+              "h": 29,
+              "done": false
+            }
+          ]
+        },
+        {
+          "status": "Belum dicatat",
+          "actions": [
+            {
+              "t": "Naik",
+              "w": 91.3,
+              "h": 29,
+              "done": false
+            },
+            {
+              "t": "Turun di sekolah",
+              "w": 91.3,
+              "h": 29,
+              "done": false
+            },
+            {
+              "t": "Tidak Ikut",
+              "w": 91.3,
+              "h": 29,
+              "done": false
+            },
+            {
+              "t": "Catat kendala",
+              "w": 91.3,
+              "h": 29,
+              "done": false
+            }
+          ]
+        }
+      ],
+      "overflow": false,
+      "logo": "32x32"
+    },
+    {
+      "width": 768,
+      "label": "Mulai Perjalanan",
+      "main": {
+        "x": 568,
+        "y": 107.6,
+        "w": 167,
+        "h": 52,
+        "font": "14px",
+        "padding": "12px 16px",
+        "radius": "10px"
+      },
+      "head": {
+        "x": 20,
+        "y": 60.6,
+        "w": 728,
+        "h": 178.2,
+        "font": "16px",
+        "padding": "10px 12px",
+        "radius": "13px"
+      },
+      "workspace": {
+        "x": 20,
+        "y": 288.8,
+        "w": 728,
+        "h": 522.9,
+        "font": "16px",
+        "padding": "0px",
+        "radius": "0px"
+      },
+      "students": [
+        {
+          "status": "Belum dicatat",
+          "actions": [
+            {
+              "t": "Naik",
+              "w": 158.2,
+              "h": 34,
+              "done": false
+            },
+            {
+              "t": "Turun di sekolah",
+              "w": 158.2,
+              "h": 34,
+              "done": false
+            },
+            {
+              "t": "Tidak Ikut",
+              "w": 158.2,
+              "h": 34,
+              "done": false
+            },
+            {
+              "t": "Catat kendala",
+              "w": 158.2,
+              "h": 34,
+              "done": false
+            }
+          ]
+        },
+        {
+          "status": "Belum dicatat",
+          "actions": [
+            {
+              "t": "Naik",
+              "w": 158.2,
+              "h": 34,
+              "done": false
+            },
+            {
+              "t": "Turun di sekolah",
+              "w": 158.2,
+              "h": 34,
+              "done": false
+            },
+            {
+              "t": "Tidak Ikut",
+              "w": 158.2,
+              "h": 34,
+              "done": false
+            },
+            {
+              "t": "Catat kendala",
+              "w": 158.2,
+              "h": 34,
+              "done": false
+            }
+          ]
+        }
+      ],
+      "overflow": false,
+      "logo": "32x32"
+    },
+    {
+      "width": 1024,
+      "label": "Mulai Perjalanan",
+      "main": {
+        "x": 822,
+        "y": 108.6,
+        "w": 167,
+        "h": 52,
+        "font": "14px",
+        "padding": "12px 16px",
+        "radius": "10px"
+      },
+      "head": {
+        "x": 20,
+        "y": 60.6,
+        "w": 984,
+        "h": 183.9,
+        "font": "16px",
+        "padding": "11px 14px",
+        "radius": "13px"
+      },
+      "workspace": {
+        "x": 20,
+        "y": 294.5,
+        "w": 984,
+        "h": 517.2,
+        "font": "16px",
+        "padding": "0px",
+        "radius": "0px"
+      },
+      "students": [
+        {
+          "status": "Belum dicatat",
+          "actions": [
+            {
+              "t": "Naik",
+              "w": 158.5,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Turun di sekolah",
+              "w": 158.5,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Tidak Ikut",
+              "w": 158.5,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Catat kendala",
+              "w": 158.5,
+              "h": 36,
+              "done": false
+            }
+          ]
+        },
+        {
+          "status": "Belum dicatat",
+          "actions": [
+            {
+              "t": "Naik",
+              "w": 158.5,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Turun di sekolah",
+              "w": 158.5,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Tidak Ikut",
+              "w": 158.5,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Catat kendala",
+              "w": 158.5,
+              "h": 36,
+              "done": false
+            }
+          ]
+        }
+      ],
+      "overflow": false,
+      "logo": "32x32"
+    },
+    {
+      "width": 1440,
+      "label": "Mulai Perjalanan",
+      "main": {
+        "x": 1108,
+        "y": 108.6,
+        "w": 167,
+        "h": 52,
+        "font": "14px",
+        "padding": "12px 16px",
+        "radius": "10px"
+      },
+      "head": {
+        "x": 150,
+        "y": 60.6,
+        "w": 1140,
+        "h": 183.9,
+        "font": "16px",
+        "padding": "11px 14px",
+        "radius": "13px"
+      },
+      "workspace": {
+        "x": 150,
+        "y": 294.5,
+        "w": 1140,
+        "h": 517.2,
+        "font": "16px",
+        "padding": "0px",
+        "radius": "0px"
+      },
+      "students": [
+        {
+          "status": "Belum dicatat",
+          "actions": [
+            {
+              "t": "Naik",
+              "w": 158.5,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Turun di sekolah",
+              "w": 158.5,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Tidak Ikut",
+              "w": 158.5,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Catat kendala",
+              "w": 158.5,
+              "h": 36,
+              "done": false
+            }
+          ]
+        },
+        {
+          "status": "Belum dicatat",
+          "actions": [
+            {
+              "t": "Naik",
+              "w": 158.5,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Turun di sekolah",
+              "w": 158.5,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Tidak Ikut",
+              "w": 158.5,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Catat kendala",
+              "w": 158.5,
+              "h": 36,
+              "done": false
+            }
+          ]
+        }
+      ],
+      "overflow": false,
+      "logo": "32x32"
+    }
+  ],
+  "progress": [
+    {
+      "width": 360,
+      "label": "Akhiri Perjalanan",
+      "main": {
+        "x": 200,
+        "y": 76.6,
+        "w": 146,
+        "h": 50,
+        "font": "12.5px",
+        "padding": "10px 12px",
+        "radius": "10px"
+      },
+      "head": {
+        "x": 6,
+        "y": 45.6,
+        "w": 348,
+        "h": 142.7,
+        "font": "16px",
+        "padding": "5px 7px",
+        "radius": "10px"
+      },
+      "workspace": {
+        "x": 6,
+        "y": 226.3,
+        "w": 348,
+        "h": 594.7,
+        "font": "16px",
+        "padding": "0px",
+        "radius": "0px"
+      },
+      "students": [
+        {
+          "status": "Belum dicatat",
+          "actions": [
+            {
+              "t": "Naik",
+              "w": 74.8,
+              "h": 29,
+              "done": false
+            },
+            {
+              "t": "Turun di sekolah",
+              "w": 74.8,
+              "h": 29.3,
+              "done": false
+            },
+            {
+              "t": "Tidak hadir",
+              "w": 60.8,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Tidak ikut bus",
+              "w": 60.8,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Diantar orang tua ke sekolah",
+              "w": 60.8,
+              "h": 36,
+              "done": false
+            }
+          ]
+        },
+        {
+          "status": "Belum dicatat",
+          "actions": [
+            {
+              "t": "Naik",
+              "w": 74.8,
+              "h": 29,
+              "done": false
+            },
+            {
+              "t": "Turun di sekolah",
+              "w": 74.8,
+              "h": 29.3,
+              "done": false
+            },
+            {
+              "t": "Tidak hadir",
+              "w": 60.8,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Tidak ikut bus",
+              "w": 60.8,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Diantar orang tua ke sekolah",
+              "w": 60.8,
+              "h": 36,
+              "done": false
+            }
+          ]
+        }
+      ],
+      "overflow": false,
+      "logo": "32x32"
+    },
+    {
+      "width": 390,
+      "label": "Akhiri Perjalanan",
+      "main": {
+        "x": 230,
+        "y": 76.6,
+        "w": 146,
+        "h": 50,
+        "font": "12.5px",
+        "padding": "10px 12px",
+        "radius": "10px"
+      },
+      "head": {
+        "x": 6,
+        "y": 45.6,
+        "w": 378,
+        "h": 142.7,
+        "font": "16px",
+        "padding": "5px 7px",
+        "radius": "10px"
+      },
+      "workspace": {
+        "x": 6,
+        "y": 226.3,
+        "w": 378,
+        "h": 594.7,
+        "font": "16px",
+        "padding": "0px",
+        "radius": "0px"
+      },
+      "students": [
+        {
+          "status": "Belum dicatat",
+          "actions": [
+            {
+              "t": "Naik",
+              "w": 81.9,
+              "h": 29,
+              "done": false
+            },
+            {
+              "t": "Turun di sekolah",
+              "w": 81.9,
+              "h": 29.3,
+              "done": false
+            },
+            {
+              "t": "Tidak hadir",
+              "w": 67.9,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Tidak ikut bus",
+              "w": 67.9,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Diantar orang tua ke sekolah",
+              "w": 67.9,
+              "h": 36,
+              "done": false
+            }
+          ]
+        },
+        {
+          "status": "Belum dicatat",
+          "actions": [
+            {
+              "t": "Naik",
+              "w": 81.9,
+              "h": 29,
+              "done": false
+            },
+            {
+              "t": "Turun di sekolah",
+              "w": 81.9,
+              "h": 29.3,
+              "done": false
+            },
+            {
+              "t": "Tidak hadir",
+              "w": 67.9,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Tidak ikut bus",
+              "w": 67.9,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Diantar orang tua ke sekolah",
+              "w": 67.9,
+              "h": 36,
+              "done": false
+            }
+          ]
+        }
+      ],
+      "overflow": false,
+      "logo": "32x32"
+    },
+    {
+      "width": 430,
+      "label": "Akhiri Perjalanan",
+      "main": {
+        "x": 258,
+        "y": 76.6,
+        "w": 158,
+        "h": 50,
+        "font": "13px",
+        "padding": "12px 16px",
+        "radius": "10px"
+      },
+      "head": {
+        "x": 6,
+        "y": 45.6,
+        "w": 418,
+        "h": 142.7,
+        "font": "16px",
+        "padding": "5px 7px",
+        "radius": "10px"
+      },
+      "workspace": {
+        "x": 6,
+        "y": 226.3,
+        "w": 418,
+        "h": 594.7,
+        "font": "16px",
+        "padding": "0px",
+        "radius": "0px"
+      },
+      "students": [
+        {
+          "status": "Belum dicatat",
+          "actions": [
+            {
+              "t": "Naik",
+              "w": 91.3,
+              "h": 29,
+              "done": false
+            },
+            {
+              "t": "Turun di sekolah",
+              "w": 91.3,
+              "h": 29.3,
+              "done": false
+            },
+            {
+              "t": "Tidak hadir",
+              "w": 77.3,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Tidak ikut bus",
+              "w": 77.3,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Diantar orang tua ke sekolah",
+              "w": 77.3,
+              "h": 36,
+              "done": false
+            }
+          ]
+        },
+        {
+          "status": "Belum dicatat",
+          "actions": [
+            {
+              "t": "Naik",
+              "w": 91.3,
+              "h": 29,
+              "done": false
+            },
+            {
+              "t": "Turun di sekolah",
+              "w": 91.3,
+              "h": 29.3,
+              "done": false
+            },
+            {
+              "t": "Tidak hadir",
+              "w": 77.3,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Tidak ikut bus",
+              "w": 77.3,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Diantar orang tua ke sekolah",
+              "w": 77.3,
+              "h": 36,
+              "done": false
+            }
+          ]
+        }
+      ],
+      "overflow": false,
+      "logo": "32x32"
+    },
+    {
+      "width": 768,
+      "label": "Akhiri Perjalanan",
+      "main": {
+        "x": 568,
+        "y": 107.6,
+        "w": 167,
+        "h": 52,
+        "font": "14px",
+        "padding": "12px 16px",
+        "radius": "10px"
+      },
+      "head": {
+        "x": 20,
+        "y": 60.6,
+        "w": 728,
+        "h": 178.2,
+        "font": "16px",
+        "padding": "10px 12px",
+        "radius": "13px"
+      },
+      "workspace": {
+        "x": 20,
+        "y": 288.8,
+        "w": 728,
+        "h": 522.9,
+        "font": "16px",
+        "padding": "0px",
+        "radius": "0px"
+      },
+      "students": [
+        {
+          "status": "Belum dicatat",
+          "actions": [
+            {
+              "t": "Naik",
+              "w": 158.2,
+              "h": 34,
+              "done": false
+            },
+            {
+              "t": "Turun di sekolah",
+              "w": 158.2,
+              "h": 34,
+              "done": false
+            },
+            {
+              "t": "Tidak hadir",
+              "w": 144.2,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Tidak ikut bus",
+              "w": 144.2,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Diantar orang tua ke sekolah",
+              "w": 144.2,
+              "h": 36,
+              "done": false
+            }
+          ]
+        },
+        {
+          "status": "Belum dicatat",
+          "actions": [
+            {
+              "t": "Naik",
+              "w": 158.2,
+              "h": 34,
+              "done": false
+            },
+            {
+              "t": "Turun di sekolah",
+              "w": 158.2,
+              "h": 34,
+              "done": false
+            },
+            {
+              "t": "Tidak hadir",
+              "w": 144.2,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Tidak ikut bus",
+              "w": 144.2,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Diantar orang tua ke sekolah",
+              "w": 144.2,
+              "h": 36,
+              "done": false
+            }
+          ]
+        }
+      ],
+      "overflow": false,
+      "logo": "32x32"
+    },
+    {
+      "width": 1024,
+      "label": "Akhiri Perjalanan",
+      "main": {
+        "x": 822,
+        "y": 108.6,
+        "w": 167,
+        "h": 52,
+        "font": "14px",
+        "padding": "12px 16px",
+        "radius": "10px"
+      },
+      "head": {
+        "x": 20,
+        "y": 60.6,
+        "w": 984,
+        "h": 183.9,
+        "font": "16px",
+        "padding": "11px 14px",
+        "radius": "13px"
+      },
+      "workspace": {
+        "x": 20,
+        "y": 294.5,
+        "w": 984,
+        "h": 517.2,
+        "font": "16px",
+        "padding": "0px",
+        "radius": "0px"
+      },
+      "students": [
+        {
+          "status": "Belum dicatat",
+          "actions": [
+            {
+              "t": "Naik",
+              "w": 158.5,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Turun di sekolah",
+              "w": 158.5,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Tidak hadir",
+              "w": 144.5,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Tidak ikut bus",
+              "w": 144.5,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Diantar orang tua ke sekolah",
+              "w": 144.5,
+              "h": 36,
+              "done": false
+            }
+          ]
+        },
+        {
+          "status": "Belum dicatat",
+          "actions": [
+            {
+              "t": "Naik",
+              "w": 158.5,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Turun di sekolah",
+              "w": 158.5,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Tidak hadir",
+              "w": 144.5,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Tidak ikut bus",
+              "w": 144.5,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Diantar orang tua ke sekolah",
+              "w": 144.5,
+              "h": 36,
+              "done": false
+            }
+          ]
+        }
+      ],
+      "overflow": false,
+      "logo": "32x32"
+    },
+    {
+      "width": 1440,
+      "label": "Akhiri Perjalanan",
+      "main": {
+        "x": 1108,
+        "y": 108.6,
+        "w": 167,
+        "h": 52,
+        "font": "14px",
+        "padding": "12px 16px",
+        "radius": "10px"
+      },
+      "head": {
+        "x": 150,
+        "y": 60.6,
+        "w": 1140,
+        "h": 183.9,
+        "font": "16px",
+        "padding": "11px 14px",
+        "radius": "13px"
+      },
+      "workspace": {
+        "x": 150,
+        "y": 294.5,
+        "w": 1140,
+        "h": 517.2,
+        "font": "16px",
+        "padding": "0px",
+        "radius": "0px"
+      },
+      "students": [
+        {
+          "status": "Belum dicatat",
+          "actions": [
+            {
+              "t": "Naik",
+              "w": 158.5,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Turun di sekolah",
+              "w": 158.5,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Tidak hadir",
+              "w": 144.5,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Tidak ikut bus",
+              "w": 144.5,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Diantar orang tua ke sekolah",
+              "w": 144.5,
+              "h": 36,
+              "done": false
+            }
+          ]
+        },
+        {
+          "status": "Belum dicatat",
+          "actions": [
+            {
+              "t": "Naik",
+              "w": 158.5,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Turun di sekolah",
+              "w": 158.5,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Tidak hadir",
+              "w": 144.5,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Tidak ikut bus",
+              "w": 144.5,
+              "h": 36,
+              "done": false
+            },
+            {
+              "t": "Diantar orang tua ke sekolah",
+              "w": 144.5,
+              "h": 36,
+              "done": false
+            }
+          ]
+        }
+      ],
+      "overflow": false,
+      "logo": "32x32"
+    }
+  ],
+  "error": {
+    "message": "Siswa tersebut tidak terdaftar pada rute perjalanan ini.",
+    "role": "alert",
+    "marker": "alive",
+    "doneCount": 0,
+    "statuses": [
+      "Belum dicatat",
+      "Belum dicatat"
+    ],
+    "mobile": {
+      "message": "Siswa tersebut tidak terdaftar pada rute perjalanan ini.",
+      "overflow": false
+    }
+  }
+}

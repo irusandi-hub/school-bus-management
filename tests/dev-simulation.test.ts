@@ -11,7 +11,7 @@ function rows(result: Result): SimRow[] {
 
 const STUDENT_1 = "51111111-0000-4000-8000-000000000601";
 const STUDENT_2 = "51111111-0000-4000-8000-000000000602";
-const ORGANISATION = "51111111-0000-4000-8000-0000000001b1";
+const PROJECT_AREA = "51111111-0000-4000-8000-0000000001b1";
 
 describe("klien simulasi pengembangan", () => {
   beforeEach(() => {
@@ -41,7 +41,31 @@ describe("klien simulasi pengembangan", () => {
       .eq("service_status", "active")) as Result;
 
     assert.equal(result.data, null);
-    assert.equal(result.count, 2);
+    assert.equal(result.count, 5);
+  });
+
+  it("menyediakan minimal lima siswa aktif pada rute Pengemudi di Vercel Preview", async () => {
+    const supabase = createSimulationClient();
+    const result = (await supabase
+      .from("student_route_stops")
+      .select("student_id, route_stops(stop_order), students(full_name, service_status)")
+      .eq("route_id", "51111111-0000-4000-8000-000000000711")
+      .eq("direction", "morning")
+      .eq("active", true)) as Result;
+
+    const roster = rows(result);
+    assert.equal(roster.length, 5);
+    assert.ok(roster.every((entry) => (entry.students as SimRow).service_status === "active"));
+    assert.deepEqual(
+      roster.map((entry) => (entry.students as SimRow).full_name).sort(),
+      [
+        "Siswa Contoh Baru Enam",
+        "Siswa Contoh Baru Lima",
+        "Siswa Contoh Baru Tujuh",
+        "Siswa Contoh Satu",
+        "Siswa Contoh Dua",
+      ].sort(),
+    );
   });
 
   it("mendukung pencarian or/ilike dan filter null", async () => {
@@ -66,12 +90,12 @@ describe("klien simulasi pengembangan", () => {
 
     const clash = (await supabase
       .from("buses")
-      .insert({ fleet_code: "SIM-BUS-01", plate_number: "SIM 1999", capacity: 20, operator_id: ORGANISATION, active: true })) as Result;
+      .insert({ fleet_code: "SIM-BUS-01", plate_number: "SIM 1999", capacity: 20, project_area_id: PROJECT_AREA, active: true })) as Result;
     assert.equal(clash.error?.code, "23505");
 
     const created = (await supabase
       .from("schools")
-      .insert({ code: "SIM-SCH-99", name: "Sekolah Contoh Baru", city: "Dammam", operator_id: null, active: true })) as Result;
+      .insert({ code: "SIM-SCH-99", name: "Sekolah Contoh Baru", city: "Dammam", project_area_id: PROJECT_AREA, active: true })) as Result;
     assert.equal(created.error, null);
 
     const listed = (await supabase.from("schools").select("id, code, name").eq("code", "SIM-SCH-99")) as Result;
@@ -106,7 +130,7 @@ describe("klien simulasi pengembangan", () => {
     const latest = rows(history)[0];
     assert.equal(latest.previous_status, "active");
     assert.equal(latest.new_status, "paused");
-    assert.equal((latest.profiles as SimRow).full_name, "Admin Contoh");
+    assert.equal((latest.profiles as SimRow).full_name, "Operator Contoh");
   });
 
   it("menyelesaikan relasi satu-ke-banyak trips pada penugasan", async () => {
@@ -169,10 +193,10 @@ describe("klien simulasi pengembangan", () => {
     assert.equal(rows(limited).length, 1);
     assert.equal(rows(limited)[0].full_name, "Siswa Contoh Tiga");
 
-    const single = (await supabase.from("operators").select("id, name").eq("id", ORGANISATION).maybeSingle()) as Result;
-    assert.equal((single.data as SimRow).name, "Operator Contoh Nusantara");
+    const single = (await supabase.from("project_areas").select("id, name").eq("id", PROJECT_AREA).maybeSingle()) as Result;
+    assert.equal((single.data as SimRow).name, "Project Area Dammam Contoh");
 
-    const missing = (await supabase.from("operators").select("id").eq("id", "tidak-ada").maybeSingle()) as Result;
+    const missing = (await supabase.from("project_areas").select("id").eq("id", "tidak-ada").maybeSingle()) as Result;
     assert.equal(missing.data, null);
   });
 
@@ -180,7 +204,7 @@ describe("klien simulasi pengembangan", () => {
     const writer = createSimulationClient();
     const created = (await writer
       .from("schools")
-      .insert({ code: "SIM-SCH-PERSIST", name: "Sekolah Contoh Persisten", city: "Dammam", operator_id: null, active: true })) as Result;
+      .insert({ code: "SIM-SCH-PERSIST", name: "Sekolah Contoh Persisten", city: "Dammam", project_area_id: PROJECT_AREA, active: true })) as Result;
     assert.equal(created.error, null);
 
     const reader = createSimulationClient();

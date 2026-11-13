@@ -32,6 +32,7 @@ export type StudentTripState = {
 export type TripDirection = "pickup" | "dropoff";
 
 export type ProgressStudent = {
+  admissionsNumber?: string | null;
   id: string;
   name: string;
   stopId: string;
@@ -64,6 +65,7 @@ export type TripProgress = {
 };
 
 export type NextStopStudent = {
+  admissionsNumber?: string | null;
   id: string;
   name: string;
   status: string | null;
@@ -106,7 +108,8 @@ export function resolveStudentTripStates(events: TripStatusEvent[]): Map<string,
   const ordered = events
     .map((event, index) => ({ event, index }))
     .sort((left, right) => {
-      const time = left.event.occurred_at.localeCompare(right.event.occurred_at);
+      // Baris lama/simulasi bisa tidak memiliki waktu; jangan hentikan halaman.
+      const time = (left.event.occurred_at ?? "").localeCompare(right.event.occurred_at ?? "");
       return time !== 0 ? time : left.index - right.index;
     });
 
@@ -287,6 +290,7 @@ export function buildNextStop(input: {
         students: pending.map((student) => ({
           id: student.id,
           name: student.name,
+          admissionsNumber: student.admissionsNumber ?? null,
           status: student.status,
         })),
         count: pending.length,

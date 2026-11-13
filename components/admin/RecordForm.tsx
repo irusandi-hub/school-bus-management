@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useRef } from "react";
+import { useConfirm } from "@/components/ui/DialogProvider";
 import { idleState, type ActionState } from "@/lib/validation";
 
 export type FieldDef = {
@@ -36,10 +37,26 @@ type Props = {
 
 export function RecordForm({ action, fields, submitLabel, hidden, note, secondary, confirmMessage, disabledReason }: Props) {
   const [state, formAction, pending] = useActionState<ActionState, FormData>(action, idleState);
+  const confirm = useConfirm();
+  const confirming = useRef(false);
+  const approved = useRef(false);
   const formDisabled = Boolean(disabledReason);
 
   return (
-    <form action={formAction} className="record-form" noValidate aria-disabled={formDisabled || undefined}>
+    <form action={formAction} className="record-form" onSubmit={async (event) => {
+      if (!confirmMessage) return;
+      if (approved.current) { approved.current = false; return; }
+      event.preventDefault();
+      if (confirming.current || pending || formDisabled) return;
+      const form = event.currentTarget;
+      const submitter = (event.nativeEvent as SubmitEvent).submitter;
+      confirming.current = true;
+      const accepted = await confirm({ title: "Konfirmasi perubahan", message: confirmMessage, confirmText: "Simpan", cancelText: "Batal" });
+      confirming.current = false;
+      if (!accepted || !form.isConnected) return;
+      approved.current = true;
+      form.requestSubmit(submitter instanceof HTMLButtonElement ? submitter : undefined);
+    }} noValidate aria-disabled={formDisabled || undefined}>
       {hidden &&
         Object.entries(hidden).map(([name, value]) => <input key={name} type="hidden" name={name} value={value} />)}
 
@@ -177,9 +194,6 @@ export function RecordForm({ action, fields, submitLabel, hidden, note, secondar
           className="btn btn-primary"
           type="submit"
           disabled={pending || formDisabled}
-          onClick={(event) => {
-            if (confirmMessage && !window.confirm(confirmMessage)) event.preventDefault();
-          }}
         >
           {pending ? "Menyimpan…" : submitLabel}
         </button>

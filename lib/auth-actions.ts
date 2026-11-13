@@ -64,20 +64,8 @@ export async function loginAction(_prev: ActionState, formData: FormData): Promi
   }
 
   if (role === "operator") {
-    const { data: operator } = await supabase
-      .from("operators")
-      .select("id")
-      .eq("profile_id", data.user.id)
-      .eq("active", true)
-      .maybeSingle();
-
-    if (!operator) {
-      await supabase.auth.signOut();
-      return failure(
-        "Akun ini memiliki peran operator tetapi belum ditautkan ke organisasi transportasi yang aktif. Hubungi Admin Pusat untuk menautkan akun Anda.",
-      );
-    }
-
+    // Operator is the single global authority. Company rows are attribution data,
+    // never a prerequisite for authentication or access to the Operator workspace.
     redirect(scopedNext("operator", requestedNext));
   }
 
@@ -92,7 +80,7 @@ export async function loginAction(_prev: ActionState, formData: FormData): Promi
     if (!driver) {
       await supabase.auth.signOut();
       return failure(
-        "Akun ini memiliki peran pengemudi tetapi belum ditautkan ke data pengemudi yang aktif. Hubungi Admin Pusat untuk menautkan akun Anda.",
+        "Akun ini memiliki peran pengemudi tetapi belum ditautkan ke data pengemudi yang aktif. Hubungi Operator Utama untuk menautkan akun Anda.",
       );
     }
 
@@ -107,7 +95,7 @@ export async function loginAction(_prev: ActionState, formData: FormData): Promi
     if (!count) {
       await supabase.auth.signOut();
       return failure(
-        "Akun ini belum memiliki siswa dengan layanan aktif, sehingga akses layanan tidak dapat dibuka. Hubungi Admin Pusat untuk memeriksa status layanan siswa Anda.",
+        "Akun ini belum memiliki siswa dengan layanan aktif, sehingga akses layanan tidak dapat dibuka. Hubungi Operator Utama untuk memeriksa status layanan siswa Anda.",
       );
     }
 
@@ -115,7 +103,7 @@ export async function loginAction(_prev: ActionState, formData: FormData): Promi
   }
 
   await supabase.auth.signOut();
-  return failure("Akun ini belum memiliki peran yang diizinkan untuk aplikasi. Hubungi Admin Pusat.");
+  return failure("Akun ini belum memiliki peran yang diizinkan untuk aplikasi. Hubungi Operator Utama.");
 }
 
 export async function requestSignupAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
@@ -130,7 +118,7 @@ export async function requestSignupAction(_prev: ActionState, formData: FormData
 
   const origin = await requestOrigin();
   if (!origin) {
-    return failure("Permintaan belum dapat diproses dari jaringan ini. Coba lagi atau hubungi Admin Pusat.");
+    return failure("Permintaan belum dapat diproses dari jaringan ini. Coba lagi atau hubungi Operator Utama.");
   }
 
   const { error } = await supabase.auth.signInWithOtp({
@@ -143,14 +131,14 @@ export async function requestSignupAction(_prev: ActionState, formData: FormData
 
   if (error) {
     return failure(
-      "Permintaan belum berhasil diproses. Tunggu beberapa menit lalu coba lagi. Jika masih gagal, hubungi Admin Pusat.",
+      "Permintaan belum berhasil diproses. Tunggu beberapa menit lalu coba lagi. Jika masih gagal, hubungi Operator Utama.",
     );
   }
 
   // Response is intentionally identical for registered and unregistered emails so the
   // form cannot be used to discover which guardian emails exist in the database.
   return success(
-    "Jika email tersebut terdaftar oleh Admin Pusat dan memiliki siswa dengan layanan aktif, tautan verifikasi sudah dikirim. Periksa kotak masuk dan folder spam, lalu buka tautan untuk membuat kata sandi.",
+    "Jika email tersebut terdaftar oleh Operator Utama dan memiliki siswa dengan layanan aktif, tautan verifikasi sudah dikirim. Periksa kotak masuk dan folder spam, lalu buka tautan untuk membuat kata sandi.",
   );
 }
 
@@ -192,7 +180,7 @@ export async function completeAccountAction(_prev: ActionState, formData: FormDa
 
   if (claimError) {
     return failure(
-      "Kata sandi sudah tersimpan, tetapi aktivasi akses belum berhasil. Coba muat ulang halaman ini. Jika tetap gagal, hubungi Admin Pusat.",
+      "Kata sandi sudah tersimpan, tetapi aktivasi akses belum berhasil. Coba muat ulang halaman ini. Jika tetap gagal, hubungi Operator Utama.",
     );
   }
 
@@ -205,22 +193,22 @@ export async function completeAccountAction(_prev: ActionState, formData: FormDa
   switch (claimResult) {
     case "no_active_service":
       return failure(
-        "Akun tidak dapat diaktifkan karena belum ada siswa terhubung dengan layanan aktif. Hubungi Admin Pusat untuk memeriksa status layanan siswa Anda.",
+        "Akun tidak dapat diaktifkan karena belum ada siswa terhubung dengan layanan aktif. Hubungi Operator Utama untuk memeriksa status layanan siswa Anda.",
       );
     case "not_registered":
       return failure(
-        "Email ini belum terdaftar sebagai wali oleh Admin Pusat atau sudah dinonaktifkan, sehingga akses tidak dapat dibuka. Hubungi Admin Pusat untuk pendaftaran email.",
+        "Email ini belum terdaftar sebagai wali oleh Operator Utama atau sudah dinonaktifkan, sehingga akses tidak dapat dibuka. Hubungi Operator Utama untuk pendaftaran email.",
       );
     case "email_unverified":
       return failure("Email belum terverifikasi. Buka tautan verifikasi terbaru dari email Anda, lalu ulangi proses ini.");
     case "already_linked":
-      return failure("Email ini sudah terhubung ke akun lain. Hubungi Admin Pusat untuk bantuan.");
+      return failure("Email ini sudah terhubung ke akun lain. Hubungi Operator Utama untuk bantuan.");
     case "role_conflict":
-      return failure("Akun ini sudah terdaftar dengan peran lain sehingga tidak dapat diaktifkan sebagai wali. Hubungi Admin Pusat.");
+      return failure("Akun ini sudah terdaftar dengan peran lain sehingga tidak dapat diaktifkan sebagai wali. Hubungi Operator Utama.");
     case "unauthenticated":
       return failure("Sesi Anda sudah berakhir. Silakan mulai lagi dari halaman Aktivasi Akun.");
     default:
-      return failure("Aktivasi akun belum berhasil karena kendala yang belum diketahui. Coba lagi atau hubungi Admin Pusat.");
+      return failure("Aktivasi akun belum berhasil karena kendala yang belum diketahui. Coba lagi atau hubungi Operator Utama.");
   }
 }
 

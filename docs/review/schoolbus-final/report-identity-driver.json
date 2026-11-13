@@ -1,0 +1,38 @@
+[
+  {
+    "name": "pengemudi",
+    "path": "/pengemudi",
+    "widths": [
+      {
+        "width": 360,
+        "http": 200,
+        "finalPath": "/pengemudi",
+        "text": "SchoolBusArea Pengemudi",
+        "logoVisible": true,
+        "mark": "32x32",
+        "wordW": 86.3,
+        "wordFont": "17px",
+        "wordColor": "rgb(15, 27, 61)",
+        "viewBox": "0 0 48 48",
+        "hamburger": false,
+        "accountAvatar": false,
+        "overflow": false
+      },
+      {
+        "width": 1440,
+        "http": 200,
+        "finalPath": "/pengemudi",
+        "text": "SchoolBusArea Pengemudi",
+        "logoVisible": true,
+        "mark": "32x32",
+        "wordW": 86.3,
+        "wordFont": "17px",
+        "wordColor": "rgb(15, 27, 61)",
+        "viewBox": "0 0 48 48",
+        "hamburger": false,
+        "accountAvatar": false,
+        "overflow": false
+      }
+    ]
+  }
+]

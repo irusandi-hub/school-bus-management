@@ -34,7 +34,7 @@ export async function saveStudent(_prev: ActionState, formData: FormData): Promi
   const errors: FieldErrors = {};
 
   if (!isValidAdmissionsNumber(admissionsNumber)) {
-    errors.admissions_number = "Admissions Number 2–32 karakter: huruf, angka, garis miring, atau tanda hubung.";
+    errors.admissions_number = "Nomor induk siswa 2–32 karakter: huruf, angka, garis miring, atau tanda hubung.";
   }
   if (fullName.length < 2 || fullName.length > 120) errors.full_name = "Nama siswa harus 2–120 karakter.";
   if (!UUID_PATTERN.test(schoolId)) errors.school_id = "Pilih sekolah siswa.";
@@ -67,6 +67,13 @@ export async function saveStudent(_prev: ActionState, formData: FormData): Promi
 
   if (Object.keys(errors).length > 0) return failure("Periksa kembali isian yang ditandai.", errors);
 
+  const [{ data: school }, { data: guardian }] = await Promise.all([
+    ctx.supabase.from("schools").select("id, active").eq("id", schoolId).maybeSingle(),
+    ctx.supabase.from("guardians").select("id, active").eq("id", guardianId).maybeSingle(),
+  ]);
+  if (!school) return failure("Sekolah tidak ditemukan. Muat ulang halaman lalu pilih kembali.", { school_id: "Sekolah tidak ditemukan." });
+  if (!guardian) return failure("Wali tidak ditemukan. Muat ulang halaman lalu pilih kembali.", { guardian_id: "Wali tidak ditemukan." });
+
   const payload = {
     admissions_number: admissionsNumber,
     full_name: fullName,
@@ -85,7 +92,7 @@ export async function saveStudent(_prev: ActionState, formData: FormData): Promi
 
   if (error) {
     return writeFailure(error, {
-      unique: "Admissions Number sudah dipakai siswa lain. Gunakan nomor lain.",
+      unique: "Nomor induk siswa sudah dipakai siswa lain. Gunakan nomor lain.",
       foreignKey: "Sekolah atau wali yang dipilih tidak tersedia. Muat ulang halaman lalu pilih kembali.",
     });
   }

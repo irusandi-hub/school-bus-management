@@ -5,6 +5,7 @@ import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
 import { RecordForm, type FieldDef } from "@/components/admin/RecordForm";
 import { Breadcrumbs, ConfigNotice, Notice, PageHeader, Pill } from "@/components/admin/ui";
 import { adminReadContext } from "@/lib/admin/read";
+import { getProjectAreaContext, loadProjectAreaScope } from "@/lib/project-areas/context";
 import type { StatusHistoryRow, StudentRow } from "@/lib/types";
 import {
   formatDate,
@@ -32,7 +33,12 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
   const supabase = await adminReadContext();
   if (!supabase) return <ConfigNotice />;
 
-  const { data } = await supabase.from("students").select(selectColumns).eq("id", id).maybeSingle();
+  const areaContext = await getProjectAreaContext(supabase);
+  const scope = await loadProjectAreaScope(supabase, areaContext.selectedId);
+
+  let studentQuery = supabase.from("students").select(selectColumns).eq("id", id);
+  if (areaContext.selectedId) studentQuery = studentQuery.in("school_id", scope.schoolIds);
+  const { data } = await studentQuery.maybeSingle();
   const student = data as unknown as StudentRow | null;
 
   if (!student) notFound();
@@ -51,10 +57,16 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
       .select("id, student_id, route_id, stop_id, direction, active, route_stops(stop_name, stop_order), routes(route_name)")
       .eq("student_id", id)
       .eq("active", true),
-    supabase
-      .from("route_stops")
-      .select("id, stop_name, stop_order, route_id, routes(route_name)")
-      .order("stop_order", { ascending: true }),
+    areaContext.selectedId
+      ? supabase
+          .from("route_stops")
+          .select("id, stop_name, stop_order, route_id, routes(route_name)")
+          .in("route_id", scope.routeIds)
+          .order("stop_order", { ascending: true })
+      : supabase
+          .from("route_stops")
+          .select("id, stop_name, stop_order, route_id, routes(route_name)")
+          .order("stop_order", { ascending: true }),
   ]);
 
   const placements = (placementsResult.data ?? []) as unknown as {
@@ -108,7 +120,7 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
 
       <PageHeader
         title={student.full_name}
-        description={`Admissions Number ${student.admissions_number}`}
+        description={`Nomor induk siswa ${student.admissions_number}`}
         actions={
           <Link className="btn btn-secondary" href={`/admin/siswa?edit=${student.id}`}>
             Ubah data siswa

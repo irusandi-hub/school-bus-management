@@ -18,11 +18,12 @@ export type SchoolRow = {
   contact_name: string | null;
   contact_email: string | null;
   contact_phone: string | null;
-  operator_id: string | null;
+  project_area_id: string | null;
+  project_areas?: { name: string } | null;
   active: boolean;
 };
 
-export type OperatorRow = {
+export type ProjectAreaRow = {
   id: string;
   name: string;
   code: string;
@@ -30,7 +31,6 @@ export type OperatorRow = {
   contact_name: string | null;
   contact_email: string | null;
   contact_phone: string | null;
-  profile_id: string | null;
   active: boolean;
 };
 
@@ -79,9 +79,9 @@ export type BusRow = {
   capacity: number;
   model: string | null;
   notes: string | null;
-  operator_id: string | null;
+  project_area_id: string | null;
   active: boolean;
-  operators: { name: string } | null;
+  project_areas: { name: string } | null;
 };
 
 export type DriverRow = {
@@ -89,10 +89,10 @@ export type DriverRow = {
   full_name: string;
   phone: string | null;
   license_number: string | null;
-  operator_id: string | null;
+  project_area_id: string | null;
   profile_id: string | null;
   active: boolean;
-  operators: { name: string } | null;
+  project_areas: { name: string } | null;
 };
 
 export type RouteDirection = "morning" | "afternoon";
@@ -101,9 +101,13 @@ export type RouteRow = {
   id: string;
   route_name: string;
   school_name: string;
+  school_id: string | null;
+  project_area_id: string | null;
   direction: RouteDirection;
   active: boolean;
   approved_at: string | null;
+  schools: { name: string } | null;
+  project_areas: { name: string } | null;
   route_stops?: { id: string }[];
 };
 

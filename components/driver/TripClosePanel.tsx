@@ -1,231 +1,143 @@
+"use client";
+
+import { useEffect, useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
-import { Icon } from "@/components/ui/Icon";
 import { SAFETY_CHECKS } from "@/lib/driver/trip-end";
-import { formatTime } from "@/lib/validation";
 import { confirmArrival, endTrip } from "@/app/pengemudi/actions";
+import { Icon } from "@/components/ui/Icon";
 
-type TripView = {
-  id: string;
-  status: string;
-  started_at: string | null;
-  arrived_at: string | null;
-  completed_at: string | null;
-  safety_checked_at?: string | null;
-  student_count_confirmed?: number | null;
-};
+type TripView = { id: string; status: string; arrived_at: string | null };
 
-/**
- * Panel perjalanan dan penutupan pada halaman yang sama.
- *
- * Ringkasan selalu terlihat agar kendali penutupan tidak hilang, sedangkan
- * formulir keselamatan dibuka saat dibutuhkan. Validasi tidak diubah:
- * kedatangan wajib dikonfirmasi, semua siswa wajib dicatat, dan pemeriksaan
- * kabin wajib dicentang sebelum perjalanan ditutup.
- */
+/** Pemeriksaan akhir ditampilkan sebagai overlay agar tidak menggeser dashboard operasional. */
 export function TripClosePanel({
-  assignmentId,
-  trip,
-  canEndTrip,
-  unrecordedNames,
-  unclearStudents,
-  totalStudents,
+  assignmentId, trip, canEndTrip, unrecordedNames, unclearStudents, initialOpen = false,
 }: {
   assignmentId: string;
   trip: TripView | null;
+  initialOpen?: boolean;
   canEndTrip: boolean;
   unrecordedNames: string[];
   unclearStudents: number;
-  totalStudents: number;
 }) {
+  const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
+  const [confirmedChecks, setConfirmedChecks] = useState<Record<string, boolean>>({});
+  const allRequiredChecksConfirmed = SAFETY_CHECKS.every(
+    (check) => !check.required || confirmedChecks[check.name],
+  );
   const inProgress = trip?.status === "in_progress";
-  const completed = trip?.status === "completed";
-  const cancelled = trip?.status === "cancelled";
-  const summary = completed
-    ? trip?.completed_at
-      ? `Selesai pukul ${formatTime(trip.completed_at)}`
-      : "Perjalanan sudah ditutup"
-    : cancelled
-      ? "Perjalanan dibatalkan"
-      : inProgress
-        ? trip?.arrived_at
-          ? "Tiba di sekolah; periksa sebelum menutup"
-          : "Kedatangan di sekolah belum dicatat"
-        : "Belum dimulai";
-  const flag =
-    inProgress && unrecordedNames.length > 0
-      ? `${unrecordedNames.length} siswa belum dicatat`
-      : inProgress && unclearStudents > 0
-        ? `${unclearStudents} siswa perlu diperiksa`
-        : null;
+  const requirementsMet = canEndTrip && allRequiredChecksConfirmed && unclearStudents === 0;
+
+  // Setiap pergantian sesi/status mengosongkan checklist dan menutup overlay lama.
+  // Jika URL memang meminta panel keselamatan, buka kembali setelah state direset.
+  useEffect(() => {
+    setConfirmedChecks({});
+    setIsOpen(initialOpen);
+  }, [trip?.id, trip?.status, initialOpen]);
+
+  function closePanel() {
+    setConfirmedChecks({});
+    setIsOpen(false);
+    router.replace(`/pengemudi?tugas=${encodeURIComponent(assignmentId)}`, { scroll: false });
+  }
+
+  useEffect(() => {
+    const openPanel = () => setIsOpen(true);
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") closePanel();
+    };
+    window.addEventListener("schoolbus:open-trip-safety", openPanel);
+    window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      window.removeEventListener("schoolbus:open-trip-safety", openPanel);
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [assignmentId, router]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = previousOverflow; };
+  }, [isOpen]);
+
+  function syncConfirmations(event: FormEvent<HTMLFormElement>) {
+    const form = event.currentTarget;
+    setConfirmedChecks(Object.fromEntries(SAFETY_CHECKS.map((check) => {
+      const field = form.elements.namedItem(check.name);
+      return [check.name, field instanceof HTMLInputElement && field.checked];
+    })));
+  }
+
+  if (!inProgress || !trip || !isOpen) return null;
+
+  let blockingReason = "";
+  if (!trip.arrived_at) {
+    blockingReason = "Belum bisa diakhiri: gunakan tombol di atas untuk menuntaskan status seluruh penumpang.";
+  } else if (unrecordedNames.length > 0) {
+    blockingReason = `Belum bisa diakhiri: catat status ${unrecordedNames.length} siswa yang belum tercatat.`;
+  } else if (unclearStudents > 0) {
+    blockingReason = `Belum bisa diakhiri: ${unclearStudents} penumpang belum dipastikan turun dari bus.`;
+  } else if (!allRequiredChecksConfirmed) {
+    blockingReason = "Belum bisa diakhiri: checklist pemeriksaan kabin wajib dicentang.";
+  }
 
   return (
-    <section className={`panel ops-close ops-close-${trip?.status ?? "scheduled"}`} id="perjalanan-keselamatan">
-      <details className="ops-close-details">
-        <summary>
-          <span className="ops-close-icon" aria-hidden="true">
-            <Icon name="shield" size={16} />
-          </span>
-          <span className="ops-close-summary">
-            <strong>Perjalanan &amp; keselamatan</strong>
-            <small>{summary}</small>
-          </span>
-          {flag && <span className="ops-close-flag">{flag}</span>}
-          <span className="ops-close-open" aria-hidden="true">
-            Buka
-            <Icon name="chevronRight" size={14} />
-          </span>
-        </summary>
+    <div className="ops-safety-overlay" onMouseDown={(event) => {
+      if (event.target === event.currentTarget) closePanel();
+    }}>
+      <section
+        className="panel ops-close ops-close-compact ops-safety-dialog"
+        id="perjalanan-keselamatan"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="perjalanan-keselamatan-title"
+      >
+        <header className="ops-safety-dialog-head">
+          <h2 id="perjalanan-keselamatan-title">Akhiri Perjalanan</h2>
+          <button type="button" className="ops-safety-close" aria-label="Tutup pemeriksaan" onClick={closePanel}>
+            <Icon name="x" size={20} />
+          </button>
+        </header>
 
-        <div className="ops-close-body">
-          <dl className="task-times">
-            <div>
-              <dt>Mulai</dt>
-              <dd>{trip?.started_at ? formatTime(trip.started_at) : "Belum dimulai"}</dd>
-            </div>
-            <div>
-              <dt>Tiba</dt>
-              <dd>{trip?.arrived_at ? formatTime(trip.arrived_at) : "Belum dicatat"}</dd>
-            </div>
-            <div>
-              <dt>Selesai</dt>
-              <dd>{trip?.completed_at ? formatTime(trip.completed_at) : "—"}</dd>
-            </div>
-          </dl>
+        <form action={confirmArrival} className="ops-passengers-down">
+          <input type="hidden" name="trip_id" value={trip.id} />
+          <input type="hidden" name="assignment_id" value={assignmentId} />
+          <ConfirmSubmit
+            className="btn btn-secondary"
+            message="Pastikan seluruh penumpang sudah turun dan tidak ada yang tertinggal di dalam bus."
+            pendingLabel="Memeriksa…"
+            disabled={unclearStudents === 0 && Boolean(trip.arrived_at)}
+          >
+            Semua penumpang sudah turun
+          </ConfirmSubmit>
+          <small>{trip.arrived_at ? "Status seluruh penumpang sudah dituntaskan." : "Satu kali tekan akan mencatat Turun untuk semua siswa, kecuali yang berstatus Tidak Ikut."}</small>
+        </form>
 
-          {inProgress && trip && (
-            <div className="task-action-row">
-              {trip.arrived_at ? (
-                <div className="arrival-confirmed">
-                  <button className="btn btn-secondary" type="button" disabled>
-                    Konfirmasi tiba di sekolah
-                  </button>
-                  <small>Kedatangan sudah dicatat pukul {formatTime(trip.arrived_at)}.</small>
-                </div>
-              ) : (
-                <form action={confirmArrival}>
-                  <input type="hidden" name="trip_id" value={trip.id} />
-                  <input type="hidden" name="assignment_id" value={assignmentId} />
-                  <ConfirmSubmit
-                    className="btn btn-secondary"
-                    message="Konfirmasi bus sudah tiba di sekolah?"
-                    pendingLabel="Menyimpan…"
-                  >
-                    Konfirmasi tiba di sekolah
-                  </ConfirmSubmit>
-                </form>
-              )}
-
-              <form className="task-end-form" action={endTrip}>
-                <input type="hidden" name="trip_id" value={trip.id} />
-                <input type="hidden" name="assignment_id" value={assignmentId} />
-
-                {unclearStudents > 0 && (
-                  <div className="close-warning">
-                    <strong>Masih ada {unclearStudents} siswa berstatus naik atau belum dicatat.</strong>
-                    <p>
-                      Periksa kabin dan pastikan status setiap siswa benar. Siswa tanpa catatan tetap wajib dicatat
-                      terlebih dahulu.
-                    </p>
-                    <label className="close-check">
-                      <input type="checkbox" name="acknowledge_open" value="1" required />
-                      <span>Saya sudah memeriksa kabin dan memastikan status siswa tersebut benar.</span>
-                    </label>
-                  </div>
-                )}
-
-                <fieldset className="safety-checks">
-                  <legend>Pemeriksaan keselamatan wajib</legend>
-                  {SAFETY_CHECKS.map((check) => (
-                    <label key={check.name} className="safety-check">
-                      <input type="checkbox" name={check.name} required />
-                      <span>{check.label}</span>
-                    </label>
-                  ))}
-                  <label className="safety-notes">
-                    <span>Catatan pemeriksaan (opsional)</span>
-                    <textarea
-                      name="safety_notes"
-                      rows={2}
-                      maxLength={400}
-                      placeholder="Contoh: lampu kabin kanan diganti sebelum berangkat."
-                    />
-                  </label>
-                </fieldset>
-
-                {!canEndTrip && (
-                  <p className="safety-blocked">
-                    {!trip.arrived_at && <span>Konfirmasi kedatangan di sekolah belum dicatat. </span>}
-                    {unrecordedNames.length > 0 && (
-                      <span>
-                        Catat status {unrecordedNames.length} siswa berikut sebelum mengakhiri:{" "}
-                        {unrecordedNames.join(", ")}.
-                      </span>
-                    )}
-                  </p>
-                )}
-
-                <ConfirmSubmit
-                  className="btn btn-primary btn-lg"
-                  message="Akhiri perjalanan ini? Status perjalanan akan menjadi selesai dan tidak dapat dimulai ulang."
-                  pendingLabel="Mengakhiri…"
-                  disabled={!canEndTrip}
-                >
-                  Akhiri perjalanan
-                </ConfirmSubmit>
-                <p className="ops-close-note">
-                  {totalStudents} siswa pada rute ini harus tercatat sebelum perjalanan dapat ditutup.
-                </p>
-              </form>
-            </div>
-          )}
-
-          {completed && trip && (
-            <>
-              <p className="task-completed">
-                Perjalanan sudah selesai pada {formatTime(trip.completed_at)}. Catatan kehadiran tersimpan sebagai
-                riwayat dan tidak dapat diubah lagi.
-                {trip.safety_checked_at && <> Pemeriksaan keselamatan dicatat {formatTime(trip.safety_checked_at)}</>}
-                {typeof trip.student_count_confirmed === "number" && (
-                  <> untuk {trip.student_count_confirmed} siswa pada rute ini.</>
-                )}
-              </p>
-              <div className="task-action-row task-action-row-ended">
-                <button className="btn btn-secondary" type="button" disabled>
-                  Konfirmasi tiba di sekolah
-                </button>
-                <button className="btn btn-primary btn-lg" type="button" disabled>
-                  Akhiri perjalanan
-                </button>
-                <p className="safety-blocked">
-                  Kedua tindakan sudah ditutup karena perjalanan selesai. Perjalanan berikutnya mengikuti penugasan
-                  baru.
-                </p>
-              </div>
-            </>
-          )}
-
-          {!inProgress && !completed && (
-            <div className="task-action-row task-action-row-ended">
-              <button className="btn btn-secondary" type="button" disabled>
-                Konfirmasi tiba di sekolah
-              </button>
-              <button className="btn btn-primary btn-lg" type="button" disabled>
-                Akhiri perjalanan
-              </button>
-              <p className="safety-blocked">
-                {cancelled ? (
-                  "Perjalanan dibatalkan. Tidak ada kedatangan atau penutupan yang dapat dicatat untuk perjalanan ini."
-                ) : (
-                  <>
-                    Perjalanan belum dimulai. Tekan <strong>Mulai perjalanan</strong> di header sebelum mencatat
-                    kedatangan atau mengakhiri perjalanan.
-                  </>
-                )}
-              </p>
-            </div>
-          )}
-        </div>
-      </details>
-    </section>
+        <form className="task-end-form ops-end-compact" action={endTrip} onChange={syncConfirmations}>
+          <input type="hidden" name="trip_id" value={trip.id} />
+          <input type="hidden" name="assignment_id" value={assignmentId} />
+          <fieldset className="safety-checks">
+            <legend>Pemeriksaan keselamatan</legend>
+            {SAFETY_CHECKS.map((check) => (
+              <label key={check.name} className="safety-check">
+                <input type="checkbox" name={check.name} required={check.required} />
+                <span>{check.label}</span>
+              </label>
+            ))}
+          </fieldset>
+          {blockingReason && <p className="safety-blocked" role="status">{blockingReason}</p>}
+          <ConfirmSubmit
+            className="btn btn-primary btn-lg ops-end-action"
+            message="Akhiri perjalanan setelah memastikan seluruh penumpang sudah turun dan kabin kosong?"
+            pendingLabel="Mengakhiri…"
+            disabled={!requirementsMet}
+          >
+            <Icon name="bus" size={16} style={{ color: "#F5C542" }} /> Akhiri
+          </ConfirmSubmit>
+        </form>
+      </section>
+    </div>
   );
 }

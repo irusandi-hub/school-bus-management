@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { RecordForm, type FieldDef } from "@/components/admin/RecordForm";
+import { ProjectAreaTabs } from "@/components/admin/ProjectAreaTabs";
 import {
   ConfigNotice,
   EmptyRow,
@@ -13,11 +14,12 @@ import {
 import { adminReadContext } from "@/lib/admin/read";
 import { firstParam, listHref, noticeFromParams } from "@/lib/admin/query";
 import { PAGE_SIZE, pageRange, parsePage } from "@/lib/admin/support";
+import { getProjectAreaContext, loadProjectAreaScope } from "@/lib/project-areas/context";
 import type { StudentRow } from "@/lib/types";
 import { sanitizeSearch, serviceStatusLabel } from "@/lib/validation";
 import { saveStudent } from "./actions";
 
-export const metadata: Metadata = { title: "Data Siswa | Pengelola" };
+export const metadata: Metadata = { title: "Data Siswa | Operator" };
 
 const path = "/admin/siswa";
 const selectColumns =
@@ -44,8 +46,13 @@ export default async function SiswaPage({
   const editId = firstParam(params.edit);
   const page = parsePage(params.page);
   const { from, to } = pageRange(page);
+  const areaContext = await getProjectAreaContext(supabase);
+  const scope = await loadProjectAreaScope(supabase, areaContext.selectedId);
+  const selectedId = areaContext.selectedId;
 
-  const { data: schoolRows } = await supabase.from("schools").select("id, name, active").order("name", { ascending: true });
+  let schoolQuery = supabase.from("schools").select("id, name, active").order("name", { ascending: true });
+  if (selectedId) schoolQuery = schoolQuery.eq("project_area_id", selectedId);
+  const { data: schoolRows } = await schoolQuery;
   const schools = (schoolRows ?? []) as { id: string; name: string; active: boolean }[];
 
   let query = supabase
@@ -57,6 +64,7 @@ export default async function SiswaPage({
   if (q) query = query.or(`full_name.ilike.%${q}%,admissions_number.ilike.%${q}%`);
   if (status) query = query.eq("service_status", status);
   if (schoolFilter) query = query.eq("school_id", schoolFilter);
+  if (selectedId) query = query.in("school_id", scope.schoolIds);
 
   const { data, count, error } = await query;
   const rows = (data ?? []) as unknown as StudentRow[];
@@ -64,7 +72,9 @@ export default async function SiswaPage({
 
   let editing: StudentRow | null = null;
   if (editId) {
-    const { data: editRow } = await supabase.from("students").select(selectColumns).eq("id", editId).maybeSingle();
+    let editQuery = supabase.from("students").select(selectColumns).eq("id", editId);
+    if (selectedId) editQuery = editQuery.in("school_id", scope.schoolIds);
+    const { data: editRow } = await editQuery.maybeSingle();
     editing = (editRow as unknown as StudentRow | null) ?? null;
   }
 
@@ -72,7 +82,14 @@ export default async function SiswaPage({
     .from("guardians")
     .select("id, full_name, email, active")
     .order("full_name", { ascending: true });
-  const guardians = (guardianRows ?? []) as { id: string; full_name: string; email: string; active: boolean }[];
+  const allGuardians = (guardianRows ?? []) as { id: string; full_name: string; email: string; active: boolean }[];
+  const { data: allLinks } = await supabase.from("students").select("guardian_id");
+  const attachedGuardians = new Set(
+    ((allLinks ?? []) as { guardian_id: string | null }[]).map((row) => row.guardian_id).filter(Boolean) as string[],
+  );
+  const guardians = selectedId
+    ? allGuardians.filter((guardian) => scope.guardianIds.includes(guardian.id) || !attachedGuardians.has(guardian.id))
+    : allGuardians;
 
   const schoolOptions = schools
     .filter((school) => school.active || school.id === editing?.school_id)
@@ -91,7 +108,7 @@ export default async function SiswaPage({
   const fields: FieldDef[] = [
     {
       name: "admissions_number",
-      label: "Admissions Number",
+      label: "Nomor induk siswa",
       required: true,
       maxLength: 32,
       defaultValue: editing?.admissions_number,
@@ -149,7 +166,7 @@ export default async function SiswaPage({
       type: "number",
       step: "0.000001",
       defaultValue: editing?.home_latitude,
-      help: "Data privat. Hanya terlihat oleh Pengelola dan wali siswa terkait.",
+      help: "Data privat. Hanya dapat dikelola Operator; wali hanya melihat siswa yang terhubung ke akunnya.",
     },
     {
       name: "home_longitude",
@@ -174,11 +191,13 @@ export default async function SiswaPage({
     <>
       <PageHeader
         title="Data Siswa"
-        description="Data siswa, sekolah, wali, dan titik rumah. Status layanan diubah melalui halaman detail agar riwayat perubahan tersimpan."
+        description="Kelola siswa, sekolah, wali, dan titik jemput. Ubah status layanan melalui detail siswa."
       />
 
+      <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath={path} compact />
+
       {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
-      {error && <Notice kind="error">Daftar siswa belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
+      {error && <Notice kind="error">Daftar siswa belum dapat dimuat. Coba lagi.</Notice>}
       {!canCreate && (
         <Notice kind="warning">
           Data siswa belum dapat ditambahkan karena belum ada {schoolOptions.length === 0 ? "sekolah" : "wali"} aktif.{" "}
@@ -197,7 +216,7 @@ export default async function SiswaPage({
             key={`${q}|${status}|${schoolFilter}|${page}`}
             action={path}
             q={q}
-            placeholder="Cari nama atau Admissions Number"
+            placeholder="Cari nama atau Nomor induk siswa"
             total={total}
             resetHref={path}
             filters={
@@ -224,7 +243,7 @@ export default async function SiswaPage({
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th scope="col">Admissions Number</th>
+                  <th scope="col">Nomor induk siswa</th>
                   <th scope="col">Nama siswa</th>
                   <th scope="col">Sekolah</th>
                   <th scope="col">Wali</th>

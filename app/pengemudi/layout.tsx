@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import { ConfigNotice } from "@/components/admin/ui";
 import { BrandLogo } from "@/components/brand-logo";
 import { BottomNav } from "@/components/ui/BottomNav";
-import { Icon } from "@/components/ui/Icon";
+import { signOutAction } from "@/lib/auth-actions";
 import { driverBottomNav } from "@/components/ui/nav-config";
 import { requireDriver } from "@/lib/auth";
-import { signOutAction } from "@/lib/auth-actions";
 
 export const metadata: Metadata = { title: "Pengemudi | School Bus" };
 export const dynamic = "force-dynamic";
@@ -20,15 +19,8 @@ export default async function DriverLayout({ children }: { children: React.React
     <div className="driver-app">
       <header className="driver-head">
         <BrandLogo href="/pengemudi" subtitle="Area Pengemudi" size="sm" />
-        <div className="driver-account">
-          <span className="account-name">{name}</span>
-          <form action={signOutAction}>
-            <button className="btn btn-ghost btn-sm" type="submit">
-              <Icon name="logout" size={15} />
-              Keluar
-            </button>
-          </form>
-        </div>
+        <span>{name}</span>
+        <form action={signOutAction}><button className="btn btn-ghost btn-sm" type="submit">Keluar</button></form>
       </header>
 
       <main className="driver-main">{children}</main>

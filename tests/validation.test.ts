@@ -13,6 +13,7 @@ import {
   routeDirectionLabel,
   sanitizeSearch,
   serviceStatusLabel,
+  serviceDateInTimeZone,
   tripEventLabel,
   tripStatusLabel,
   validateLength,
@@ -123,6 +124,16 @@ describe("length validation", () => {
   });
 });
 
+describe("service date timezone", () => {
+  it("uses the Riyadh calendar date when UTC has crossed midnight but Riyadh has not", () => {
+    assert.equal(serviceDateInTimeZone(new Date("2026-11-09T20:30:00.000Z")), "2026-11-09");
+  });
+
+  it("advances the service date at Riyadh midnight, not UTC midnight", () => {
+    assert.equal(serviceDateInTimeZone(new Date("2026-11-09T21:30:00.000Z")), "2026-11-10");
+  });
+});
+
 describe("date formatting", () => {
   it("formats date-only values without shifting the day", () => {
     const formatted = formatDate("2026-10-31");
@@ -148,7 +159,7 @@ describe("post-login redirect safety", () => {
   });
 
   it("maps each database role to its own area", () => {
-    assert.equal(homeForRole("admin"), "/admin");
+    assert.equal(homeForRole("admin"), "/operator");
     assert.equal(homeForRole("operator"), "/operator");
     assert.equal(homeForRole("driver"), "/pengemudi");
     assert.equal(homeForRole("parent"), "/wali");
@@ -158,8 +169,7 @@ describe("post-login redirect safety", () => {
   it("never carries a post-login destination into another role's area", () => {
     assert.equal(scopedNext("parent", "/admin/siswa"), "/wali");
     assert.equal(scopedNext("driver", "/admin"), "/pengemudi");
-    assert.equal(scopedNext("operator", "/admin/operator"), "/operator");
-    assert.equal(scopedNext("admin", "/operator"), "/admin");
+    assert.equal(scopedNext("parent", "/operator"), "/wali");
     assert.equal(scopedNext("parent", "//contoh.com"), "/wali");
   });
 
@@ -167,7 +177,10 @@ describe("post-login redirect safety", () => {
     assert.equal(scopedNext("parent", "/wali/anak/123"), "/wali/anak/123");
     assert.equal(scopedNext("driver", "/pengemudi/tugas/abc"), "/pengemudi/tugas/abc");
     assert.equal(scopedNext("operator", "/operator/bus"), "/operator/bus");
+    // The unified Operator workspace serves its modules from /admin/* too.
+    assert.equal(scopedNext("operator", "/admin/operator"), "/admin/operator");
     assert.equal(scopedNext("admin", "/admin/rute"), "/admin/rute");
+    assert.equal(scopedNext("admin", "/operator"), "/operator");
   });
 });
 

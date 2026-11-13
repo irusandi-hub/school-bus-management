@@ -2,7 +2,7 @@
 
 ## Ruang lingkup / file
 - `lib/camera/trip-connection.ts`: WebRTC offer/answer/ICE otomatis; Supabase hanya signaling.
-- `components/driver/TripCameraPublisher.tsx`, `DriverBroadcastPanel.tsx`, `app/pengemudi/page.tsx`: consent, kamera belakang tanpa audio, preview dan stop pada trip aktif.
+- `components/driver/TripCameraPublisher.tsx`, `DriverBroadcastPanel.tsx`, `app/pengemudi/page.tsx`: persetujuan eksplisit lewat tombol Mulai siaran, kamera belakang tanpa audio, preview dan stop pada trip aktif.
 - `ParentLiveVideo.tsx`, `ChildOverviewCard.tsx`, `lib/guardian/live-view.ts`: sambungkan wali tanpa desain ulang; simulasi tidak membuka kamera.
 - `supabase/migrations/20261106000000_trip_camera_signaling.sql`: sesi, RPC, RLS channel privat dan trigger pencabutan.
 - `supabase/tests/camera-checks.mjs`, `tests/trip-camera.test.ts`, `tests/camera-demo.test.ts`: pemeriksaan SQL dan lifecycle client.
@@ -20,7 +20,7 @@ Setiap RPC memeriksa identitas `auth.uid()`, pengemudi aktif pada assignment tri
 - Client polling 2 detik; peer/channel ditutup jika heartbeat gagal. Watchdog independen 10 detik, interval 500 ms, menutup peer saat RPC menggantung. Lease database 30 detik hanya diperpanjang publisher.
 - Pencabutan bukan seketika: ada latensi polling/jaringan, dan timer browser dapat tertunda ketika background. Tidak ada jaminan hard realtime 10 detik pada browser yang ditangguhkan.
 - RLS/channel tidak memutus WebRTC secara langsung. Pemutusan media mengandalkan client publisher/viewer resmi mematuhi heartbeat. Publisher dan viewer yang keduanya dimodifikasi untuk mengabaikannya dapat mempertahankan koneksi peer yang sudah terbentuk. Jaminan adversarial mutlak membutuhkan media relay berotorisasi; tidak disediakan di sini.
-- Tidak ada STUN/TURN eksternal: koneksi lintas NAT/operator seluler bisa gagal. Tidak ada rekaman/DVR, audio atau layanan berbayar. Browser penerima tetap dapat merekam layar; jangan menjanjikan pencegahan rekaman.
+- Peer memakai endpoint STUN publik Cloudflare (`stun:stun.cloudflare.com:3478`) untuk membantu penemuan rute jaringan tanpa biaya layanan aplikasi. STUN bukan relay media dan tidak menjamin koneksi pada symmetric/restricted NAT; TURN tetap belum tersedia sehingga sebagian jaringan seluler dapat gagal. Tidak ada rekaman/DVR, audio atau layanan berbayar. Browser penerima tetap dapat merekam layar; jangan menjanjikan pencegahan rekaman.
 - Tidak ada reconnect viewer otomatis setelah peer ditutup; buka ulang halaman untuk sesi baru. Satu sesi per wali/siswa: tab baru menutup sesi lama.
 - Tabel sesi memerlukan kebijakan retensi/pembersihan dan batas jumlah publisher viewers sebelum skala produksi. Trigger memindai sesi aktif; belum diuji beban.
 

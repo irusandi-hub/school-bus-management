@@ -1,0 +1,62 @@
+import "@/app/workspace-redesign.css";
+import { BrandLogo } from "@/components/brand-logo";
+import { AdminNav } from "@/components/admin/AdminNav";
+import { ConfigNotice } from "@/components/admin/ui";
+import { BottomNav } from "@/components/ui/BottomNav";
+import { Icon } from "@/components/ui/Icon";
+import { adminBottomNav, adminGroups } from "@/components/ui/nav-config";
+import { requireOperator } from "@/lib/auth";
+import { signOutAction } from "@/lib/auth-actions";
+
+/** One global workspace for all platform administration and operations. */
+export async function OperatorWorkspaceLayout({ children }: { children: React.ReactNode }) {
+  const access = await requireOperator();
+  if (access.status === "unconfigured") return <ConfigNotice />;
+
+  return (
+    <div className="app-shell admin-shell operator-shell">
+      <aside className="sidebar">
+        <BrandLogo href="/operator" subtitle="Operator Utama" ariaLabel="School Bus Operator" className="brand" />
+        <div className="nav-group"><AdminNav /></div>
+        <div className="sidebar-bottom">
+          <span className="security-icon"><Icon name="shield" size={13} /></span>
+          <strong>Operator Utama</strong>
+          <p>Akses global seluruh Area Operasional.</p>
+        </div>
+      </aside>
+      <main className="main">
+        <header className="topbar">
+          <BrandLogo
+            href="/operator"
+            size="sm"
+            ariaLabel="School Bus Operator"
+            className="topbar-brand"
+          />
+          <div className="topbar-context">
+            <span className="topbar-kicker">Operator Utama</span>
+            <strong>Ruang kerja Area Operasional</strong>
+          </div>
+          <div className="top-actions">
+            <form action={signOutAction}>
+              <button className="btn btn-ghost btn-sm topbar-exit" type="submit">
+                <Icon name="logout" size={15} /><span>Keluar</span>
+              </button>
+            </form>
+          </div>
+        </header>
+        {children}
+        <footer className="page-footer">
+          <span>School Bus Management · Operator Utama</span>
+          <span>Kendali global · Area Operasional · audit operasional</span>
+        </footer>
+      </main>
+      <BottomNav
+        items={adminBottomNav}
+        groups={adminGroups}
+        rootHref="/operator"
+        ariaLabel="Navigasi Operator"
+        areaLabel="Operator Utama"
+      />
+    </div>
+  );
+}

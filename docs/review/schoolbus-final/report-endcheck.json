@@ -1,0 +1,40 @@
+{
+  "scroll": {
+    "before": {
+      "y": 0,
+      "h": 844,
+      "vh": 844
+    },
+    "after": {
+      "y": 0,
+      "marker": null
+    }
+  },
+  "boarded": "Naik — selesai",
+  "endDisabledBefore": false,
+  "completedSummary": "Selesai pukul 09.22",
+  "endPost": {
+    "url": "http://127.0.0.1:3000/pengemudi?tugas=51111111-0000-4000-8000-000000000a11&jenis=success&pesan=Tiba%20di%20sekolah%20tercatat.%20Lanjutkan%20penurunan%20siswa%20bila%20diperlukan.",
+    "action": "40bf351328c3d8e73dc22f237fc648e993ed67a328",
+    "contentType": "multipart/form-data; boundary=----WebKitFormBoundarye35ACzMNaZMeZRZY",
+    "bodyLength": 1097
+  },
+  "replay": {
+    "status": 303,
+    "location": null,
+    "actionRedirect": "/pengemudi?tugas=51111111-0000-4000-8000-000000000a11&jenis=error&pesan=Perjalanan%20ini%20belum%20berjalan%20atau%20sudah%20selesai.;push",
+    "contentType": "text/x-component",
+    "bodySnippet": "2:I[\"(app-pages-browser)/./node_modules/next/dist/next-devtools/userspace/app/segment-explorer-node.js\",[\"app-pages-internals\",\"static/chunks/app-pages-internals.js\"],\"SegmentViewNode\"]\n4:\"$Sreact.fragment\"\n15:I[\"(app-pages-browser)/./components/DevModeTab.tsx\",[\"app/layout\",\"static/chunks/app/layou",
+    "mentions": {
+      "rejected": true
+    }
+  },
+  "afterReplay": {
+    "summary": "Selesai pukul 09.22",
+    "students": [
+      "Sudah naik",
+      "Tidak ikut"
+    ],
+    "endDisabled": true
+  }
+}

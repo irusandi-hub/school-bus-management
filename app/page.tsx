@@ -432,7 +432,7 @@ export default function LandingPage() {
                 />
                 <path
                   d="M8.7 11.7l2.4 2.4 4.3-4.7"
-                  stroke="#101B3B"
+                  stroke="#0F1B3D"
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"

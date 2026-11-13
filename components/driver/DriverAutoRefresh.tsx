@@ -65,6 +65,7 @@ export function DriverAutoRefresh({
     };
 
     schedule();
+    window.addEventListener("schoolbus:student-saved", refresh);
     window.addEventListener("online", onOnline);
     window.addEventListener("offline", onOffline);
     window.addEventListener("focus", refresh);
@@ -72,6 +73,7 @@ export function DriverAutoRefresh({
 
     return () => {
       window.clearInterval(timer);
+      window.removeEventListener("schoolbus:student-saved", refresh);
       window.removeEventListener("online", onOnline);
       window.removeEventListener("offline", onOffline);
       window.removeEventListener("focus", refresh);

@@ -98,7 +98,7 @@ export default async function GuardianHomePage() {
               <EmptyState
                 icon="guardian"
                 title="Belum ada anak aktif yang terhubung"
-                detail="Portal wali hanya menampilkan siswa berstatus layanan aktif yang terhubung dengan akun ini. Hubungi Admin Pusat untuk memeriksa layanan atau penautan anak."
+                detail="Portal wali hanya menampilkan siswa berstatus layanan aktif yang terhubung dengan akun ini. Hubungi Operator Utama untuk memeriksa layanan atau penautan anak."
               />
             </section>
             <Notice kind="info">

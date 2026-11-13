@@ -1,26 +1,56 @@
+import Link from "next/link";
 import type { Metadata } from "next";
-import { ConfigNotice, EmptyRow, Notice, PageHeader, Pill, StatCard } from "@/components/admin/ui";
+import { ConfigNotice, EmptyRow, MetricStrip, Notice, PageHeader, Pill } from "@/components/admin/ui";
+import { ProjectAreaTabs } from "@/components/admin/ProjectAreaTabs";
 import { adminReadContext } from "@/lib/admin/read";
+import { getProjectAreaContext, loadProjectAreaScope } from "@/lib/project-areas/context";
 import type { AuditLogRow } from "@/lib/types";
-import { formatDateTime } from "@/lib/validation";
+import { formatDateTime, serviceDateInTimeZone } from "@/lib/validation";
 
-export const metadata: Metadata = { title: "Laporan & Audit | Pengelola" };
+export const metadata: Metadata = { title: "Laporan & Audit | Operator" };
 
 export default async function ReportsPage() {
   const supabase = await adminReadContext();
   if (!supabase) return <ConfigNotice />;
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = serviceDateInTimeZone();
+  const areaContext = await getProjectAreaContext(supabase);
+  const scope = await loadProjectAreaScope(supabase, areaContext.selectedId);
+  const selectedId = areaContext.selectedId;
+
+  let assignmentIds: string[] = [];
+  if (selectedId) {
+    const { data: areaAssignments } = await supabase
+      .from("trip_assignments")
+      .select("id")
+      .in("route_id", scope.routeIds);
+    assignmentIds = ((areaAssignments ?? []) as { id: string }[]).map((row) => row.id);
+  }
+
+  let studentsQuery = supabase.from("students").select("id", { count: "exact", head: true }).eq("service_status", "active");
+  if (selectedId) studentsQuery = studentsQuery.in("school_id", scope.schoolIds);
+
+  let guardiansQuery = supabase.from("guardians").select("id", { count: "exact", head: true }).eq("active", true);
+  if (selectedId) guardiansQuery = guardiansQuery.in("id", scope.guardianIds);
+
+  let routesQuery = supabase.from("routes").select("id", { count: "exact", head: true }).eq("active", true);
+  if (selectedId) routesQuery = routesQuery.eq("project_area_id", selectedId);
+
+  let assignmentsQuery = supabase
+    .from("trip_assignments")
+    .select("id", { count: "exact", head: true })
+    .eq("service_date", today);
+  if (selectedId) assignmentsQuery = assignmentsQuery.in("route_id", scope.routeIds);
+
+  let completedQuery = supabase.from("trips").select("id", { count: "exact", head: true }).eq("status", "completed");
+  if (selectedId) completedQuery = completedQuery.in("assignment_id", assignmentIds);
 
   const [activeStudents, guardians, routes, assignmentsToday, completedTrips, audits] = await Promise.all([
-    supabase.from("students").select("id", { count: "exact", head: true }).eq("service_status", "active"),
-    supabase.from("guardians").select("id", { count: "exact", head: true }).eq("active", true),
-    supabase.from("routes").select("id", { count: "exact", head: true }).eq("active", true),
-    supabase
-      .from("trip_assignments")
-      .select("id", { count: "exact", head: true })
-      .eq("service_date", today),
-    supabase.from("trips").select("id", { count: "exact", head: true }).eq("status", "completed"),
+    studentsQuery,
+    guardiansQuery,
+    routesQuery,
+    assignmentsQuery,
+    completedQuery,
     supabase
       .from("audit_logs")
       .select("id, actor_profile_id, action, entity_type, entity_id, summary, created_at, profiles(full_name)")
@@ -34,27 +64,28 @@ export default async function ReportsPage() {
     <>
       <PageHeader
         title="Laporan & audit"
-        description="Angka operasional diambil dari data nyata. Riwayat aktivitas dicatat otomatis dan tidak dapat diubah dari aplikasi."
+        description={`Ringkasan data operasional dan jejak aktivitas platform. Konteks: ${areaContext.selected?.name ?? "Semua Area"}.`}
+        actions={<Link className="btn btn-secondary btn-sm" href="/operator/laporan/export">Unduh CSV</Link>}
       />
 
-      {audits.error && <Notice kind="error">Jejak audit belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
+      <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath="/admin/laporan" compact />
 
-      <section className="stats" aria-label="Ringkasan operasional">
-        <StatCard
-          label="Siswa layanan aktif"
-          value={activeStudents.count ?? 0}
-          note="Dasar akses portal wali"
-          icon="students"
-        />
-        <StatCard label="Wali aktif" value={guardians.count ?? 0} note="Email wali terdaftar" icon="guardian" />
-        <StatCard label="Rute aktif" value={routes.count ?? 0} note="Beserta titik jemput" icon="route" />
-        <StatCard
-          label="Penugasan hari ini"
-          value={assignmentsToday.count ?? 0}
-          note={`${completedTrips.count ?? 0} perjalanan selesai tercatat`}
-          icon="assignment"
-        />
-      </section>
+      {audits.error && <Notice kind="error">Jejak audit belum dapat dimuat. Coba lagi.</Notice>}
+
+      <MetricStrip
+        label="Ringkasan operasional"
+        items={[
+          { label: "Siswa aktif", value: activeStudents.count ?? 0, note: "Layanan berjalan", icon: "students" },
+          { label: "Wali aktif", value: guardians.count ?? 0, note: "Akun terdaftar", icon: "guardian" },
+          { label: "Rute aktif", value: routes.count ?? 0, note: "Dengan titik jemput", icon: "route" },
+          {
+            label: "Penugasan hari ini",
+            value: assignmentsToday.count ?? 0,
+            note: `${completedTrips.count ?? 0} selesai`,
+            icon: "assignment",
+          },
+        ]}
+      />
 
       <div className="admin-overview-grid">
         <section className="panel">
@@ -74,7 +105,7 @@ export default async function ReportsPage() {
             <li>
               <strong>Rute, penugasan, perjalanan</strong>
               <span>✓</span>
-              <small>Rute dan penugasan dikelola Pengelola; perjalanan dijalankan pengemudi yang ditugaskan.</small>
+              <small>Rute dan penugasan dikelola Operator Utama; perjalanan dijalankan pengemudi yang ditugaskan.</small>
             </li>
             <li>
               <strong>GPS langsung &amp; kamera bus</strong>
@@ -86,8 +117,8 @@ export default async function ReportsPage() {
             </li>
             <li>
               <strong>Ekspor laporan</strong>
-              <span>—</span>
-              <small>Belum tersedia; laporan saat ini ditampilkan di layar sesuai hak akses akun.</small>
+              <span>✓</span>
+              <small>Tersedia dalam format CSV untuk seluruh data perjalanan yang dapat diakses Operator.</small>
             </li>
           </ul>
         </section>
@@ -105,8 +136,7 @@ export default async function ReportsPage() {
               jejak audit agar data pribadi tidak menumpuk di luar tabel asalnya.
             </p>
             <p>
-              Jejak audit hanya dapat dibaca Pengelola. Pengelola tidak memiliki akses ke jejak audit platform;
-              laporan pengelola dibatasi pada data organisasinya.
+              Jejak audit platform dapat dibaca dan ditinjau oleh Operator Utama. Area Operasional hanya menjadi konteks kerja dan pengelompokan untuk pemetaan serta audit, bukan akun atau pembatas akses.
             </p>
           </div>
         </section>
@@ -116,7 +146,7 @@ export default async function ReportsPage() {
         <header className="panel-head">
           <div>
             <h2 className="panel-title">Jejak audit terbaru</h2>
-            <div className="panel-subtitle">60 catatan terakhir</div>
+            <div className="panel-subtitle">60 catatan terakhir · audit platform tidak difilter per area</div>
           </div>
         </header>
         <div className="admin-table-wrap">

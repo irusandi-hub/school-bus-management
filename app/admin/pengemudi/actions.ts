@@ -21,7 +21,7 @@ const path = "/admin/pengemudi";
 /** Error text raised by our own SQL functions is safe to show; anything else is not. */
 function linkMessage(raw: string | undefined): string {
   const own =
-    /Akses ditolak|Isian belum lengkap|tidak ditemukan|Email belum terdaftar|sudah tertaut|Admin Pusat dan tidak dapat|akun orang tua\/wali/i;
+    /Akses ditolak|Isian belum lengkap|tidak ditemukan|Email belum terdaftar|sudah tertaut|Operator Utama tidak dapat|akun orang tua\/wali/i;
   if (raw && own.test(raw)) return raw;
   return "Penautan akun belum berhasil. Periksa email lalu coba lagi; jika berlanjut, hubungi pengelola sistem.";
 }
@@ -34,7 +34,7 @@ export async function saveDriver(_prev: ActionState, formData: FormData): Promis
   const fullName = readText(formData, "full_name");
   const phone = readOptionalText(formData, "phone");
   const licenseNumber = readOptionalText(formData, "license_number");
-  const operatorId = readOptionalText(formData, "operator_id");
+  const projectAreaId = readOptionalText(formData, "project_area_id");
 
   const errors: FieldErrors = {};
   if (fullName.length < 2 || fullName.length > 120) errors.full_name = "Nama pengemudi harus 2–120 karakter.";
@@ -44,6 +44,7 @@ export async function saveDriver(_prev: ActionState, formData: FormData): Promis
   if (licenseNumber && (licenseNumber.length < 3 || licenseNumber.length > 40)) {
     errors.license_number = "Nomor SIM 3–40 karakter.";
   }
+  if (!projectAreaId) errors.project_area_id = "Pilih Area Operasional untuk pengemudi ini.";
 
   if (Object.keys(errors).length > 0) return failure("Periksa kembali isian yang ditandai.", errors);
 
@@ -51,7 +52,7 @@ export async function saveDriver(_prev: ActionState, formData: FormData): Promis
     full_name: fullName,
     phone,
     license_number: licenseNumber ? licenseNumber.toUpperCase() : null,
-    operator_id: operatorId,
+    project_area_id: projectAreaId,
   };
 
   const { error } = id
@@ -60,7 +61,7 @@ export async function saveDriver(_prev: ActionState, formData: FormData): Promis
 
   if (error) {
     return writeFailure(error, {
-      foreignKey: "Pengelola yang dipilih tidak tersedia. Muat ulang halaman lalu pilih kembali.",
+      foreignKey: "Area Operasional yang dipilih tidak tersedia. Muat ulang halaman lalu pilih kembali.",
       unique: "Data pengemudi sudah terdaftar untuk akun tersebut.",
     });
   }

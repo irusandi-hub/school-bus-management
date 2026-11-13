@@ -31,26 +31,29 @@ describe("tindakan siswa sesuai tahap perjalanan", () => {
     }
   });
 
-  it("pagi: hanya menawarkan turun di sekolah setelah kedatangan dicatat", () => {
+  it("pagi: turun langsung aktif setelah naik tanpa menunggu massal", () => {
     const beforeArrival = studentActionSet({ direction: "morning", status: "boarded", tripStatus: "in_progress", arrived: false });
-    assert.equal(beforeArrival.canDrop, false);
+    assert.equal(beforeArrival.canDrop, true);
     assert.equal(beforeArrival.canBoard, false);
-    assert.match(beforeArrival.hint ?? "", /di bus/);
+    assert.equal(beforeArrival.canAbsent, true);
+    assert.equal(beforeArrival.hint, null);
 
     const afterArrival = studentActionSet({ direction: "morning", status: "boarded", tripStatus: "in_progress", arrived: true });
     assert.equal(afterArrival.canDrop, true);
     assert.equal(afterArrival.canBoard, false);
-    assert.equal(afterArrival.dropLabel, "Turun di sekolah");
+    assert.equal(afterArrival.canAbsent, true);
+    assert.equal(afterArrival.dropLabel, "Turun");
   });
 
-  it("sore: menawarkan turun di titik untuk siswa yang sudah naik", () => {
+  it("sore: menawarkan turun untuk siswa yang sudah naik", () => {
     const actions = studentActionSet({ direction: "afternoon", status: "boarded", tripStatus: "in_progress", arrived: true });
     assert.equal(actions.canDrop, true);
-    assert.equal(actions.dropLabel, "Turun di titik");
+    assert.equal(actions.canAbsent, true);
+    assert.equal(actions.dropLabel, "Turun");
   });
 
   it("menonaktifkan semua tindakan untuk status akhir", () => {
-    for (const status of ["absent", "dropped_off"]) {
+    for (const status of ["dropped_off"]) {
       const actions = studentActionSet({ direction: "morning", status, tripStatus: "in_progress", arrived: true });
       assert.equal(actions.canBoard || actions.canDrop || actions.canAbsent, false);
     }
@@ -62,4 +65,14 @@ describe("tindakan siswa sesuai tahap perjalanan", () => {
       ["Tidak hadir", "Tidak ikut bus", "Diantar orang tua ke sekolah"],
     );
   });
+});
+
+it("Tidak Ikut can return to Naik, while Turun is terminal for both directions", () => {
+  for (const direction of ["morning", "afternoon"]) {
+    const absent = studentActionSet({direction,status:"absent",tripStatus:"in_progress",arrived:true});
+    assert.equal(absent.canBoard,true);
+    assert.equal(absent.canDrop || absent.canAbsent,false);
+    const boarded = studentActionSet({direction,status:"boarded",tripStatus:"in_progress",arrived:false});
+    assert.equal(boarded.canDrop && boarded.canAbsent,true);
+  }
 });

@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
 import { RecordForm, type FieldDef } from "@/components/admin/RecordForm";
+import { ProjectAreaTabs } from "@/components/admin/ProjectAreaTabs";
 import {
   ConfigNotice,
   EmptyRow,
@@ -14,14 +15,15 @@ import {
 import { adminReadContext } from "@/lib/admin/read";
 import { firstParam, listHref, noticeFromParams } from "@/lib/admin/query";
 import { PAGE_SIZE, pageRange, parsePage } from "@/lib/admin/support";
+import { getProjectAreaContext } from "@/lib/project-areas/context";
 import type { DriverRow } from "@/lib/types";
 import { sanitizeSearch } from "@/lib/validation";
 import { linkDriverAccount, saveDriver, setDriverActive, unlinkDriverAccount } from "./actions";
 
-export const metadata: Metadata = { title: "Pengemudi | Pengelola" };
+export const metadata: Metadata = { title: "Pengemudi | Operator" };
 
 const path = "/admin/pengemudi";
-const selectColumns = "id, full_name, phone, license_number, operator_id, profile_id, active, operators(name)";
+const selectColumns = "id, full_name, phone, license_number, project_area_id, profile_id, active, project_areas(name)";
 
 export default async function PengemudiPage({
   searchParams,
@@ -34,16 +36,11 @@ export default async function PengemudiPage({
 
   const q = sanitizeSearch(firstParam(params.q));
   const status = firstParam(params.status);
-  const operatorFilter = firstParam(params.operator);
   const editId = firstParam(params.edit);
   const page = parsePage(params.page);
   const { from, to } = pageRange(page);
-
-  const { data: operatorRows } = await supabase
-    .from("operators")
-    .select("id, name, active")
-    .order("name", { ascending: true });
-  const operators = (operatorRows ?? []) as { id: string; name: string; active: boolean }[];
+  const areaContext = await getProjectAreaContext(supabase);
+  const selectedId = areaContext.selectedId;
 
   let query = supabase
     .from("drivers")
@@ -54,7 +51,7 @@ export default async function PengemudiPage({
   if (q) query = query.or(`full_name.ilike.%${q}%,phone.ilike.%${q}%,license_number.ilike.%${q}%`);
   if (status === "aktif") query = query.eq("active", true);
   if (status === "nonaktif") query = query.eq("active", false);
-  if (operatorFilter) query = query.eq("operator_id", operatorFilter);
+  if (selectedId) query = query.eq("project_area_id", selectedId);
 
   const { data, count, error } = await query;
   const rows = (data ?? []) as unknown as DriverRow[];
@@ -70,19 +67,21 @@ export default async function PengemudiPage({
 
   let editing: DriverRow | null = null;
   if (editId) {
-    const { data: editRow } = await supabase.from("drivers").select(selectColumns).eq("id", editId).maybeSingle();
+    let editQuery = supabase.from("drivers").select(selectColumns).eq("id", editId);
+    if (selectedId) editQuery = editQuery.eq("project_area_id", selectedId);
+    const { data: editRow } = await editQuery.maybeSingle();
     editing = (editRow as unknown as DriverRow | null) ?? null;
   }
 
-  const operatorOptions = operators
-    .filter((operator) => operator.active || operator.id === editing?.operator_id)
-    .map((operator) => ({
-      value: operator.id,
-      label: operator.active ? operator.name : `${operator.name} (nonaktif)`,
+  const areaOptions = areaContext.areas
+    .filter((area) => area.active || area.id === editing?.project_area_id)
+    .map((area) => ({
+      value: area.id,
+      label: area.active ? area.name : `${area.name} (nonaktif)`,
     }));
 
   const notice = noticeFromParams(params);
-  const baseQuery = { q, status: status || undefined, operator: operatorFilter || undefined };
+  const baseQuery = { q, status: status || undefined };
 
   const fields: FieldDef[] = [
     {
@@ -109,13 +108,14 @@ export default async function PengemudiPage({
       help: "Nomor izin mengemudi sesuai dokumen resmi.",
     },
     {
-      name: "operator_id",
-      label: "Pengelola",
+      name: "project_area_id",
+      label: "Area Operasional",
       type: "select",
+      required: true,
       fullWidth: true,
-      defaultValue: editing?.operator_id ?? "",
-      options: [{ value: "", label: "Belum ditetapkan" }, ...operatorOptions],
-      help: "Menentukan pengelola tempat pengemudi bertugas.",
+      defaultValue: editing?.project_area_id ?? selectedId ?? "",
+      options: [{ value: "", label: "Pilih Area Operasional" }, ...areaOptions],
+      help: "Area operasional pengemudi. Penugasan hanya boleh menggabungkan pengemudi, bus, dan rute dari area yang sama.",
     },
   ];
 
@@ -123,37 +123,29 @@ export default async function PengemudiPage({
     <>
       <PageHeader
         title="Pengemudi"
-        description="Data pengemudi untuk kebutuhan penugasan. Tautkan akun login pengemudi pada kolom Akun masuk agar akun tersebut dapat membuka area Pengemudi."
+        description="Kelola pengemudi dan tautkan akun masuk untuk mengakses tugas."
       />
 
+      <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath={path} compact />
+
       {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
-      {error && <Notice kind="error">Daftar pengemudi belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
+      {error && <Notice kind="error">Daftar pengemudi belum dapat dimuat. Coba lagi.</Notice>}
 
       <div className="admin-split">
         <section className="panel">
           <ListToolbar
-            key={`${q}|${status}|${operatorFilter}|${page}`}
+            key={`${q}|${status}|${page}`}
             action={path}
             q={q}
             placeholder="Cari nama, telepon, atau nomor SIM"
             total={total}
             resetHref={path}
             filters={
-              <>
-                <select name="operator" defaultValue={operatorFilter} aria-label="Filter pengelola">
-                  <option value="">Semua pengelola</option>
-                  {operators.map((operator) => (
-                    <option key={operator.id} value={operator.id}>
-                      {operator.name}
-                    </option>
-                  ))}
-                </select>
-                <select name="status" defaultValue={status} aria-label="Filter status pengemudi">
-                  <option value="">Semua status</option>
-                  <option value="aktif">Aktif</option>
-                  <option value="nonaktif">Nonaktif</option>
-                </select>
-              </>
+              <select name="status" defaultValue={status} aria-label="Filter status pengemudi">
+                <option value="">Semua status</option>
+                <option value="aktif">Aktif</option>
+                <option value="nonaktif">Nonaktif</option>
+              </select>
             }
           />
 
@@ -164,7 +156,7 @@ export default async function PengemudiPage({
                   <th scope="col">Nama pengemudi</th>
                   <th scope="col">Telepon</th>
                   <th scope="col">Nomor SIM</th>
-                  <th scope="col">Pengelola</th>
+                  <th scope="col">Area Operasional</th>
                   <th scope="col">Status</th>
                   <th scope="col">Akun masuk</th>
                   <th scope="col">Tindakan</th>
@@ -174,9 +166,9 @@ export default async function PengemudiPage({
                 {rows.length === 0 ? (
                   <EmptyRow
                     colSpan={7}
-                    title={q || status || operatorFilter ? "Tidak ada pengemudi yang cocok" : "Belum ada data pengemudi"}
+                    title={q || status ? "Tidak ada pengemudi yang cocok" : "Belum ada data pengemudi"}
                     detail={
-                      q || status || operatorFilter
+                      q || status
                         ? "Ubah kata kunci atau filter, lalu terapkan kembali."
                         : "Tambahkan pengemudi pertama melalui formulir di samping."
                     }
@@ -189,7 +181,7 @@ export default async function PengemudiPage({
                       </td>
                       <td>{row.phone ?? "—"}</td>
                       <td>{row.license_number ?? "—"}</td>
-                      <td>{row.operators?.name ?? "Belum ditetapkan"}</td>
+                      <td>{row.project_areas?.name ?? "Belum ditetapkan"}</td>
                       <td>
                         <Pill tone={row.active ? "success" : "neutral"}>{row.active ? "Aktif" : "Nonaktif"}</Pill>
                       </td>

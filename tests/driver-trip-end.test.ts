@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { evaluateTripEnd, SAFETY_CHECKS, unrecordedStudents } from "../lib/driver/trip-end.ts";
+import { evaluateTripEnd, SAFETY_CHECKS, studentsStillOnBus, unrecordedStudents } from "../lib/driver/trip-end.ts";
 
 const allConfirmed = Object.fromEntries(SAFETY_CHECKS.map((check) => [check.name, true])) as Record<
   (typeof SAFETY_CHECKS)[number]["name"],
@@ -29,10 +29,10 @@ describe("aturan mengakhiri perjalanan", () => {
     assert.match(result.problems[0], /belum berjalan atau sudah selesai/);
   });
 
-  it("menolak bila kedatangan di sekolah belum dikonfirmasi", () => {
+  it("menolak bila status seluruh penumpang belum dituntaskan", () => {
     const result = evaluateTripEnd({ ...base, arrivedAt: null });
     assert.equal(result.ok, false);
-    assert.match(result.problems[0], /kedatangan di sekolah/);
+    assert.match(result.problems[0], /status seluruh penumpang/);
   });
 
   it("menolak bila masih ada siswa tanpa catatan status", () => {
@@ -43,11 +43,25 @@ describe("aturan mengakhiri perjalanan", () => {
   });
 
   it("menolak bila pemeriksaan keselamatan belum lengkap", () => {
-    const result = evaluateTripEnd({ ...base, confirmations: { ...allConfirmed, safety_headcount_ok: false } });
+    const result = evaluateTripEnd({ ...base, confirmations: { ...allConfirmed, safety_cabin_clear: false } });
     assert.equal(result.ok, false);
     assert.match(result.problems[0], /Pemeriksaan keselamatan belum lengkap/);
-    assert.match(result.problems[0], /Jumlah siswa di bus/);
-    assert.doesNotMatch(result.problems[0], /Kondisi bus/);
+    assert.match(result.problems[0], /Kabin sudah diperiksa/);
+  });
+
+  it("mewajibkan konfirmasi kabin kosong dan tidak mewajibkan konfirmasi barang tertinggal", () => {
+    const uncheckedCabin = evaluateTripEnd({
+      ...base,
+      confirmations: { ...allConfirmed, safety_cabin_clear: false },
+    });
+    assert.equal(uncheckedCabin.ok, false);
+    assert.match(uncheckedCabin.problems[0], /Kabin sudah diperiksa/);
+
+    const belongingsNotAcknowledged = evaluateTripEnd({
+      ...base,
+      confirmations: { ...allConfirmed, safety_belongings_secured: false },
+    });
+    assert.equal(belongingsNotAcknowledged.ok, true);
   });
 
   it("menerima perjalanan yang lengkap dan menyimpan catatan", () => {
@@ -65,5 +79,27 @@ describe("aturan mengakhiri perjalanan", () => {
 
   it("menghitung siswa yang belum tercatat tanpa duplikasi", () => {
     assert.deepEqual(unrecordedStudents(["a", "b", "c"], ["b", "b"]), ["a", "c"]);
+  });
+
+  it("mendeteksi status siswa yang perlu dituntaskan oleh konfirmasi massal", () => {
+    assert.deepEqual(
+      studentsStillOnBus(["a", "b", "c"], [
+        { student_id: "a", event_type: "dropped_off" },
+        { student_id: "b", event_type: "boarded" },
+        { student_id: "c", event_type: "absent" },
+      ]),
+      ["b"],
+    );
+    assert.deepEqual(
+      studentsStillOnBus(["a", "b"], [{ student_id: "a", event_type: "dropped_off" }]),
+      ["b"],
+    );
+    assert.deepEqual(
+      studentsStillOnBus(["a", "b"], [
+        { student_id: "a", event_type: "issue" },
+        { student_id: "b", event_type: "absent" },
+      ]),
+      ["a"],
+    );
   });
 });

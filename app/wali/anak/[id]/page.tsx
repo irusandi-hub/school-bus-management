@@ -149,7 +149,7 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
           <div className="pickup-body">
             {child.placements.length === 0 ? (
               <p className="muted-hint">
-                Rute dan titik jemput belum diatur Admin Pusat. Hubungi Admin Pusat bila anak Anda sudah menggunakan
+                Rute dan titik jemput belum diatur Operator Utama. Hubungi Operator Utama bila anak Anda sudah menggunakan
                 layanan.
               </p>
             ) : (

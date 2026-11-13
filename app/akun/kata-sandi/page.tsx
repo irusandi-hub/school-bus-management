@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { BrandLogo } from "@/components/brand-logo";
 import { PasswordForm } from "./password-form";
 import { getViewerState } from "@/lib/auth";
+import { homeForRole } from "@/lib/access";
 import { signOutAction } from "@/lib/auth-actions";
 
 const notices: Record<string, string> = {
@@ -28,7 +29,7 @@ export default async function KataSandiPage({
           <BrandLogo className="auth-logo" />
           <h1>Database belum dikonfigurasi</h1>
           <p className="auth-copy">
-            Aktivasi akun belum dapat dilakukan karena koneksi database belum diatur. Hubungi pengelola sistem.
+            Aktivasi akun belum dapat dilakukan karena koneksi database belum diatur. Hubungi Operator Utama.
           </p>
           <Link className="auth-back" href="/">
             Kembali ke beranda
@@ -39,8 +40,7 @@ export default async function KataSandiPage({
   }
 
   const { viewer } = state;
-  if (viewer.profile?.role === "admin") redirect("/admin");
-  if (viewer.profile?.role === "parent") redirect("/wali");
+  if (viewer.profile) redirect(homeForRole(viewer.profile.role));
 
   const params = await searchParams;
   const rawReason = typeof params.alasan === "string" ? params.alasan : null;
@@ -54,7 +54,7 @@ export default async function KataSandiPage({
         <h1>Buat kata sandi</h1>
         <p className="auth-copy">
           Email <strong>{viewer.email ?? "Anda"}</strong> sudah diverifikasi. Buat kata sandi untuk menyelesaikan
-          aktivasi. Akses hanya dibuka jika email terdaftar oleh Pengelola dan memiliki siswa dengan layanan aktif.
+          aktivasi. Akses hanya dibuka jika email terdaftar oleh Operator Utama dan memiliki siswa dengan layanan aktif.
         </p>
 
         {notice && (

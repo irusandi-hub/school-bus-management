@@ -1176,6 +1176,7 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
 .ops-issue{width:100%}
 .ops-issue summary{font-size:10.5px;font-weight:700;color:var(--muted);cursor:pointer;min-height:34px;display:flex;align-items:center}
 .ops-issue-form{display:grid;gap:7px;margin-top:5px;max-width:420px}
+.ops-issue-disabled{display:inline-flex;align-items:center;min-height:34px;padding:0 2px;color:#89949A;font-size:10.5px;font-weight:700;cursor:not-allowed}
 .ops-issue-form textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:8px 10px;font:inherit;font-size:12px;resize:vertical;outline-color:var(--brand)}
 .ops-student-hint{margin:0;font-size:10.5px;line-height:1.5;color:var(--muted)}
 
@@ -2526,18 +2527,18 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
 /* ==========================================================================
    Logo bersama — dipakai header landing dan seluruh area pengguna
    ========================================================================== */
-.brand-logo{display:inline-flex;align-items:center;gap:10px;min-width:0;color:#101b3b;text-decoration:none}
-.brand-logo-mark{display:grid;place-items:center;flex:none;width:42px;height:36px;color:var(--brand)}
-.brand-logo-mark svg{width:100%;height:100%}
+.brand-logo{display:inline-flex;align-items:center;gap:10px;min-width:0;color:#0F1B3D;text-decoration:none}
+.brand-logo-mark{display:grid;place-items:center;flex:none;width:36px;height:36px;color:#0F1B3D}
+.brand-logo-mark svg{display:block;width:100%;height:100%}
 .brand-logo-text{display:grid;gap:3px;min-width:0}
-.brand-logo-word{color:#101b3b;font:800 19px Manrope,'DM Sans',Arial,sans-serif;letter-spacing:-.8px;line-height:1}
-.brand-logo-word span{color:#efb707}
+.brand-logo-word{color:#0F1B3D;font:800 19px Manrope,'DM Sans',Arial,sans-serif;letter-spacing:-.45px;line-height:1}
+.brand-logo-word span{color:#0F1B3D}
 .brand-logo-sub{color:var(--muted);font-size:10.5px;line-height:1.2}
-.brand-logo-lg .brand-logo-mark{width:44px;height:38px}
-.brand-logo-lg .brand-logo-word{font-size:clamp(20px,2.4vw,26px)}
+.brand-logo-lg .brand-logo-mark{width:42px;height:42px}
+.brand-logo-lg .brand-logo-word{font-size:clamp(20px,2.4vw,26px);letter-spacing:-.7px}
 .brand-logo-sm{gap:9px}
-.brand-logo-sm .brand-logo-mark{width:38px;height:33px}
-.brand-logo-sm .brand-logo-word{font-size:17px;letter-spacing:-.5px}
+.brand-logo-sm .brand-logo-mark{width:32px;height:32px}
+.brand-logo-sm .brand-logo-word{font-size:17px;letter-spacing:-.35px}
 .auth-logo{margin-bottom:24px}
 
 /* Header operator: identitas dan aksi tetap terpisah pada layar sempit. */
@@ -2627,3 +2628,222 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
 
 .operator-shell .student-stat-link{display:block;min-width:0;min-height:44px;text-decoration:none;color:inherit}.operator-shell .student-stat-link>.stat-card{height:100%}
 .operator-shell .student-name-search{display:grid;gap:5px;font-size:11px;margin-bottom:10px}.operator-shell .student-name-search input{min-width:0;width:100%;min-height:44px;padding:8px;border:1px solid var(--line);border-radius:var(--radius-sm)}
+
+/* Project Area context */
+.area-tabs-card{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;background:#FFFBEF;border:1px solid #EADFC8;border-radius:14px;padding:12px 14px;margin-bottom:16px}
+.area-tabs-copy{display:flex;align-items:flex-start;gap:9px;min-width:0}
+.area-tabs-copy strong{display:block;font:800 12px Manrope,sans-serif;color:#2B2416}
+.area-tabs-copy small{display:block;font-size:11px;line-height:1.45;color:#6D6351;max-width:58ch}
+.area-tabs-icon{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;background:#FFF1CF;color:#7A5100;flex-shrink:0}
+.area-tabs{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0}
+.area-tab{border:1px solid #DCCDAE;background:#fff;color:#4A4232;border-radius:999px;min-height:34px;padding:0 12px;font:700 11px Manrope,sans-serif;cursor:pointer;white-space:nowrap}
+.area-tab:hover{border-color:#B9944D;background:#FFF8E4}
+.area-tab.active{background:#2B2416;border-color:#2B2416;color:#FFD670}
+.area-tabs-empty{font-size:11px;color:#6D6351}
+.area-tabs-compact{padding:9px 12px;margin-bottom:12px}
+.area-tabs-compact .area-tabs-copy small{display:none}
+.area-tabs-compact .area-tab{min-height:31px;font-size:10.5px}
+
+/* Passenger status feedback */
+.ops-student-state{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ops-action-pending{font-size:10px;font-weight:800;color:#7A5100}
+.ops-student-error,.ops-student-success{grid-column:1/-1;margin:0;border-radius:8px;padding:6px 8px;font-size:10.5px;line-height:1.4}
+.ops-student-error{background:#FDE9E5;color:#8C2E1E;border:1px solid #F3C9C0}
+.ops-student-success{background:#EAF6EA;color:#245A2B;border:1px solid #C9E5C9}
+.ops-student-actions button:disabled{cursor:not-allowed}
+.ops-student-actions[aria-busy="true"] .ops-action{opacity:.65}
+
+/* Indikator tindakan siswa tersimpan; hanya warna, ikon, dan label yang berubah.
+   Discope ke halaman Pengemudi karena globals.css dimuat di seluruh aplikasi. */
+.driver-app .ops-workspace .ops-action.is-done,
+.driver-app .ops-workspace .ops-action.is-done:disabled{border-color:#176B55;background:#E7F4EE;color:#14513E;box-shadow:inset 0 0 0 1px #176B55;opacity:1;white-space:normal;overflow-wrap:anywhere}
+.driver-app .ops-workspace .ops-action.is-done svg{stroke-width:2.6}
+
+/* Trip start/end actions: large, wrapping, never clipped at narrow widths */
+.ops-start-action,.ops-end-action{width:100%;max-width:100%;min-width:0;white-space:normal;overflow-wrap:anywhere;line-height:1.3;box-sizing:border-box}
+.ops-start-action{min-height:52px;min-width:167px;font-size:14px;padding:12px 16px;border-radius:10px}
+.ops-end-action{min-height:56px;font-size:14px;padding:12px 16px;border-radius:10px;text-align:center}
+.task-end-form{min-width:0}
+.task-action-row{flex-wrap:wrap}
+.task-action-row>*{min-width:0;max-width:100%}
+
+@media(max-width:759px){
+  .area-tabs-card{align-items:stretch;flex-direction:column;gap:9px;padding:10px 11px}
+  .area-tabs{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;scrollbar-width:thin}
+  .area-tabs .area-tab{flex:0 0 auto}
+  .area-tabs-copy small{font-size:10.5px}
+  .ops-start-action{min-height:50px;min-width:158px;font-size:13px}
+  .ops-end-action{min-height:54px;font-size:13px;padding:11px 12px}
+}
+
+@media(max-width:400px){
+  .area-tab{padding:0 10px;font-size:10px}
+  .ops-start-action{min-width:146px;font-size:12.5px;padding:10px 12px}
+  .ops-end-action{font-size:12px;padding:10px 10px}
+}
+
+
+/* Driver close board: compact checklist with one concise blocking reason. */
+.ops-close-compact{display:grid;gap:9px;padding:10px 12px;margin:0 0 8px}
+.ops-passengers-down{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ops-passengers-down .btn{min-height:38px;padding:7px 12px;font-size:11px}
+.ops-passengers-down small{font-size:10px;color:var(--ok);font-weight:700}
+.ops-end-compact{display:grid;gap:9px;margin:0;padding:0;border:0}
+.ops-end-compact .safety-checks{gap:7px}
+.ops-end-compact .safety-checks legend{font-size:10px;margin-bottom:1px}
+.ops-end-compact .safety-check{gap:8px;font-size:11px;line-height:1.45}
+.ops-end-compact .safety-check input{width:15px;height:15px;margin-top:1px}
+.ops-end-compact .safety-blocked{font-size:10px;line-height:1.4;padding:7px 9px}
+.ops-end-compact .ops-end-action{min-height:40px;padding:8px 14px;font-size:12px}
+@media(max-width:430px){
+  .ops-close-compact{padding:9px;gap:8px}
+  .ops-passengers-down .btn{width:100%;justify-content:center}
+  .ops-end-compact .safety-check{font-size:10.5px}
+}
+
+
+/* Header tabs stay readable and remain inside the existing driver workspace. */
+.driver-tabs{display:flex;align-items:center;gap:7px;overflow-x:auto;margin:0 0 9px;padding:0 0 2px}
+.driver-tabs>span{flex-shrink:0;font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.driver-tabs a{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:6px 13px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--muted);font-size:11px;font-weight:800;text-decoration:none}
+.driver-tabs a[aria-current="page"]{background:#2B2416;border-color:#2B2416;color:#FFD670}
+.driver-app .driver-tabs{gap:6px;margin:0 0 8px}
+.driver-app .driver-tabs>span{font-size:9px}
+.driver-app .driver-tabs a{min-height:34px;padding:6px 12px;font-size:11px}
+
+
+/* Pemeriksaan akhir mengambang di atas dashboard, bukan bagian dari alur halaman. */
+.ops-safety-overlay{position:fixed;inset:0;z-index:1200;display:grid;place-items:center;padding:16px;background:rgba(15,27,61,.58);overflow-y:auto}
+.ops-safety-dialog{width:min(100%,560px);max-height:min(88dvh,760px);overflow-y:auto;margin:0;padding:16px;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.28)}
+.ops-safety-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.ops-safety-dialog-head h2{margin:0;font:800 17px Manrope,sans-serif;color:var(--ink)}
+.ops-safety-close{display:grid;place-items:center;width:40px;height:40px;flex:0 0 40px;border:1px solid var(--line);border-radius:50%;background:#fff;color:var(--ink);cursor:pointer}
+.ops-safety-dialog .task-end-form{margin-top:14px}
+@media(max-width:480px){.ops-safety-overlay{padding:10px;align-items:center}.ops-safety-dialog{max-height:88dvh;padding:14px;border-radius:16px}}
+
+
+/* Header Pengemudi dipadatkan: identitas, navigasi, tugas, dan progres dalam satu blok. */
+.ops-head{padding:10px 12px;margin-bottom:8px;border-radius:14px}
+.ops-head-top{gap:8px;flex-wrap:nowrap}
+.ops-avatar{width:36px;height:36px;border-radius:11px;font-size:15px}
+.ops-ident strong{font-size:13px;line-height:1.2}
+.ops-ident small{font-size:9px;margin-top:1px}
+.ops-head-pills{flex:0 0 auto}
+.driver-tabs{flex:0 0 auto;gap:4px;margin:0 0 0 auto;padding:0;overflow:visible}
+.driver-app .driver-tabs{margin:0 0 0 auto;gap:4px}
+.driver-app .driver-tabs a{min-height:28px;padding:4px 9px;font-size:9.5px}
+.driver-tabs>span{display:none}
+.driver-tabs a{min-height:28px;padding:4px 9px;font-size:9.5px}
+.ops-task-row{margin-top:6px;align-items:center}
+.ops-task-copy h1{font-size:15px}
+.ops-progress{margin-top:4px}
+.ops-meta-line{margin-top:4px}
+@media(max-width:520px){
+  .ops-head{padding:9px 10px}
+  .ops-head-top{gap:6px}
+  .ops-avatar{width:32px;height:32px}
+  .ops-ident{flex:1 1 40px}
+  .ops-ident strong{font-size:12px}
+  .ops-ident small{font-size:8px}
+  .driver-tabs{gap:3px}
+  .driver-tabs a{min-height:27px;padding:4px 7px;font-size:9px}
+  .ops-head-pills{display:flex;flex:0 0 auto}
+  .ops-task-row{align-items:center;gap:6px}
+  .driver-app .ops-head-action{max-width:48%}
+}
+
+/* Compact driver header: two rows; operational handlers remain unchanged. */
+.driver-app:has(.ops-head) > .driver-head{display:none}
+.driver-app .ops-head{position:sticky;top:0;z-index:40;padding:10px 12px;margin:0;border:0;border-radius:0;background:#FACC15;color:#111827;box-shadow:none}
+.driver-app .compact-identity-row{display:flex;align-items:center;gap:8px;min-width:0}
+.driver-app .compact-identity-row .brand-logo{flex:none;gap:5px;min-height:44px}
+.driver-app .compact-identity-row .brand-logo-mark{width:26px;height:26px}
+.driver-app .compact-identity-row .brand-logo-word{font-size:15px;letter-spacing:-.5px;color:#111827}
+.driver-app .compact-route{display:flex;flex:1;align-items:center;min-width:0;margin:0;font:700 12px/1.3 'DM Sans',sans-serif;white-space:nowrap}
+.driver-app .compact-route>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.driver-app .compact-route time{flex:none;white-space:pre;font-weight:500}
+.driver-app .compact-action-row{display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0;margin-top:4px}
+.driver-app .compact-counters{display:flex;align-items:center;gap:4px;min-width:0;flex:1}
+.driver-app .compact-counter{display:inline-flex;align-items:center;gap:3px;padding:7px 5px;border:1px solid #11182715;border-radius:999px;background:#FFFBEB;color:#1F2937;white-space:nowrap;font-size:11px;line-height:1.2}
+.driver-app .compact-counter b{font-size:13px;font-variant-numeric:tabular-nums}
+.driver-app .compact-onboard{display:none}
+.driver-app .compact-action-row .ops-head-action{flex:none;width:auto;max-width:none;margin:0}
+.driver-app .compact-action-row .ops-start{margin:0;gap:0}
+.driver-app .compact-action-row .ops-start-action{display:flex;align-items:center;justify-content:center;gap:4px;min-width:0;width:126px;min-height:44px;padding:8px 6px;border:0;border-radius:8px;background:#18181B;color:#fff;font-size:12px;line-height:1.2;white-space:nowrap;box-shadow:none}
+.driver-app .compact-action-row .ops-start-action svg{display:none}
+.driver-app .compact-action-row .ops-start-action:hover{background:#27272A}
+.driver-app .compact-action-row .ops-start-action:disabled{background:#3F3F46;color:#fff;opacity:.7}
+.driver-app .compact-action-row .ops-start small{display:none}
+.driver-app .driver-main:has(.ops-head){padding-top:0}
+.driver-app .driver-ops:has(.ops-head){gap:8px}
+.driver-app .compact-profile{position:relative;flex:none;color:#111827}
+.driver-app .compact-profile-trigger{display:flex;align-items:center;justify-content:center;gap:4px;min-width:44px;min-height:44px;padding:6px;border:0;border-radius:8px;background:#18181B;color:#fff;font-weight:800}
+.driver-app .compact-profile-panel{position:absolute;right:0;top:calc(100% + 6px);z-index:60;width:min(300px,calc(100vw - 40px));max-height:70dvh;overflow:auto;padding:14px;border:1px solid #E5E7EB;border-radius:12px;background:#fff;color:#111827;box-shadow:0 8px 30px #11182726;font-size:13px;line-height:1.5;overflow-wrap:anywhere}
+.driver-app .compact-profile-panel p{margin:6px 0}
+.driver-app .compact-logout{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:44px;margin-top:10px;border:1px solid #E5E7EB;border-radius:8px;background:#F9FAFB;color:#991B1B;font-weight:700}
+.driver-app :is(.compact-profile-trigger,.compact-logout,.ops-start-action):focus-visible{outline:3px solid #2563EB;outline-offset:2px}
+.driver-app .ops-workspace .ops-student-actions{gap:8px}
+.driver-app .ops-workspace .ops-student-actions :is(.ops-action,summary,button){min-height:44px;height:auto;display:flex;align-items:center;justify-content:center;padding:8px;font-size:12px;line-height:1.3}
+@media(min-width:600px){
+  .driver-app .compact-onboard{display:inline-flex}
+  .driver-app .compact-counter{font-size:13px;padding:7px 10px}
+  .driver-app .compact-route{font-size:15px}
+  .driver-app .compact-action-row .ops-start-action{width:167px;font-size:14px}
+}
+
+/* Driver navigation reuses portal tabs, not a menu or legacy driver tabs. */
+.driver-app .compact-driver-tabs{order:initial;width:auto;gap:18px;margin:0;font-size:12px}
+.driver-app .compact-driver-tabs a{min-height:40px;color:#1F2937}
+.driver-app .compact-driver-tabs a[aria-current="page"]{border-bottom-color:#111827;color:#111827}
+.driver-app .ops-workspace :is(.route-lock,.route-cta-copy small,.ops-next-eyebrow,.ops-next-heading strong,.ops-student-addr,.panel-subtitle){font-size:12px;line-height:1.4;white-space:normal;overflow-wrap:anywhere}
+.driver-app .ops-workspace .ops-next-heading strong{display:block;overflow:visible;text-overflow:clip}
+.driver-app .compact-driver-identity{display:grid;min-width:0;gap:2px;font-size:12px;line-height:1.4}
+.driver-app .compact-driver-identity strong,.driver-app .compact-driver-identity span{overflow-wrap:anywhere}
+.driver-app .compact-identity-row{flex-wrap:wrap}
+.driver-app .compact-identity-row .compact-route{min-width:100px}
+.driver-app .compact-identity-row form button{min-height:40px}
+.driver-app .ops-workspace :is(.ops-next-empty p,.ops-panel-eyebrow,.route-foot,.route-warn summary,.route-stops summary,.route-note summary,.ops-student-state .pill,.ops-data-note){font-size:12px;line-height:1.4;white-space:normal;overflow-wrap:anywhere}
+.driver-app .compact-driver-identity{max-width:100%}
+
+/* Shared explanatory copy: preserve layout and hierarchy, allow readable wrapping. */
+:is(.admin-workspace,.guardian-shell,.driver-app) :is(.panel-subtitle,.field-hint,.field-error,.form-note,.form-alert,.table-empty p,.state-panel p){font-size:clamp(12px,.9vw,14px);line-height:1.5;overflow-wrap:anywhere;white-space:normal}
+:is(.admin-workspace,.guardian-shell,.driver-app) .admin-page-head-copy p{overflow-wrap:anywhere;white-space:normal}
+
+
+/* Driver header refinement: keep identity, tabs and primary trip action compact. */
+.driver-app .ops-head{padding:10px 11px;margin-bottom:8px;border-radius:15px;box-shadow:0 7px 18px #FFC4311A}
+.driver-app .compact-identity-row{display:flex;align-items:center;flex-wrap:nowrap;gap:7px;min-width:0}
+.driver-app .compact-brand-route{display:flex;align-items:center;gap:5px;flex:1 1 45%;min-width:0}
+.driver-app .compact-brand-route .brand-logo{min-height:34px;gap:4px;flex:none}
+.driver-app .compact-brand-route .brand-logo-mark{width:25px;height:25px}
+.driver-app .compact-brand-route .brand-logo-word{font-size:13px}
+.driver-app .compact-brand-route .compact-route{flex:1 1 auto;min-width:0;font-size:9.5px;line-height:1.2}
+.driver-app .compact-driver-identity{flex:0 1 auto;min-width:0;max-width:43%;gap:1px;font-size:10px;line-height:1.25}
+.driver-app .compact-driver-identity strong{font-size:10.5px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.driver-app .compact-driver-identity span{font-size:8.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.driver-app .compact-logout-form{flex:none;margin:0}
+.driver-app .compact-logout{display:grid;place-items:center;width:31px;height:31px;padding:0;border:1px solid #6B512044;border-radius:9px;background:#FFF4D0;color:#493A16}
+.driver-app .compact-logout:focus-visible{outline:2px solid #0F1B3D;outline-offset:2px}
+.driver-app .compact-driver-tabs{gap:14px;margin-top:5px;font-size:11px}
+.driver-app .compact-driver-tabs a{min-height:30px;padding:0 3px}
+.driver-app .compact-action-row{gap:5px;margin-top:7px}
+.driver-app .compact-counters{gap:3px}
+.driver-app .compact-counter{gap:2px;padding:6px 5px;font-size:9.5px}
+.driver-app .compact-counter b{font-size:12px}
+.driver-app .compact-action-row .ops-start-action{width:150px;min-height:48px;padding:8px 9px;gap:7px;border:1px solid #0F1B3D;border-radius:11px;background:#0F1B3D;color:#fff;font-size:12px;font-weight:800;box-shadow:0 4px 10px #0F1B3D26}
+.driver-app .compact-action-row .ops-start-action svg{display:block;flex:none;width:21px;height:21px}
+.driver-app .compact-action-row .ops-start-action:hover{background:#172957;border-color:#172957}
+.driver-app .compact-action-row .ops-start-action:disabled{background:#59647A;border-color:#59647A;color:#fff;opacity:.75}
+@media(max-width:390px){
+  .driver-app .ops-head{padding:9px 9px}
+  .driver-app .compact-identity-row{gap:5px}
+  .driver-app .compact-brand-route{gap:4px;flex-basis:43%}
+  .driver-app .compact-brand-route .brand-logo-word{font-size:12px}
+  .driver-app .compact-driver-identity{max-width:42%}
+  .driver-app .compact-driver-identity strong{font-size:9.5px}
+  .driver-app .compact-driver-identity span{font-size:8px}
+  .driver-app .compact-logout{width:29px;height:29px}
+  .driver-app .compact-counter{padding:5px 4px;font-size:9px}
+  .driver-app .compact-counter b{font-size:11px}
+  .driver-app .compact-action-row .ops-start-action{width:140px;min-height:46px;font-size:11.5px}
+}

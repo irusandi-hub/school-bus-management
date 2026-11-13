@@ -13,20 +13,19 @@ const reasons: Record<string, string> = {
 };
 
 const doors: Record<string, { label: string; detail: string }> = {
-  admin: {
-    label: "Pengelola & Pengelola",
-    detail:
-      "Gunakan akun staf. Area Pengelola dan area pengelola ditentukan dari peran serta keterkaitan organisasi pada akun Anda.",
+  operator: {
+    label: "Operator Utama",
+    detail: "Gunakan akun Operator Utama untuk mengelola seluruh data dan operasional platform.",
   },
   pengemudi: {
     label: "Pengemudi",
     detail:
-      "Gunakan akun pengemudi yang sudah ditautkan Pengelola. Setelah masuk, Anda diarahkan ke tugas hari ini.",
+      "Gunakan akun pengemudi yang sudah ditautkan Operator. Setelah masuk, Anda diarahkan ke tugas hari ini.",
   },
   wali: {
     label: "Orang Tua/Wali",
     detail:
-      "Gunakan email dan kata sandi akun wali. Akun harus didaftarkan Pengelola dan memiliki siswa dengan layanan aktif.",
+      "Gunakan email dan kata sandi akun wali. Akun harus didaftarkan Operator dan memiliki siswa dengan layanan aktif.",
   },
 };
 
@@ -42,7 +41,7 @@ export default async function LoginPage({
   const rawReason = typeof params.alasan === "string" ? params.alasan : null;
   const peran = typeof params.peran === "string" ? params.peran : null;
   const reason = rawReason ? reasons[rawReason] : undefined;
-  const door = peran ? doors[peran] : undefined;
+  const door = peran ? doors[peran === "admin" ? "operator" : peran] : undefined;
 
   // A signed-in user is never shown the login form again; they are sent to the area of
   // their database role instead of the area whose card they clicked earlier.
@@ -72,7 +71,7 @@ export default async function LoginPage({
         <LoginForm next={safeNextPath(rawNext, "")} reason={reason} />
 
         <p className="auth-footnote">
-          Peran akun ditentukan dari data pengguna di server. Lupa kata sandi? Hubungi Pengelola untuk pemulihan
+          Peran akun ditentukan dari data pengguna di server. Lupa kata sandi? Hubungi Operator untuk pemulihan
           akses.
         </p>
 

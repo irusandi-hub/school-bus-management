@@ -333,6 +333,16 @@ describe("status terbaru dan event berulang", () => {
     assert.equal(progress.waiting, 29);
   });
 
+  it("tidak gagal ketika baris lama tidak memiliki waktu event", () => {
+    const events: TripStatusEvent[] = [
+      { student_id: "s1", event_type: "boarded", occurred_at: null as unknown as string },
+      { student_id: "s2", event_type: "absent", occurred_at: "2026-11-07T07:00:00.000Z" },
+    ];
+    const states = resolveStudentTripStates(events);
+    assert.equal(states.get("s1")?.status, "boarded");
+    assert.equal(states.get("s2")?.status, "absent");
+  });
+
   it("mengabaikan event lama yang datang setelah event lebih baru", () => {
     const events: TripStatusEvent[] = [
       { student_id: "s1", event_type: "boarded", occurred_at: "2026-11-07T06:30:00.000Z" },
@@ -342,4 +352,13 @@ describe("status terbaru dan event berulang", () => {
     const states = resolveStudentTripStates(events);
     assert.equal(states.get("s1")?.status, "dropped_off");
   });
+});
+
+it("next pickup carries admission number and advances in stored route order", () => {
+  const students = studentsWith({1: {admissionsNumber:"ADM001"}, 4: {admissionsNumber:"ADM004"}});
+  const next = buildNextStop({stops, students, direction:"morning", tripStatus:"in_progress"});
+  assert.equal(next.target?.students[0].admissionsNumber,"ADM001");
+  const advanced = buildNextStop({stops, students:students.map(s=>s.stopOrder===1?{...s,status:"boarded"}:s), direction:"morning",tripStatus:"in_progress"});
+  assert.equal(advanced.target?.order,2);
+  assert.equal(advanced.target?.students[0].admissionsNumber,"ADM004");
 });

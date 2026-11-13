@@ -3,25 +3,23 @@
  *
  * Perjalanan hanya boleh diakhiri setelah:
  * 1. perjalanan memang sedang berjalan,
- * 2. kedatangan di sekolah sudah dikonfirmasi,
+ * 2. status seluruh penumpang sudah dituntaskan melalui konfirmasi massal,
  * 3. seluruh siswa aktif pada rute sudah dicatat statusnya, dan
- * 4. tiga pemeriksaan keselamatan wajib dikonfirmasi pengemudi.
+ * 4. konfirmasi kabin kosong wajib; pernyataan barang tertinggal bersifat tambahan.
  *
  * Fungsi ini murni agar aturan yang sama dapat diuji tanpa database.
  */
 
 export const SAFETY_CHECKS = [
   {
-    name: "safety_vehicle_ok",
-    label: "Kondisi bus diperiksa: rem, pintu, lampu, dan jalur keluar aman.",
+    name: "safety_cabin_clear",
+    label: "Kabin sudah diperiksa, tidak ada penumpang yang tertinggal di dalam bus.",
+    required: true,
   },
   {
-    name: "safety_headcount_ok",
-    label: "Jumlah siswa di bus sudah dihitung dan cocok dengan catatan kehadiran.",
-  },
-  {
-    name: "safety_no_student_left",
-    label: "Tidak ada siswa yang tertinggal di bus maupun di titik jemput.",
+    name: "safety_belongings_secured",
+    label: "Barang yang diketahui tertinggal di dalam bus akan diamankan, dan bukan tanggung jawab pengemudi jika kehilangan.",
+    required: false,
   },
 ] as const;
 
@@ -45,6 +43,18 @@ export function unrecordedStudents(rosterStudentIds: string[], recordedStudentId
   return rosterStudentIds.filter((id) => !recorded.has(id));
 }
 
+/** Events harus terbaru lebih dahulu; hanya status turun/tidak ikut yang membuktikan siswa tidak di bus. */
+export function studentsStillOnBus(
+  rosterStudentIds: string[],
+  latestFirstEvents: { student_id: string; event_type: string }[],
+): string[] {
+  const latest = new Map<string, string>();
+  for (const event of latestFirstEvents) {
+    if (!latest.has(event.student_id)) latest.set(event.student_id, event.event_type);
+  }
+  return rosterStudentIds.filter((id) => !["dropped_off", "absent"].includes(latest.get(id) ?? ""));
+}
+
 export function evaluateTripEnd(input: TripEndInput): TripEndResult {
   const problems: string[] = [];
   const missing = unrecordedStudents(input.rosterStudentIds, input.recordedStudentIds);
@@ -54,7 +64,7 @@ export function evaluateTripEnd(input: TripEndInput): TripEndResult {
   }
 
   if (!input.arrivedAt) {
-    problems.push("Konfirmasi kedatangan di sekolah sebelum mengakhiri perjalanan.");
+    problems.push("Tuntaskan status seluruh penumpang sebelum mengakhiri perjalanan.");
   }
 
   if (missing.length > 0) {
@@ -63,7 +73,7 @@ export function evaluateTripEnd(input: TripEndInput): TripEndResult {
     );
   }
 
-  const unchecked = SAFETY_CHECKS.filter((check) => !input.confirmations[check.name]);
+  const unchecked = SAFETY_CHECKS.filter((check) => check.required && !input.confirmations[check.name]);
   if (unchecked.length > 0) {
     problems.push(
       `Pemeriksaan keselamatan belum lengkap: ${unchecked.map((check) => check.label).join(" ")}`,

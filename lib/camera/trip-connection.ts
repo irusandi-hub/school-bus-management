@@ -27,8 +27,11 @@ export function tripCamera(input: {
   };
   const connect = async (id: string) => {
     if (disposed || peers.has(id)) return;
-    // No paid service or public TURN credentials. Restricted NAT may fail closed.
-    const pc = new RTCPeerConnection();
+    // Cloudflare's public STUN endpoint helps peers discover their public network route.
+    // No TURN relay is configured; symmetric/restricted NAT may still require a relay.
+    const pc = new RTCPeerConnection({
+      iceServers: [{ urls: "stun:stun.cloudflare.com:3478" }],
+    });
     const channel = db.channel(`camera:${id}`, { config: { private: true } });
     const entry = { pc, channel, ice: [] as RTCIceCandidateInit[], validUntil: Date.now() + 10000, busy: false };
     peers.set(id, entry);

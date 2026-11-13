@@ -25,8 +25,18 @@ export async function saveAssignment(_prev: ActionState, formData: FormData): Pr
     return failure("Periksa kembali isian yang ditandai.", errors);
   }
 
-  const { data: bus } = await ctx.supabase.from("buses").select("capacity").eq("id", busId).maybeSingle();
-  if (!bus) return failure("Bus tidak ditemukan atau sudah tidak aktif.");
+  const [{ data: bus }, { data: route }, { data: driver }] = await Promise.all([
+    ctx.supabase.from("buses").select("capacity, active, project_area_id").eq("id", busId).maybeSingle(),
+    ctx.supabase.from("routes").select("active, project_area_id").eq("id", routeId).maybeSingle(),
+    ctx.supabase.from("drivers").select("active, project_area_id").eq("id", driverId).maybeSingle(),
+  ]);
+  if (!bus || !bus.active) return failure("Bus tidak ditemukan atau sudah tidak aktif.");
+  if (!route || !route.active) return failure("Rute tidak ditemukan atau sudah tidak aktif.");
+  if (!driver || !driver.active) return failure("Pengemudi tidak ditemukan atau sudah tidak aktif.");
+
+  if (!bus.project_area_id || bus.project_area_id !== route.project_area_id || bus.project_area_id !== driver.project_area_id) {
+    return failure("Rute, bus, dan pengemudi harus berasal dari Area Operasional yang sama.");
+  }
 
   const { error } = await ctx.supabase.from("trip_assignments").insert({
     route_id: routeId,

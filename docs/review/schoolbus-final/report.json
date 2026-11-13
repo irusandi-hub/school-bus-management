@@ -1,0 +1,68 @@
+{
+  "tanggal": "2026-11-11",
+  "branch": "feat/unified-operator-global-workspace",
+  "lingkup": "Tombol perjalanan Pengemudi, tombol tindakan siswa, logo referensi SchoolBus, header global, navigasi Operator di layar kecil",
+  "palet": { "navy": "#0F1B3D", "gold": "#F5C542", "putih": "#FFFFFF" },
+  "aset_logo": [
+    "components/brand-logo.tsx (SVG inline, viewBox 0 0 48 48)",
+    "public/assets/landing/logo-schoolbus.svg (ikon 512)",
+    "public/assets/landing/favicon.svg (favicon SVG, disajikan image/svg+xml)"
+  ],
+  "tombol_perjalanan_px": {
+    "catatan": "Lebar terukur identik untuk Mulai Perjalanan dan Akhiri Perjalanan pada viewport yang sama; tinggi/padding/font/radius sama dan tinggi header tidak berubah.",
+    "360": { "lebar": 146, "tinggi": 50 },
+    "390": { "lebar": 146, "tinggi": 50 },
+    "430": { "lebar": 158, "tinggi": 50 },
+    "768": { "lebar": 167, "tinggi": 52 },
+    "1024": { "lebar": 167, "tinggi": 52 },
+    "1440": { "lebar": 167, "tinggi": 52 }
+  },
+  "tombol_siswa": {
+    "dimensi": "74,8 x 29 px (desktop), tidak berubah sebelum/sesudah selesai",
+    "label_selesai": ["Naik — selesai", "Turun — selesai", "Tidak Ikut — selesai"],
+    "bertahan_setelah_reload": true,
+    "turun": {
+      "prasyarat": "Kedatangan dikonfirmasi; tombol Turun di sekolah menjadi aktif",
+      "metode": "Form tombol yang sama dikirim tanpa JavaScript; HTML hasil render diperiksa (browser headless tidak tersedia di sandbox saat uji akhir)",
+      "hasil": "Status Sudah turun, label Turun — selesai, tanpa pesan galat",
+      "bukti": "report-drop.json"
+    }
+  },
+  "jalur_gagal_ui": {
+    "pemicu": "student_id form siswa pertama diubah ke siswa di luar rute (51111111-0000-4000-8000-000000000603)",
+    "pesan": "Siswa tersebut tidak terdaftar pada rute perjalanan ini.",
+    "role": "alert",
+    "status_tetap": ["Belum dicatat", "Belum dicatat"],
+    "reload_dokumen": false,
+    "overflow": false
+  },
+  "pengakhiran_kedua": {
+    "metode": "Permintaan Akhiri yang sama diputar ulang setelah perjalanan selesai",
+    "status": 303,
+    "x_action_redirect": "/pengemudi?tugas=51111111-0000-4000-8000-000000000a11&jenis=error&pesan=Perjalanan%20ini%20belum%20berjalan%20atau%20sudah%20selesai.;push",
+    "dampak": "Status perjalanan tetap selesai; status siswa tidak berubah"
+  },
+  "navigasi_operator": {
+    "tujuan": 11,
+    "navigasi_bawah_sampai_960px": true,
+    "drawer_menu": "Seluruh 11 tujuan, Escape/backdrop/tombol tutup, fokus ke tombol tutup, scroll latar terkunci",
+    "diuji": "360/390/430/768 (drawer) dan 1024/1440 (sidebar)"
+  },
+  "screenshot": [
+    "pengemudi-{360,390,430,768,1024,1440}-mulai.png",
+    "pengemudi-{360,390,430,768,1024,1440}-akhiri.png",
+    "pengemudi-error-1440.png", "pengemudi-error-390.png",
+    "siswa-selesai-1440.png", "checklist-akhiri-1440.png", "perjalanan-selesai-1440.png",
+    "header-operator-{360,390,430,768,1024,1440}.png",
+    "operator-menu-{360,390,430,768}.png",
+    "identity-{landing,daftar,pilih-peran,wali,pengemudi,operator}-{360,1440}.png",
+    "logo-driver-32-4x.png", "logo-operator-30-4x.png", "logo-wordmark-4x.png"
+  ],
+  "keterbatasan": [
+    "Screenshot tidak dapat ditampilkan oleh alat agen ini (PNG dikembalikan sebagai biner); pemeriksaan visual memakai analisis piksel/layout dan render SVG.",
+    "Posisi scroll tidak dapat diuji secara bermakna: halaman Pengemudi setinggi viewport dan fixture hanya berisi dua siswa.",
+    "Status akhir Turun diverifikasi lewat POST form halaman (bukan klik browser) karena Chromium headless terhapus dan ruang disk tidak cukup untuk memasang ulang; tidak ada screenshot keadaan Turun — selesai.",
+    "/login, /akun/kata-sandi, dan /akses/* mengalihkan ke /operator pada fixture akses-terbuka.",
+    "GPS, kamera nyata, Supabase hosted, dan GitHub Actions belum diverifikasi."
+  ]
+}

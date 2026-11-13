@@ -31,6 +31,17 @@ describe("status panel siaran kamera", () => {
     assert.ok(state.detail.length > 20);
   });
 
+
+  it("starts the real trip camera from one explicit button action", async () => {
+    const { readFile } = await import("node:fs/promises");
+    const publisher = await readFile(new URL("../components/driver/TripCameraPublisher.tsx", import.meta.url), "utf8");
+    assert.match(publisher, /Menekan Mulai siaran berarti mengizinkan kamera belakang tanpa audio/);
+    assert.match(publisher, /onClick=\{\(\) => \{/);
+    assert.match(publisher, /setActive\(true\)/);
+    assert.match(publisher, /audio: false/);
+    assert.doesNotMatch(publisher, /disabled=\{!active && !consent\}/);
+  });
+
   it("menonaktifkan siaran sebelum perjalanan dimulai", () => {
     const state = resolveBroadcastState({ enabled: true, tripStatus: "scheduled" });
     assert.equal(state.phase, "scheduled");

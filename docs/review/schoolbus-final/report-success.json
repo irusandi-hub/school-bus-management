@@ -1,0 +1,23 @@
+{
+  "students": [
+    {
+      "status": "Sudah naik",
+      "done": [
+        "Naik — selesai"
+      ]
+    },
+    {
+      "status": "Tidak ikut",
+      "done": [
+        "Tidak Ikut — selesai"
+      ]
+    }
+  ],
+  "endDisabledBefore": true,
+  "endDisabledAfter": false,
+  "completed": {
+    "summary": "Selesai pukul 09.29",
+    "note": "Perjalanan sudah selesai pada 09.29. Catatan kehadiran tersimpan sebagai riwayat dan tidak dapat diubah lagi. Pemeriksaan keselamatan dicatat 09.29 untuk 2 siswa pada rute ini.",
+    "endDisabled": true
+  }
+}

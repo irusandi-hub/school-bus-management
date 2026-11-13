@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
 import { RecordForm, type FieldDef } from "@/components/admin/RecordForm";
+import { ProjectAreaTabs } from "@/components/admin/ProjectAreaTabs";
 import {
   ConfigNotice,
   EmptyRow,
@@ -14,14 +15,15 @@ import {
 import { adminReadContext } from "@/lib/admin/read";
 import { firstParam, listHref, noticeFromParams } from "@/lib/admin/query";
 import { PAGE_SIZE, pageRange, parsePage } from "@/lib/admin/support";
+import { getProjectAreaContext } from "@/lib/project-areas/context";
 import type { BusRow } from "@/lib/types";
 import { sanitizeSearch } from "@/lib/validation";
 import { saveBus, setBusActive } from "./actions";
 
-export const metadata: Metadata = { title: "Bus | Pengelola" };
+export const metadata: Metadata = { title: "Bus | Operator" };
 
 const path = "/admin/bus";
-const selectColumns = "id, fleet_code, plate_number, capacity, model, notes, operator_id, active, operators(name)";
+const selectColumns = "id, fleet_code, plate_number, capacity, model, notes, project_area_id, active, project_areas(name)";
 
 export default async function BusPage({
   searchParams,
@@ -34,16 +36,11 @@ export default async function BusPage({
 
   const q = sanitizeSearch(firstParam(params.q));
   const status = firstParam(params.status);
-  const operatorFilter = firstParam(params.operator);
   const editId = firstParam(params.edit);
   const page = parsePage(params.page);
   const { from, to } = pageRange(page);
-
-  const { data: operatorRows } = await supabase
-    .from("operators")
-    .select("id, name, active")
-    .order("name", { ascending: true });
-  const operators = (operatorRows ?? []) as { id: string; name: string; active: boolean }[];
+  const areaContext = await getProjectAreaContext(supabase);
+  const selectedId = areaContext.selectedId;
 
   let query = supabase
     .from("buses")
@@ -54,7 +51,7 @@ export default async function BusPage({
   if (q) query = query.or(`fleet_code.ilike.%${q}%,plate_number.ilike.%${q}%`);
   if (status === "aktif") query = query.eq("active", true);
   if (status === "nonaktif") query = query.eq("active", false);
-  if (operatorFilter) query = query.eq("operator_id", operatorFilter);
+  if (selectedId) query = query.eq("project_area_id", selectedId);
 
   const { data, count, error } = await query;
   const rows = (data ?? []) as unknown as BusRow[];
@@ -62,19 +59,21 @@ export default async function BusPage({
 
   let editing: BusRow | null = null;
   if (editId) {
-    const { data: editRow } = await supabase.from("buses").select(selectColumns).eq("id", editId).maybeSingle();
+    let editQuery = supabase.from("buses").select(selectColumns).eq("id", editId);
+    if (selectedId) editQuery = editQuery.eq("project_area_id", selectedId);
+    const { data: editRow } = await editQuery.maybeSingle();
     editing = (editRow as unknown as BusRow | null) ?? null;
   }
 
-  const operatorOptions = operators
-    .filter((operator) => operator.active || operator.id === editing?.operator_id)
-    .map((operator) => ({
-      value: operator.id,
-      label: operator.active ? operator.name : `${operator.name} (nonaktif)`,
+  const areaOptions = areaContext.areas
+    .filter((area) => area.active || area.id === editing?.project_area_id)
+    .map((area) => ({
+      value: area.id,
+      label: area.active ? area.name : `${area.name} (nonaktif)`,
     }));
 
   const notice = noticeFromParams(params);
-  const baseQuery = { q, status: status || undefined, operator: operatorFilter || undefined };
+  const baseQuery = { q, status: status || undefined };
 
   const fields: FieldDef[] = [
     {
@@ -112,16 +111,17 @@ export default async function BusPage({
       placeholder: "Contoh: Coaster 28 kursi",
     },
     {
-      name: "operator_id",
-      label: "Pengelola",
+      name: "project_area_id",
+      label: "Area Operasional",
       type: "select",
+      required: true,
       fullWidth: true,
-      defaultValue: editing?.operator_id ?? "",
-      options: [{ value: "", label: "Belum ditetapkan" }, ...operatorOptions],
+      defaultValue: editing?.project_area_id ?? selectedId ?? "",
+      options: [{ value: "", label: "Pilih Area Operasional" }, ...areaOptions],
       help:
-        operatorOptions.length === 0
-          ? "Belum ada pengelola aktif. Bus tetap dapat disimpan tanpa pengelola."
-          : "Pengelola dapat ditetapkan kemudian sesuai kontrak operasional.",
+        areaOptions.length === 0
+          ? "Belum ada Area Operasional aktif. Tambahkan area terlebih dahulu."
+          : "Area operasional bus. Penugasan hanya boleh menggabungkan bus, pengemudi, dan rute dari area yang sama.",
     },
     {
       name: "notes",
@@ -137,37 +137,29 @@ export default async function BusPage({
     <>
       <PageHeader
         title="Bus"
-        description="Data armada untuk kebutuhan penugasan. Kapasitas dan nomor polisi divalidasi agar penugasan berikutnya tidak memakai data yang tidak konsisten."
+        description="Kelola bus, plat nomor, dan kapasitas per Area Operasional."
       />
 
+      <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath={path} compact />
+
       {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
-      {error && <Notice kind="error">Daftar bus belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
+      {error && <Notice kind="error">Daftar bus belum dapat dimuat. Coba lagi.</Notice>}
 
       <div className="admin-split">
         <section className="panel">
           <ListToolbar
-            key={`${q}|${status}|${operatorFilter}|${page}`}
+            key={`${q}|${status}|${page}`}
             action={path}
             q={q}
             placeholder="Cari kode armada atau nomor polisi"
             total={total}
             resetHref={path}
             filters={
-              <>
-                <select name="operator" defaultValue={operatorFilter} aria-label="Filter pengelola">
-                  <option value="">Semua pengelola</option>
-                  {operators.map((operator) => (
-                    <option key={operator.id} value={operator.id}>
-                      {operator.name}
-                    </option>
-                  ))}
-                </select>
-                <select name="status" defaultValue={status} aria-label="Filter status bus">
-                  <option value="">Semua status</option>
-                  <option value="aktif">Aktif</option>
-                  <option value="nonaktif">Nonaktif</option>
-                </select>
-              </>
+              <select name="status" defaultValue={status} aria-label="Filter status bus">
+                <option value="">Semua status</option>
+                <option value="aktif">Aktif</option>
+                <option value="nonaktif">Nonaktif</option>
+              </select>
             }
           />
 
@@ -178,7 +170,7 @@ export default async function BusPage({
                   <th scope="col">Kode armada</th>
                   <th scope="col">Nomor polisi</th>
                   <th scope="col">Kapasitas</th>
-                  <th scope="col">Pengelola</th>
+                  <th scope="col">Area Operasional</th>
                   <th scope="col">Status</th>
                   <th scope="col">Tindakan</th>
                 </tr>
@@ -187,9 +179,9 @@ export default async function BusPage({
                 {rows.length === 0 ? (
                   <EmptyRow
                     colSpan={6}
-                    title={q || status || operatorFilter ? "Tidak ada bus yang cocok" : "Belum ada data bus"}
+                    title={q || status ? "Tidak ada bus yang cocok" : "Belum ada data bus"}
                     detail={
-                      q || status || operatorFilter
+                      q || status
                         ? "Ubah kata kunci atau filter, lalu terapkan kembali."
                         : "Tambahkan bus pertama melalui formulir di samping."
                     }
@@ -203,7 +195,7 @@ export default async function BusPage({
                       </td>
                       <td>{row.plate_number ?? "—"}</td>
                       <td>{row.capacity} kursi</td>
-                      <td>{row.operators?.name ?? "Belum ditetapkan"}</td>
+                      <td>{row.project_areas?.name ?? "Belum ditetapkan"}</td>
                       <td>
                         <Pill tone={row.active ? "success" : "neutral"}>{row.active ? "Aktif" : "Nonaktif"}</Pill>
                       </td>

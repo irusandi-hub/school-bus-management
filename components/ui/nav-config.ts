@@ -7,9 +7,9 @@ export const adminGroups: NavGroup[] = [
   {
     label: "Data induk",
     items: [
-      { href: "/admin", label: "Ringkasan", icon: "dashboard", short: "Ringkasan" },
+      { href: "/operator", label: "Ringkasan", icon: "dashboard", short: "Ringkasan" },
       { href: "/admin/sekolah", label: "Sekolah", icon: "school", short: "Sekolah" },
-      { href: "/admin/operator", label: "Pengelola", icon: "operator", short: "Pengelola" },
+      { href: "/admin/area", label: "Area Operasional", icon: "operator", short: "Area" },
       { href: "/admin/siswa", label: "Data siswa", icon: "students", short: "Siswa" },
       { href: "/admin/wali", label: "Akun wali", icon: "guardian", short: "Wali" },
       { href: "/admin/bus", label: "Bus", icon: "bus", short: "Bus" },
@@ -53,7 +53,7 @@ export const operatorGroups: NavGroup[] = [
 
 /** Empat menu utama di navigasi bawah agar setiap area tetap terjangkau satu ketukan. */
 export const adminBottomNav: NavItem[] = [
-  { href: "/admin", label: "Ringkasan", icon: "dashboard" },
+  { href: "/operator", label: "Ringkasan", icon: "dashboard" },
   { href: "/admin/siswa", label: "Siswa", icon: "students" },
   { href: "/admin/penugasan", label: "Tugas", icon: "assignment" },
   { href: "/admin/perjalanan", label: "Perjalanan", icon: "trip" },

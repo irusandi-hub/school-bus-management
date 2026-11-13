@@ -1,0 +1,2306 @@
+/* ==========================================================================
+   Final workspace redesign
+   Satu bahasa visual untuk seluruh halaman Pengelola dan halaman Pengemudi.
+   Dimuat setelah globals.css agar aturan padat lama tidak saling bertabrakan.
+   ========================================================================== */
+
+/* --- Kerangka Pengelola -------------------------------------------------- */
+.operator-shell.app-shell {
+  grid-template-columns: 232px minmax(0, 1fr);
+}
+
+.operator-shell .sidebar {
+  position: sticky;
+  top: 0;
+  max-height: 100dvh;
+  overflow-y: auto;
+  padding: 15px 11px 13px;
+  gap: 13px;
+  background: #fff;
+  border-right: 1px solid var(--line);
+}
+
+.operator-shell .brand {
+  padding: 0 7px;
+}
+
+.operator-shell .brand-logo-mark {
+  width: 30px;
+  height: 30px;
+}
+
+.operator-shell .brand-logo-word {
+  font-size: 15.5px;
+}
+
+.operator-shell .brand-logo-sub {
+  font-size: 9px;
+}
+
+.operator-shell .nav-group {
+  gap: 8px;
+}
+
+.operator-shell .nav-section {
+  gap: 1px;
+}
+
+.operator-shell .nav-section + .nav-section {
+  margin-top: 6px;
+}
+
+.operator-shell .nav-section-label {
+  padding: 0 9px 3px;
+  font-size: 8px;
+  letter-spacing: .13em;
+}
+
+.operator-shell .nav-item {
+  min-height: 36px;
+  padding: 6px 9px;
+  gap: 8px;
+  border-radius: 8px;
+  font-size: 11.5px;
+}
+
+.operator-shell .nav-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.operator-shell .nav-icon svg {
+  width: 15px;
+  height: 15px;
+}
+
+.operator-shell .nav-item.active {
+  box-shadow: inset 2px 0 0 var(--brand);
+}
+
+.operator-shell .sidebar-bottom {
+  padding: 9px 10px;
+  border-radius: 9px;
+  font-size: 9.5px;
+  line-height: 1.4;
+}
+
+.operator-shell .sidebar-bottom strong {
+  display: block;
+  margin: 0 0 1px;
+  font-size: 10.5px;
+}
+
+.operator-shell .sidebar-bottom p {
+  margin: 0;
+}
+
+.operator-shell .security-icon {
+  display: none;
+}
+
+.operator-shell .main {
+  width: 100%;
+  max-width: 1520px;
+  min-width: 0;
+  padding: 0 26px 24px;
+}
+
+.operator-shell .main > .topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-height: 54px;
+  margin: 0 -26px 12px;
+  padding: 0 26px;
+  background: rgba(255, 253, 248, .95);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(10px);
+}
+
+.operator-shell .topbar-context {
+  display: grid;
+  gap: 1px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Saat sidebar tersembunyi di layar kecil, identitas brand tampil di topbar. */
+.operator-shell .topbar-brand {
+  display: none;
+}
+
+@media (max-width: 960px) {
+  .operator-shell .topbar-brand {
+    display: inline-flex;
+    flex: none;
+  }
+}
+
+.operator-shell .topbar-kicker {
+  color: #9b8f79;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .14em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.operator-shell .topbar-context strong {
+  overflow: hidden;
+  color: var(--ink);
+  font: 800 12.5px var(--font-display), Manrope, sans-serif;
+  letter-spacing: -.1px;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.operator-shell .top-actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex: none;
+}
+
+.operator-shell .account-chip {
+  min-height: 32px;
+  padding: 2px 8px 2px 3px;
+  gap: 6px;
+  max-width: 210px;
+  border-color: var(--line);
+  box-shadow: none;
+}
+
+.operator-shell .account-avatar {
+  width: 25px;
+  height: 25px;
+  font-size: 9.5px;
+}
+
+.operator-shell .account-name {
+  max-width: 125px;
+  font-size: 10.5px;
+}
+
+.operator-shell .topbar-exit {
+  min-height: 32px;
+  padding: 0 8px;
+  font-size: 10.5px;
+  color: #655f54;
+}
+
+.operator-shell .topbar-exit svg {
+  width: 14px;
+  height: 14px;
+}
+
+.operator-shell .page-footer {
+  margin-top: 16px;
+  padding-top: 10px;
+  font-size: 9px;
+}
+
+/* --- Judul, breadcrumb, dan pemilih area -------------------------------- */
+.operator-shell .crumbs {
+  margin: 0 0 7px;
+  gap: 5px;
+  font-size: 10.5px;
+}
+
+.operator-shell .admin-page-head {
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 10px;
+}
+
+.operator-shell .admin-page-head-copy {
+  min-width: 0;
+}
+
+.operator-shell .admin-page-head h1 {
+  margin: 0 0 2px;
+  font-size: 22px;
+  letter-spacing: -.65px;
+  line-height: 1.2;
+}
+
+.operator-shell .admin-page-head p {
+  max-width: 78ch;
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+.operator-shell .admin-page-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex: none;
+}
+
+.operator-shell .area-switch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  margin: 0 0 11px;
+  padding: 6px 8px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+}
+
+.operator-shell .area-switch-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  padding-left: 2px;
+  color: #877a62;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.operator-shell .area-switch-tabs {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  padding: 1px;
+  scrollbar-width: none;
+}
+
+.operator-shell .area-switch-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.operator-shell .area-tab {
+  flex: 0 0 auto;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: #655f54;
+  font: 700 10.5px var(--font-body), "DM Sans", sans-serif;
+  white-space: nowrap;
+}
+
+.operator-shell .area-tab:hover {
+  background: var(--surface-sunken);
+  border-color: var(--line);
+}
+
+.operator-shell .area-tab.active {
+  background: #2b2416;
+  border-color: #2b2416;
+  color: #ffd670;
+}
+
+.operator-shell .area-tabs-empty {
+  color: var(--muted);
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+/* --- Ringkasan metrik ---------------------------------------------------- */
+.operator-shell .metric-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(142px, 1fr));
+  overflow: hidden;
+  margin: 0 0 11px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+}
+
+.operator-shell .metric-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 9px 11px;
+  border-right: 1px solid #f2ede3;
+}
+
+.operator-shell .metric-item:last-child {
+  border-right: 0;
+}
+
+.operator-shell .metric-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 29px;
+  height: 29px;
+  border-radius: 8px;
+  background: var(--brand-bg);
+  color: #7a5100;
+}
+
+.operator-shell .metric-copy {
+  display: grid;
+  min-width: 0;
+}
+
+.operator-shell .metric-label {
+  color: #8a7a5a;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.operator-shell .metric-value {
+  color: var(--ink);
+  font: 800 19px var(--font-display), Manrope, sans-serif;
+  letter-spacing: -.5px;
+  line-height: 1.2;
+}
+
+.operator-shell .metric-copy small {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.operator-shell .admin-today .panel-head {
+  border-bottom: 0;
+}
+
+.operator-shell .today-counts {
+  display: flex;
+  align-items: stretch;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding: 0 13px 13px;
+}
+
+.operator-shell .today-count {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex: 1 1 120px;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid #f0ebdf;
+  border-radius: 9px;
+  background: #fbfaf6;
+}
+
+.operator-shell .today-count span {
+  color: #807767;
+  font-size: 9.5px;
+  font-weight: 700;
+}
+
+.operator-shell .today-count strong {
+  font: 800 19px var(--font-display), Manrope, sans-serif;
+  letter-spacing: -.5px;
+}
+
+.operator-shell .today-count.tone-live {
+  border-color: #dce8f0;
+  background: #f3f8fb;
+}
+
+.operator-shell .today-count.tone-wait {
+  border-color: #f2e2c6;
+  background: #fff9ed;
+}
+
+.operator-shell .today-count.tone-done {
+  border-color: #d5ebdd;
+  background: #f2faf5;
+}
+
+.operator-shell .today-note {
+  flex: 1 0 100%;
+  margin: 1px 0 0;
+  color: var(--muted);
+  font-size: 9.5px;
+  line-height: 1.4;
+}
+
+/* --- Panel, tabel, filter, form ---------------------------------------- */
+.operator-shell .panel {
+  border-radius: 11px;
+  box-shadow: none;
+}
+
+.operator-shell .panel-head {
+  min-height: 45px;
+  padding: 9px 13px;
+  gap: 9px;
+}
+
+.operator-shell .panel-title {
+  font-size: 13.5px;
+  line-height: 1.3;
+}
+
+.operator-shell .panel-subtitle {
+  margin-top: 2px;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.operator-shell .panel-head .pill {
+  font-size: 9px;
+  padding: 3px 7px;
+}
+
+.operator-shell .btn {
+  min-height: 34px;
+  padding: 7px 11px;
+  border-radius: 8px;
+  font-size: 11px;
+  gap: 6px;
+}
+
+.operator-shell .btn-sm {
+  min-height: 29px;
+  padding: 5px 9px;
+  font-size: 10.5px;
+}
+
+.operator-shell .btn-lg {
+  min-height: 42px;
+  font-size: 12.5px;
+}
+
+.operator-shell .row-link {
+  min-height: 30px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 10.5px;
+}
+
+.operator-shell .pill {
+  padding: 3px 7px;
+  font-size: 9px;
+}
+
+.operator-shell .admin-split {
+  grid-template-columns: minmax(0, 1.6fr) minmax(300px, .82fr);
+  gap: 11px;
+  margin-bottom: 11px;
+}
+
+.operator-shell .admin-form-panel {
+  top: 64px;
+}
+
+.operator-shell .form-body {
+  padding: 11px 13px 13px;
+}
+
+.operator-shell .record-form {
+  gap: 10px;
+}
+
+.operator-shell .record-grid {
+  gap: 9px;
+}
+
+.operator-shell .field {
+  gap: 4px;
+}
+
+.operator-shell .field label {
+  font-size: 10px;
+  letter-spacing: .01em;
+}
+
+.operator-shell .field input,
+.operator-shell .field select,
+.operator-shell .field textarea {
+  min-height: 36px;
+  padding: 7px 9px;
+  border-radius: 8px;
+  font-size: 11.5px;
+}
+
+.operator-shell .field textarea {
+  min-height: 62px;
+  line-height: 1.5;
+}
+
+.operator-shell .field-hint {
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+.operator-shell .form-note {
+  padding: 8px 10px;
+  font-size: 9.5px;
+  line-height: 1.5;
+}
+
+.operator-shell .form-actions {
+  gap: 7px;
+}
+
+.operator-shell .list-toolbar {
+  gap: 7px;
+  padding: 8px 12px;
+  background: #fff;
+}
+
+.operator-shell .list-search {
+  flex: 1 1 200px;
+  min-width: 140px;
+  min-height: 33px;
+  padding: 6px 9px;
+  border-radius: 8px;
+  background: #fbfaf6;
+}
+
+.operator-shell .list-search input {
+  font-size: 11px;
+}
+
+.operator-shell .list-toolbar select {
+  min-height: 33px;
+  max-width: 170px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-size: 10.5px;
+}
+
+.operator-shell .toolbar-count {
+  margin-left: auto;
+  font-size: 9px;
+}
+
+.operator-shell .toolbar-reset {
+  min-height: 30px;
+  font-size: 10px;
+}
+
+.operator-shell .admin-table {
+  min-width: 680px;
+}
+
+.operator-shell .admin-table th {
+  padding: 8px 11px;
+  font-size: 8.5px;
+  letter-spacing: .05em;
+}
+
+.operator-shell .admin-table td {
+  padding: 9px 11px;
+  font-size: 11.5px;
+  line-height: 1.45;
+}
+
+.operator-shell .admin-table td strong {
+  font-size: 11.5px;
+}
+
+.operator-shell .admin-table td small {
+  margin-top: 2px;
+  font-size: 9.5px;
+  line-height: 1.4;
+}
+
+.operator-shell .admin-table code {
+  padding: 2px 5px;
+  font-size: 10px;
+}
+
+.operator-shell .row-actions {
+  gap: 9px;
+}
+
+.operator-shell .pagination {
+  padding: 8px 12px;
+  font-size: 10px;
+}
+
+.operator-shell .form-alert {
+  margin: 0 0 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 10.5px;
+  line-height: 1.5;
+}
+
+.operator-shell .state-panel {
+  padding: 26px 16px;
+}
+
+.operator-shell .table-empty {
+  padding: 26px 16px;
+}
+
+.operator-shell .table-empty strong {
+  font-size: 12.5px;
+}
+
+.operator-shell .table-empty p {
+  margin-top: 5px;
+  font-size: 10.5px;
+  line-height: 1.5;
+}
+
+.operator-shell .detail-grid {
+  gap: 11px;
+  margin-bottom: 11px;
+}
+
+.operator-shell .detail-list {
+  padding: 4px 14px 8px;
+}
+
+.operator-shell .detail-list > div {
+  padding: 8px 0;
+}
+
+.operator-shell .detail-list dt {
+  margin-bottom: 3px;
+  font-size: 8.5px;
+}
+
+.operator-shell .detail-list dd {
+  font-size: 11px;
+}
+
+.operator-shell .check-list {
+  padding: 2px 14px 8px;
+}
+
+.operator-shell .check-list li {
+  padding: 9px 0;
+}
+
+.operator-shell .check-list strong {
+  font-size: 11px;
+}
+
+.operator-shell .check-list small {
+  font-size: 9.5px;
+  line-height: 1.5;
+}
+
+.operator-shell .audit-note {
+  padding: 12px 14px 14px;
+  font-size: 10.5px;
+  line-height: 1.6;
+}
+
+.operator-shell .admin-overview-grid {
+  gap: 11px;
+  margin-bottom: 11px;
+}
+
+.operator-shell .student-read-grid {
+  gap: 7px;
+}
+
+.operator-shell .student-read-card,
+.operator-shell .student-read-detail {
+  padding: 10px;
+}
+
+/* --- Halaman Pengemudi: header dan aksi utama --------------------------- */
+.driver-app {
+  min-height: 100dvh;
+  padding-bottom: 24px;
+  background: var(--paper);
+}
+
+.driver-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  max-width: 1180px;
+  min-height: 54px;
+  margin: 0 auto;
+  padding: 8px 20px;
+  border-bottom: 1px solid #f1ebe0;
+}
+
+.driver-head .brand-logo-mark {
+  width: 32px;
+  height: 28px;
+}
+
+.driver-head .brand-logo-word {
+  font-size: 15px;
+}
+
+.driver-head .brand-logo-sub {
+  font-size: 8.5px;
+}
+
+.driver-account {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  font-size: 10.5px;
+}
+
+.driver-account .account-name {
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.driver-account .btn {
+  min-height: 32px;
+  padding: 0 7px;
+  font-size: 10.5px;
+}
+
+.driver-main {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 11px 20px 12px;
+}
+
+.driver-app .ops-head {
+  margin: 0 0 9px;
+  padding: 13px 15px;
+  border: 1px solid #efd79a;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ffe8ad 0%, #ffc431 60%, #ffda85 100%);
+  box-shadow: 0 8px 20px #ffc4311f;
+}
+
+.driver-app .ops-head-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.driver-app .ops-avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #2b2416;
+  color: #ffd670;
+  font: 800 14px var(--font-display), Manrope, sans-serif;
+}
+
+.driver-app .ops-ident {
+  flex: 1;
+  min-width: 0;
+}
+
+.driver-app .ops-ident strong {
+  display: block;
+  overflow: hidden;
+  font: 800 14px var(--font-display), Manrope, sans-serif;
+  letter-spacing: -.2px;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.driver-app .ops-ident small {
+  display: block;
+  margin-top: 1px;
+  color: #685320;
+  font-size: 9px;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.driver-app .ops-head-pills {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  margin-left: auto;
+}
+
+.driver-app .ops-head-pills .pill {
+  padding: 3px 7px;
+  font-size: 9px;
+}
+
+.driver-app .drive-hero-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 320px);
+  align-items: end;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.driver-app .drive-task {
+  min-width: 0;
+}
+
+.driver-app .ops-task-kicker {
+  display: block;
+  overflow: hidden;
+  color: #6f5920;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.driver-app .drive-task h1 {
+  margin: 2px 0 2px;
+  overflow-wrap: anywhere;
+  color: #231d10;
+  font: 800 clamp(23px, 3vw, 31px) var(--font-display), Manrope, sans-serif;
+  letter-spacing: -.8px;
+  line-height: 1.1;
+}
+
+.driver-app .drive-school {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: #5b4716;
+  font-size: 10.5px;
+  line-height: 1.35;
+}
+
+.driver-app .drive-school svg {
+  flex: none;
+}
+
+.driver-app .ops-head-action,
+.driver-app .drive-hero .ops-head-action {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  margin: 0;
+}
+
+.driver-app .ops-start,
+.driver-app .drive-hero .ops-start {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  margin: 0;
+}
+
+.driver-app .drive-main-action {
+  width: 100%;
+  min-height: 58px;
+  padding: 12px 16px;
+  border: 1px solid #231d10;
+  border-radius: 12px;
+  background: #231d10;
+  color: #ffd670;
+  box-shadow: 0 6px 16px #2b24162e;
+  font: 800 14.5px var(--font-display), Manrope, sans-serif;
+  letter-spacing: .1px;
+  white-space: normal;
+}
+
+.driver-app .drive-main-action:hover {
+  border-color: #3b311d;
+  background: #3b311d;
+  color: #ffe6a8;
+}
+
+.driver-app .drive-main-action:disabled {
+  border-color: #ddceac;
+  background: #e9dfc8;
+  color: #6f5a31;
+  box-shadow: none;
+}
+
+.driver-app .drive-action-hint {
+  color: #5d4917;
+  font-size: 9px;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.driver-app .drive-session-closed {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 9px 11px;
+  border: 1px solid #e4d8ba;
+  border-radius: 10px;
+  background: #fff8e3cc;
+  color: #5d4917;
+}
+
+.driver-app .drive-session-closed strong {
+  font: 800 12px var(--font-display), Manrope, sans-serif;
+}
+
+.driver-app .drive-session-closed small {
+  flex-basis: 100%;
+  color: #6f6040;
+  font-size: 9px;
+  line-height: 1.35;
+}
+
+.driver-app .drive-vehicle {
+  display: flex;
+  align-items: center;
+  gap: 4px 12px;
+  flex-wrap: wrap;
+  margin: 10px 0 0;
+  padding-top: 8px;
+  border-top: 1px solid #e8c77b;
+  color: #4f3d10;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.driver-app .drive-vehicle span {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.driver-app .drive-vehicle span + span:not(.drive-clock)::before {
+  content: "·";
+  margin-right: 5px;
+  color: #8a6a2a;
+}
+
+.driver-app .drive-clock {
+  margin-left: auto;
+}
+
+.driver-app .drive-progress {
+  margin-top: 8px;
+}
+
+.driver-app .drive-progress-line {
+  display: flex;
+  align-items: center;
+  gap: 3px 12px;
+  flex-wrap: wrap;
+  color: #4f3d10;
+  font-size: 9.5px;
+  line-height: 1.35;
+}
+
+.driver-app .drive-progress-line b {
+  font-weight: 800;
+}
+
+.driver-app .drive-progress-track {
+  height: 5px;
+  margin-top: 5px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #fff4d2;
+}
+
+.driver-app .drive-progress-track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #2b2416;
+  transition: width .3s ease;
+}
+
+/* --- Dialog akhir perjalanan ------------------------------------------- */
+.drive-dialog-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 130;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+}
+
+.drive-dialog-backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  padding: 0;
+  background: #1c140099;
+  backdrop-filter: blur(2px);
+}
+
+.drive-dialog {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 570px);
+  max-height: min(88dvh, 760px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 24px 70px #1c14003d;
+}
+
+.drive-dialog-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 13px 15px 10px;
+  border-bottom: 1px solid var(--line);
+  background: #fffdf8f7;
+  backdrop-filter: blur(8px);
+}
+
+.drive-dialog-head .eyebrow {
+  font-size: 8.5px;
+  letter-spacing: .1em;
+}
+
+.drive-dialog-head h2 {
+  margin: 2px 0 0;
+  font: 800 19px var(--font-display), Manrope, sans-serif;
+  letter-spacing: -.5px;
+}
+
+.drive-dialog-close {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #fff;
+  color: #5f5a50;
+}
+
+.drive-dialog-body {
+  padding: 12px 15px 14px;
+}
+
+.drive-dialog .task-times {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  margin: 0 0 10px;
+}
+
+.drive-dialog .task-times > div {
+  min-width: 0;
+  padding: 7px 9px;
+  border: 1px solid #f0e7d5;
+  border-radius: 8px;
+  background: #fffcf3;
+}
+
+.drive-dialog .task-times dt {
+  margin-bottom: 2px;
+  color: #8a7a5a;
+  font-size: 7.5px;
+  font-weight: 800;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.drive-dialog .task-times dd {
+  margin: 0;
+  font: 800 12px var(--font-display), Manrope, sans-serif;
+}
+
+.drive-arrival-ok {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  margin: 0 0 10px;
+  padding: 7px 9px;
+  border: 1px solid #cfe9da;
+  border-radius: 8px;
+  background: #f0faf4;
+  color: #245a2b;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.drive-arrival-form {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin: 0 0 10px;
+  padding: 8px 9px;
+  border: 1px solid #f2e2c6;
+  border-radius: 8px;
+  background: #fff9ed;
+}
+
+.drive-arrival-form small {
+  flex-basis: 100%;
+  color: #7c6a45;
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+.drive-dialog .task-end-form {
+  gap: 9px;
+  margin: 0;
+  padding-top: 9px;
+  border-top: 1px dashed #ede2cc;
+}
+
+.drive-dialog .close-warning {
+  max-width: none;
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+
+.drive-dialog .close-warning strong {
+  font-size: 10.5px;
+}
+
+.drive-dialog .close-warning p,
+.drive-dialog .close-check {
+  font-size: 9.5px;
+  line-height: 1.45;
+}
+
+.drive-dialog .safety-checks {
+  gap: 5px;
+}
+
+.drive-dialog .safety-checks legend {
+  margin-bottom: 1px;
+  font-size: 9px;
+}
+
+.drive-dialog .safety-check {
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 10.5px;
+  line-height: 1.45;
+}
+
+.drive-dialog .safety-check input {
+  width: 17px;
+  height: 17px;
+  margin-top: 1px;
+}
+
+.drive-dialog .safety-notes {
+  gap: 3px;
+  margin-top: 3px;
+  font-size: 9px;
+}
+
+.drive-dialog .safety-notes textarea {
+  min-height: 52px;
+  padding: 7px 8px;
+  border-radius: 7px;
+  font-size: 10.5px;
+}
+
+.drive-dialog .safety-blocked {
+  margin: 0;
+  padding: 7px 9px;
+  border-radius: 7px;
+  font-size: 9.5px;
+  line-height: 1.45;
+}
+
+.drive-dialog-note {
+  margin: 0;
+  color: #7c766a;
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+.drive-dialog-actions {
+  position: sticky;
+  bottom: -14px;
+  display: flex;
+  gap: 7px;
+  margin: 1px -15px -14px;
+  padding: 9px 15px calc(9px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--line);
+  background: #fffdf8f7;
+  backdrop-filter: blur(8px);
+}
+
+.drive-dialog-actions .btn {
+  min-height: 44px;
+  flex: 1;
+  border-radius: 9px;
+  font-size: 12px;
+}
+
+.drive-dialog .ops-end-submit {
+  border: 1px solid #231d10;
+  background: #231d10;
+  color: #ffd670;
+  font-weight: 800;
+}
+
+.drive-dialog .ops-end-submit:disabled {
+  border-color: #ddceac;
+  background: #e9dfc8;
+  color: #6f5a31;
+}
+
+/* --- Ruang kerja Pengemudi --------------------------------------------- */
+.driver-app .ops-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: 9px;
+  margin-bottom: 9px;
+  align-items: start;
+}
+
+.driver-app .ops-workspace > section {
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+.driver-app .ops-nav-panel {
+  padding: 11px;
+  border-radius: 12px;
+}
+
+.driver-app .ops-nav-panel .route-head h2 {
+  margin: 2px 0 3px;
+  font-size: 17px;
+  line-height: 1.2;
+}
+
+.driver-app .ops-nav-panel .route-direction {
+  padding: 2px 6px;
+  font-size: 8px;
+}
+
+.driver-app .ops-panel-eyebrow {
+  font-size: 8.5px;
+}
+
+.driver-app .ops-panel-count {
+  font-size: 9px;
+}
+
+.driver-app .ops-nav-panel .route-lock {
+  font-size: 9.5px;
+  line-height: 1.35;
+}
+
+.driver-app .ops-nav-panel .route-cta {
+  min-height: 58px;
+  padding: 8px 9px;
+  gap: 8px;
+  border-radius: 10px;
+}
+
+.driver-app .ops-nav-panel .route-cta-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+}
+
+.driver-app .ops-nav-panel .route-cta strong {
+  font-size: 12.5px;
+  line-height: 1.25;
+}
+
+.driver-app .ops-nav-panel .route-cta small {
+  margin-top: 1px;
+  font-size: 9px;
+  line-height: 1.3;
+}
+
+.driver-app .ops-nav-panel .route-summary {
+  gap: 5px;
+  margin: 8px 0;
+}
+
+.driver-app .ops-nav-panel .route-summary div {
+  padding: 6px 7px;
+  border-radius: 7px;
+}
+
+.driver-app .ops-nav-panel .route-summary span {
+  font-size: 7.5px;
+}
+
+.driver-app .ops-nav-panel .route-summary strong {
+  font-size: 10px;
+}
+
+.driver-app .ops-nav-panel .route-stops > summary,
+.driver-app .ops-nav-panel .route-note > summary {
+  min-height: 30px;
+  font-size: 9.5px;
+}
+
+.driver-app .ops-nav-panel .nav-stop {
+  grid-template-columns: 23px minmax(0, 1fr);
+  gap: 6px;
+  padding: 8px 0;
+}
+
+.driver-app .ops-nav-panel .nav-stop-order {
+  width: 23px;
+  height: 23px;
+  border-radius: 6px;
+  font-size: 8px;
+}
+
+.driver-app .ops-nav-panel .nav-stop-head strong {
+  font-size: 10.5px;
+}
+
+.driver-app .ops-nav-panel .nav-stop-students,
+.driver-app .ops-nav-panel .nav-stop-meta {
+  font-size: 8.5px;
+}
+
+.driver-app .ops-manifest {
+  border-radius: 12px;
+}
+
+.driver-app .ops-manifest .panel-head {
+  padding: 10px 12px 7px;
+}
+
+.driver-app .ops-manifest .panel-title {
+  font-size: 14px;
+}
+
+.driver-app .ops-manifest .panel-subtitle {
+  font-size: 9.5px;
+}
+
+.driver-app .ops-students-scroll {
+  max-height: 540px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 9px 3px;
+}
+
+.driver-app .ops-workspace .ops-student {
+  display: grid;
+  grid-template-columns: 25px minmax(0, 1fr);
+  gap: 7px;
+  padding: 9px 1px;
+}
+
+.driver-app .ops-workspace .ops-student-num {
+  width: 25px;
+  height: 25px;
+  border-radius: 7px;
+  font-size: 8.5px;
+}
+
+.driver-app .ops-workspace .ops-student-title strong {
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.driver-app .ops-workspace .ops-student-title .pill {
+  padding: 2px 6px;
+  font-size: 8px;
+}
+
+.driver-app .ops-workspace .ops-student-addr {
+  gap: 3px;
+  margin-top: 2px;
+  font-size: 9px;
+  line-height: 1.35;
+}
+
+.driver-app .ops-workspace .ops-student-actions {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  margin-top: 5px;
+}
+
+.driver-app .ops-workspace .ops-student-actions > .ops-student-state,
+.driver-app .ops-workspace .ops-student-actions > .ops-student-hint,
+.driver-app .ops-workspace .ops-student-actions > .ops-student-error,
+.driver-app .ops-workspace .ops-student-actions > .ops-student-success,
+.driver-app .ops-workspace .ops-student-actions > .ops-student-issue,
+.driver-app .ops-workspace .ops-student-actions > .ops-issue {
+  grid-column: 1 / -1;
+}
+
+.driver-app .ops-workspace .ops-action {
+  width: 100%;
+  min-height: 40px;
+  padding: 5px 3px;
+  border-radius: 8px;
+  font-size: 10px;
+  line-height: 1.15;
+}
+
+.driver-app .ops-workspace .ops-absent,
+.driver-app .ops-workspace .ops-absent summary {
+  width: 100%;
+}
+
+.driver-app .ops-workspace .ops-absent summary {
+  min-height: 40px;
+  padding: 5px 3px;
+  border-radius: 8px;
+  font-size: 10px;
+}
+
+.driver-app .ops-workspace .ops-absent-menu {
+  padding: 6px;
+  gap: 4px;
+}
+
+.driver-app .ops-workspace .ops-absent-menu .ops-action {
+  min-height: 34px;
+  font-size: 9px;
+}
+
+.driver-app .ops-workspace .ops-student-hint {
+  font-size: 8.5px;
+  line-height: 1.35;
+}
+
+.driver-app .ops-workspace .ops-student-issue,
+.driver-app .ops-workspace .ops-student-error,
+.driver-app .ops-workspace .ops-student-success {
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+.driver-app .ops-manifest .ops-review > summary {
+  padding: 9px 12px;
+}
+
+.driver-app .ops-manifest .ops-review-body {
+  padding: 0 12px 11px;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.driver-app .ops-map-head {
+  padding: 8px 10px;
+}
+
+.driver-app .ops-map-heading h2 {
+  font-size: 12.5px;
+}
+
+.driver-app .ops-map-heading small {
+  font-size: 8.5px;
+}
+
+.driver-app .ops-map-stage {
+  height: clamp(190px, 27vw, 260px);
+}
+
+.driver-app .ops-map-foot {
+  font-size: 8px;
+  line-height: 1.4;
+}
+
+.driver-app .broadcast-compact {
+  margin-bottom: 8px;
+  border-radius: 11px;
+}
+
+.driver-app .broadcast-compact-head {
+  gap: 6px;
+  min-height: 44px;
+  padding: 7px 9px;
+}
+
+.driver-app .broadcast-compact-icon {
+  width: 27px;
+  height: 27px;
+  border-radius: 7px;
+}
+
+.driver-app .broadcast-compact-copy strong {
+  font-size: 11px;
+}
+
+.driver-app .broadcast-compact-copy span {
+  margin-top: 1px;
+  font-size: 8.5px;
+  line-height: 1.3;
+}
+
+.driver-app .broadcast-safety-inline {
+  margin-top: 2px;
+  font-size: 7.5px;
+  line-height: 1.3;
+}
+
+.driver-app .broadcast-source-select select {
+  max-width: 86px;
+  padding: 4px 3px;
+  border-radius: 6px;
+  font-size: 8.5px;
+}
+
+.driver-app .broadcast-compact-controls {
+  gap: 4px;
+}
+
+.driver-app .broadcast-compact-controls > .btn,
+.driver-app .broadcast-compact-controls .broadcast-publisher-inline > .btn {
+  min-height: 32px;
+  padding: 0 7px;
+  border-radius: 7px;
+  font-size: 9px;
+}
+
+.driver-app .broadcast-consent-inline {
+  font-size: 8px;
+}
+
+.driver-app .broadcast-publisher-status {
+  font-size: 8px;
+}
+
+.driver-app .ops-side-notes {
+  margin-top: 2px;
+  font-size: 8.5px;
+  line-height: 1.45;
+}
+
+.driver-app .ops-switch {
+  margin-bottom: 8px;
+  gap: 4px;
+}
+
+.driver-app .ops-switch > span {
+  font-size: 8px;
+}
+
+.driver-app .ops-switch a {
+  min-height: 30px;
+  padding: 5px 9px;
+  font-size: 9px;
+}
+
+.driver-app .driver-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 8px 20px 2px;
+  color: #8a857a;
+  font-size: 8.5px;
+}
+
+/* --- Tablet ------------------------------------------------------------- */
+@media (max-width: 1100px) {
+  .operator-shell .admin-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .operator-shell .admin-form-panel {
+    position: static;
+  }
+
+  .operator-shell .metric-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .operator-shell .metric-item:nth-child(3n) {
+    border-right: 0;
+  }
+
+  .driver-app .ops-workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .driver-app .ops-students-scroll {
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+@media (max-width: 960px) {
+  .operator-shell.app-shell {
+    display: block;
+    padding-bottom: calc(70px + env(safe-area-inset-bottom));
+  }
+
+  .operator-shell .sidebar {
+    display: none;
+  }
+
+  .operator-shell .main {
+    padding: 0 16px 20px;
+  }
+
+  .operator-shell .main > .topbar {
+    min-height: 52px;
+    margin: 0 -16px 10px;
+    padding: 0 16px;
+    gap: 9px;
+  }
+
+  .operator-shell .topbar-kicker {
+    font-size: 7.5px;
+  }
+
+  .operator-shell .topbar-context strong {
+    font-size: 11.5px;
+  }
+
+  .operator-shell .topbar-exit span {
+    display: none;
+  }
+
+  .operator-shell .topbar-exit {
+    width: 34px;
+    min-height: 34px;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+  }
+
+  .operator-shell .admin-page-head h1 {
+    font-size: 20px;
+  }
+
+  .operator-shell .admin-page-head p {
+    font-size: 11px;
+  }
+
+  .operator-shell .metric-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .operator-shell .metric-item:nth-child(3n) {
+    border-right: 1px solid #f2ede3;
+  }
+
+  .operator-shell .metric-item:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .driver-head {
+    padding: 7px 12px;
+  }
+
+  .driver-main {
+    padding: 9px 12px 10px;
+  }
+}
+
+/* --- Ponsel 430 px dan di bawah ---------------------------------------- */
+@media (max-width: 760px) {
+  .operator-shell .main {
+    padding: 0 11px 18px;
+  }
+
+  .operator-shell .main > .topbar {
+    margin: 0 -11px 9px;
+    padding: 0 11px;
+    min-height: 50px;
+  }
+
+  .operator-shell .topbar-context strong {
+    font-size: 11px;
+  }
+
+  .operator-shell .admin-page-head {
+    gap: 7px;
+    margin-bottom: 8px;
+  }
+
+  .operator-shell .admin-page-head h1 {
+    font-size: 19px;
+  }
+
+  .operator-shell .admin-page-head p {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 10.5px;
+    line-height: 1.4;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .operator-shell .admin-page-actions .btn {
+    min-height: 32px;
+    font-size: 10px;
+  }
+
+  .operator-shell .area-switch {
+    gap: 5px;
+    margin-bottom: 8px;
+    padding: 5px 6px;
+  }
+
+  .operator-shell .area-switch-label {
+    font-size: 8px;
+    padding-left: 1px;
+  }
+
+  .operator-shell .area-tab {
+    min-height: 31px;
+    padding: 0 9px;
+    font-size: 9.5px;
+  }
+
+  .operator-shell .metric-strip {
+    margin-bottom: 8px;
+  }
+
+  .operator-shell .metric-item {
+    gap: 6px;
+    padding: 7px 8px;
+  }
+
+  .operator-shell .metric-icon {
+    width: 25px;
+    height: 25px;
+    border-radius: 7px;
+  }
+
+  .operator-shell .metric-icon svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .operator-shell .metric-value {
+    font-size: 17px;
+  }
+
+  .operator-shell .metric-copy small {
+    font-size: 8.5px;
+  }
+
+  .operator-shell .today-counts {
+    gap: 5px;
+    padding: 0 10px 10px;
+  }
+
+  .operator-shell .today-count {
+    padding: 7px 8px;
+  }
+
+  .operator-shell .today-count strong {
+    font-size: 17px;
+  }
+
+  .operator-shell .panel-head {
+    padding: 9px 10px;
+  }
+
+  .operator-shell .panel-title {
+    font-size: 13px;
+  }
+
+  .operator-shell .panel-subtitle {
+    font-size: 9.5px;
+  }
+
+  .operator-shell .btn {
+    min-height: 40px;
+    padding: 8px 11px;
+    font-size: 11px;
+  }
+
+  .operator-shell .btn-sm {
+    min-height: 34px;
+    font-size: 10px;
+  }
+
+  .operator-shell .list-toolbar {
+    padding: 7px 9px;
+  }
+
+  .operator-shell .list-search {
+    flex-basis: 100%;
+    min-height: 38px;
+  }
+
+  .operator-shell .list-toolbar select {
+    flex: 1 1 44%;
+    max-width: none;
+    min-height: 38px;
+  }
+
+  .operator-shell .list-toolbar .btn {
+    flex: 1 1 44%;
+    min-height: 38px;
+  }
+
+  .operator-shell .toolbar-count {
+    margin-left: 0;
+    width: 100%;
+    text-align: right;
+  }
+
+  .operator-shell .field input,
+  .operator-shell .field select,
+  .operator-shell .field textarea {
+    min-height: 40px;
+  }
+
+  .operator-shell .record-form .form-actions {
+    position: sticky;
+    bottom: calc(64px + env(safe-area-inset-bottom));
+    z-index: 5;
+    margin: 0 -2px;
+    padding: 7px 0;
+    border-top: 1px solid #f3ebdc;
+    background: #fffdf8f5;
+    backdrop-filter: blur(8px);
+  }
+
+  .operator-shell .mobile-nav {
+    min-height: 58px;
+    padding: 5px 5px calc(5px + env(safe-area-inset-bottom));
+  }
+
+  .operator-shell .mobile-nav a {
+    min-height: 48px;
+    font-size: 9.5px;
+  }
+
+  .operator-shell .mobile-nav a svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .operator-shell .page-footer {
+    display: none;
+  }
+
+  .driver-head {
+    min-height: 50px;
+    padding: 6px 10px;
+  }
+
+  .driver-head .brand-logo-sub {
+    display: none;
+  }
+
+  .driver-account .account-name {
+    max-width: 86px;
+    font-size: 9.5px;
+  }
+
+  .driver-account .btn {
+    min-height: 30px;
+    font-size: 9.5px;
+  }
+
+  .driver-main {
+    padding: 8px 10px 10px;
+  }
+
+  .driver-app .ops-head {
+    padding: 11px 12px;
+    border-radius: 14px;
+  }
+
+  .driver-app .drive-hero-main {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 9px;
+    margin-top: 8px;
+  }
+
+  .driver-app .drive-task h1 {
+    font-size: clamp(22px, 7vw, 28px);
+  }
+
+  .driver-app .drive-main-action {
+    min-height: 58px;
+    font-size: 14px;
+  }
+
+  .driver-app .drive-action-hint {
+    font-size: 8.5px;
+  }
+
+  .driver-app .drive-vehicle {
+    gap: 3px 9px;
+    margin-top: 8px;
+    padding-top: 7px;
+    font-size: 9px;
+  }
+
+  .driver-app .drive-clock {
+    margin-left: 0;
+    flex-basis: 100%;
+  }
+
+  .driver-app .drive-progress-line {
+    gap: 3px 9px;
+    font-size: 8.5px;
+  }
+
+  .driver-app .ops-workspace {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .driver-app .ops-left {
+    display: contents;
+  }
+
+  .driver-app .ops-manifest {
+    order: 1;
+  }
+
+  .driver-app .ops-nav-panel {
+    order: 2;
+  }
+
+  .driver-app .ops-map {
+    order: 3;
+  }
+
+  .driver-app .ops-nav-panel {
+    padding: 9px;
+  }
+
+  .driver-app .ops-nav-panel .route-head h2 {
+    font-size: 16px;
+  }
+
+  .driver-app .ops-students-scroll {
+    max-height: none;
+    overflow: visible;
+    padding: 0 7px 3px;
+  }
+
+  .driver-app .ops-workspace .ops-student {
+    grid-template-columns: 24px minmax(0, 1fr);
+    gap: 6px;
+    padding: 8px 1px;
+  }
+
+  .driver-app .ops-workspace .ops-student-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .driver-app .ops-workspace .ops-action,
+  .driver-app .ops-workspace .ops-absent summary {
+    min-height: 44px;
+    font-size: 11px;
+  }
+
+  .driver-app .ops-students-scroll {
+    max-height: none;
+  }
+
+  .drive-dialog-layer {
+    align-items: end;
+    padding: 0;
+  }
+
+  .drive-dialog {
+    width: 100%;
+    max-height: 92dvh;
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 0;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .drive-dialog-head {
+    padding: 11px 12px 9px;
+  }
+
+  .drive-dialog-head h2 {
+    font-size: 18px;
+  }
+
+  .drive-dialog-body {
+    padding: 10px 12px 12px;
+  }
+
+  .drive-dialog .task-times {
+    gap: 5px;
+  }
+
+  .drive-dialog .task-times > div {
+    padding: 6px 7px;
+  }
+
+  .drive-dialog .safety-check {
+    font-size: 11px;
+  }
+
+  .drive-dialog-actions {
+    bottom: -12px;
+    margin: 1px -12px -12px;
+    padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+  }
+
+  .drive-dialog-actions .btn {
+    min-height: 46px;
+  }
+
+  .driver-app .driver-foot {
+    display: none;
+  }
+
+  .driver-app .ops-map-stage {
+    height: 200px;
+  }
+}
+
+/* --- Ponsel sempit: 430 / 390 / 360 px ---------------------------------- */
+@media (max-width: 430px) {
+  .operator-shell .main {
+    padding: 0 9px 16px;
+  }
+
+  .operator-shell .main > .topbar {
+    margin: 0 -9px 8px;
+    padding: 0 9px;
+  }
+
+  .operator-shell .topbar-context strong {
+    font-size: 10.5px;
+  }
+
+  .operator-shell .admin-page-head h1 {
+    font-size: 18px;
+  }
+
+  .operator-shell .area-switch-label span {
+    display: none;
+  }
+
+  .operator-shell .metric-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .operator-shell .metric-label {
+    font-size: 7.5px;
+  }
+
+  .operator-shell .metric-value {
+    font-size: 16px;
+  }
+
+  .operator-shell .metric-copy small {
+    display: none;
+  }
+
+  .operator-shell .today-count {
+    flex-basis: 30%;
+  }
+
+  .operator-shell .today-count span {
+    font-size: 8.5px;
+  }
+
+  .operator-shell .admin-split {
+    gap: 8px;
+  }
+
+  .operator-shell .list-toolbar select,
+  .operator-shell .list-toolbar .btn {
+    flex-basis: 100%;
+  }
+
+  .driver-head {
+    padding: 6px 9px;
+  }
+
+  .driver-account .account-name {
+    display: none;
+  }
+
+  .driver-main {
+    padding: 7px 9px 9px;
+  }
+
+  .driver-app .ops-head {
+    padding: 10px 11px;
+  }
+
+  .driver-app .ops-ident strong {
+    font-size: 13px;
+  }
+
+  .driver-app .drive-task h1 {
+    font-size: 22px;
+  }
+
+  .driver-app .drive-main-action {
+    min-height: 56px;
+    font-size: 13.5px;
+  }
+
+  .driver-app .ops-head-pills .pill {
+    font-size: 8px;
+    padding: 2px 5px;
+  }
+
+  .driver-app .ops-workspace .ops-action,
+  .driver-app .ops-workspace .ops-absent summary {
+    font-size: 10.5px;
+  }
+
+  .drive-dialog .task-times {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .drive-dialog .task-times dd {
+    font-size: 11px;
+  }
+
+  .drive-dialog-actions {
+    flex-wrap: wrap;
+  }
+
+  .drive-dialog-actions .btn {
+    flex: 1 1 100%;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 390px) {
+  .operator-shell .topbar-context strong {
+    font-size: 10px;
+  }
+
+  .operator-shell .admin-page-head h1 {
+    font-size: 17.5px;
+  }
+
+  .operator-shell .metric-item {
+    padding: 6px 7px;
+  }
+
+  .driver-app .ops-head-pills .pill {
+    max-width: 82px;
+    white-space: normal;
+  }
+
+  .driver-app .drive-vehicle span + span:not(.drive-clock)::before {
+    display: none;
+  }
+}
+
+/* --- Navigasi Operator di layar kecil tanpa hamburger -------------------
+   Sidebar disembunyikan sampai 960px. Navigasi bawah karena itu juga tampil
+   sampai 960px, dan tombol "Menu" membuka seluruh tujuan sidebar. */
+@media (max-width: 960px) {
+  .operator-shell .mobile-nav {
+    display: flex;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 40;
+    padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--line);
+    background: #fffdf8;
+    box-shadow: 0 -8px 24px #1c140014;
+  }
+
+  .operator-shell .mobile-nav > a,
+  .operator-shell .mobile-nav > button {
+    display: grid;
+    flex: 1 1 0;
+    justify-items: center;
+    align-content: center;
+    gap: 3px;
+    min-width: 0;
+    min-height: 52px;
+    padding: 6px 8px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: #7c766a;
+    font: 700 10px 'DM Sans', Arial, sans-serif;
+    text-decoration: none;
+  }
+
+  .operator-shell .mobile-nav svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .operator-shell .mobile-nav > a.is-active,
+  .operator-shell .mobile-nav > button[aria-expanded="true"] {
+    background: var(--brand-bg);
+    color: #7a5100;
+  }
+
+  .operator-shell .mobile-nav > :is(a, button):focus-visible {
+    outline: 3px solid var(--brand);
+    outline-offset: 2px;
+  }
+}
+
+@media (min-width: 961px) {
+  .operator-shell .menu-backdrop,
+  .operator-shell .menu-sheet {
+    display: none;
+  }
+}
+
+.menu-sheet-brand {
+  min-width: 0;
+}
+
+.menu-sheet-title {
+  margin: 0;
+  padding: 0 10px;
+  color: var(--ink);
+  font: 800 15px Manrope, 'DM Sans', sans-serif;
+  letter-spacing: -.01em;
+}
+
+@media (max-width: 360px) {
+  .operator-shell .metric-item {
+    padding: 6px 6px;
+  }
+
+  .operator-shell .area-tab {
+    padding: 0 8px;
+    font-size: 9px;
+  }
+
+  .driver-app .drive-vehicle {
+    font-size: 8.5px;
+  }
+
+  .driver-app .drive-progress-line {
+    font-size: 8px;
+  }
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "name": "operator",
+    "path": "/operator",
+    "widths": [
+      {
+        "width": 360,
+        "http": 200,
+        "finalPath": "/operator",
+        "text": "SchoolBus",
+        "logoVisible": true,
+        "mark": "30x30",
+        "wordW": 78.4,
+        "wordFont": "15.5px",
+        "wordColor": "rgb(15, 27, 61)",
+        "viewBox": "0 0 48 48",
+        "hamburger": false,
+        "accountAvatar": false,
+        "overflow": false
+      },
+      {
+        "width": 1440,
+        "http": 200,
+        "finalPath": "/operator",
+        "text": "SchoolBusOperator Utama",
+        "logoVisible": true,
+        "mark": "30x30",
+        "wordW": 77.5,
+        "wordFont": "15.5px",
+        "wordColor": "rgb(15, 27, 61)",
+        "viewBox": "0 0 48 48",
+        "hamburger": false,
+        "accountAvatar": false,
+        "overflow": false
+      }
+    ]
+  }
+]

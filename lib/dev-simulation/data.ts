@@ -1,4 +1,5 @@
-import { DEV_DRIVER_RECORD, DEV_ORGANISATION, DEV_VIEWER } from "../dev-open-access.ts";
+import { DEV_DRIVER_RECORD, DEV_PROJECT_AREA, DEV_VIEWER } from "../dev-open-access.ts";
+import { serviceDateInTimeZone } from "../validation.ts";
 
 /**
  * Dataset simulasi untuk mode akses terbuka pengembangan (DEC-024).
@@ -17,18 +18,19 @@ function iso(daysAgo = 0, hoursAgo = 0) {
   return new Date(now).toISOString();
 }
 
+// Simulated assignments must use the same service day as the pages that query them.
 function today() {
-  return iso().slice(0, 10);
+  return serviceDateInTimeZone();
 }
 
 function yesterday() {
-  return iso(1).slice(0, 10);
+  return serviceDateInTimeZone(new Date(Date.now() - 86_400_000));
 }
 
-const { admin, operator, driver, parent } = DEV_VIEWER;
+const { operator, driver, parent } = DEV_VIEWER;
 
 export const DEV_IDS = {
-  operator: DEV_ORGANISATION.id,
+  projectArea: DEV_PROJECT_AREA.id,
   driver: DEV_DRIVER_RECORD.id,
   guardian: "51111111-0000-4000-8000-0000000005f1",
 } as const;
@@ -36,14 +38,6 @@ export const DEV_IDS = {
 export function createSimulationTables(): SimTables {
   return {
     profiles: [
-      {
-        id: admin.userId,
-        full_name: admin.fullName,
-        role: "admin",
-        phone: "+966 50 000 0001",
-        created_at: iso(60),
-        updated_at: iso(60),
-      },
       {
         id: operator.userId,
         full_name: operator.fullName,
@@ -70,30 +64,39 @@ export function createSimulationTables(): SimTables {
       },
     ],
 
-    operators: [
+    project_areas: [
       {
-        id: DEV_ORGANISATION.id,
-        name: DEV_ORGANISATION.name,
-        code: "SIM-OP-01",
+        id: DEV_PROJECT_AREA.id,
+        name: DEV_PROJECT_AREA.name,
+        code: "SIM-AREA-01",
         city: "Dammam",
-        contact_name: "Manajer Armada Contoh",
-        contact_email: "operator.contoh@example.test",
+        contact_name: "Manajer Area Contoh",
+        contact_email: "kontak.area@example.test",
         contact_phone: "+966 50 000 0002",
-        profile_id: operator.userId,
         active: true,
         created_at: iso(60),
       },
       {
         id: "51111111-0000-4000-8000-0000000001b2",
-        name: "Operator Contoh Cadangan",
-        code: "SIM-OP-02",
-        city: "Dammam",
-        contact_name: "Manajer Contoh Dua",
-        contact_email: "operator.dua@example.test",
+        name: "Project Area Riyadh Contoh",
+        code: "SIM-AREA-02",
+        city: "Riyadh",
+        contact_name: "Manajer Area Contoh Dua",
+        contact_email: "area.dua@example.test",
         contact_phone: null,
-        profile_id: null,
-        active: false,
+        active: true,
         created_at: iso(45),
+      },
+      {
+        id: "51111111-0000-4000-8000-0000000001b3",
+        name: "Project Area Madinah Contoh",
+        code: "SIM-AREA-03",
+        city: "Madinah",
+        contact_name: null,
+        contact_email: null,
+        contact_phone: null,
+        active: false,
+        created_at: iso(40),
       },
     ],
 
@@ -109,7 +112,7 @@ export function createSimulationTables(): SimTables {
         contact_name: "Kepala Sekolah Contoh",
         contact_email: "sekolah.contoh@example.test",
         contact_phone: "+966 50 000 0005",
-        operator_id: DEV_ORGANISATION.id,
+        project_area_id: DEV_PROJECT_AREA.id,
         active: true,
         created_at: iso(60),
         updated_at: iso(60),
@@ -125,7 +128,7 @@ export function createSimulationTables(): SimTables {
         contact_name: "Kepala Sekolah Contoh Dua",
         contact_email: "sekolah.dua@example.test",
         contact_phone: null,
-        operator_id: null,
+        project_area_id: "51111111-0000-4000-8000-0000000001b2",
         active: false,
         created_at: iso(45),
         updated_at: iso(45),
@@ -140,7 +143,7 @@ export function createSimulationTables(): SimTables {
         capacity: 40,
         model: "Contoh Model A",
         notes: "Armada simulasi untuk pengujian tampilan.",
-        operator_id: DEV_ORGANISATION.id,
+        project_area_id: DEV_PROJECT_AREA.id,
         active: true,
         created_at: iso(60),
         updated_at: iso(60),
@@ -152,7 +155,7 @@ export function createSimulationTables(): SimTables {
         capacity: 30,
         model: "Contoh Model B",
         notes: "Armada simulasi yang masih bebas pada tanggal layanan hari ini.",
-        operator_id: DEV_ORGANISATION.id,
+        project_area_id: DEV_PROJECT_AREA.id,
         active: true,
         created_at: iso(45),
         updated_at: iso(45),
@@ -164,7 +167,7 @@ export function createSimulationTables(): SimTables {
         capacity: 24,
         model: "Contoh Model C",
         notes: "Armada simulasi yang sudah dipakai perjalanan berlangsung hari ini.",
-        operator_id: DEV_ORGANISATION.id,
+        project_area_id: DEV_PROJECT_AREA.id,
         active: true,
         created_at: iso(40),
         updated_at: iso(40),
@@ -176,7 +179,7 @@ export function createSimulationTables(): SimTables {
         capacity: 18,
         model: "Contoh Model D",
         notes: "Armada simulasi cadangan, sengaja dinonaktifkan untuk menguji penolakan penugasan.",
-        operator_id: DEV_ORGANISATION.id,
+        project_area_id: DEV_PROJECT_AREA.id,
         active: false,
         created_at: iso(35),
         updated_at: iso(35),
@@ -189,7 +192,7 @@ export function createSimulationTables(): SimTables {
         full_name: DEV_DRIVER_RECORD.fullName,
         phone: "+966 50 000 0003",
         license_number: "SIM-LIC-001",
-        operator_id: DEV_ORGANISATION.id,
+        project_area_id: DEV_PROJECT_AREA.id,
         profile_id: driver.userId,
         active: true,
         created_at: iso(60),
@@ -200,7 +203,7 @@ export function createSimulationTables(): SimTables {
         full_name: "Pengemudi Contoh Dua",
         phone: "+966 50 000 0006",
         license_number: "SIM-LIC-002",
-        operator_id: DEV_ORGANISATION.id,
+        project_area_id: DEV_PROJECT_AREA.id,
         profile_id: null,
         active: true,
         created_at: iso(30),
@@ -211,7 +214,7 @@ export function createSimulationTables(): SimTables {
         full_name: "Pengemudi Contoh Tiga",
         phone: "+966 50 000 0007",
         license_number: "SIM-LIC-003",
-        operator_id: DEV_ORGANISATION.id,
+        project_area_id: DEV_PROJECT_AREA.id,
         profile_id: null,
         active: true,
         created_at: iso(25),
@@ -286,6 +289,66 @@ export function createSimulationTables(): SimTables {
         service_status_changed_at: iso(3),
         created_at: iso(55),
       },
+      {
+        id: "51111111-0000-4000-8000-000000000604",
+        admissions_number: "SIM-ADM-004",
+        full_name: "Siswa Contoh Empat",
+        date_of_birth: "2015-02-18",
+        school_id: "51111111-0000-4000-8000-0000000002c2",
+        guardian_id: "51111111-0000-4000-8000-0000000005f2",
+        home_address: "Alamat Contoh Empat, Riyadh",
+        home_latitude: 24.7136,
+        home_longitude: 46.6753,
+        pickup_notes: null,
+        service_status: "paused",
+        service_status_changed_at: iso(2),
+        created_at: iso(50),
+      },
+      {
+        id: "51111111-0000-4000-8000-000000000605",
+        admissions_number: "SIM-ADM-005",
+        full_name: "Siswa Contoh Baru Lima",
+        date_of_birth: "2015-06-14",
+        school_id: "51111111-0000-4000-8000-0000000002c1",
+        guardian_id: DEV_IDS.guardian,
+        home_address: "Alamat Contoh Lima, Dammam",
+        home_latitude: 26.4082,
+        home_longitude: 50.0981,
+        pickup_notes: "Titik jemput contoh tambahan lima.",
+        service_status: "active",
+        service_status_changed_at: iso(20),
+        created_at: iso(35),
+      },
+      {
+        id: "51111111-0000-4000-8000-000000000606",
+        admissions_number: "SIM-ADM-006",
+        full_name: "Siswa Contoh Baru Enam",
+        date_of_birth: "2016-01-23",
+        school_id: "51111111-0000-4000-8000-0000000002c1",
+        guardian_id: DEV_IDS.guardian,
+        home_address: "Alamat Contoh Enam, Dammam",
+        home_latitude: 26.3978,
+        home_longitude: 50.0874,
+        pickup_notes: "Titik jemput contoh tambahan enam.",
+        service_status: "active",
+        service_status_changed_at: iso(20),
+        created_at: iso(34),
+      },
+      {
+        id: "51111111-0000-4000-8000-000000000607",
+        admissions_number: "SIM-ADM-007",
+        full_name: "Siswa Contoh Baru Tujuh",
+        date_of_birth: "2014-11-09",
+        school_id: "51111111-0000-4000-8000-0000000002c1",
+        guardian_id: DEV_IDS.guardian,
+        home_address: "Alamat Contoh Tujuh, Dammam",
+        home_latitude: 26.3894,
+        home_longitude: 50.0946,
+        pickup_notes: "Titik jemput contoh tambahan tujuh.",
+        service_status: "active",
+        service_status_changed_at: iso(20),
+        created_at: iso(33),
+      },
     ],
 
     student_service_status_history: [
@@ -296,7 +359,7 @@ export function createSimulationTables(): SimTables {
         new_status: "active",
         reason: "Contoh aktivasi layanan siswa pada data simulasi.",
         changed_at: iso(30),
-        actor_profile_id: admin.userId,
+        actor_profile_id: operator.userId,
       },
       {
         id: 2,
@@ -305,7 +368,7 @@ export function createSimulationTables(): SimTables {
         new_status: "paused",
         reason: "Contoh penonaktifan layanan untuk menguji tampilan status.",
         changed_at: iso(3),
-        actor_profile_id: admin.userId,
+        actor_profile_id: operator.userId,
       },
     ],
 
@@ -314,6 +377,8 @@ export function createSimulationTables(): SimTables {
         id: "51111111-0000-4000-8000-000000000711",
         route_name: "Rute Contoh Pagi",
         school_name: "Sekolah Contoh Nusantara",
+        school_id: "51111111-0000-4000-8000-0000000002c1",
+        project_area_id: DEV_PROJECT_AREA.id,
         direction: "morning",
         active: true,
         approved_at: iso(7),
@@ -323,6 +388,8 @@ export function createSimulationTables(): SimTables {
         id: "51111111-0000-4000-8000-000000000712",
         route_name: "Rute Contoh Sore",
         school_name: "Sekolah Contoh Nusantara",
+        school_id: "51111111-0000-4000-8000-0000000002c1",
+        project_area_id: DEV_PROJECT_AREA.id,
         direction: "afternoon",
         active: true,
         approved_at: iso(7),
@@ -362,9 +429,39 @@ export function createSimulationTables(): SimTables {
         created_at: iso(20),
       },
       {
-        id: "51111111-0000-4000-8000-000000000814",
+        id: "51111111-0000-4000-8000-000000000818",
         route_id: "51111111-0000-4000-8000-000000000711",
         stop_order: 4,
+        stop_name: "Komplek Contoh Barat",
+        latitude: 26.4061,
+        longitude: 50.0832,
+        is_school: false,
+        created_at: iso(20),
+      },
+      {
+        id: "51111111-0000-4000-8000-000000000819",
+        route_id: "51111111-0000-4000-8000-000000000711",
+        stop_order: 5,
+        stop_name: "Jalan Contoh Tengah",
+        latitude: 26.3955,
+        longitude: 50.0794,
+        is_school: false,
+        created_at: iso(20),
+      },
+      {
+        id: "51111111-0000-4000-8000-000000000820",
+        route_id: "51111111-0000-4000-8000-000000000711",
+        stop_order: 6,
+        stop_name: "Taman Contoh Barat",
+        latitude: 26.3868,
+        longitude: 50.0886,
+        is_school: false,
+        created_at: iso(20),
+      },
+      {
+        id: "51111111-0000-4000-8000-000000000814",
+        route_id: "51111111-0000-4000-8000-000000000711",
+        stop_order: 7,
         stop_name: "Sekolah Contoh Nusantara",
         latitude: 26.4208,
         longitude: 50.0812,
@@ -436,6 +533,30 @@ export function createSimulationTables(): SimTables {
         direction: "morning",
         active: false,
       },
+      {
+        id: "51111111-0000-4000-8000-000000000915",
+        student_id: "51111111-0000-4000-8000-000000000605",
+        route_id: "51111111-0000-4000-8000-000000000711",
+        stop_id: "51111111-0000-4000-8000-000000000818",
+        direction: "morning",
+        active: true,
+      },
+      {
+        id: "51111111-0000-4000-8000-000000000916",
+        student_id: "51111111-0000-4000-8000-000000000606",
+        route_id: "51111111-0000-4000-8000-000000000711",
+        stop_id: "51111111-0000-4000-8000-000000000819",
+        direction: "morning",
+        active: true,
+      },
+      {
+        id: "51111111-0000-4000-8000-000000000917",
+        student_id: "51111111-0000-4000-8000-000000000607",
+        route_id: "51111111-0000-4000-8000-000000000711",
+        stop_id: "51111111-0000-4000-8000-000000000820",
+        direction: "morning",
+        active: true,
+      },
     ],
 
     trip_assignments: [
@@ -445,7 +566,7 @@ export function createSimulationTables(): SimTables {
         driver_id: DEV_DRIVER_RECORD.id,
         bus_id: "51111111-0000-4000-8000-0000000003d1",
         service_date: today(),
-        assigned_by: admin.userId,
+        assigned_by: operator.userId,
         created_at: iso(0, 3),
       },
       {
@@ -454,7 +575,7 @@ export function createSimulationTables(): SimTables {
         driver_id: "51111111-0000-4000-8000-0000000004e2",
         bus_id: "51111111-0000-4000-8000-0000000003d3",
         service_date: today(),
-        assigned_by: admin.userId,
+        assigned_by: operator.userId,
         created_at: iso(0, 3),
       },
       {
@@ -463,7 +584,7 @@ export function createSimulationTables(): SimTables {
         driver_id: DEV_DRIVER_RECORD.id,
         bus_id: "51111111-0000-4000-8000-0000000003d1",
         service_date: yesterday(),
-        assigned_by: admin.userId,
+        assigned_by: operator.userId,
         created_at: iso(1),
       },
     ],
@@ -552,7 +673,7 @@ export function createSimulationTables(): SimTables {
     audit_logs: [
       {
         id: 1,
-        actor_profile_id: admin.userId,
+        actor_profile_id: operator.userId,
         action: "insert",
         entity_type: "students",
         entity_id: "51111111-0000-4000-8000-000000000601",
@@ -561,7 +682,7 @@ export function createSimulationTables(): SimTables {
       },
       {
         id: 2,
-        actor_profile_id: admin.userId,
+        actor_profile_id: operator.userId,
         action: "update",
         entity_type: "students",
         entity_id: "51111111-0000-4000-8000-000000000603",

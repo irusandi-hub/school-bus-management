@@ -25,20 +25,39 @@ export async function saveRoute(_prev: ActionState, formData: FormData): Promise
 
   const id = readText(formData, "id");
   const routeName = readText(formData, "route_name");
-  const schoolName = readText(formData, "school_name");
+  const schoolId = readText(formData, "school_id");
   const direction = readText(formData, "direction");
   const active = readCheckbox(formData, "active");
 
   const errors: FieldErrors = {};
   if (routeName.length < 3 || routeName.length > 120) errors.route_name = "Nama rute harus 3–120 karakter.";
-  if (!schoolName) errors.school_name = "Sekolah wajib dipilih.";
+  if (!schoolId) errors.school_id = "Sekolah wajib dipilih.";
   if (direction !== "morning" && direction !== "afternoon") errors.direction = "Arah perjalanan tidak dikenali.";
 
   if (Object.keys(errors).length > 0) {
     return failure("Periksa kembali isian yang ditandai.", errors);
   }
 
-  const payload = { route_name: routeName, school_name: schoolName, direction, active };
+  const { data: school } = await ctx.supabase
+    .from("schools")
+    .select("name, project_area_id, active")
+    .eq("id", schoolId)
+    .maybeSingle();
+
+  if (!school) return failure("Sekolah tidak ditemukan. Muat ulang halaman lalu pilih kembali.");
+  if (!school.active) return failure("Sekolah nonaktif tidak dapat dipakai untuk rute baru.");
+  if (!school.project_area_id) {
+    return failure("Sekolah belum memiliki Area Operasional. Lengkapi data sekolah terlebih dahulu.");
+  }
+
+  const payload = {
+    route_name: routeName,
+    school_id: schoolId,
+    school_name: school.name as string,
+    project_area_id: school.project_area_id as string,
+    direction,
+    active,
+  };
   const { error } = id
     ? await ctx.supabase.from("routes").update(payload).eq("id", id)
     : await ctx.supabase.from("routes").insert(payload);
@@ -120,6 +139,21 @@ export async function assignStudentToStop(formData: FormData) {
     .maybeSingle();
 
   if (!stop) backTo(target, "Titik jemput tidak ditemukan.", "error");
+
+  // Friendly pre-check; the database trigger remains the final authority.
+  const [{ data: routeArea }, { data: studentArea }] = await Promise.all([
+    ctx.supabase.from("routes").select("project_area_id").eq("id", stop.route_id).maybeSingle(),
+    ctx.supabase
+      .from("students")
+      .select("schools(project_area_id)")
+      .eq("id", studentId)
+      .maybeSingle(),
+  ]);
+  const studentAreaId = (studentArea as unknown as { schools: { project_area_id: string | null } | null } | null)
+    ?.schools?.project_area_id;
+  if (!routeArea?.project_area_id || !studentAreaId || routeArea.project_area_id !== studentAreaId) {
+    backTo(target, "Siswa dan rute berasal dari Area Operasional berbeda.", "error");
+  }
 
   const { data: existing } = await ctx.supabase
     .from("student_route_stops")

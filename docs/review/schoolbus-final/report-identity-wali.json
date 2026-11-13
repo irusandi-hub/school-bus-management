@@ -1,0 +1,38 @@
+[
+  {
+    "name": "wali",
+    "path": "/wali",
+    "widths": [
+      {
+        "width": 360,
+        "http": 200,
+        "finalPath": "/wali",
+        "text": "SchoolBusPortal Orang Tua/Wali",
+        "logoVisible": true,
+        "mark": "32x32",
+        "wordW": 91.1,
+        "wordFont": "17px",
+        "wordColor": "rgb(15, 27, 61)",
+        "viewBox": "0 0 48 48",
+        "hamburger": false,
+        "accountAvatar": false,
+        "overflow": false
+      },
+      {
+        "width": 1440,
+        "http": 200,
+        "finalPath": "/wali",
+        "text": "SchoolBusPortal Orang Tua/Wali",
+        "logoVisible": true,
+        "mark": "32x32",
+        "wordW": 106.1,
+        "wordFont": "17px",
+        "wordColor": "rgb(15, 27, 61)",
+        "viewBox": "0 0 48 48",
+        "hamburger": false,
+        "accountAvatar": false,
+        "overflow": false
+      }
+    ]
+  }
+]

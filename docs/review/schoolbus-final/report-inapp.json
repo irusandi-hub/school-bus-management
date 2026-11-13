@@ -1,0 +1,75 @@
+{
+  "nav": {
+    "items": [
+      {
+        "text": "Ringkasan",
+        "tag": "A",
+        "w": 69.6,
+        "h": 52,
+        "scrollW": 70,
+        "clientW": 70,
+        "href": "/operator"
+      },
+      {
+        "text": "Siswa",
+        "tag": "A",
+        "w": 69.6,
+        "h": 52,
+        "scrollW": 70,
+        "clientW": 70,
+        "href": "/admin/siswa"
+      },
+      {
+        "text": "Tugas",
+        "tag": "A",
+        "w": 69.6,
+        "h": 52,
+        "scrollW": 70,
+        "clientW": 70,
+        "href": "/admin/penugasan"
+      },
+      {
+        "text": "Perjalanan",
+        "tag": "A",
+        "w": 69.6,
+        "h": 52,
+        "scrollW": 70,
+        "clientW": 70,
+        "href": "/admin/perjalanan"
+      },
+      {
+        "text": "Menu",
+        "tag": "BUTTON",
+        "w": 69.6,
+        "h": 52,
+        "scrollW": 70,
+        "clientW": 70,
+        "href": null
+      }
+    ],
+    "rect": {
+      "x": 0,
+      "y": 835,
+      "w": 360,
+      "h": 65
+    }
+  },
+  "sheet": {
+    "rect": {
+      "x": -14,
+      "y": 0,
+      "w": 309.59375,
+      "h": 900
+    },
+    "bodyClientH": 608,
+    "bodyScrollH": 608,
+    "canScroll": "auto",
+    "links": 11,
+    "lastLinkBottom": 655.4,
+    "viewportH": 900,
+    "overflow": false
+  },
+  "afterEscape": {
+    "sheetGone": true
+  }
+}

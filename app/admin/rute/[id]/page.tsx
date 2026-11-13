@@ -6,6 +6,7 @@ import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
 import { Breadcrumbs, ConfigNotice, EmptyRow, Notice, PageHeader, Pill } from "@/components/admin/ui";
 import { adminReadContext } from "@/lib/admin/read";
 import { firstParam, noticeFromParams } from "@/lib/admin/query";
+import { getProjectAreaContext } from "@/lib/project-areas/context";
 import type { RouteRow, RouteStopRow, StudentRouteStopRow } from "@/lib/types";
 import { routeDirectionLabel } from "@/lib/validation";
 import { assignStudentToStop, removeStudentFromRoute, saveStop } from "../actions";
@@ -24,11 +25,13 @@ export default async function RouteDetailPage({
   const supabase = await adminReadContext();
   if (!supabase) return <ConfigNotice />;
 
-  const { data: routeData } = await supabase
+  const areaContext = await getProjectAreaContext(supabase);
+  let routeQuery = supabase
     .from("routes")
-    .select("id, route_name, school_name, direction, active, approved_at")
-    .eq("id", id)
-    .maybeSingle();
+    .select("id, route_name, school_name, school_id, project_area_id, direction, active, approved_at, schools(name), project_areas(name)")
+    .eq("id", id);
+  if (areaContext.selectedId) routeQuery = routeQuery.eq("project_area_id", areaContext.selectedId);
+  const { data: routeData } = await routeQuery.maybeSingle();
 
   const route = routeData as unknown as RouteRow | null;
   if (!route) notFound();
@@ -42,7 +45,9 @@ export default async function RouteDetailPage({
       .select("id, route_id, stop_order, stop_name, latitude, longitude, is_school")
       .eq("route_id", id)
       .order("stop_order", { ascending: true }),
-    supabase.from("schools").select("id, name").eq("name", route.school_name).limit(1).maybeSingle(),
+    route.school_id
+      ? supabase.from("schools").select("id, name").eq("id", route.school_id).maybeSingle()
+      : supabase.from("schools").select("id, name").eq("name", route.school_name).limit(1).maybeSingle(),
     supabase
       .from("student_route_stops")
       .select(
@@ -122,7 +127,7 @@ export default async function RouteDetailPage({
 
       <PageHeader
         title={route.route_name}
-        description={`${route.school_name} · ${routeDirectionLabel(route.direction)} · ${stops.length} titik`}
+        description={`${route.project_areas?.name ?? "Area Operasional"} · ${route.schools?.name ?? route.school_name} · ${routeDirectionLabel(route.direction)} · ${stops.length} titik`}
         actions={<Pill tone={route.active ? "success" : "neutral"}>{route.active ? "Rute aktif" : "Rute nonaktif"}</Pill>}
       />
 
