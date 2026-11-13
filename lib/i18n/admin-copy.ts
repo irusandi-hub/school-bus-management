@@ -746,6 +746,22 @@ const copy: Record<string, Record<Locale, string>> = {
   "Ditutup": { id: "Ditutup", en: "Closed", ar: "تم الإنهاء" },
   "Status siswa": { id: "Status siswa", en: "Student status", ar: "حالة الطالب" },
   "Tugas hari ini belum dapat dimuat. Coba lagi.": { id: "Tugas hari ini belum dapat dimuat. Coba lagi.", en: "Today's tasks could not be loaded. Try again.", ar: "تعذر تحميل مهام اليوم. حاول مرة أخرى." },
+  "Daftar siswa belum dapat dimuat. Coba lagi.": { id: "Daftar siswa belum dapat dimuat. Coba lagi.", en: "Student list could not be loaded. Try again.", ar: "تعذر تحميل قائمة الطلاب. حاول مرة أخرى." },
+  "Daftar sekolah belum dapat dimuat. Coba lagi.": { id: "Daftar sekolah belum dapat dimuat. Coba lagi.", en: "School list could not be loaded. Try again.", ar: "تعذر تحميل قائمة المدارس. حاول مرة أخرى." },
+  "Daftar rute belum dapat dimuat. Coba lagi.": { id: "Daftar rute belum dapat dimuat. Coba lagi.", en: "Route list could not be loaded. Try again.", ar: "تعذر تحميل قائمة المسارات. حاول مرة أخرى." },
+  "Daftar penugasan belum dapat dimuat. Coba lagi.": { id: "Daftar penugasan belum dapat dimuat. Coba lagi.", en: "Assignment list could not be loaded. Try again.", ar: "تعذر تحميل قائمة التكليفات. حاول مرة أخرى." },
+  "Daftar wali belum dapat dimuat. Coba lagi.": { id: "Daftar wali belum dapat dimuat. Coba lagi.", en: "Guardian list could not be loaded. Try again.", ar: "تعذر تحميل قائمة أولياء الأمور. حاول مرة أخرى." },
+  "Daftar bus belum dapat dimuat. Coba lagi.": { id: "Daftar bus belum dapat dimuat. Coba lagi.", en: "Bus list could not be loaded. Try again.", ar: "تعذر تحميل قائمة الحافلات. حاول مرة أخرى." },
+  "Daftar pengemudi belum dapat dimuat. Coba lagi.": { id: "Daftar pengemudi belum dapat dimuat. Coba lagi.", en: "Driver list could not be loaded. Try again.", ar: "تعذر تحميل قائمة السائقين. حاول مرة أخرى." },
+  "Daftar Area Operasional belum dapat dimuat. Coba lagi.": { id: "Daftar Area Operasional belum dapat dimuat. Coba lagi.", en: "Operational area list could not be loaded. Try again.", ar: "تعذر تحميل قائمة مناطق التشغيل. حاول مرة أخرى." },
+  "Jejak audit belum dapat dimuat. Coba lagi.": { id: "Jejak audit belum dapat dimuat. Coba lagi.", en: "Audit log could not be loaded. Try again.", ar: "تعذر تحميل سجل التدقيق. حاول مرة أخرى." },
+  "Tambahkan sekolah terlebih dahulu": { id: "Tambahkan sekolah terlebih dahulu", en: "Add a school first", ar: "أضف مدرسة أولاً" },
+  "Daftarkan email wali terlebih dahulu": { id: "Daftarkan email wali terlebih dahulu", en: "Register a guardian email first", ar: "سجل بريد ولي الأمر أولاً" },
+  "Semua sekolah": { id: "Semua sekolah", en: "All schools", ar: "جميع المدارس" },
+  "Nama, sekolah tujuan, dan arah perjalanan": { id: "Nama, sekolah tujuan, dan arah perjalanan", en: "Name, destination school and trip direction", ar: "الاسم والمدرسة المقصودة واتجاه الرحلة" },
+  "Satu pengemudi dan satu bus tidak dapat dipakai dua kali pada tanggal yang sama": { id: "Satu pengemudi dan satu bus tidak dapat dipakai dua kali pada tanggal yang sama", en: "A driver and a bus cannot be assigned twice on the same date", ar: "لا يمكن تعيين السائق أو الحافلة مرتين في التاريخ نفسه" },
+  "Belum ada relasi siswa": { id: "Belum ada relasi siswa", en: "No linked students yet", ar: "لا يوجد طلاب مرتبطون بعد" },
+  "Unduh CSV": { id: "Unduh CSV", en: "Download CSV", ar: "تنزيل CSV" },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
