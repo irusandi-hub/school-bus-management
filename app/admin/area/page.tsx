@@ -133,7 +133,7 @@ export default async function ProjectAreaPage({
             filters={
               <select name="status" defaultValue={status} aria-label="Filter status Area Operasional">
                 <LocalizedOption value="" label="Semua status" />
-                <option value="aktif">Aktif</option>
+                <LocalizedOption value="aktif" label="Aktif" />
                 <LocalizedOption value="nonaktif" label="Nonaktif" />
               </select>
             }
