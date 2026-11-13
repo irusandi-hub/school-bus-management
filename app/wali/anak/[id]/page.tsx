@@ -160,7 +160,7 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
               <ul className="pickup-list">
                 {child.placements.map((placement) => (
                   <li key={placement.id}>
-                    <span>{routeDirectionLabel(placement.direction)}</span>
+                    <span>{c(routeDirectionLabel(placement.direction))}</span>
                     <div>
                       <strong>
                         {placement.stopOrder}. {placement.stopName}
@@ -203,14 +203,14 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
             {child.todayTrips.map((trip) => (
               <li key={`${trip.routeId}-${trip.direction}`}>
                 <div>
-                  <strong>{routeDirectionLabel(trip.direction)}</strong>
+                  <strong>{c(routeDirectionLabel(trip.direction))}</strong>
                   <small>{trip.busCode ? `${c("Bus")} ${trip.busCode}` : c("Bus belum ditetapkan")}</small>
                 </div>
                 <Pill tone={trip.status === "in_progress" ? "info" : tripTone(trip.status)}>
-                  {trip.status === "scheduled" ? c("Belum dimulai") : c(tripStatusLabel(trip.status))}
+                  {trip.status === "scheduled" ? c("Belum dimulai") : c(c(tripStatusLabel(trip.status)))}
                 </Pill>
                 <small>
-                  Mulai {formatLocalTime(trip.startedAt)} · Tiba {formatTime(trip.arrivedAt)}
+                  {c("Mulai")} {formatLocalTime(trip.startedAt)} · {c("Tiba")} {formatLocalTime(trip.arrivedAt)}
                 </small>
               </li>
             ))}
@@ -258,11 +258,11 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
                         <small>{c(trip.direction === "morning" ? "Pagi" : "Sore")}</small>
                       </td>
                       <td data-label="Status">
-                        <Pill tone={tripTone(trip.status)}>{tripStatusLabel(trip.status)}</Pill>
+                        <Pill tone={tripTone(trip.status)}>{c(tripStatusLabel(trip.status))}</Pill>
                       </td>
                       <td data-label="Waktu">
-                        <small>Mulai {formatTime(trip.startedAt)}</small>
-                        <small>Tiba {formatTime(trip.arrivedAt)}</small>
+                        <small>Mulai {formatLocalTime(trip.startedAt)}</small>
+                        <small>Tiba {formatLocalTime(trip.arrivedAt)}</small>
                       </td>
                     </tr>
                   ))
