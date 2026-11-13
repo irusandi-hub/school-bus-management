@@ -8,7 +8,7 @@ import type { Locale } from "@/lib/i18n/config";
 import { translate } from "@/lib/i18n/messages";
 import type { ChildLiveVideoView } from "@/lib/guardian/live-view";
 import type { JourneyStatus, JourneyTone } from "@/lib/guardian/journey";
-import { formatTime } from "@/lib/validation";
+
 
 type DirectionStatus = {
   direction: string;
@@ -48,6 +48,7 @@ export function ChildOverviewCard({
   const student = child.student;
   const t = (key: Parameters<typeof translate>[1]) => translate(locale, key);
   const directionLabel = (value: string) => value === "morning" ? t("morningDirection") : value === "afternoon" ? t("afternoonDirection") : t("directionNotRecorded");
+  const formatTime = (value: string) => new Intl.DateTimeFormat(locale === "ar" ? "ar-SA" : locale === "en" ? "en-GB" : "id-ID", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Riyadh" }).format(new Date(value));
   const school = student.schools?.name ?? t("schoolNotSet");
   const bus = trip?.busCode ? `${t("busLabel")} ${trip.busCode}` : t("busNotSet");
   const busDetail = trip?.plateNumber
