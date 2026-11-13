@@ -32,6 +32,7 @@ export type StudentTripState = {
 export type TripDirection = "pickup" | "dropoff";
 
 export type ProgressStudent = {
+  admissionsNumber?: string | null;
   id: string;
   name: string;
   stopId: string;
@@ -64,6 +65,7 @@ export type TripProgress = {
 };
 
 export type NextStopStudent = {
+  admissionsNumber?: string | null;
   id: string;
   name: string;
   status: string | null;
@@ -288,6 +290,7 @@ export function buildNextStop(input: {
         students: pending.map((student) => ({
           id: student.id,
           name: student.name,
+          admissionsNumber: student.admissionsNumber ?? null,
           status: student.status,
         })),
         count: pending.length,

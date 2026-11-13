@@ -93,6 +93,7 @@ export function StudentStatusControls({
 
   useEffect(() => {
     if (state.status !== "success" || !state.eventType) return;
+    window.dispatchEvent(new Event("schoolbus:student-saved"));
     if (state.eventType === "issue") {
       setIssueNote(state.notes ?? "Kendala tercatat.");
       return;

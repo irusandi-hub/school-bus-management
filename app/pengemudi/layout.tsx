@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ConfigNotice } from "@/components/admin/ui";
 import { BrandLogo } from "@/components/brand-logo";
 import { BottomNav } from "@/components/ui/BottomNav";
-import { DriverProfileMenu } from "@/components/driver/DriverProfileMenu";
+import { signOutAction } from "@/lib/auth-actions";
 import { driverBottomNav } from "@/components/ui/nav-config";
 import { requireDriver } from "@/lib/auth";
 
@@ -19,7 +19,8 @@ export default async function DriverLayout({ children }: { children: React.React
     <div className="driver-app">
       <header className="driver-head">
         <BrandLogo href="/pengemudi" subtitle="Area Pengemudi" size="sm" />
-        <DriverProfileMenu name={name} />
+        <span>{name}</span>
+        <form action={signOutAction}><button className="btn btn-ghost btn-sm" type="submit">Keluar</button></form>
       </header>
 
       <main className="driver-main">{children}</main>

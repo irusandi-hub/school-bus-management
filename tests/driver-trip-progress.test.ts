@@ -353,3 +353,12 @@ describe("status terbaru dan event berulang", () => {
     assert.equal(states.get("s1")?.status, "dropped_off");
   });
 });
+
+it("next pickup carries admission number and advances in stored route order", () => {
+  const students = studentsWith({1: {admissionsNumber:"ADM001"}, 4: {admissionsNumber:"ADM004"}});
+  const next = buildNextStop({stops, students, direction:"morning", tripStatus:"in_progress"});
+  assert.equal(next.target?.students[0].admissionsNumber,"ADM001");
+  const advanced = buildNextStop({stops, students:students.map(s=>s.stopOrder===1?{...s,status:"boarded"}:s), direction:"morning",tripStatus:"in_progress"});
+  assert.equal(advanced.target?.order,2);
+  assert.equal(advanced.target?.students[0].admissionsNumber,"ADM004");
+});

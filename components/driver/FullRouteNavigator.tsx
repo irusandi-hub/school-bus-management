@@ -40,12 +40,12 @@ export function FullRouteNavigator({
         ? "Belum ada siswa di rute ini"
         : "Semua pemberhentian selesai";
   const noTargetDetail = nextStop.closedReason === "cancelled"
-    ? "Status perjalanan ini tidak dapat dilanjutkan."
+    ? "Perjalanan dibatalkan."
     : nextStop.closedReason === "completed_early"
       ? `${nextStop.waitingStudents} siswa masih menunggu tindakan pada perjalanan ini.`
       : hasStudents
-        ? "Tidak ada siswa yang masih menunggu tindakan."
-        : "Operator Utama belum menempatkan siswa pada titik rute ini.";
+        ? "Tidak ada siswa menunggu."
+        : "Belum ada siswa pada rute.";
   const skipReasons = Object.fromEntries(
     route.stops
       .filter((entry) => entry.skipReason)
@@ -123,30 +123,8 @@ export function FullRouteNavigator({
         {nextStop.target ? (
           <>
             <div className="ops-next-heading">
-              <strong>{nextStop.target.students.map((student) => student.name).join(", ")}</strong>
-              <span>
-                {nextStop.target.count} siswa · urutan {nextStop.target.order}
-              </span>
+              <strong>{nextStop.target.students.map((student) => `${student.name} • ${student.admissionsNumber ?? "Admission belum tercatat"}`).join(", ")}</strong>
             </div>
-            <p className="ops-next-place" title={nextStop.target.addresses.join(" · ")}>
-              <Icon name="pin" size={12} />
-              {nextStop.target.name}
-              {nextStop.target.addresses.length > 0 && (
-                <span>
-                  {" "}
-                  · {nextStop.target.addresses[0]}
-                  {nextStop.target.addresses.length > 1
-                    ? ` +${nextStop.target.addresses.length - 1} alamat`
-                    : ""}
-                </span>
-              )}
-            </p>
-            <p className="ops-next-state">
-              <span>{nextStop.target.statusLabel}</span>
-              <span className="ops-next-gps">
-                <Icon name="gpsOff" size={11} /> Jarak belum tersedia
-              </span>
-            </p>
           </>
         ) : (
           <div className="ops-next-empty">

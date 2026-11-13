@@ -80,7 +80,7 @@ export async function startTrip(formData: FormData) {
   const assignment = await ownedAssignment(ctx, assignmentId);
   if (!assignment) backTo("/pengemudi", "Penugasan tidak ditemukan untuk akun Anda.", "error");
 
-  const { data: existing } = await ctx.supabase
+  const { data: existing, error: sessionError } = await ctx.supabase
     .from("trips")
     .select("id, status")
     .eq("assignment_id", assignmentId)
@@ -88,17 +88,16 @@ export async function startTrip(formData: FormData) {
     .limit(1)
     .maybeSingle();
 
+  if (sessionError) backTo(target, "Status perjalanan belum dapat diperiksa. Coba lagi.", "error");
+
   if (existing?.status === "in_progress") {
     backTo(target, "Perjalanan untuk tugas ini sudah berjalan.", "error");
-  }
-  if (existing?.status === "completed") {
-    backTo(target, "Perjalanan untuk tugas ini sudah selesai dan tidak dapat dimulai ulang.", "error");
   }
 
   const startedAt = new Date().toISOString();
 
   // Perjalanan terjadwal yang sudah dibuat saat penjadwalan dilanjutkan, bukan diduplikasi.
-  const { error } = existing
+  const { error } = existing?.status === "scheduled"
     ? await ctx.supabase
         .from("trips")
         .update({ status: "in_progress", started_at: startedAt })
@@ -114,7 +113,7 @@ export async function startTrip(formData: FormData) {
 
   revalidatePath("/pengemudi");
   revalidatePath("/pengemudi/riwayat");
-  backTo(target, "Perjalanan dimulai. Catat kehadiran siswa selama perjalanan.");
+  backTo(target, "Perjalanan dimulai.");
 }
 
 export async function confirmArrival(formData: FormData) {

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { orderDriverSessions } from "@/lib/driver/session-selection";
 import type { Metadata } from "next";
 import { ConfigNotice, EmptyRow, EmptyState, Notice, Pill, TripStatusPill } from "@/components/admin/ui";
 import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
@@ -89,11 +90,15 @@ export default async function DriverOperationsPage({
     .eq("service_date", date)
     .order("service_date", { ascending: true });
 
-  const assignments = (data ?? []) as unknown as AssignmentView[];
+  // Embedded trips have no implicit ordering. Active sessions first, then newest history.
+  const assignments = ((data ?? []) as unknown as AssignmentView[]).map((assignment) => ({
+    ...assignment,
+    trips: orderDriverSessions(assignment.trips ?? []),
+  }));
   const notice = noticeFromParams(query);
   const requestedId = firstParam(query.tugas);
 
-  // Tugas selesai tidak pernah dipilih lagi; datanya tetap ada di riwayat.
+  // Tugas terjadwal diutamakan; tugas selesai tetap dapat memulai sesi baru.
   const completedToday = assignments.some(isCompletedAssignment);
   const selectableAssignments = assignments.filter((assignment) => !isCompletedAssignment(assignment));
   const selected = selectDriverAssignment(assignments, requestedId);
@@ -117,8 +122,8 @@ export default async function DriverOperationsPage({
               <strong>{access.driver.full_name || "Pengemudi"}</strong>
               <small>ID {access.driver.id.slice(0, 8).toUpperCase()} · Akun aktif</small>
             </div>
-            <nav className="driver-tabs" aria-label="Navigasi Pengemudi">
-              <Link href="/pengemudi">Dashboard</Link>
+            <nav className="portal-nav compact-driver-tabs" aria-label="Navigasi Pengemudi">
+              <Link href="/pengemudi">Data Pengemudi</Link>
               <Link href="/pengemudi?tab=riwayat" aria-current="page">Riwayat</Link>
             </nav>
           </div>
@@ -138,7 +143,7 @@ export default async function DriverOperationsPage({
                 {history.length === 0 ? (
                   <EmptyRow colSpan={5} title="Belum ada riwayat perjalanan" detail="Riwayat muncul setelah perjalanan dijalankan dan diselesaikan." />
                 ) : history.map((item) => (
-                  <tr key={item.id}>
+                  <tr key={item.id} data-trip-id={item.id}>
                     <td data-label="Tanggal">{formatDate(item.trip_assignments?.service_date ?? item.created_at)}</td>
                     <td data-label="Rute">
                       <strong>{item.trip_assignments?.routes?.route_name ?? "Rute"}</strong>
@@ -173,8 +178,8 @@ export default async function DriverOperationsPage({
               <strong>{access.driver.full_name || "Pengemudi"}</strong>
               <small>ID {access.driver.id.slice(0, 8).toUpperCase()} · Akun aktif</small>
             </div>
-            <nav className="driver-tabs" aria-label="Navigasi Pengemudi">
-              <Link href="/pengemudi" aria-current="page">Dashboard</Link>
+            <nav className="portal-nav compact-driver-tabs" aria-label="Navigasi Pengemudi">
+              <Link href="/pengemudi" aria-current="page">Data Pengemudi</Link>
               <Link href="/pengemudi?tab=riwayat">Riwayat</Link>
             </nav>
           </div>
@@ -305,6 +310,7 @@ export default async function DriverOperationsPage({
     const state = tripStates.get(entry.student_id);
     return {
       id: entry.student_id,
+      admissionsNumber: entry.students?.admissions_number ?? null,
       name: entry.students?.full_name ?? "Siswa",
       stopId: entry.stop_id,
       stopOrder: entry.route_stops?.stop_order ?? 0,
@@ -347,7 +353,7 @@ export default async function DriverOperationsPage({
   // GPS follows the trip status only; the roster, passenger events, and camera do not gate it.
   const inProgress = shouldTrackTripLocation(trip?.status);
   const completed = trip?.status === "completed";
-  const canStart = !trip || trip.status === "scheduled";
+  const canStart = !trip || trip.status === "scheduled" || trip.status === "completed" || trip.status === "cancelled";
   const canEndTrip = Boolean(trip?.arrived_at) && unrecorded.length === 0 && !rosterResult.error && !eventsResult.error;
   const issueNotes = studentRows.filter((row) => row.issueNote);
   const cameraPublishingEnabled = process.env.NEXT_PUBLIC_TRIP_CAMERA_ENABLED === "1";
@@ -463,7 +469,7 @@ export default async function DriverOperationsPage({
           <div>
             <h2 className="panel-title">Siswa &amp; tindakan</h2>
             <div className="panel-subtitle">
-              Urutan mengikuti rute yang {plan.started ? "terkunci" : "ditetapkan sistem"} · satu tombol per siswa
+              Urutan rute {plan.started ? "terkunci" : "tersimpan"}
             </div>
           </div>
           <Pill tone={studentRows.length > 0 ? "info" : "warning"}>{studentRows.length} siswa</Pill>
@@ -532,9 +538,7 @@ export default async function DriverOperationsPage({
       <details className="ops-side-notes">
         <summary>Catatan navigasi, GPS, dan kamera</summary>
         <p>
-          Navigasi membuka satu rute berisi titik yang tersimpan. Selama perjalanan aktif, posisi HP pengemudi dibagikan
-          ke wali yang berhak dan hanya lokasi terbaru yang disimpan. Siaran kamera mengikuti status perjalanan pada
-          panel kamera, dan kembali dari aplikasi peta tidak mengubah status siswa atau menyelesaikan titik pemberhentian.
+          GPS HP dibagikan ke wali selama perjalanan. Kamera mengikuti status sesi. Membuka peta tidak mengubah status siswa.
         </p>
       </details>
     </div>

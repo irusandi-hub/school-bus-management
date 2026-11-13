@@ -1,10 +1,8 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { TripStatusPill } from "@/components/admin/ui";
 import { BrandLogo } from "@/components/brand-logo";
-import { DriverProfileMenu } from "./DriverProfileMenu";
+import { signOutAction } from "@/lib/auth-actions";
 import type { TripProgress } from "@/lib/driver/trip-progress";
-import { formatTime, routeDirectionLabel } from "@/lib/validation";
 
 /** Dua baris operasional; detail sekunder di profil, sumber progres dan CTA tetap. */
 export function DriverOpsHeader({
@@ -47,8 +45,6 @@ export function DriverOpsHeader({
   const shortDate = Number.isNaN(date.getTime()) ? serviceDate : new Intl.DateTimeFormat("id-ID", {
     day: "numeric", month: "short", timeZone: "UTC",
   }).format(date);
-  const started = startedAt ? `Mulai ${formatTime(startedAt)}` : "Belum dimulai";
-  const ended = completedAt ? ` · Selesai ${formatTime(completedAt)}` : arrivedAt ? ` · Tiba ${formatTime(arrivedAt)}` : "";
 
   return (
     <section className="ops-head" aria-label="Profil pengemudi, tugas, dan progres perjalanan">
@@ -58,22 +54,17 @@ export function DriverOpsHeader({
         <h1 className="compact-route" title={`${routeName} • ${shortDate}`}>
           <span>{routeName || "Rute"}</span><time dateTime={serviceDate}> • {shortDate}</time>
         </h1>
-        <DriverProfileMenu name={driverName}>
-          <p>ID {shortId} • {fleetCode || "Bus belum ditetapkan"}</p>
-          <p>{plateNumber || "Plat belum tercatat"} • {capacity} kursi</p>
-          <p>{schoolName || "Sekolah belum tercatat"} • {routeDirectionLabel(direction)}</p>
-          <TripStatusPill status={tripStatus} />
-          <p>{started}{ended}</p>
-          <p>{progress.processed}/{progress.total} diproses • {progress.needsAction} perlu tindakan</p>
-          <p>{progress.absent} tidak ikut • {progress.noShow} tidak hadir • {progress.notRiding} tidak ikut bus</p>
-          <p>Di Bus: <b>{progress.onboard}</b></p>
-          <nav className="driver-tabs" aria-label="Navigasi Pengemudi">
-            <Link href="/pengemudi" aria-current={activeTab === "dashboard" ? "page" : undefined}>Dashboard</Link>
-            <Link href="/pengemudi?tab=riwayat" aria-current={activeTab === "riwayat" ? "page" : undefined}>Riwayat</Link>
-          </nav>
-        </DriverProfileMenu>
+        <div className="compact-driver-identity">
+          <strong>{driverName || "Pengemudi"}</strong>
+          <span>ID {shortId} • {plateNumber || "Plat belum tercatat"}</span>
+        </div>
+        <form action={signOutAction}><button className="btn btn-ghost btn-sm" type="submit">Keluar</button></form>
       </div>
 
+      <nav className="portal-nav compact-driver-tabs" aria-label="Navigasi Pengemudi">
+        <Link href="/pengemudi" aria-current={activeTab === "dashboard" ? "page" : undefined}>Data Pengemudi</Link>
+        <Link href="/pengemudi?tab=riwayat" aria-current={activeTab === "riwayat" ? "page" : undefined}>Riwayat</Link>
+      </nav>
       {/* Baris 2: angka tetap berasal dari TripProgress; handler CTA tetap children. */}
       <div className="compact-action-row">
         <div className="compact-counters" aria-live="polite" aria-label={`Progres ${progress.kindLabel.toLowerCase()}`}>

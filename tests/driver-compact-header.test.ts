@@ -5,16 +5,15 @@ it('compact header retains derived counters, direction labels and existing CTA s
   const header = fs.readFileSync('components/driver/DriverOpsHeader.tsx', 'utf8');
   assert.match(header, /compact-identity-row/);
   assert.match(header, /compact-action-row/);
-  assert.match(header, /<DriverProfileMenu name={driverName}>/);
-  for (const field of ['total', 'done', 'waiting', 'onboard', 'absent']) assert.ok(header.includes(`progress.${field}`));
+  assert.match(header, /compact-driver-identity/);
+  assert.match(header, /portal-nav compact-driver-tabs/);
+  assert.doesNotMatch(header, /<DriverProfileMenu/);
+  for (const field of ['total', 'done', 'waiting', 'onboard']) assert.ok(header.includes(`progress.${field}`));
   assert.match(header, /className="ops-head-action">{children}/);
   assert.match(header, /progress.kind === "dropoff" \? "Diantar" : "Dijemput"/);
 });
-it('profile retains server logout and keyboard/outside dismissal', () => {
-  const menu = fs.readFileSync('components/driver/DriverProfileMenu.tsx', 'utf8');
-  assert.match(menu, /action={signOutAction}/);
-  assert.match(menu, /aria-expanded={open}/);
-  assert.match(menu, /pointerdown/);
-  assert.match(menu, /Escape/);
-  assert.match(menu, /onBlur/);
+it('driver layout does not expose profile dropdown navigation', () => {
+  const layout = fs.readFileSync('app/pengemudi/layout.tsx', 'utf8');
+  assert.doesNotMatch(layout, /DriverProfileMenu|MobileMenu/);
+  assert.match(layout, /action={signOutAction}/);
 });

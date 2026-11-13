@@ -2789,3 +2789,17 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
   .driver-app .compact-route{font-size:15px}
   .driver-app .compact-action-row .ops-start-action{width:167px;font-size:14px}
 }
+
+/* Driver navigation reuses portal tabs, not a menu or legacy driver tabs. */
+.driver-app .compact-driver-tabs{order:initial;width:auto;gap:18px;margin:0;font-size:12px}
+.driver-app .compact-driver-tabs a{min-height:40px;color:#1F2937}
+.driver-app .compact-driver-tabs a[aria-current="page"]{border-bottom-color:#111827;color:#111827}
+.driver-app .ops-workspace :is(.route-lock,.route-cta-copy small,.ops-next-eyebrow,.ops-next-heading strong,.ops-student-addr,.panel-subtitle){font-size:12px;line-height:1.4;white-space:normal;overflow-wrap:anywhere}
+.driver-app .ops-workspace .ops-next-heading strong{display:block;overflow:visible;text-overflow:clip}
+.driver-app .compact-driver-identity{display:grid;min-width:0;gap:2px;font-size:12px;line-height:1.4}
+.driver-app .compact-driver-identity strong,.driver-app .compact-driver-identity span{overflow-wrap:anywhere}
+.driver-app .compact-identity-row{flex-wrap:wrap}
+.driver-app .compact-identity-row .compact-route{min-width:100px}
+.driver-app .compact-identity-row form button{min-height:40px}
+.driver-app .ops-workspace :is(.ops-next-empty p,.ops-panel-eyebrow,.route-foot,.route-warn summary,.route-stops summary,.route-note summary,.ops-student-state .pill,.ops-data-note){font-size:12px;line-height:1.4;white-space:normal;overflow-wrap:anywhere}
+.driver-app .compact-driver-identity{max-width:100%}

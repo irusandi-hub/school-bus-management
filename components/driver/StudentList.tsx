@@ -63,6 +63,7 @@ export function StudentList({
             </div>
 
             <StudentStatusControls
+              key={`${tripId ?? "scheduled"}:${row.studentId}:${row.status ?? "pending"}:${row.issueNote ?? ""}`}
               studentId={row.studentId}
               tripId={tripId}
               assignmentId={assignmentId}
