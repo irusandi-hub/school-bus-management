@@ -20,8 +20,8 @@ export function LoginForm({ next, reason }: { next: string; reason?: string }) {
 
   function requestCode(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (phone.replace(/\D/g, "").length < 7) {
-      setNotice("Masukkan nomor HP yang valid dan sudah terdaftar.");
+    if (phone.replace(/\D/g, "").length < 10) {
+      setNotice("Masukkan nomor simulasi minimal 10 digit, misalnya 0123456789.");
       return;
     }
     setNotice("");
@@ -63,9 +63,8 @@ export function LoginForm({ next, reason }: { next: string; reason?: string }) {
     <div className="auth-otp-flow">
       {step === "phone" ? (
         <form className="auth-form" onSubmit={requestCode} noValidate>
-          <label htmlFor="phone">Nomor HP terdaftar</label>
+          <label htmlFor="phone">Nomor HP (simulasi)</label>
           <div className="auth-phone-field">
-            <span aria-hidden="true">+966</span>
             <input
               id="phone"
               name="phone"
@@ -74,13 +73,13 @@ export function LoginForm({ next, reason }: { next: string; reason?: string }) {
               autoComplete="tel"
               value={phone}
               onChange={(event) => setPhone(event.target.value)}
-              placeholder="5X XXX XXXX"
+              placeholder="0123456789"
               aria-describedby="phone-hint"
               required
             />
           </div>
           <p className="auth-input-hint" id="phone-hint">
-            Gunakan nomor HP yang sudah terhubung dengan akun SchoolBus.
+            Nomor ini hanya untuk membuka form OTP simulasi. Tidak digunakan untuk mencari akun atau mengirim SMS.
           </p>
           {notice && <p className="form-alert error" role="alert">{notice}</p>}
           {reason && <p className="form-alert info" role="status">{reason}</p>}
@@ -115,7 +114,7 @@ export function LoginForm({ next, reason }: { next: string; reason?: string }) {
         <form className="auth-form" onSubmit={verifyCode} noValidate>
           <div className="auth-otp-destination">
             <span className="auth-otp-destination-icon" aria-hidden="true">✓</span>
-            <p>Kode demo disiapkan untuk nomor</p>
+            <p>Form OTP simulasi dibuka untuk nomor</p>
             <strong>{phone}</strong>
             <button type="button" onClick={() => { setStep("phone"); setOtp(""); setNotice(""); }}>Ubah nomor</button>
           </div>
@@ -142,7 +141,7 @@ export function LoginForm({ next, reason }: { next: string; reason?: string }) {
               />
             ))}
           </div>
-          <p className="auth-input-hint">Untuk demo, gunakan salah satu kode tetap yang tersedia di halaman masuk.</p>
+          <p className="auth-input-hint">Masukkan salah satu kode OTP tetap yang sudah tersedia di sistem demo.</p>
           {notice && <p className="form-alert info" role="status">{notice}</p>}
           <button type="submit" disabled={otp.length !== 6}>Verifikasi &amp; Masuk <span aria-hidden="true">→</span></button>
           <button type="button" className="auth-text-button" onClick={() => { setOtp(""); setNotice("Kode OTP demo tetap berlaku. Masukkan kembali kode akun Anda."); }}>
