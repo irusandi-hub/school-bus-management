@@ -120,11 +120,6 @@ export function StudentStatusControls({
 
   return (
     <div className="ops-student-actions" aria-busy={pending}>
-      <div className="ops-student-state" aria-live="polite">
-        <Pill tone={statusTone(status)}>{status ? tripEventLabel(status) : "Belum dicatat"}</Pill>
-        {pending && <span className="ops-action-pending">Menyimpan…</span>}
-      </div>
-
       {actions.canBoard && tripId ? (
         <form action={formAction}>
           {hidden}
@@ -150,6 +145,29 @@ export function StudentStatusControls({
           title={actionHint ?? undefined}
         />
       )}
+
+      {actions.canAbsent && tripId ? (
+        <form action={formAction}>
+          {hidden}
+          <SubmitAction kind="absent" label="Tidak Ikut" doneLabel={DONE_LABEL.absent}
+            done={false} type="submit" name="event_type" value="absent" disabled={pending} />
+        </form>
+      ) : (
+        <ActionButton
+          kind="absent"
+          label="Tidak Ikut"
+          doneLabel={DONE_LABEL.absent}
+          done={status === "absent"}
+          type="button"
+          disabled
+          title={actionHint ?? undefined}
+        />
+      )}
+
+      <div className="ops-student-state" aria-live="polite">
+        <Pill tone={statusTone(status)}>{status ? tripEventLabel(status) : "Belum dicatat"}</Pill>
+        {pending && <span className="ops-action-pending">Menyimpan…</span>}
+      </div>
 
       {actions.canDrop && tripId ? (
         <form action={formAction}>
@@ -179,24 +197,6 @@ export function StudentStatusControls({
         />
       )}
 
-      {actions.canAbsent && tripId ? (
-        <form action={formAction}>
-          {hidden}
-          <SubmitAction kind="absent" label="Tidak Ikut" doneLabel={DONE_LABEL.absent}
-            done={false} type="submit" name="event_type" value="absent" disabled={pending} />
-        </form>
-      ) : (
-        <ActionButton
-          kind="absent"
-          label="Tidak Ikut"
-          doneLabel={DONE_LABEL.absent}
-          done={status === "absent"}
-          type="button"
-          disabled
-          title={actionHint ?? undefined}
-        />
-      )}
-
       {tripStatus === "in_progress" && tripId ? (
         <details className="ops-issue">
           <summary>Catat kendala</summary>
@@ -218,9 +218,9 @@ export function StudentStatusControls({
           </form>
         </details>
       ) : (
-        <button className="ops-action" type="button" disabled title={actionHint ?? undefined}>
+        <span className="ops-issue-disabled" aria-disabled="true" title={actionHint ?? undefined}>
           Catat kendala
-        </button>
+        </span>
       )}
 
       {state.status === "error" && (
