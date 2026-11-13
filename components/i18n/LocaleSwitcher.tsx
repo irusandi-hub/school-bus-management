@@ -1,10 +1,12 @@
 "use client";
 
-import { getDirection, type Locale } from "@/lib/i18n/config";
+import { type Locale } from "@/lib/i18n/config";
+import { useRouter } from "next/navigation";
 import { useLocale } from "./LocaleProvider";
 
 export function LocaleSwitcher({ compact = false }: { compact?: boolean }) {
   const { locale, setLocale, t } = useLocale();
+  const router = useRouter();
 
   return (
     <label className={`locale-switcher ${compact ? "locale-switcher-compact" : ""}`}>
@@ -15,7 +17,7 @@ export function LocaleSwitcher({ compact = false }: { compact?: boolean }) {
         onChange={(event) => {
           const next = event.target.value as Locale;
           setLocale(next);
-          document.documentElement.dir = getDirection(next);
+          router.refresh();
         }}
       >
         <option value="id" dir="auto">🇮🇩 Bahasa Indonesia</option>
