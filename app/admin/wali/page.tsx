@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdminCopy } from "@/components/i18n/AdminCopy";
 import type { Metadata } from "next";
 import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
 import { RecordForm, type FieldDef } from "@/components/admin/RecordForm";
@@ -147,12 +148,12 @@ export default async function WaliPage({
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th scope="col">Nama wali</th>
-                  <th scope="col">Email</th>
-                  <th scope="col">Telepon</th>
-                  <th scope="col">Siswa terhubung</th>
-                  <th scope="col">Status akun</th>
-                  <th scope="col">Tindakan</th>
+                  <th scope="col"><AdminCopy value="Nama wali" /></th>
+                  <th scope="col"><AdminCopy value="Email" /></th>
+                  <th scope="col"><AdminCopy value="Telepon" /></th>
+                  <th scope="col"><AdminCopy value="Siswa terhubung" /></th>
+                  <th scope="col"><AdminCopy value="Status akun" /></th>
+                  <th scope="col"><AdminCopy value="Tindakan" /></th>
                 </tr>
               </thead>
               <tbody>
