@@ -145,7 +145,7 @@ export default async function PengemudiPage({
             filters={
               <select name="status" defaultValue={status} aria-label="Filter status pengemudi">
                 <LocalizedOption value="" label="Semua status" />
-                <option value="aktif">Aktif</option>
+                <LocalizedOption value="aktif" label="Aktif" />
                 <LocalizedOption value="nonaktif" label="Nonaktif" />
               </select>
             }
