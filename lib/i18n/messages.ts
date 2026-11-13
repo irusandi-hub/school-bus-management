@@ -334,6 +334,11 @@ export const messages = {
     of: "dari",
     dataNavigation: "Navigasi halaman data",
     notStarted: "Belum dimulai",
+    loadFailed: "Data belum dapat dimuat. Coba lagi.",
+    pagePosition: "Posisi halaman",
+    databaseNotConfigured: "Database belum dikonfigurasi",
+    backHome: "Kembali ke beranda",
+    supabaseRequired: "Modul ini memerlukan koneksi Supabase. Hubungi pengelola sistem untuk mengisi NEXT_PUBLIC_SUPABASE_URL dan NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY, lalu terapkan migrasi yang tersedia di repository.",
   },
   en: {
     language: "Language",
@@ -668,6 +673,11 @@ export const messages = {
     of: "of",
     dataNavigation: "Data page navigation",
     notStarted: "Not started",
+    loadFailed: "Data could not be loaded. Try again.",
+    pagePosition: "Page location",
+    databaseNotConfigured: "Database is not configured",
+    backHome: "Back to home",
+    supabaseRequired: "This module requires a Supabase connection. Contact the system administrator to configure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY, then apply the available repository migrations.",
   },
   ar: {
     language: "اللغة",
@@ -1002,6 +1012,11 @@ export const messages = {
     of: "من",
     dataNavigation: "التنقل بين صفحات البيانات",
     notStarted: "لم تبدأ",
+    loadFailed: "تعذر تحميل البيانات. حاول مرة أخرى.",
+    pagePosition: "موضع الصفحة",
+    databaseNotConfigured: "قاعدة البيانات غير مهيأة",
+    backHome: "العودة إلى الصفحة الرئيسية",
+    supabaseRequired: "تتطلب هذه الوحدة اتصالاً بـ Supabase. تواصل مع مسؤول النظام لإعداد NEXT_PUBLIC_SUPABASE_URL وNEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY، ثم طبّق عمليات الترحيل المتاحة في المستودع.",
   },
 } as const;
 
