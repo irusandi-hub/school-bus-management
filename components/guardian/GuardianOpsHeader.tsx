@@ -1,4 +1,5 @@
 import { Icon } from "@/components/ui/Icon";
+import { LocalizedText } from "@/components/i18n/LocaleProvider";
 import { formatDate } from "@/lib/validation";
 
 /**
@@ -39,10 +40,10 @@ export function GuardianOpsHeader({
           <div className="guardian-profile-ident">
             <div className="guardian-profile-name">
               <strong>{guardianName || "Wali"}</strong>
-              <span className="guardian-account-tag">Wali</span>
+              <span className="guardian-account-tag"><LocalizedText k="guardianRole" /></span>
             </div>
             <small>
-              {email ?? "Email akun belum tersedia"}
+              {email ?? <LocalizedText k="guardianEmailMissing" />}
               {phone ? ` · ${phone}` : ""}
             </small>
           </div>
@@ -54,7 +55,7 @@ export function GuardianOpsHeader({
           </span>
           <span>
             <strong>{formatDate(serviceDate)}</strong>
-            <small>Hari ini</small>
+            <small><LocalizedText k="today" /></small>
           </span>
         </div>
       </section>
@@ -64,25 +65,25 @@ export function GuardianOpsHeader({
           <span className="guardian-stat-chip-icon" aria-hidden="true">
             <Icon name="users" size={15} />
           </span>
-          <strong>{childCount}</strong> Anak
+          <strong>{childCount}</strong> <LocalizedText k="childrenCount" />
         </span>
         <span className="guardian-stat-chip">
           <span className="guardian-stat-chip-icon" aria-hidden="true">
             <Icon name="route" size={15} />
           </span>
-          <strong>{tripCount}</strong> Perjalanan
+          <strong>{tripCount}</strong> <LocalizedText k="tripsCount" />
         </span>
         <span className="guardian-stat-chip tone-bus">
           <span className="guardian-stat-chip-icon" aria-hidden="true">
             <Icon name="bus" size={15} />
           </span>
-          <strong>{onboardCount}</strong> Di bus
+          <strong>{onboardCount}</strong> <LocalizedText k="onboard" />
         </span>
         <span className="guardian-stat-chip tone-wait">
           <span className="guardian-stat-chip-icon" aria-hidden="true">
             <Icon name="clock" size={15} />
           </span>
-          <strong>{waitingCount}</strong> Belum dijemput
+          <strong>{waitingCount}</strong> <LocalizedText k="awaitingPickup" />
         </span>
       </div>
     </>
