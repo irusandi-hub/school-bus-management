@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdminCopy } from "@/components/i18n/AdminCopy";
 import type { Metadata } from "next";
 import { RecordForm, type FieldDef } from "@/components/admin/RecordForm";
 import { ProjectAreaTabs } from "@/components/admin/ProjectAreaTabs";
@@ -243,12 +244,12 @@ export default async function SiswaPage({
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th scope="col">Nomor induk siswa</th>
-                  <th scope="col">Nama siswa</th>
-                  <th scope="col">Sekolah</th>
-                  <th scope="col">Wali</th>
-                  <th scope="col">Status layanan</th>
-                  <th scope="col">Tindakan</th>
+                  <th scope="col"><AdminCopy value="Nomor induk siswa" /></th>
+                  <th scope="col"><AdminCopy value="Nama siswa" /></th>
+                  <th scope="col"><AdminCopy value="Sekolah" /></th>
+                  <th scope="col"><AdminCopy value="Wali" /></th>
+                  <th scope="col"><AdminCopy value="Status layanan" /></th>
+                  <th scope="col"><AdminCopy value="Tindakan" /></th>
                 </tr>
               </thead>
               <tbody>
