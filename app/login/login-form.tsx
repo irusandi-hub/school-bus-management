@@ -3,9 +3,11 @@
 import { useActionState } from "react";
 import { loginAction } from "@/lib/auth-actions";
 import { idleState, type ActionState } from "@/lib/validation";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 
 export function LoginForm({ next, reason }: { next: string; reason?: string }) {
   const [state, formAction, pending] = useActionState<ActionState, FormData>(loginAction, idleState);
+  const { t } = useLocale();
   const emailError = state.fieldErrors?.email;
   const passwordError = state.fieldErrors?.password;
 
@@ -13,7 +15,7 @@ export function LoginForm({ next, reason }: { next: string; reason?: string }) {
     <form action={formAction} className="auth-form" noValidate>
       <input type="hidden" name="next" value={next} />
 
-      <label htmlFor="email">Alamat email</label>
+      <label htmlFor="email">{t("emailAddress")}</label>
       <input
         id="email"
         name="email"
@@ -31,7 +33,7 @@ export function LoginForm({ next, reason }: { next: string; reason?: string }) {
         </p>
       )}
 
-      <label htmlFor="password">Kata sandi</label>
+      <label htmlFor="password">{t("password")}</label>
       <input
         id="password"
         name="password"
@@ -59,7 +61,7 @@ export function LoginForm({ next, reason }: { next: string; reason?: string }) {
       )}
 
       <button type="submit" disabled={pending}>
-        {pending ? "Memeriksa…" : "Masuk"}
+        {pending ? t("checking") : t("signIn")}
       </button>
     </form>
   );
