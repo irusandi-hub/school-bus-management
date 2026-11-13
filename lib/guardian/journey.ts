@@ -1,3 +1,6 @@
+import type { Locale } from "@/lib/i18n/config";
+import { translate } from "@/lib/i18n/messages";
+
 /**
  * Status perjalanan yang ditampilkan kepada wali.
  *
@@ -45,7 +48,7 @@ function updatedAt(trip: JourneyTripInput, event: JourneyEventInput) {
   return event?.occurred_at ?? trip?.completedAt ?? trip?.arrivedAt ?? trip?.startedAt ?? null;
 }
 
-export function resolveChildJourney(input: {
+function resolveChildJourneyBase(input: {
   trip: JourneyTripInput;
   event: JourneyEventInput;
 }): JourneyStatus {
@@ -198,4 +201,39 @@ export function resolveChildJourney(input: {
     icon: "clock",
     updatedAt: update,
   };
+}
+
+const journeyMessageKeys: Record<JourneyStatus["key"], [string, string]> = {
+  "no-trip": ["noTripToday", "noAssignmentToday"],
+  scheduled: ["waitingPickup", "tripNotStarted"],
+  waiting: ["waitingPickup", "tripStartedNotBoarded"],
+  "on-board": ["onBusStatus", "toSchool"],
+  arrived: ["busArrived", "arrivedNoDrop"],
+  "dropped-off": ["alreadyDroppedOff", "droppedSchool"],
+  absent: ["notTakingTrip", "absentDetail"],
+  completed: ["tripCompleted", "attendanceMissing"],
+  cancelled: ["tripCancelledLabel", "cancelledDetail"],
+  unknown: ["statusUnavailable", "statusUnavailableDetail"],
+};
+
+export function resolveChildJourney(
+  input: Parameters<typeof resolveChildJourneyBase>[0],
+  locale: Locale = "id",
+): JourneyStatus {
+  const result = resolveChildJourneyBase(input);
+  if (locale === "id") return result;
+  const [labelKey, detailKey] = journeyMessageKeys[result.key];
+  let detailKeyResolved = detailKey;
+  if (result.key === "on-board") {
+    detailKeyResolved = input.trip?.direction === "afternoon" ? "toHome" : "toSchool";
+  } else if (result.key === "dropped-off") {
+    detailKeyResolved = input.trip?.direction === "afternoon" ? "droppedHome" : "droppedSchool";
+  } else if (result.key === "completed" && input.trip?.status === "completed" && input.event?.event_type === "boarded") {
+    detailKeyResolved = "completedNoDrop";
+  } else if (result.key === "completed" && input.trip?.status === "completed") {
+    detailKeyResolved = "attendanceMissing";
+  } else if (result.key === "waiting" && input.trip?.status === "delayed") {
+    return { ...result, label: translate(locale, "tripDelayed"), detail: translate(locale, "delayedDetail") };
+  }
+  return { ...result, label: translate(locale, labelKey as never), detail: translate(locale, detailKeyResolved as never) };
 }
