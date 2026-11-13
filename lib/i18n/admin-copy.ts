@@ -725,6 +725,7 @@ const copy: Record<string, Record<Locale, string>> = {
   "Belum tercatat": { id: "Belum tercatat", en: "Not recorded", ar: "لم يتم التسجيل" },
   "Catatan pemeriksaan:": { id: "Catatan pemeriksaan:", en: "Inspection notes:", ar: "ملاحظات الفحص:" },
   "Jumlah siswa dikonfirmasi:": { id: "Jumlah siswa dikonfirmasi:", en: "Confirmed student count:", ar: "عدد الطلاب المؤكد:" },
+  "Sekolah belum ditetapkan": { id: "Sekolah belum ditetapkan", en: "School not assigned", ar: "لم يتم تحديد المدرسة" },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
