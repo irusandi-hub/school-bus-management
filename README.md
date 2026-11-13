@@ -248,9 +248,11 @@ Risiko yang masih terbuka dan perlu ditangani sebelum produksi: rate limiting kh
 - [Evaluasi penyedia routing](docs/ROUTING_PROVIDER_EVALUATION.md)
 
 
-## Tahap pengembangan UI (DEC-023)
+## Tahap pengembangan UI (DEC-023/DEC-027, legacy)
 
 **Instruksi tahap pengembangan UI:** seluruh area (Operator, Pengemudi, Orang Tua/Wali) dapat ditinjau tanpa login pada lingkungan non-produksi. Autentikasi final tetap diimplementasikan dan diuji terpisah; mode terbuka tidak mengubah otorisasi database.
+
+**Catatan target:** DEC-033 menetapkan tiga ekosistem — Operator, Pengemudi, dan Orang Tua/Wali. Mekanisme area terbuka merupakan alat pengembangan sementara untuk peninjauan UI, bukan role atau area target tersendiri. Jangan menjadikannya alasan mempertahankan Admin Pusat sebagai role/area target. Setelah refactor DEC-033, area yang ditinjau adalah ruang kerja Operator, Pengemudi, dan Orang Tua/Wali.
 
 Ketentuan ini mengubah urutan implementasi, bukan standar keamanan produksi:
 - Akses terbuka hanya untuk local/development/preview non-production dan harus fail-closed bila environment tidak dikenali.
@@ -259,7 +261,7 @@ Ketentuan ini mengubah urutan implementasi, bukan standar keamanan produksi:
 - Data contoh hanya untuk development dan harus diberi label simulasi.
 - Seluruh pemeriksaan server/database dan autentikasi final tetap wajib dipulihkan sebelum rilis production.
 
-Catatan status: pada lingkungan non-produksi yang dikenali, mode terbuka memakai klien simulasi dan tidak pernah membuat klien Supabase. Pada produksi atau lingkungan tak dikenal, seluruh gerbang autentikasi dan RLS berlaku penuh.
+Catatan status: pada lingkungan non-produksi yang dikenali, mode terbuka memakai klien simulasi dan tidak pernah membuat klien Supabase. Pada produksi atau lingkungan tak dikenal, seluruh gerbang autentikasi dan RLS berlaku penuh. Bagian README lain yang menyebut autentikasi wajib di semua area menggambarkan rancangan integrasi akhir, bukan perilaku yang harus dipaksakan selama tahap UI terbuka ini. Mekanisme area terbuka dan route legacy harus dihapus atau digabungkan setelah refactor DEC-033 selesai.
 
 ### Uji kamera HP gratis (terisolasi)
 
