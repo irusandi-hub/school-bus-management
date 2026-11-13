@@ -762,6 +762,8 @@ const copy: Record<string, Record<Locale, string>> = {
   "Satu pengemudi dan satu bus tidak dapat dipakai dua kali pada tanggal yang sama": { id: "Satu pengemudi dan satu bus tidak dapat dipakai dua kali pada tanggal yang sama", en: "A driver and a bus cannot be assigned twice on the same date", ar: "لا يمكن تعيين السائق أو الحافلة مرتين في التاريخ نفسه" },
   "Belum ada relasi siswa": { id: "Belum ada relasi siswa", en: "No linked students yet", ar: "لا يوجد طلاب مرتبطون بعد" },
   "Unduh CSV": { id: "Unduh CSV", en: "Download CSV", ar: "تنزيل CSV" },
+  "Ubah Area Operasional": { id: "Ubah Area Operasional", en: "Edit operational area", ar: "تعديل منطقة التشغيل" },
+  "Tambah Area Operasional": { id: "Tambah Area Operasional", en: "Add operational area", ar: "إضافة منطقة تشغيل" },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
