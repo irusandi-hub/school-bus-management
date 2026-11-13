@@ -84,6 +84,7 @@ export default async function GuardianHomePage() {
     <>
       <GuardianOpsHeader
         guardianName={guardianName}
+        locale={locale}
         email={access.viewer.email}
         phone={access.viewer.profile?.phone ?? null}
         serviceDate={todayDate()}
