@@ -99,13 +99,15 @@ export function StudentStatusControls({
   }, [state, t]);
 
   const actions = studentActionSet({ direction, status, tripStatus, arrived });
-  const actionHint =
-    actions.hint ??
-    (!actions.canDrop
-      ? direction === "afternoon"
-        ? "Turun setelah siswa tercatat naik."
-        : "Turun setelah siswa tercatat naik."
-      : null);
+  const rawActionHint = actions.hint ?? (!actions.canDrop ? "Turun setelah siswa tercatat naik." : null);
+  const actionHint = rawActionHint ? ({
+    "Perjalanan sudah selesai; status akhir tidak dapat diubah.": t("completedTrip"),
+    "Mulai perjalanan untuk mencatat status siswa.": t("startTripFirst"),
+    "Tekan Naik jika siswa ikut kembali.": t("boardIfReturned"),
+    "Siswa sudah turun.": t("alreadyDropped"),
+    "Catat naik saat siswa masuk bus di sekolah.": t("boardAtSchool"),
+    "Turun setelah siswa tercatat naik.": t("boardIfReturned"),
+  } as Record<string, string>)[rawActionHint] ?? rawActionHint : null;
 
   const hidden = (
     <>
@@ -134,8 +136,8 @@ export function StudentStatusControls({
       ) : (
         <ActionButton
           kind="board"
-          label="Naik"
-          doneLabel={DONE_LABEL.boarded}
+          label={t("board")}
+          doneLabel={t("boardDone")}
           done={status === "boarded"}
           type="button"
           disabled
@@ -152,8 +154,8 @@ export function StudentStatusControls({
       ) : (
         <ActionButton
           kind="absent"
-          label="Tidak Ikut"
-          doneLabel={DONE_LABEL.absent}
+          label={t("absent")}
+          doneLabel={t("absentDone")}
           done={status === "absent"}
           type="button"
           disabled
@@ -184,8 +186,8 @@ export function StudentStatusControls({
       ) : (
         <ActionButton
           kind="drop"
-          label={actions.dropLabel}
-          doneLabel={DONE_LABEL.dropped_off}
+          label={t("drop")}
+          doneLabel={t("dropDone")}
           done={status === "dropped_off"}
           icon="arrowRight"
           type="button"
