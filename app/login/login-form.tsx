@@ -9,7 +9,7 @@ import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 export function LoginForm({ next, reason }: { next: string; reason?: string }) {
   const [state, formAction, pending] = useActionState<ActionState, FormData>(loginAction, idleState);
   const { t, locale } = useLocale();
-  const copy = (value: string) => translateAdminCopy(value, locale) ?? value;
+  const copy = (value: string | undefined) => value ? translateAdminCopy(value, locale) ?? value : undefined;
   const emailError = state.fieldErrors?.email;
   const passwordError = state.fieldErrors?.password;
 
