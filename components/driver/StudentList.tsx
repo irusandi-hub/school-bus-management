@@ -1,5 +1,7 @@
 import { Icon } from "@/components/ui/Icon";
 import { LocalizedText } from "@/components/i18n/LocaleProvider";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translate } from "@/lib/i18n/messages";
 import { StudentStatusControls } from "./StudentStatusControls";
 
 export type StudentListRow = {
@@ -20,7 +22,7 @@ export type StudentListRow = {
  * Setiap siswa memiliki kontrol status sendiri sehingga klik ganda pada satu
  * siswa tidak mengunci tindakan siswa lain dan status terbaru langsung terlihat.
  */
-export function StudentList({
+export async function StudentList({
   rows,
   tripId,
   assignmentId,
@@ -35,12 +37,14 @@ export function StudentList({
   tripStatus: string;
   arrived: boolean;
 }) {
+  const locale = await getRequestLocale();
+  const t = (key: Parameters<typeof translate>[1]) => translate(locale, key);
   return (
     <div className="ops-students-scroll">
       <ol className="ops-students">
         {rows.map((row, index) => (
           <li className="ops-student" key={row.key} id={`siswa-${row.studentId}`}>
-            <span className="ops-student-num" aria-label={`Urutan ${index + 1}`}>
+            <span className="ops-student-num" aria-label={`${t("stopOrder")} ${index + 1}`}>
               {String(index + 1).padStart(2, "0")}
             </span>
 
