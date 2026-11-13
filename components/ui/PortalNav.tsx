@@ -17,7 +17,7 @@ export function PortalNav({ items, rootHref }: { items: { href: string; label: s
         const active = isNavItemActive(pathname, item.href, rootHref);
         return (
           <Link key={item.href} href={item.href} aria-current={active ? "page" : undefined}>
-            {item.label}
+            {translateNavigationLabel(item.label, locale)}
           </Link>
         );
       })}
