@@ -75,7 +75,7 @@ export function BottomNav({
               aria-current={active ? "page" : undefined}
             >
               <Icon name={item.icon} />
-              {item.label}
+              {translateNavigationLabel(item.label, locale)}
             </Link>
           );
         })}
