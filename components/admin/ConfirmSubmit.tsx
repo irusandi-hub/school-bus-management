@@ -52,7 +52,7 @@ export function ConfirmSubmit({
         form.requestSubmit(button);
       }}
     >
-      {pending ? copy(pendingLabel) ?? pendingLabel : children}
+      {pending ? copy(pendingLabel) ?? pendingLabel : childContent}
     </button>
   );
 }
