@@ -161,6 +161,17 @@ const copy: Record<string, Record<Locale, string>> = {
   "Ubah pengemudi": { id: "Ubah pengemudi", en: "Edit driver", ar: "تعديل السائق" },
   "Tambah pengemudi": { id: "Tambah pengemudi", en: "Add driver", ar: "إضافة سائق" },
   "Menonaktifkan pengemudi tidak menghapus data atau riwayat. Penautan dan pelepasan akun dilakukan dari kolom Akun masuk pada tabel.": { id: "Menonaktifkan pengemudi tidak menghapus data atau riwayat. Penautan dan pelepasan akun dilakukan dari kolom Akun masuk pada tabel.", en: "Deactivating a driver does not delete data or history. Link or unlink accounts from the Sign-in Account column in the table.", ar: "تعطيل السائق لا يحذف البيانات أو السجل. يتم ربط الحسابات أو إلغاء ربطها من عمود حساب الدخول في الجدول." },
+  "Batal": { id: "Batal", en: "Cancel", ar: "إلغاء" },
+  "Konfirmasi tindakan": { id: "Konfirmasi tindakan", en: "Confirm action", ar: "تأكيد الإجراء" },
+  "Konfirmasi perubahan": { id: "Konfirmasi perubahan", en: "Confirm changes", ar: "تأكيد التغييرات" },
+  "Lanjutkan": { id: "Lanjutkan", en: "Continue", ar: "متابعة" },
+  "Memproses…": { id: "Memproses…", en: "Processing…", ar: "جارٍ التنفيذ…" },
+  "Memeriksa…": { id: "Memeriksa…", en: "Checking…", ar: "جارٍ التحقق…" },
+  "Mengakhiri…": { id: "Mengakhiri…", en: "Ending…", ar: "جارٍ الإنهاء…" },
+  "Mulai Perjalanan": { id: "Mulai Perjalanan", en: "Start trip", ar: "بدء الرحلة" },
+  "Waktu mulai perjalanan akan dicatat.": { id: "Waktu mulai perjalanan akan dicatat.", en: "The trip start time will be recorded.", ar: "سيتم تسجيل وقت بدء الرحلة." },
+  "Pastikan seluruh penumpang sudah turun dan tidak ada yang tertinggal di dalam bus.": { id: "Pastikan seluruh penumpang sudah turun dan tidak ada yang tertinggal di dalam bus.", en: "Make sure all passengers have exited and no one remains on the bus.", ar: "تأكد من نزول جميع الركاب وعدم بقاء أي شخص داخل الحافلة." },
+  "Akhiri perjalanan setelah memastikan seluruh penumpang sudah turun dan kabin kosong?": { id: "Akhiri perjalanan setelah memastikan seluruh penumpang sudah turun dan kabin kosong?", en: "End the trip after confirming all passengers have exited and the cabin is empty?", ar: "هل تريد إنهاء الرحلة بعد التأكد من نزول جميع الركاب وخلو الحافلة؟" },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
