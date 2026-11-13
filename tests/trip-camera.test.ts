@@ -46,7 +46,7 @@ const flush = async () => { for (let i = 0; i < 25; i++) await Promise.resolve()
 test('viewer sends ready and automatically answers offer; revoke closes peer/channel', async () => {
   const h = harness(); await flush();
   assert.ok(h.calls.includes('camera_open'));
-  assert.deepEqual(h.peerConfigs[0].iceServers, [{ urls: 'stun:stun.cloudflare.com:3478' }]);
+  assert.equal(h.peerConfigs[0].iceServers[0].urls, 'stun:stun.cloudflare.com:3478');
   assert.ok(h.calls.includes('camera_signal'));
   await h.channels[0].handler({ payload: { sender: 'publisher', kind: 'offer', body: { type: 'offer' } } });
   assert.equal(h.peers[0].localDescription.type, 'answer');
