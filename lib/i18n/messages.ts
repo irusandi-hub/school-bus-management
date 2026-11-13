@@ -132,6 +132,7 @@ export const messages = {
     dropDone: "Turun — selesai",
     absentDone: "Tidak Ikut — selesai",
     plateNotRecorded: "Plat belum tercatat",
+    board: "Naik",
   },
   en: {
     language: "Language",
@@ -264,6 +265,7 @@ export const messages = {
     dropDone: "Dropped off — done",
     absentDone: "Not riding — done",
     plateNotRecorded: "Plate not recorded",
+    board: "Board",
   },
   ar: {
     language: "اللغة",
@@ -396,6 +398,7 @@ export const messages = {
     dropDone: "تم الإنزال",
     absentDone: "لن يستقل الحافلة — مكتمل",
     plateNotRecorded: "لم يتم تسجيل اللوحة",
+    board: "صعد",
   },
 } as const;
 
