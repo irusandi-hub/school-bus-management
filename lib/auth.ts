@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { homeForRole } from "@/lib/access";
 import { DEV_DRIVER_RECORD, DEV_ORGANISATION, DEV_VIEWER, isDevOpenAccess } from "@/lib/dev-open-access";
 import { createServerSupabase } from "@/lib/supabase/server";
+import { demoAccountUserId, getDemoOtpAccount } from "@/lib/demo-otp-session";
 import type { ProfileRow, UserRole } from "@/lib/types";
 
 const knownRoles: UserRole[] = ["admin", "operator", "driver", "parent"];
