@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { cookies } from "next/headers";
-import { defaultLocale, isLocale } from "@/lib/i18n/config";
+import { getRequestLocale } from "@/lib/i18n/server";
 import { translate } from "@/lib/i18n/messages";
 import { translateNavigationLabel } from "@/lib/i18n/navigation";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 import { UI_COPY } from "@/lib/ui/copy";
 import type { ReactNode } from "react";
 import { Icon } from "@/components/ui/Icon";
@@ -11,16 +11,17 @@ import { Icon } from "@/components/ui/Icon";
 export type Crumb = { href?: string; label: string };
 
 /** Remah roti bersama: satu pola untuk semua halaman detail. */
-export function Breadcrumbs({ items }: { items: Crumb[] }) {
+export async function Breadcrumbs({ items }: { items: Crumb[] }) {
+  const locale = await getRequestLocale();
   return (
     <nav className="crumbs" aria-label="Posisi halaman">
       {items.map((item, index) => (
         <span key={`${item.label}-${index}`} style={{ display: "contents" }}>
           {index > 0 && <span className="crumb-sep" aria-hidden="true">/</span>}
           {item.href ? (
-            <Link href={item.href}>{item.label}</Link>
+            <Link href={item.href}>{translateNavigationLabel(item.label, locale)}</Link>
           ) : (
-            <span aria-current="page">{item.label}</span>
+            <span aria-current="page">{translateNavigationLabel(item.label, locale)}</span>
           )}
         </span>
       ))}
@@ -41,9 +42,7 @@ export async function PageHeader({
   crumbs?: Crumb[];
   eyebrow?: string;
 }) {
-  const cookieStore = await cookies();
-  const savedLocale = cookieStore.get("sbm_locale")?.value;
-  const locale = isLocale(savedLocale) ? savedLocale : defaultLocale;
+  const locale = await getRequestLocale();
   return (
     <>
       {crumbs && crumbs.length > 0 && <Breadcrumbs items={crumbs} />}
@@ -59,14 +58,15 @@ export async function PageHeader({
   );
 }
 
-export function Notice({
+export async function Notice({
   kind = "info",
   children,
 }: {
   kind?: "info" | "success" | "error" | "warning";
   children: ReactNode;
 }) {
-  const message = typeof children === "string" && /^(Data|Daftar) belum dapat dimuat\./.test(children) ? UI_COPY.loadFailed : children;
+  const locale = await getRequestLocale();
+  const message = typeof children === "string" && /^(Data|Daftar) belum dapat dimuat\./.test(children) ? UI_COPY.loadFailed : typeof children === "string" ? translateAdminCopy(children, locale) : children;
   return (
     <p className={`form-alert ${kind}`} role={kind === "error" ? "alert" : "status"}>
       {message}
@@ -86,9 +86,7 @@ export function Pill({
 
 /** Status perjalanan memakai satu pemetaan warna di seluruh area. */
 export async function TripStatusPill({ status }: { status: string | null | undefined }) {
-  const cookieStore = await cookies();
-  const savedLocale = cookieStore.get("sbm_locale")?.value;
-  const locale = isLocale(savedLocale) ? savedLocale : defaultLocale;
+  const locale = await getRequestLocale();
   const t = (key: Parameters<typeof translate>[1]) => translate(locale, key);
   if (!status || status === "scheduled") return <Pill tone="neutral">{t("notStarted")}</Pill>;
   const tone =
@@ -99,9 +97,7 @@ export async function TripStatusPill({ status }: { status: string | null | undef
 
 /** Status layanan siswa: aktif, jeda, dan berakhir dibedakan jelas. */
 export async function ServiceStatusPill({ status }: { status: string }) {
-  const cookieStore = await cookies();
-  const savedLocale = cookieStore.get("sbm_locale")?.value;
-  const locale = isLocale(savedLocale) ? savedLocale : defaultLocale;
+  const locale = await getRequestLocale();
   const t = (key: Parameters<typeof translate>[1]) => translate(locale, key);
   const tone = status === "active" ? "success" : status === "paused" ? "warning" : "neutral";
   const label = status === "active" ? t("statusActive") : status === "paused" ? (locale === "id" ? "Sementara tidak aktif" : locale === "en" ? "Temporarily paused" : "متوقف مؤقتاً") : (locale === "id" ? "Dihentikan" : locale === "en" ? "Ended" : "منتهية");
@@ -161,7 +157,7 @@ export function MetricStrip({
   );
 }
 
-export function EmptyState({
+export async function EmptyState({
   icon = "inbox",
   title,
   detail,
@@ -174,16 +170,17 @@ export function EmptyState({
   action?: { href: string; label: string };
   tone?: "default" | "error";
 }) {
+  const locale = await getRequestLocale();
   return (
     <div className={`state-panel ${tone === "error" ? "error" : ""}`}>
       <span className="state-icon" aria-hidden="true">
         <Icon name={icon} size={22} />
       </span>
-      <strong>{title}</strong>
-      {detail && <p>{detail}</p>}
+      <strong>{translateAdminCopy(title, locale)}</strong>
+      {detail && <p>{translateAdminCopy(detail, locale)}</p>}
       {action && (
         <Link className="btn btn-secondary btn-sm" href={action.href}>
-          {action.label}
+          {translateAdminCopy(action.label, locale)}
         </Link>
       )}
     </div>
@@ -217,7 +214,7 @@ export async function ListToolbar({
     <form className="list-toolbar" method="get" action={action}>
       <div className="list-search">
         <Icon name="search" size={15} />
-        <input type="search" name="q" defaultValue={q} placeholder={placeholder} aria-label={placeholder} />
+        <input type="search" name="q" defaultValue={q} placeholder={translateAdminCopy(placeholder, locale)} aria-label={translateAdminCopy(placeholder, locale)} />
       </div>
       {filters}
       <button className="btn btn-secondary" type="submit">
@@ -264,7 +261,7 @@ export async function Pagination({
   );
 }
 
-export function EmptyRow({
+export async function EmptyRow({
   colSpan,
   title,
   detail,
@@ -273,19 +270,20 @@ export function EmptyRow({
   title: string;
   detail: string;
 }) {
+  const locale = await getRequestLocale();
   return (
     <tr>
       <td colSpan={colSpan} data-label="">
         <div className="table-empty">
-          <strong>{title}</strong>
-          <p>{detail}</p>
+          <strong>{translateAdminCopy(title, locale)}</strong>
+          <p>{translateAdminCopy(detail, locale)}</p>
         </div>
       </td>
     </tr>
   );
 }
 
-export function ConfigNotice() {
+export async function ConfigNotice() {
   return (
     <main className="config-page">
       <section className="panel config-card">
