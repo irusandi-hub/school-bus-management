@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { cookies } from "next/headers";
+import { defaultLocale, isLocale } from "@/lib/i18n/config";
+import { translate } from "@/lib/i18n/messages";
 import type { Metadata } from "next";
 import { ConfigNotice, MetricStrip, PageHeader, Pill } from "@/components/admin/ui";
 import { ProjectAreaTabs } from "@/components/admin/ProjectAreaTabs";
@@ -9,6 +12,10 @@ import { formatDate, serviceDateInTimeZone } from "@/lib/validation";
 export const metadata: Metadata = { title: "Ringkasan | Operator" };
 
 export default async function AdminHomePage() {
+  const cookieStore = await cookies();
+  const savedLocale = cookieStore.get("sbm_locale")?.value;
+  const locale = isLocale(savedLocale) ? savedLocale : defaultLocale;
+  const t = (key: Parameters<typeof translate>[1]) => translate(locale, key);
   const supabase = await adminReadContext();
   if (!supabase) return <ConfigNotice />;
 
@@ -51,60 +58,60 @@ export default async function AdminHomePage() {
   const running = trips.filter((trip) => trip.status === "in_progress").length;
   const completed = trips.filter((trip) => trip.status === "completed").length;
   const waiting = Math.max(assignments.length - running - completed, 0);
-  const contextLabel = areaContext.selected?.name ?? "Semua Area";
+  const contextLabel = areaContext.selected?.name ?? t("allAreas");
 
   return (
     <>
       <PageHeader
-        title="Ringkasan"
-        description={`Kendali global Operator Utama. Konteks aktif: ${contextLabel}.`}
+        title={t("overview")}
+        description={`${t("operatorControl")} ${contextLabel}.`}
         actions={<Pill tone="info">{formatDate(date)}</Pill>}
       />
 
       <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath="/admin" compact />
 
       <MetricStrip
-        label={`Data aktif ${contextLabel}`}
+        label={`${t("activeData")} ${contextLabel}`}
         items={[
-          { label: "Sekolah", value: schoolRows.count ?? 0, note: "Aktif", icon: "school" },
-          { label: "Siswa", value: studentRows.count ?? 0, note: "Layanan aktif", icon: "students" },
-          { label: "Bus", value: busRows.count ?? 0, note: "Armada aktif", icon: "bus" },
-          { label: "Pengemudi", value: driverRows.count ?? 0, note: "Akun aktif", icon: "driver" },
-          { label: "Area Operasional", value: areaContext.activeAreas.length, note: "Area aktif", icon: "operator" },
+          { label: t("schoolNotSet") === "Sekolah belum ditetapkan" ? "Sekolah" : locale === "en" ? "Schools" : "المدارس", value: schoolRows.count ?? 0, note: t("active"), icon: "school" },
+          { label: locale === "id" ? "Siswa" : locale === "en" ? "Students" : "الطلاب", value: studentRows.count ?? 0, note: t("activeService"), icon: "students" },
+          { label: t("bus"), value: busRows.count ?? 0, note: locale === "id" ? "Armada aktif" : locale === "en" ? "Active fleet" : "الحافلات النشطة", icon: "bus" },
+          { label: t("driver"), value: driverRows.count ?? 0, note: t("activeAccountLabel"), icon: "driver" },
+          { label: t("areaContext"), value: areaContext.activeAreas.length, note: t("activeArea"), icon: "operator" },
         ]}
       />
 
       <section className="panel admin-today">
         <header className="panel-head">
           <div>
-            <h2 className="panel-title">Operasional hari ini</h2>
+            <h2 className="panel-title">{t("todayOperations")}</h2>
             <div className="panel-subtitle">
               {assignments.length} penugasan · {contextLabel}
             </div>
           </div>
           <Link className="btn btn-secondary btn-sm" href="/admin/penugasan">
-            Kelola penugasan
+            {t("manageAssignments")}
           </Link>
         </header>
         <div className="today-counts">
           <div className="today-count tone-live">
-            <span>Berlangsung</span>
+            <span>{t("inProgress")}</span>
             <strong>{running}</strong>
           </div>
           <div className="today-count tone-wait">
-            <span>Menunggu</span>
+            <span>{t("waiting")}</span>
             <strong>{waiting}</strong>
           </div>
           <div className="today-count tone-done">
-            <span>Selesai</span>
+            <span>{t("completed")}</span>
             <strong>{completed}</strong>
           </div>
           <p className="today-note">
             {assignmentRows.error
-              ? "Data penugasan belum dapat dimuat."
+              ? t("assignmentDataUnavailable")
               : assignments.length === 0
-                ? "Belum ada penugasan hari ini pada konteks ini."
-                : `${running} perjalanan berlangsung dari ${assignments.length} penugasan.`}
+                ? t("noAssignmentsToday")
+                : `${running} ${t("tripsRunningOf")} ${assignments.length} ${t("assignments")}.`}
           </p>
         </div>
       </section>
