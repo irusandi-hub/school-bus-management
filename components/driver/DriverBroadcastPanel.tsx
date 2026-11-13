@@ -5,6 +5,8 @@ import { TripCameraPublisher } from "./TripCameraPublisher";
 import { CameraDeviceDemo } from "@/components/camera/CameraDeviceDemo";
 import { resolveBroadcastState } from "@/lib/camera/broadcast";
 import { Icon } from "@/components/ui/Icon";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 /**
  * Panel siaran kamera pengemudi.
@@ -23,27 +25,29 @@ export function DriverBroadcastPanel({
   tripId?: string;
   enabled: boolean;
 }) {
+  const { locale, t } = useLocale();
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
   const [consent, setConsent] = useState(false);
   const [source, setSource] = useState<"mobile" | "bus">("mobile");
   const [expanded, setExpanded] = useState(false);
   const broadcast = resolveBroadcastState({ enabled, tripStatus });
   const shortStatus =
     source === "bus"
-      ? "Kamera bus belum terpasang."
+      ? c("Kamera bus belum terpasang.")
       : broadcast.phase === "active"
         ? tripId
-          ? "Siap untuk perjalanan ini. Tidak direkam."
-          : "Mulai perjalanan untuk mengaktifkan."
+          ? c("Siap untuk perjalanan ini. Tidak direkam.")
+          : c("Mulai perjalanan untuk mengaktifkan.")
         : broadcast.phase === "scheduled"
-          ? "Tersedia saat perjalanan berlangsung."
+          ? c("Tersedia saat perjalanan berlangsung.")
           : broadcast.phase === "unavailable"
-            ? "Belum tersedia untuk layanan ini."
-            : "Sudah ditutup untuk perjalanan ini.";
+            ? c("Belum tersedia untuk layanan ini.")
+            : c("Sudah ditutup untuk perjalanan ini.");
 
   return (
     <section
       className={`panel broadcast-compact phase-${broadcast.phase}${expanded ? " is-expanded" : ""}`}
-      aria-label="Siaran kamera pengemudi"
+      aria-label={c("Siaran kamera pengemudi")}
       role={expanded ? "dialog" : undefined}
       aria-modal={expanded ? true : undefined}
     >
@@ -52,12 +56,12 @@ export function DriverBroadcastPanel({
           <Icon name={broadcast.phase === "unavailable" ? "cameraOff" : "camera"} size={17} />
         </span>
         <div className="broadcast-compact-copy">
-          <strong>Siaran kamera</strong>
+          <strong>{c("Siaran kamera")}</strong>
           <span role="status">
-            <b>{source === "bus" ? "Kamera bus" : broadcast.title}</b> · {shortStatus}
+            <b>{source === "bus" ? c("Kamera bus") : c(broadcast.title)}</b> · {shortStatus}
           </span>
           <small className="broadcast-safety-inline">
-            <Icon name="alert" size={11} /> Jangan mengoperasikan HP saat mengemudi. Tidak direkam.
+            <Icon name="alert" size={11} /> {c("Jangan mengoperasikan HP saat mengemudi. Tidak direkam.")}
           </small>
         </div>
         <div className="broadcast-compact-controls" title={broadcast.detail}>
@@ -65,14 +69,14 @@ export function DriverBroadcastPanel({
             className="broadcast-expand"
             type="button"
             onClick={() => setExpanded(true)}
-            aria-label="Buka layar penuh kamera"
-            title="Layar penuh kamera"
+            aria-label={c("Buka layar penuh kamera")}
+            title={c("Layar penuh kamera")}
           >
             <Icon name="expand" size={13} />
-            <span>Layar penuh</span>
+            <span>{c("Layar penuh kamera")}</span>
           </button>
           <label className="broadcast-source-select">
-            <span className="driver-visually-hidden">Sumber siaran</span>
+            <span className="driver-visually-hidden">{c("Sumber siaran")}</span>
             <select
               value={source}
               onChange={(event) => {
@@ -80,8 +84,8 @@ export function DriverBroadcastPanel({
                 setSource(event.target.value as "mobile" | "bus");
               }}
             >
-              <option value="mobile">Kamera HP</option>
-              <option value="bus">Kamera bus</option>
+              <option value="mobile">{c("Kamera HP")}</option>
+              <option value="bus">{c("Kamera bus")}</option>
             </select>
           </label>
           {source === "bus" ? (
@@ -92,16 +96,16 @@ export function DriverBroadcastPanel({
             <TripCameraPublisher tripId={tripId} />
           ) : broadcast.canPublish && enabled ? (
             <details className="broadcast-demo-compact">
-              <summary className="btn btn-secondary btn-sm">Uji kamera</summary>
+              <summary className="btn btn-secondary btn-sm">{c("Uji kamera")}</summary>
               <div className="broadcast-demo-body">
                 <label className="broadcast-consent">
                   <input type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} />
-                  <span>Saya menguji perangkat sendiri, tanpa anak atau data pribadi di kamera.</span>
+                  <span>{c("Saya menguji perangkat sendiri, tanpa anak atau data pribadi di kamera.")}</span>
                 </label>
                 {consent ? (
                   <CameraDeviceDemo publisherOnly />
                 ) : (
-                  <p className="broadcast-note">Centang persetujuan untuk menampilkan kontrol uji kamera.</p>
+                  <p className="broadcast-note">{c("Centang persetujuan untuk menampilkan kontrol uji kamera.")}</p>
                 )}
               </div>
             </details>
@@ -116,30 +120,30 @@ export function DriverBroadcastPanel({
         <div className="broadcast-expanded-stage">
           <div className="broadcast-expanded-bar">
             <span>
-              <Icon name="camera" size={18} /> Pratinjau kamera
+              <Icon name="camera" size={18} /> {c("Pratinjau kamera")}
             </span>
             <button
               type="button"
               className="btn btn-secondary btn-sm broadcast-expanded-close"
               onClick={() => setExpanded(false)}
-              aria-label="Tutup layar penuh kamera"
+              aria-label={c("Tutup layar penuh kamera")}
             >
-              <Icon name="close" size={14} /> Tutup
+              <Icon name="close" size={14} /> {t("close")}
             </button>
           </div>
           <div className="broadcast-expanded-placeholder" role="status">
             <span className="broadcast-expanded-icon" aria-hidden="true">
               <Icon name={broadcast.phase === "unavailable" ? "cameraOff" : "camera"} size={34} />
             </span>
-            <strong>Pratinjau layar penuh</strong>
+            <strong>{c("Pratinjau layar penuh")}</strong>
             <p>
               {source === "bus"
-                ? "Kamera bus belum terpasang. Pratinjau tersedia setelah perangkat kamera bus terhubung."
+                ? "{c("Kamera bus belum terpasang. Pratinjau tersedia setelah perangkat kamera bus terhubung.")}"
                 : broadcast.phase === "active"
-                  ? "Gunakan kontrol siaran di panel kamera untuk mengaktifkan video. Pratinjau ini tidak merekam."
-                  : "Video tampil di sini saat siaran kamera aktif. Tidak ada rekaman."}
+                  ? "{c("Gunakan kontrol siaran di panel kamera untuk mengaktifkan video. Pratinjau ini tidak merekam.")}"
+                  : "{c("Video tampil di sini saat siaran kamera aktif. Tidak ada rekaman.")}"}
             </p>
-            <small>Status: {shortStatus}</small>
+            <small>{c("Status:")} {shortStatus}</small>
           </div>
         </div>
       )}
