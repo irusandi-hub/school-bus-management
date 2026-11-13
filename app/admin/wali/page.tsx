@@ -180,7 +180,7 @@ export default async function WaliPage({
                         <td>{row.phone ?? "—"}</td>
                         <td>
                           {linked} siswa
-                          {linked === 0 && <small>Belum ada relasi siswa</small>}
+                          {linked === 0 && <small><AdminCopy value="Belum ada relasi siswa" /></small>}
                         </td>
                         <td>
                           <Pill tone={row.active ? "success" : "neutral"}>{row.active ? "Aktif" : "Nonaktif"}</Pill>
