@@ -127,6 +127,10 @@ export const messages = {
     boardIfReturned: "Tekan Naik jika siswa ikut kembali.",
     alreadyDropped: "Siswa sudah turun.",
     boardAtSchool: "Catat naik saat siswa masuk bus di sekolah.",
+    drop: "Turun",
+    boardDone: "Naik — selesai",
+    dropDone: "Turun — selesai",
+    absentDone: "Tidak Ikut — selesai",
   },
   en: {
     language: "Language",
@@ -254,6 +258,10 @@ export const messages = {
     boardIfReturned: "Select Boarded if the student joins again.",
     alreadyDropped: "The student has already been dropped off.",
     boardAtSchool: "Record boarding when the student gets on the bus at school.",
+    drop: "Drop off",
+    boardDone: "Boarded — done",
+    dropDone: "Dropped off — done",
+    absentDone: "Not riding — done",
   },
   ar: {
     language: "اللغة",
@@ -381,6 +389,10 @@ export const messages = {
     boardIfReturned: "اضغط على صعد إذا عاد الطالب للركوب.",
     alreadyDropped: "تم إنزال الطالب بالفعل.",
     boardAtSchool: "سجّل الصعود عند ركوب الطالب الحافلة في المدرسة.",
+    drop: "إنزال",
+    boardDone: "تم الصعود",
+    dropDone: "تم الإنزال",
+    absentDone: "لن يستقل الحافلة — مكتمل",
   },
 } as const;
 
