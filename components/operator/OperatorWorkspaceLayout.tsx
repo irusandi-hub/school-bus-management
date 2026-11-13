@@ -3,6 +3,7 @@ import { BrandLogo } from "@/components/brand-logo";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { ConfigNotice } from "@/components/admin/ui";
 import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
+import { LocalizedText } from "@/components/i18n/LocaleProvider";
 import { BottomNav } from "@/components/ui/BottomNav";
 import { Icon } from "@/components/ui/Icon";
 import { adminBottomNav, adminGroups } from "@/components/ui/nav-config";
@@ -21,8 +22,8 @@ export async function OperatorWorkspaceLayout({ children }: { children: React.Re
         <div className="nav-group"><AdminNav /></div>
         <div className="sidebar-bottom">
           <span className="security-icon"><Icon name="shield" size={13} /></span>
-          <strong>Operator Utama</strong>
-          <p>Akses global seluruh Area Operasional.</p>
+          <strong><LocalizedText k="operator" /></strong>
+          <p><LocalizedText k="globalAccess" /></p>
         </div>
       </aside>
       <main className="main">
@@ -34,14 +35,14 @@ export async function OperatorWorkspaceLayout({ children }: { children: React.Re
             className="topbar-brand"
           />
           <div className="topbar-context">
-            <span className="topbar-kicker">Operator Utama</span>
-            <strong>Ruang kerja Area Operasional</strong>
+            <span className="topbar-kicker"><LocalizedText k="operator" /></span>
+            <strong><LocalizedText k="operatorWorkspace" /></strong>
           </div>
           <div className="top-actions">
             <LocaleSwitcher compact />
             <form action={signOutAction}>
               <button className="btn btn-ghost btn-sm topbar-exit" type="submit">
-                <Icon name="logout" size={15} /><span>Keluar</span>
+                <Icon name="logout" size={15} /><span><LocalizedText k="signOut" /></span>
               </button>
             </form>
           </div>
