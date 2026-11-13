@@ -214,7 +214,7 @@ export default async function AssignmentsPage() {
           <header className="panel-head">
             <div>
               <h2 className="panel-title"><AdminCopy value="Tambah penugasan" /></h2>
-              <div className="panel-subtitle">Satu pengemudi dan satu bus tidak dapat dipakai dua kali pada tanggal yang sama</div>
+              <div className="panel-subtitle"><AdminCopy value="Satu pengemudi dan satu bus tidak dapat dipakai dua kali pada tanggal yang sama" /></div>
             </div>
           </header>
           <div className="form-body">
