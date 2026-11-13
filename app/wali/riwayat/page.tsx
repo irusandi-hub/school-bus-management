@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ConfigNotice, Notice, Pill } from "@/components/admin/ui";
+import { LocalizedText } from "@/components/i18n/LocaleProvider";
 import { requireGuardian } from "@/lib/auth";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { loadChildTrips, loadChildren } from "@/lib/guardian/data";
@@ -44,7 +45,7 @@ export default async function GuardianHistoryPage() {
       <section className="guardian-hero">
         <div>
           <p className="eyebrow">RIWAYAT</p>
-          <h1>Riwayat perjalanan anak</h1>
+          <h1><LocalizedText k="guardianHistory" /></h1>
           <p>
             Hanya perjalanan pada rute anak Anda yang terhubung dengan akun ini. Riwayat tidak dapat diubah atau
             dihapus dari portal.
@@ -53,25 +54,25 @@ export default async function GuardianHistoryPage() {
       </section>
 
       {children.length === 0 && (
-        <Notice kind="info">Belum ada anak aktif yang terhubung dengan akun ini.</Notice>
+        <Notice kind="info"><LocalizedText k="noActiveChild" /></Notice>
       )}
 
       <section className="panel">
         <header className="panel-head">
           <div>
-            <h2 className="panel-title">Perjalanan terbaru</h2>
-            <div className="panel-subtitle">Maksimal 5 perjalanan terakhir per anak</div>
+            <h2 className="panel-title"><LocalizedText k="recentTrips" /></h2>
+            <div className="panel-subtitle"><LocalizedText k="latestFiveTrips" /></div>
           </div>
         </header>
         <div className="admin-table-wrap">
           <table className="admin-table table-stack">
             <thead>
               <tr>
-                <th scope="col">Tanggal</th>
-                <th scope="col">Anak</th>
-                <th scope="col">Rute</th>
-                <th scope="col">Status</th>
-                <th scope="col">Waktu</th>
+                <th scope="col"><LocalizedText k="date" /></th>
+                <th scope="col"><LocalizedText k="child" /></th>
+                <th scope="col"><LocalizedText k="route" /></th>
+                <th scope="col"><LocalizedText k="status" /></th>
+                <th scope="col"><LocalizedText k="time" /></th>
               </tr>
             </thead>
             <tbody>
@@ -79,7 +80,7 @@ export default async function GuardianHistoryPage() {
                 <tr>
                   <td colSpan={5}>
                     <div className="table-empty">
-                      <strong>Belum ada riwayat perjalanan</strong>
+                      <strong><LocalizedText k="noTripHistory" /></strong>
                       <p>
                         Riwayat muncul setelah pengemudi memulai dan menyelesaikan perjalanan pada rute anak Anda.
                         Tidak ada data contoh yang ditampilkan.
