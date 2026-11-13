@@ -339,6 +339,7 @@ export const messages = {
     databaseNotConfigured: "Database belum dikonfigurasi",
     backHome: "Kembali ke beranda",
     supabaseRequired: "Modul ini memerlukan koneksi Supabase. Hubungi pengelola sistem untuk mengisi NEXT_PUBLIC_SUPABASE_URL dan NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY, lalu terapkan migrasi yang tersedia di repository.",
+    issueLabel: "Kendala",
   },
   en: {
     language: "Language",
@@ -678,6 +679,7 @@ export const messages = {
     databaseNotConfigured: "Database is not configured",
     backHome: "Back to home",
     supabaseRequired: "This module requires a Supabase connection. Contact the system administrator to configure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY, then apply the available repository migrations.",
+    issueLabel: "Issue",
   },
   ar: {
     language: "اللغة",
@@ -1017,6 +1019,7 @@ export const messages = {
     databaseNotConfigured: "قاعدة البيانات غير مهيأة",
     backHome: "العودة إلى الصفحة الرئيسية",
     supabaseRequired: "تتطلب هذه الوحدة اتصالاً بـ Supabase. تواصل مع مسؤول النظام لإعداد NEXT_PUBLIC_SUPABASE_URL وNEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY، ثم طبّق عمليات الترحيل المتاحة في المستودع.",
+    issueLabel: "مشكلة",
   },
 } as const;
 
