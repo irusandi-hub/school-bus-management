@@ -33,7 +33,7 @@ export function GuardianOpsHeader({
 }) {
   const initial = (guardianName || "W").slice(0, 1).toUpperCase();
   const t = (key: Parameters<typeof translate>[1]) => translate(locale, key);
-  const dateLocale = locale === "ar" ? "ar-SA" : locale === "en" ? "en-GB" : "id-ID";
+  const dateLocale = locale === "ar" ? "ar-SA-u-ca-gregory" : locale === "en" ? "en-GB" : "id-ID";
   const formattedDate = new Intl.DateTimeFormat(dateLocale, { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Riyadh" }).format(new Date(`${serviceDate}T12:00:00+03:00`));
 
   return (
