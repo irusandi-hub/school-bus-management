@@ -3,7 +3,6 @@ import Link from "next/link";
 import { BrandLogo } from "@/components/brand-logo";
 import { Icon } from "@/components/ui/Icon";
 import { LocalizedText } from "@/components/i18n/LocaleProvider";
-import { LocalizedText } from "@/components/i18n/LocaleProvider";
 import { signOutAction } from "@/lib/auth-actions";
 import type { TripProgress } from "@/lib/driver/trip-progress";
 
@@ -64,7 +63,7 @@ export function DriverOpsHeader({
           <span>ID {shortId} • {plateNumber || <LocalizedText k="plateNotRecorded" />}</span>
         </div>
         <form action={signOutAction} className="compact-logout-form">
-          <button className="compact-logout" type="submit" aria-label="Sign out" title="Sign out">
+          <button className="compact-logout" type="submit" aria-label="Keluar" title="Keluar">
             <Icon name="logout" size={17} />
           </button>
         </form>
