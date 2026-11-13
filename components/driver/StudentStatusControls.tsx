@@ -4,6 +4,7 @@ import { useActionState, useEffect, useState, type ButtonHTMLAttributes } from "
 import { useFormStatus } from "react-dom";
 import { Pill } from "@/components/admin/ui";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 import { Icon } from "@/components/ui/Icon";
 import { recordStudentEventState } from "@/app/pengemudi/actions";
 import { studentActionSet } from "@/lib/driver/student-actions";
@@ -27,7 +28,8 @@ type ActionButtonProps = {
 
 /** Tombol tindakan yang sama, dengan penanda selesai tanpa mengubah ukurannya. */
 function ActionButton({ kind, label, doneLabel, done, icon, pending = false, className, ...rest }: ActionButtonProps) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
+  const copy = (value: string) => translateAdminCopy(value, locale) ?? value;
   return (
     <button
       {...rest}
@@ -164,7 +166,7 @@ export function StudentStatusControls({
       )}
 
       <div className="ops-student-state" aria-live="polite">
-        <Pill tone={statusTone(status)}>{status === "boarded" ? t("board") : status === "dropped_off" ? t("droppedOff") : status === "absent" ? t("absent") : status ? tripEventLabel(status) : t("unrecorded")}</Pill>
+        <Pill tone={statusTone(status)}>{status === "boarded" ? t("board") : status === "dropped_off" ? t("droppedOff") : status === "absent" ? t("absent") : status ? copy(tripEventLabel(status)) : t("unrecorded")}</Pill>
         {pending && <span className="ops-action-pending">{t("saving")}</span>}
       </div>
 
@@ -224,7 +226,7 @@ export function StudentStatusControls({
 
       {state.status === "error" && (
         <p className="ops-student-error" role="alert">
-          {state.message}
+          {copy(state.message)}
         </p>
       )}
       {state.status === "success" && (
