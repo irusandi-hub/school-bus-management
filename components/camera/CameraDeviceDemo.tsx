@@ -2,9 +2,13 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { DEMO_SESSION_MS, MAX_SIGNAL_LENGTH, parseDemoDescription } from "@/lib/camera/demo-policy";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 /** Satu pengirim + satu penonton, signaling manual. Tidak ada upload/penyimpanan SDP di server. */
 export function CameraDeviceDemo({ publisherOnly = false }: { publisherOnly?: boolean }) {
+  const { locale } = useLocale();
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
   const peer = useRef<RTCPeerConnection | null>(null);
   const media = useRef<MediaStream | null>(null);
   const video = useRef<HTMLVideoElement | null>(null);
@@ -132,29 +136,29 @@ export function CameraDeviceDemo({ publisherOnly = false }: { publisherOnly?: bo
     } finally { if (generation.current === version) setBusy(false); }
   };
 
-  return <section aria-label={publisherOnly ? "Siaran uji pengemudi" : "Demo kamera perangkat"} style={{ maxWidth: 760, margin: "auto", padding: publisherOnly ? 16 : 24, minWidth: 0 }}>
-    {publisherOnly ? <h3>Kamera HP · siaran uji</h3> : <h1>Demo kamera HP · satu sumber</h1>}
-    <p><strong>Khusus pengujian perangkat, bukan kamera perjalanan atau akses wali.</strong> Gunakan objek uji; jangan arahkan kamera ke anak atau data pribadi.</p>
-    <p>Video langsung antarperangkat tanpa akun layanan tambahan dan tanpa rekaman. Koneksi tidak dijamin pada semua jaringan. Kedua halaman harus tetap terbuka; pindah aplikasi atau mengunci layar menghentikan sesi. Batas sesi 10 menit.</p>
-    {!publisherOnly && <label>Peran perangkat <select value={role} disabled={active || busy} onChange={(event) => { stop(); setRole(event.target.value as typeof role); }}>
-      <option value="publisher">HP pengirim kamera</option><option value="viewer">Perangkat penonton</option>
+  return <section aria-label={c(publisherOnly ? "Siaran uji pengemudi" : "Demo kamera perangkat")} style={{ maxWidth: 760, margin: "auto", padding: publisherOnly ? 16 : 24, minWidth: 0 }}>
+    {publisherOnly ? <h3>{c("Kamera HP · siaran uji")}</h3> : <h1>{c("Demo kamera HP · satu sumber")}</h1>}
+    <p><strong>{c("Khusus pengujian perangkat, bukan kamera perjalanan atau akses wali.")}</strong> {c("Gunakan objek uji; jangan arahkan kamera ke anak atau data pribadi.")}</p>
+    <p>{c("Video langsung antarperangkat tanpa akun layanan tambahan dan tanpa rekaman. Koneksi tidak dijamin pada semua jaringan. Kedua halaman harus tetap terbuka; pindah aplikasi atau mengunci layar menghentikan sesi. Batas sesi 10 menit.")}</p>
+    {!publisherOnly && <label>{c("Peran perangkat")} <select value={role} disabled={active || busy} onChange={(event) => { stop(); setRole(event.target.value as typeof role); }}>
+      <option value="publisher">{c("HP pengirim kamera")}</option><option value="viewer">{c("Perangkat penonton")}</option>
     </select></label>}
-    <p role="status">{status}</p>
-    <p>{active && role === "publisher" ? "● Sesi kamera aktif — hentikan setelah pengujian." : ""} {playing && role === "viewer" ? "● LIVE · video sedang diputar" : ""}</p>
+    <p role="status">{c(status)}</p>
+    <p>{active && role === "publisher" ? "{c("● Sesi kamera aktif — hentikan setelah pengujian.")}" : ""} {playing && role === "viewer" ? "{c("● LIVE · video sedang diputar")}" : ""}</p>
     <video ref={video} style={{ width: "100%", background: "#111", aspectRatio: "16/9" }} controls autoPlay muted playsInline
       onPlaying={() => setPlaying(true)} onWaiting={() => setPlaying(false)} onStalled={() => setPlaying(false)} onPause={() => setPlaying(false)} onEnded={() => stop("Video berakhir.")} onError={() => stop("Pemutaran video gagal.")} />
-    <p>1. Pengirim menekan Mulai, lalu menyalin kode koneksi. 2. Penonton menempel kode koneksi dan membuat kode balasan. 3. Pengirim menempel kode balasan dan menekan Sambungkan. Tukarkan kode lewat kanal privat pada perangkat lain agar halaman kamera tetap aktif.</p>
-    {role === "publisher" && phase === "idle" && <button disabled={busy} onClick={() => void run("offer")}>{publisherOnly ? "Mulai siaran uji" : "Mulai kamera & buat kode"}</button>}
+    <p>{c("1. Pengirim menekan Mulai, lalu menyalin kode koneksi. 2. Penonton menempel kode koneksi dan membuat kode balasan. 3. Pengirim menempel kode balasan dan menekan Sambungkan. Tukarkan kode lewat kanal privat pada perangkat lain agar halaman kamera tetap aktif.")}</p>
+    {role === "publisher" && phase === "idle" && <button disabled={busy} onClick={() => void run("offer")}>{c(publisherOnly ? "Mulai siaran uji" : "Mulai kamera & buat kode")}</button>}
     {(role === "viewer" && phase === "idle" || role === "publisher" && phase === "offered") && <div>
-      <label htmlFor="signal-input">Kode {role === "viewer" ? "koneksi dari pengirim" : "balasan dari penonton"}</label>
+      <label htmlFor="signal-input">{c("Kode")} {c(role === "viewer" ? "Koneksi dari pengirim" : "Balasan dari penonton")}</label>
       <textarea id="signal-input" value={input} maxLength={MAX_SIGNAL_LENGTH} rows={4} style={{ width: "100%" }} autoComplete="off" spellCheck={false} onChange={(event) => setInput(event.target.value)} />
-      <button disabled={busy || !input.trim()} onClick={() => void run(role === "viewer" ? "answer" : "connect")}>{role === "viewer" ? "Buat kode balasan" : "Sambungkan"}</button>
+      <button disabled={busy || !input.trim()} onClick={() => void run(role === "viewer" ? "answer" : "connect")}>{c(role === "viewer" ? "Buat kode balasan" : "Sambungkan")}</button>
     </div>}
-    {output && <div><label htmlFor="signal-output">Kode {role === "publisher" ? "koneksi" : "balasan"} — rahasiakan, hanya untuk penguji</label>
+    {output && <div><label htmlFor="signal-output">{c("Kode")} {c(role === "publisher" ? "Koneksi" : "Balasan")} — {c("rahasiakan, hanya untuk penguji")}</label>
       <textarea id="signal-output" readOnly autoComplete="off" spellCheck={false} value={output} rows={5} style={{ width: "100%" }} onFocus={(event) => event.target.select()} />
-      <button onClick={() => void navigator.clipboard?.writeText(output).then(() => setStatus("Kode disalin. Bagikan hanya kepada penguji yang diizinkan.")).catch(() => setStatus("Pilih dan salin kode secara manual."))}>Salin kode</button>
+      <button onClick={() => void navigator.clipboard?.writeText(output).then(() => setStatus("Kode disalin. Bagikan hanya kepada penguji yang diizinkan.")).catch(() => setStatus("Pilih dan salin kode secara manual."))}>{c("Salin kode")}</button>
     </div>}
     <p><button disabled={!active && !busy} onClick={() => stop()}>{publisherOnly ? "Hentikan siaran" : "Hentikan / cabut koneksi"}</button></p>
-    <p>Hentikan menutup koneksi dan melepas kamera lokal. Perangkat penonton akan kehilangan koneksi saat siaran dihentikan. Ini bukan bukti pencabutan akses wali oleh server. Tidak ada kode koneksi yang dikirim ke server aplikasi atau disimpan aplikasi.</p>
+    <p>{c("Hentikan menutup koneksi dan melepas kamera lokal. Perangkat penonton akan kehilangan koneksi saat siaran dihentikan. Ini bukan bukti pencabutan akses wali oleh server. Tidak ada kode koneksi yang dikirim ke server aplikasi atau disimpan aplikasi.")}</p>
   </section>;
 }
