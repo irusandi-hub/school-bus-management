@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdminCopy } from "@/components/i18n/AdminCopy";
 import type { Metadata } from "next";
 import { ConfigNotice, EmptyRow, MetricStrip, Notice, PageHeader, Pill } from "@/components/admin/ui";
 import { ProjectAreaTabs } from "@/components/admin/ProjectAreaTabs";
@@ -91,7 +92,7 @@ export default async function ReportsPage() {
         <section className="panel">
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">Status modul</h2>
+              <h2 className="panel-title"><AdminCopy value="Status modul" /></h2>
               <div className="panel-subtitle">Fitur yang belum tersedia tidak ditampilkan sebagai tombol berjalan</div>
             </div>
             <Pill tone="warning">Terbatas</Pill>
@@ -100,12 +101,12 @@ export default async function ReportsPage() {
             <li>
               <strong>Data induk &amp; akun wali</strong>
               <span>✓</span>
-              <small>Perubahan mengikuti hak akses akun. Riwayat status tetap tersimpan.</small>
+              <small><AdminCopy value="Perubahan mengikuti hak akses akun. Riwayat status tetap tersimpan." /></small>
             </li>
             <li>
-              <strong>Rute, penugasan, perjalanan</strong>
+              <strong><AdminCopy value="Rute, penugasan, perjalanan" /></strong>
               <span>✓</span>
-              <small>Rute dan penugasan dikelola Operator Utama; perjalanan dijalankan pengemudi yang ditugaskan.</small>
+              <small><AdminCopy value="Rute dan penugasan dikelola Operator Utama; perjalanan dijalankan pengemudi yang ditugaskan." /></small>
             </li>
             <li>
               <strong>GPS langsung &amp; kamera bus</strong>
@@ -116,9 +117,9 @@ export default async function ReportsPage() {
               </small>
             </li>
             <li>
-              <strong>Ekspor laporan</strong>
+              <strong><AdminCopy value="Ekspor laporan" /></strong>
               <span>✓</span>
-              <small>Tersedia dalam format CSV untuk seluruh data perjalanan yang dapat diakses Operator.</small>
+              <small><AdminCopy value="Tersedia dalam format CSV untuk seluruh data perjalanan yang dapat diakses Operator." /></small>
             </li>
           </ul>
         </section>
@@ -126,7 +127,7 @@ export default async function ReportsPage() {
         <section className="panel">
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">Prinsip audit</h2>
+              <h2 className="panel-title"><AdminCopy value="Prinsip audit" /></h2>
               <div className="panel-subtitle">Dicatat otomatis saat ada perubahan</div>
             </div>
           </header>
@@ -145,7 +146,7 @@ export default async function ReportsPage() {
       <section className="panel">
         <header className="panel-head">
           <div>
-            <h2 className="panel-title">Jejak audit terbaru</h2>
+            <h2 className="panel-title"><AdminCopy value="Jejak audit terbaru" /></h2>
             <div className="panel-subtitle">60 catatan terakhir · audit platform tidak difilter per area</div>
           </div>
         </header>
@@ -153,10 +154,10 @@ export default async function ReportsPage() {
           <table className="admin-table table-stack">
             <thead>
               <tr>
-                <th scope="col">Waktu</th>
-                <th scope="col">Aktor</th>
-                <th scope="col">Operasi</th>
-                <th scope="col">Ringkasan</th>
+                <th scope="col"><AdminCopy value="Waktu" /></th>
+                <th scope="col"><AdminCopy value="Aktor" /></th>
+                <th scope="col"><AdminCopy value="Operasi" /></th>
+                <th scope="col"><AdminCopy value="Ringkasan" /></th>
               </tr>
             </thead>
             <tbody>
