@@ -643,6 +643,12 @@ const copy: Record<string, Record<Locale, string>> = {
   "Buka navigasi ke": { id: "Buka navigasi ke", en: "Open navigation to", ar: "افتح التنقل إلى" },
   "tujuan": { id: "tujuan", en: "destination", ar: "الوجهة" },
   "titik dari": { id: "titik dari", en: "stops out of", ar: "نقاط من" },
+  "Titik pertama": { id: "Titik pertama", en: "First stop", ar: "النقطة الأولى" },
+  "Garasi atau lokasi awal belum dicatat pada data rute.": { id: "Garasi atau lokasi awal belum dicatat pada data rute.", en: "The garage or starting location has not been recorded in the route data.", ar: "لم يتم تسجيل المرآب أو موقع البداية في بيانات المسار." },
+  "titik awal rute sore": { id: "titik awal rute sore", en: "afternoon route starting point", ar: "نقطة بداية مسار بعد الظهر" },
+  "belum memiliki koordinat tersimpan.": { id: "belum memiliki koordinat tersimpan.", en: "has no saved coordinates.", ar: "لا توجد إحداثيات محفوظة." },
+  "belum memiliki koordinat tersimpan, sehingga rute tidak dapat dibuka. Minta Operator Utama melengkapi koordinat titik ini — alamat tidak boleh ditebak.": { id: "belum memiliki koordinat tersimpan, sehingga rute tidak dapat dibuka. Minta Operator Utama melengkapi koordinat titik ini — alamat tidak boleh ditebak.", en: "has no saved coordinates, so the route cannot be opened. Ask the Main Operator to complete this stop's coordinates; addresses must not be guessed.", ar: "لا توجد إحداثيات محفوظة، لذلك لا يمكن فتح المسار. اطلب من المشغّل الرئيسي إكمال إحداثيات هذه النقطة؛ لا يجوز تخمين العناوين." },
+  "titik pertama": { id: "titik pertama", en: "first stop", ar: "النقطة الأولى" },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
