@@ -41,7 +41,31 @@ describe("klien simulasi pengembangan", () => {
       .eq("service_status", "active")) as Result;
 
     assert.equal(result.data, null);
-    assert.equal(result.count, 2);
+    assert.equal(result.count, 5);
+  });
+
+  it("menyediakan minimal lima siswa aktif pada rute Pengemudi di Vercel Preview", async () => {
+    const supabase = createSimulationClient();
+    const result = (await supabase
+      .from("student_route_stops")
+      .select("student_id, route_stops(stop_order), students(full_name, service_status)")
+      .eq("route_id", "51111111-0000-4000-8000-000000000711")
+      .eq("direction", "morning")
+      .eq("active", true)) as Result;
+
+    const roster = rows(result);
+    assert.equal(roster.length, 5);
+    assert.ok(roster.every((entry) => (entry.students as SimRow).service_status === "active"));
+    assert.deepEqual(
+      roster.map((entry) => (entry.students as SimRow).full_name).sort(),
+      [
+        "Siswa Contoh Baru Enam",
+        "Siswa Contoh Baru Lima",
+        "Siswa Contoh Baru Tujuh",
+        "Siswa Contoh Satu",
+        "Siswa Contoh Dua",
+      ].sort(),
+    );
   });
 
   it("mendukung pencarian or/ilike dan filter null", async () => {
