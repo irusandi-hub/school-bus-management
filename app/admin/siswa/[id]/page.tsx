@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdminCopy } from "@/components/i18n/AdminCopy";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
@@ -138,35 +139,35 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
           </header>
           <dl className="detail-list">
             <div>
-              <dt>Sekolah</dt>
+              <dt><AdminCopy value="Sekolah" /></dt>
               <dd>{student.schools?.name ?? "Belum ditetapkan"}</dd>
             </div>
             <div>
-              <dt>Wali</dt>
+              <dt><AdminCopy value="Wali" /></dt>
               <dd>{student.guardians?.full_name ?? "Belum ditetapkan"}</dd>
             </div>
             <div>
-              <dt>Email wali</dt>
+              <dt><AdminCopy value="Email wali" /></dt>
               <dd>{student.guardians?.email ?? "—"}</dd>
             </div>
             <div>
-              <dt>Telepon wali</dt>
+              <dt><AdminCopy value="Telepon wali" /></dt>
               <dd>{student.guardians?.phone ?? "—"}</dd>
             </div>
             <div>
-              <dt>Tanggal lahir</dt>
+              <dt><AdminCopy value="Tanggal lahir" /></dt>
               <dd>{formatDate(student.date_of_birth)}</dd>
             </div>
             <div>
-              <dt>Alamat rumah</dt>
+              <dt><AdminCopy value="Alamat rumah" /></dt>
               <dd>{student.home_address ?? "Belum diisi"}</dd>
             </div>
             <div>
-              <dt>Koordinat rumah</dt>
+              <dt><AdminCopy value="Koordinat rumah" /></dt>
               <dd>{coordinates}</dd>
             </div>
             <div>
-              <dt>Catatan titik jemput</dt>
+              <dt><AdminCopy value="Catatan titik jemput" /></dt>
               <dd>{student.pickup_notes ?? "Belum diisi"}</dd>
             </div>
           </dl>
@@ -179,7 +180,7 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
         <section className="panel detail-panel">
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">Status layanan</h2>
+              <h2 className="panel-title"><AdminCopy value="Status layanan" /></h2>
               <div className="panel-subtitle">Perubahan status selalu memerlukan alasan</div>
             </div>
             <Pill tone={statusTone(student.service_status)}>{serviceStatusLabel(student.service_status)}</Pill>
@@ -226,10 +227,10 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
           <table className="admin-table admin-table-compact">
             <thead>
               <tr>
-                <th scope="col">Arah</th>
-                <th scope="col">Rute</th>
-                <th scope="col">Titik</th>
-                <th scope="col">Tindakan</th>
+                <th scope="col"><AdminCopy value="Arah" /></th>
+                <th scope="col"><AdminCopy value="Rute" /></th>
+                <th scope="col"><AdminCopy value="Titik" /></th>
+                <th scope="col"><AdminCopy value="Tindakan" /></th>
               </tr>
             </thead>
             <tbody>
@@ -237,7 +238,7 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
                 <tr>
                   <td colSpan={4}>
                     <div className="table-empty">
-                      <strong>Siswa belum ditempatkan pada rute</strong>
+                      <strong><AdminCopy value="Siswa belum ditempatkan pada rute" /></strong>
                       <p>
                         Tanpa penempatan, siswa tidak muncul pada daftar jemput pengemudi dan riwayat perjalanan wali.
                         Pilih titik jemput di bawah.
@@ -310,7 +311,7 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
       <section className="panel">
         <header className="panel-head">
           <div>
-            <h2 className="panel-title">Riwayat status layanan</h2>
+            <h2 className="panel-title"><AdminCopy value="Riwayat status layanan" /></h2>
             <div className="panel-subtitle">Catatan tetap, tidak dapat diubah atau dihapus</div>
           </div>
         </header>
@@ -321,7 +322,7 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
           <table className="admin-table">
             <thead>
               <tr>
-                <th scope="col">Waktu</th>
+                <th scope="col"><AdminCopy value="Waktu" /></th>
                 <th scope="col">Perubahan</th>
                 <th scope="col">Alasan</th>
                 <th scope="col">Dicatat oleh</th>
