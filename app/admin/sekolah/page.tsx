@@ -186,7 +186,7 @@ export default async function SekolahPage({
             filters={
               <select name="status" defaultValue={status} aria-label="Filter status sekolah">
                 <LocalizedOption value="" label="Semua status" />
-                <option value="aktif">Aktif</option>
+                <LocalizedOption value="aktif" label="Aktif" />
                 <LocalizedOption value="nonaktif" label="Nonaktif" />
               </select>
             }
