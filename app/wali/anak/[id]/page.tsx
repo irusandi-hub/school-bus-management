@@ -14,9 +14,6 @@ import { resolveLivePlayback } from "@/lib/guardian/live";
 import { buildChildLiveVideo } from "@/lib/guardian/live-view";
 import type { TripEventRow } from "@/lib/types";
 import {
-  formatDate,
-  formatDateTime,
-  formatTime,
   routeDirectionLabel,
   tripEventLabel,
   tripStatusLabel,
@@ -150,8 +147,8 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
         <section className="panel">
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">Penjemputan</h2>
-              <div className="panel-subtitle">Titik dan catatan yang diberikan ke operasional</div>
+              <h2 className="panel-title">{c("Penjemputan")}</h2>
+              <div className="panel-subtitle">{c("Titik dan catatan yang diberikan ke operasional")}</div>
             </div>
           </header>
           <div className="pickup-body">
@@ -192,7 +189,7 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
       <section className="panel">
         <header className="panel-head">
           <div>
-            <h2 className="panel-title">Perjalanan hari ini</h2>
+            <h2 className="panel-title">{c("Perjalanan hari ini")}</h2>
             <div className="panel-subtitle">{formatLocalDate(todayDate())}</div>
           </div>
         </header>
@@ -228,7 +225,7 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
         <section className="panel">
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">Riwayat perjalanan</h2>
+              <h2 className="panel-title">{c("Riwayat perjalanan")}</h2>
               <div className="panel-subtitle">{c("15 perjalanan terbaru pada rute anak Anda")}</div>
             </div>
           </header>
@@ -278,7 +275,7 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
         <section className="panel">
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">Riwayat kehadiran</h2>
+              <h2 className="panel-title">{c("Riwayat kehadiran")}</h2>
               <div className="panel-subtitle">{c("Catatan pengemudi untuk anak Anda")}</div>
             </div>
           </header>
