@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AdminCopy } from "@/components/i18n/AdminCopy";
 import { ConfigNotice, EmptyRow, Notice, PageHeader, Pill } from "@/components/admin/ui";
 import { ProjectAreaTabs } from "@/components/admin/ProjectAreaTabs";
 import { adminReadContext } from "@/lib/admin/read";
@@ -67,7 +68,7 @@ export default async function TripsPage() {
       <section className="panel">
         <header className="panel-head">
           <div>
-            <h2 className="panel-title">60 perjalanan terbaru</h2>
+            <h2 className="panel-title"><AdminCopy value="60 perjalanan terbaru" /></h2>
             <div className="panel-subtitle">Waktu mulai, tiba di sekolah, dan selesai dicatat oleh sistem</div>
           </div>
         </header>
@@ -75,11 +76,11 @@ export default async function TripsPage() {
           <table className="admin-table">
             <thead>
               <tr>
-                <th scope="col">Tanggal</th>
-                <th scope="col">Rute</th>
+                <th scope="col"><AdminCopy value="Tanggal" /></th>
+                <th scope="col"><AdminCopy value="Rute" /></th>
                 <th scope="col">Pengemudi &amp; bus</th>
-                <th scope="col">Status</th>
-                <th scope="col">Waktu</th>
+                <th scope="col"><AdminCopy value="Status" /></th>
+                <th scope="col"><AdminCopy value="Waktu" /></th>
               </tr>
             </thead>
             <tbody>
