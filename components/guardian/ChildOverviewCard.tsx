@@ -4,6 +4,8 @@ import { LocalizedText } from "@/components/i18n/LocaleProvider";
 import { ChildBusLocationPanel } from "@/components/guardian/ChildBusLocationPanel";
 import { ParentLiveVideo } from "@/components/guardian/ParentLiveVideo";
 import type { ChildOverview, Placement, TodayTrip } from "@/lib/guardian/data";
+import type { Locale } from "@/lib/i18n/config";
+import { translate } from "@/lib/i18n/messages";
 import type { ChildLiveVideoView } from "@/lib/guardian/live-view";
 import type { JourneyStatus, JourneyTone } from "@/lib/guardian/journey";
 import { formatTime, routeDirectionLabel } from "@/lib/validation";
@@ -26,6 +28,7 @@ type DirectionStatus = {
  */
 export function ChildOverviewCard({
   child,
+  locale,
   journey,
   trip,
   placement,
@@ -34,6 +37,7 @@ export function ChildOverviewCard({
   simulated,
 }: {
   child: ChildOverview;
+  locale: Locale;
   journey: JourneyStatus;
   trip: TodayTrip | null;
   placement: Placement | null;
@@ -42,32 +46,34 @@ export function ChildOverviewCard({
   simulated: boolean;
 }) {
   const student = child.student;
-  const school = student.schools?.name ?? "Sekolah belum ditetapkan";
-  const bus = trip?.busCode ? `Bus ${trip.busCode}` : "Belum ditetapkan";
+  const t = (key: Parameters<typeof translate>[1]) => translate(locale, key);
+  const directionLabel = (value: string) => value === "morning" ? t("morningDirection") : value === "afternoon" ? t("afternoonDirection") : t("directionNotRecorded");
+  const school = student.schools?.name ?? t("schoolNotSet");
+  const bus = trip?.busCode ? `${t("busLabel")} ${trip.busCode}` : t("busNotSet");
   const busDetail = trip?.plateNumber
-    ? `Pelat ${trip.plateNumber}${trip.busCapacity ? ` · ${trip.busCapacity} kursi` : ""}`
-    : "Nomor pelat dan kapasitas belum tercatat";
+    ? `${t("plateLabel")} ${trip.plateNumber}${trip.busCapacity ? ` · ${trip.busCapacity} ${t("seatsLabel")}` : ""}`
+    : t("plateCapacityMissing");
   const driver = trip
     ? trip.driverAssigned
-      ? "Sudah ditugaskan"
-      : "Belum ditugaskan"
-    : "Belum ditugaskan";
+      ? t("driverAssigned")
+      : t("driverNotAssigned")
+    : t("driverNotAssigned");
   const driverDetail = trip?.driverAssigned
-    ? "Nama pengemudi belum dibagikan ke portal wali"
-    : "Operator belum menautkan pengemudi";
-  const route = placement?.routeName ?? "Rute belum diatur";
+    ? t("driverNamePrivate")
+    : t("operatorNoDriver");
+  const route = placement?.routeName ?? t("routeNotSet");
   const stop = placement
     ? `${placement.stopOrder}. ${placement.stopName}`
-    : "Titik jemput belum diatur";
-  const direction = routeDirectionLabel(trip?.direction ?? placement?.direction ?? "");
+    : t("pickupNotSet");
+  const direction = directionLabel(trip?.direction ?? placement?.direction ?? "");
   const updated = journey.updatedAt
-    ? `Status diperbarui ${formatTime(journey.updatedAt)}`
-    : "Belum ada pembaruan status";
+    ? `${t("statusUpdated")} ${formatTime(journey.updatedAt)}`
+    : t("noStatusUpdate");
 
   return (
     <article className="child-card guardian-child" id={`anak-${student.id}`}>
       <div className="guardian-child-layout">
-        <section className="guardian-child-info" aria-label={`Informasi perjalanan ${student.full_name}`}>
+        <section className="guardian-child-info" aria-label={`${t("tripDetails")}: ${student.full_name}`}>
           <header className="guardian-child-identity">
             <span className="guardian-child-avatar" aria-hidden="true">
               {student.full_name.slice(0, 1).toUpperCase()}
@@ -101,16 +107,16 @@ export function ChildOverviewCard({
             </div>
           </div>
 
-          <div className="guardian-directions" aria-label="Status keberangkatan pagi dan kepulangan">
+          <div className="guardian-directions" aria-label={t("morningAfternoonStatus")}>
             {directionStatuses.map((status) => (
               <div className={`guardian-direction tone-${status.tone}`} key={status.direction}>
-                <span className="guardian-direction-label">{routeDirectionLabel(status.direction)}</span>
+                <span className="guardian-direction-label">{directionLabel(status.direction)}</span>
                 <strong>{status.label}</strong>
               </div>
             ))}
           </div>
 
-          <dl className="guardian-facts" aria-label="Detail perjalanan">
+          <dl className="guardian-facts" aria-label={t("tripDetails")}>
             <div className="guardian-fact">
               <dt>
                 <Icon name="bus" size={17} />
@@ -128,7 +134,7 @@ export function ChildOverviewCard({
               </dt>
               <dd>
                 <strong>{route}</strong>
-                <small>{direction ? `Arah ${direction.toLowerCase()}` : "Arah belum tercatat"}</small>
+                <small>{direction ? `${t("directionLabel")} ${direction}` : t("directionNotRecorded")}</small>
               </dd>
             </div>
             <div className="guardian-fact">
