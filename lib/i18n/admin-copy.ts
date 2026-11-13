@@ -650,6 +650,7 @@ const copy: Record<string, Record<Locale, string>> = {
   "belum memiliki koordinat tersimpan, sehingga rute tidak dapat dibuka. Minta Operator Utama melengkapi koordinat titik ini — alamat tidak boleh ditebak.": { id: "belum memiliki koordinat tersimpan, sehingga rute tidak dapat dibuka. Minta Operator Utama melengkapi koordinat titik ini — alamat tidak boleh ditebak.", en: "has no saved coordinates, so the route cannot be opened. Ask the Main Operator to complete this stop's coordinates; addresses must not be guessed.", ar: "لا توجد إحداثيات محفوظة، لذلك لا يمكن فتح المسار. اطلب من المشغّل الرئيسي إكمال إحداثيات هذه النقطة؛ لا يجوز تخمين العناوين." },
   "titik pertama": { id: "titik pertama", en: "first stop", ar: "النقطة الأولى" },
   "Profil pengemudi": { id: "Profil pengemudi", en: "Driver profile", ar: "ملف السائق" },
+  "Keluar": { id: "Keluar", en: "Sign out", ar: "تسجيل الخروج" },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
