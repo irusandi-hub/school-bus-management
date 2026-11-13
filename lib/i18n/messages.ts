@@ -324,6 +324,7 @@ export const messages = {
     locationNotHistory: "Lokasi tidak disimpan sebagai riwayat.",
     connectionTrying: "Mencoba menyambung",
     lastSeen: "Terakhir",
+    cameraConnected: "Kamera terhubung",
   },
   en: {
     language: "Language",
@@ -648,6 +649,7 @@ export const messages = {
     locationNotHistory: "Location is not stored as trip history.",
     connectionTrying: "Reconnecting",
     lastSeen: "Last seen",
+    cameraConnected: "Camera connected",
   },
   ar: {
     language: "اللغة",
@@ -972,6 +974,7 @@ export const messages = {
     locationNotHistory: "لا يتم حفظ الموقع كسجل للرحلة.",
     connectionTrying: "جارٍ إعادة الاتصال",
     lastSeen: "آخر ظهور",
+    cameraConnected: "الكاميرا متصلة",
   },
 } as const;
 
