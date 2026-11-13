@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdminCopy } from "@/components/i18n/AdminCopy";
 import type { Metadata } from "next";
 import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
 import { RecordForm, type FieldDef } from "@/components/admin/RecordForm";
@@ -167,12 +168,12 @@ export default async function BusPage({
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th scope="col">Kode armada</th>
-                  <th scope="col">Nomor polisi</th>
-                  <th scope="col">Kapasitas</th>
-                  <th scope="col">Area Operasional</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Tindakan</th>
+                  <th scope="col"><AdminCopy value="Kode armada" /></th>
+                  <th scope="col"><AdminCopy value="Nomor polisi" /></th>
+                  <th scope="col"><AdminCopy value="Kapasitas" /></th>
+                  <th scope="col"><AdminCopy value="Area Operasional" /></th>
+                  <th scope="col"><AdminCopy value="Status" /></th>
+                  <th scope="col"><AdminCopy value="Tindakan" /></th>
                 </tr>
               </thead>
               <tbody>
