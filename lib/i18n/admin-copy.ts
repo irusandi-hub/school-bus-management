@@ -651,6 +651,13 @@ const copy: Record<string, Record<Locale, string>> = {
   "titik pertama": { id: "titik pertama", en: "first stop", ar: "النقطة الأولى" },
   "Profil pengemudi": { id: "Profil pengemudi", en: "Driver profile", ar: "ملف السائق" },
   "Keluar": { id: "Keluar", en: "Sign out", ar: "تسجيل الخروج" },
+  "Terhubung": { id: "Terhubung", en: "Connected", ar: "متصل" },
+  "Koneksi kamera terputus": { id: "Koneksi kamera terputus", en: "Camera connection lost", ar: "انقطع اتصال الكاميرا" },
+  "Menghubungkan kamera…": { id: "Menghubungkan kamera…", en: "Connecting camera…", ar: "جارٍ توصيل الكاميرا…" },
+  "Koneksi kamera gagal": { id: "Koneksi kamera gagal", en: "Camera connection failed", ar: "فشل اتصال الكاميرا" },
+  "Akses kamera telah berakhir atau koneksi terputus": { id: "Akses kamera telah berakhir atau koneksi terputus", en: "Camera access ended or connection lost", ar: "انتهى الوصول إلى الكاميرا أو انقطع الاتصال" },
+  "Koneksi kamera tidak tersedia": { id: "Koneksi kamera tidak tersedia", en: "Camera connection unavailable", ar: "اتصال الكاميرا غير متاح" },
+  "Akses kamera ditolak atau belum tersedia": { id: "Akses kamera ditolak atau belum tersedia", en: "Camera access denied or unavailable", ar: "تم رفض الوصول إلى الكاميرا أو أنه غير متاح" },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
