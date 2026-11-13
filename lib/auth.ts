@@ -24,6 +24,19 @@ export type ViewerState =
  * values, and every area below re-checks the role it needs.
  */
 export async function getViewerState(): Promise<ViewerState> {
+  const demoAccount = await getDemoOtpAccount();
+  if (demoAccount) {
+    const userId = demoAccountUserId(demoAccount);
+    return {
+      status: "authenticated",
+      viewer: {
+        userId,
+        email: demoAccount.id + "@demo.schoolbus.example.test",
+        profile: { id: userId, full_name: demoAccount.name, role: demoAccount.role, phone: null },
+      },
+    };
+  }
+
   const supabase = await createServerSupabase();
   if (!supabase) return { status: "unconfigured" };
 
@@ -121,6 +134,18 @@ export type OperatorAccess =
  * account. A role without an organisation must not see any organisation data.
  */
 export async function requireOperator(nextPath = "/operator"): Promise<OperatorAccess> {
+  const demoAccount = await getDemoOtpAccount();
+  if (demoAccount?.role === "operator") {
+    const userId = demoAccountUserId(demoAccount);
+    return {
+      status: "ready",
+      viewer: { userId, email: demoAccount.id + "@demo.schoolbus.example.test", profile: {
+        id: userId, full_name: demoAccount.name, role: "operator", phone: null,
+      } },
+      operator: { id: DEV_ORGANISATION.id, name: DEV_ORGANISATION.name },
+    };
+  }
+
   if (isDevOpenAccess()) {
     return {
       status: "ready",
@@ -160,6 +185,18 @@ export type DriverAccess =
 
 /** Driver access requires the database role AND an active driver row for the account. */
 export async function requireDriver(nextPath = "/pengemudi"): Promise<DriverAccess> {
+  const demoAccount = await getDemoOtpAccount();
+  if (demoAccount?.role === "driver") {
+    const userId = demoAccountUserId(demoAccount);
+    return {
+      status: "ready",
+      viewer: { userId, email: demoAccount.id + "@demo.schoolbus.example.test", profile: {
+        id: userId, full_name: demoAccount.name, role: "driver", phone: null,
+      } },
+      driver: { id: DEV_DRIVER_RECORD.id, full_name: demoAccount.name },
+    };
+  }
+
   if (isDevOpenAccess()) {
     return {
       status: "ready",
@@ -199,6 +236,17 @@ export type GuardianAccess =
 
 /** Server-side gate for the guardian area. */
 export async function requireGuardian(nextPath = "/wali"): Promise<GuardianAccess> {
+  const demoAccount = await getDemoOtpAccount();
+  if (demoAccount?.role === "parent") {
+    const userId = demoAccountUserId(demoAccount);
+    return {
+      status: "ready",
+      viewer: { userId, email: demoAccount.id + "@demo.schoolbus.example.test", profile: {
+        id: userId, full_name: demoAccount.name, role: "parent", phone: null,
+      } },
+    };
+  }
+
   if (isDevOpenAccess()) return { status: "ready", viewer: devViewerFor("parent") };
 
   const viewer = await requireViewer(nextPath);
