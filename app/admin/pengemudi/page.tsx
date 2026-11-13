@@ -109,12 +109,12 @@ export default async function PengemudiPage({
     },
     {
       name: "project_area_id",
-      label: "Project Area",
+      label: "Area Operasional",
       type: "select",
       required: true,
       fullWidth: true,
       defaultValue: editing?.project_area_id ?? selectedId ?? "",
-      options: [{ value: "", label: "Pilih Project Area" }, ...areaOptions],
+      options: [{ value: "", label: "Pilih Area Operasional" }, ...areaOptions],
       help: "Area operasional pengemudi. Penugasan hanya boleh menggabungkan pengemudi, bus, dan rute dari area yang sama.",
     },
   ];
@@ -123,13 +123,13 @@ export default async function PengemudiPage({
     <>
       <PageHeader
         title="Pengemudi"
-        description="Data pengemudi per Project Area untuk kebutuhan penugasan. Tautkan akun login pengemudi pada kolom Akun masuk agar akun tersebut dapat membuka area Pengemudi."
+        description="Kelola pengemudi dan tautkan akun masuk untuk mengakses tugas."
       />
 
       <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath={path} compact />
 
       {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
-      {error && <Notice kind="error">Daftar pengemudi belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
+      {error && <Notice kind="error">Daftar pengemudi belum dapat dimuat. Coba lagi.</Notice>}
 
       <div className="admin-split">
         <section className="panel">
@@ -156,7 +156,7 @@ export default async function PengemudiPage({
                   <th scope="col">Nama pengemudi</th>
                   <th scope="col">Telepon</th>
                   <th scope="col">Nomor SIM</th>
-                  <th scope="col">Project Area</th>
+                  <th scope="col">Area Operasional</th>
                   <th scope="col">Status</th>
                   <th scope="col">Akun masuk</th>
                   <th scope="col">Tindakan</th>

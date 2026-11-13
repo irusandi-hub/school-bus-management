@@ -120,7 +120,7 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
 
       <PageHeader
         title={student.full_name}
-        description={`Admissions Number ${student.admissions_number}`}
+        description={`Nomor induk siswa ${student.admissions_number}`}
         actions={
           <Link className="btn btn-secondary" href={`/admin/siswa?edit=${student.id}`}>
             Ubah data siswa

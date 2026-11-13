@@ -9,7 +9,7 @@ import { readText } from "@/lib/validation";
 
 /**
  * Switches the dashboard working context. "all" is the global view; any other
- * value must be an existing active Project Area. The cookie only changes what the
+ * value must be an existing active Area Operasional. The cookie only changes what the
  * Operator is looking at — it never grants access.
  */
 export async function setProjectArea(formData: FormData) {
@@ -30,7 +30,7 @@ export async function setProjectArea(formData: FormData) {
       .maybeSingle();
 
     if (!data) {
-      redirect(`${next}?jenis=error&pesan=${encodeURIComponent("Project Area tidak ditemukan atau sudah nonaktif.")}`);
+      redirect(`${next}?jenis=error&pesan=${encodeURIComponent("Area Operasional tidak ditemukan atau sudah nonaktif.")}`);
     }
   }
 

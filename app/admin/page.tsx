@@ -70,7 +70,7 @@ export default async function AdminHomePage() {
           { label: "Siswa", value: studentRows.count ?? 0, note: "Layanan aktif", icon: "students" },
           { label: "Bus", value: busRows.count ?? 0, note: "Armada aktif", icon: "bus" },
           { label: "Pengemudi", value: driverRows.count ?? 0, note: "Akun aktif", icon: "driver" },
-          { label: "Project Area", value: areaContext.activeAreas.length, note: "Area aktif", icon: "operator" },
+          { label: "Area Operasional", value: areaContext.activeAreas.length, note: "Area aktif", icon: "operator" },
         ]}
       />
 

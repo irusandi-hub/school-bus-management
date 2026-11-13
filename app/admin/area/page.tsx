@@ -18,7 +18,7 @@ import type { ProjectAreaRow } from "@/lib/types";
 import { sanitizeSearch } from "@/lib/validation";
 import { saveProjectArea, setProjectAreaActive } from "./actions";
 
-export const metadata: Metadata = { title: "Project Area | Operator" };
+export const metadata: Metadata = { title: "Area Operasional | Operator" };
 
 const path = "/admin/area";
 const selectColumns = "id, name, code, city, contact_name, contact_email, contact_phone, active";
@@ -64,7 +64,7 @@ export default async function ProjectAreaPage({
   const fields: FieldDef[] = [
     {
       name: "name",
-      label: "Nama Project Area",
+      label: "Nama Area Operasional",
       required: true,
       maxLength: 120,
       defaultValue: editing?.name,
@@ -112,12 +112,12 @@ export default async function ProjectAreaPage({
   return (
     <>
       <PageHeader
-        title="Project Area"
-        description="Area operasional seperti Dammam, Riyadh, atau Madinah. Project Area bukan perusahaan, bukan akun, dan bukan tingkatan otoritas; Operator Utama tetap mengendalikan seluruh area."
+        title="Area Operasional"
+        description="Kelola area layanan. Operator Utama mengelola seluruh area."
       />
 
       {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
-      {error && <Notice kind="error">Daftar Project Area belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
+      {error && <Notice kind="error">Daftar Area Operasional belum dapat dimuat. Coba lagi.</Notice>}
 
       <div className="admin-split">
         <section className="panel">
@@ -129,7 +129,7 @@ export default async function ProjectAreaPage({
             total={total}
             resetHref={path}
             filters={
-              <select name="status" defaultValue={status} aria-label="Filter status Project Area">
+              <select name="status" defaultValue={status} aria-label="Filter status Area Operasional">
                 <option value="">Semua status</option>
                 <option value="aktif">Aktif</option>
                 <option value="nonaktif">Nonaktif</option>
@@ -153,7 +153,7 @@ export default async function ProjectAreaPage({
                 {rows.length === 0 ? (
                   <EmptyRow
                     colSpan={6}
-                    title={q || status ? "Tidak ada Project Area yang cocok" : "Belum ada Project Area"}
+                    title={q || status ? "Tidak ada Area Operasional yang cocok" : "Belum ada Area Operasional"}
                     detail={
                       q || status
                         ? "Ubah kata kunci atau filter status, lalu terapkan kembali."
@@ -217,7 +217,7 @@ export default async function ProjectAreaPage({
         <aside className="panel admin-form-panel" id="form">
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">{editing ? "Ubah Project Area" : "Tambah Project Area"}</h2>
+              <h2 className="panel-title">{editing ? "Ubah Area Operasional" : "Tambah Area Operasional"}</h2>
               <div className="panel-subtitle">
                 {editing ? `Memperbarui ${editing.name}` : "Area operasional baru"}
               </div>

@@ -1,4 +1,5 @@
 import { canOpenRouteNavigation } from "@/lib/driver/navigation-availability";
+import { nextPickupMessage } from "@/lib/ui/copy";
 import { Icon } from "@/components/ui/Icon";
 import type { FullRoute, NavigationPlan } from "@/lib/driver/navigation";
 import type { NextStopResult } from "@/lib/driver/trip-progress";
@@ -34,20 +35,8 @@ export function FullRouteNavigator({
   const navigationEnabled = canOpenRouteNavigation(tripStatus, mapUrl);
   const activeCount = route.activeStops.length;
   const hasStudents = plan.stops.some((stop) => stop.students.length > 0);
-  const noTargetTitle = nextStop.closedReason === "cancelled"
-    ? "Perjalanan dibatalkan"
-    : nextStop.closedReason === "completed_early"
-      ? "Perjalanan ditutup sebelum semua siswa selesai"
-      : !hasStudents
-        ? "Belum ada siswa di rute ini"
-        : "Semua pemberhentian selesai";
-  const noTargetDetail = nextStop.closedReason === "cancelled"
-    ? "Perjalanan dibatalkan."
-    : nextStop.closedReason === "completed_early"
-      ? `${nextStop.waitingStudents} siswa masih menunggu tindakan pada perjalanan ini.`
-      : hasStudents
-        ? "Tidak ada siswa menunggu."
-        : "Belum ada siswa pada rute.";
+  const showNextStudent = tripStatus === "in_progress" && Boolean(nextStop.target);
+  const noTargetTitle = nextPickupMessage(tripStatus, hasStudents, direction);
   const skipReasons = Object.fromEntries(
     route.stops
       .filter((entry) => entry.skipReason)
@@ -116,24 +105,20 @@ export function FullRouteNavigator({
       )}
 
       <section
-        className={`ops-next${nextStop.target ? " is-active" : " is-complete"}${nextStop.closedReason ? " is-closed" : ""}`}
+        className={`ops-next${showNextStudent ? " is-active" : " is-complete"}${nextStop.closedReason ? " is-closed" : ""}`}
         aria-live="polite"
-        aria-label={nextStop.target ? nextStop.target.kindLabel : noTargetTitle}
+        aria-label="Informasi siswa berikutnya"
       >
-        <span className="ops-next-eyebrow">
-          <Icon name="pin" size={12} />
-          {nextStop.target?.kindLabel ?? "Pemberhentian berikutnya"}
-        </span>
-        {nextStop.target ? (
+        {showNextStudent && nextStop.target ? (
           <>
+            <span className="ops-next-eyebrow"><Icon name="pin" size={12} />{nextStop.target.kindLabel}</span>
             <div className="ops-next-heading">
-              <strong>{nextStop.target.students.map((student) => `${student.name} • ${student.admissionsNumber ?? "Admission belum tercatat"}`).join(", ")}</strong>
+              <strong>{nextStop.target.students.map((student) => `${student.name} • ${student.admissionsNumber ?? "Nomor induk belum tercatat"}`).join(", ")}</strong>
             </div>
           </>
         ) : (
           <div className="ops-next-empty">
             <strong>{noTargetTitle}</strong>
-            <p>{noTargetDetail}</p>
           </div>
         )}
       </section>

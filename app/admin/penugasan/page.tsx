@@ -91,7 +91,7 @@ export default async function AssignmentsPage() {
           }`,
         })),
       ],
-      help: selectedId ? "Rute pada Project Area aktif." : "Pada tampilan Semua Area, rute, bus, dan pengemudi harus dari area yang sama.",
+      help: selectedId ? "Rute pada Area Operasional aktif." : "Pada tampilan Semua Area, rute, bus, dan pengemudi harus dari area yang sama.",
     },
     {
       name: "service_date",
@@ -131,13 +131,13 @@ export default async function AssignmentsPage() {
     <>
       <PageHeader
         title="Penugasan"
-        description="Hubungkan rute, pengemudi, dan bus dari Project Area yang sama untuk satu tanggal layanan. Perjalanan baru dimulai oleh pengemudi dari halaman tugasnya."
+        description="Tugaskan rute, pengemudi, dan bus dari area yang sama pada tanggal layanan."
       />
 
       <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath="/admin/penugasan" compact />
 
       {assignmentsResult.error && (
-        <Notice kind="error">Daftar penugasan belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>
+        <Notice kind="error">Daftar penugasan belum dapat dimuat. Coba lagi.</Notice>
       )}
       {!ready && (
         <Notice kind="warning">
@@ -224,7 +224,7 @@ export default async function AssignmentsPage() {
               disabledReason={
                 ready
                   ? undefined
-                  : "Penugasan dapat dibuat setelah tersedia rute, pengemudi, dan bus aktif pada Project Area yang sama."
+                  : "Penugasan dapat dibuat setelah tersedia rute, pengemudi, dan bus aktif pada Area Operasional yang sama."
               }
               note="Data dari area berbeda ditolak oleh aplikasi dan database. Penugasan tidak membuat perjalanan sebelum pengemudi menekan Mulai Perjalanan."
             />

@@ -117,13 +117,13 @@ export default async function WaliPage({
     <>
       <PageHeader
         title="Akun Wali"
-        description="Daftarkan email wali sebelum aktivasi akun. Wali memverifikasi email, membuat kata sandi, lalu masuk dengan email dan kata sandi tersebut. Daftar mengikuti Project Area aktif."
+        description="Daftarkan email wali agar akun dapat diaktifkan melalui verifikasi email."
       />
 
       <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath={path} compact />
 
       {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
-      {error && <Notice kind="error">Daftar wali belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
+      {error && <Notice kind="error">Daftar wali belum dapat dimuat. Coba lagi.</Notice>}
 
       <div className="admin-split">
         <section className="panel">

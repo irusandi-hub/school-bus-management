@@ -35,7 +35,7 @@ export async function saveAssignment(_prev: ActionState, formData: FormData): Pr
   if (!driver || !driver.active) return failure("Pengemudi tidak ditemukan atau sudah tidak aktif.");
 
   if (!bus.project_area_id || bus.project_area_id !== route.project_area_id || bus.project_area_id !== driver.project_area_id) {
-    return failure("Rute, bus, dan pengemudi harus berasal dari Project Area yang sama.");
+    return failure("Rute, bus, dan pengemudi harus berasal dari Area Operasional yang sama.");
   }
 
   const { error } = await ctx.supabase.from("trip_assignments").insert({

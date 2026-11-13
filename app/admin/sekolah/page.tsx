@@ -100,12 +100,12 @@ export default async function SekolahPage({
     },
     {
       name: "project_area_id",
-      label: "Project Area",
+      label: "Area Operasional",
       type: "select",
       required: true,
       defaultValue: editing?.project_area_id ?? selectedId ?? "",
       options: [
-        { value: "", label: "Pilih Project Area" },
+        { value: "", label: "Pilih Area Operasional" },
         ...areaOptions,
       ],
       help: "Area operasional sekolah. Siswa dan rute sekolah ini hanya dapat dihubungkan dengan data dari area yang sama.",
@@ -164,13 +164,13 @@ export default async function SekolahPage({
     <>
       <PageHeader
         title="Sekolah"
-        description="Data sekolah per Project Area. Nonaktifkan sekolah yang tidak lagi bekerja sama; data dan riwayatnya tetap tersimpan."
+        description="Data sekolah per Area Operasional. Nonaktifkan sekolah yang tidak lagi bekerja sama; data dan riwayatnya tetap tersimpan."
       />
 
       <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath={path} compact />
 
       {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
-      {error && <Notice kind="error">Daftar sekolah belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
+      {error && <Notice kind="error">Daftar sekolah belum dapat dimuat. Coba lagi.</Notice>}
 
       <div className="admin-split">
         <section className="panel">
@@ -196,7 +196,7 @@ export default async function SekolahPage({
                 <tr>
                   <th scope="col">Nama sekolah</th>
                   <th scope="col">Kode</th>
-                  <th scope="col">Project Area</th>
+                  <th scope="col">Area Operasional</th>
                   <th scope="col">Kontak</th>
                   <th scope="col">Status</th>
                   <th scope="col">Tindakan</th>

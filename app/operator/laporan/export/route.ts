@@ -72,7 +72,7 @@ export async function GET() {
     if (batch.length < PAGE_SIZE) break;
   }
 
-  const header = ["Tanggal layanan", "Project Area", "Rute", "Sekolah", "Arah", "Kode bus", "Pengemudi", "Status", "Mulai", "Tiba", "Selesai"];
+  const header = ["Tanggal layanan", "Area Operasional", "Rute", "Sekolah", "Arah", "Kode bus", "Pengemudi", "Status", "Mulai", "Tiba", "Selesai"];
   const rows = trips.map((trip) => {
     const assignment = Array.isArray(trip.trip_assignments) ? trip.trip_assignments[0] : trip.trip_assignments;
     const route = assignment && assignment.routes;

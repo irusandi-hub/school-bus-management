@@ -127,7 +127,7 @@ export default async function RouteDetailPage({
 
       <PageHeader
         title={route.route_name}
-        description={`${route.project_areas?.name ?? "Project Area"} · ${route.schools?.name ?? route.school_name} · ${routeDirectionLabel(route.direction)} · ${stops.length} titik`}
+        description={`${route.project_areas?.name ?? "Area Operasional"} · ${route.schools?.name ?? route.school_name} · ${routeDirectionLabel(route.direction)} · ${stops.length} titik`}
         actions={<Pill tone={route.active ? "success" : "neutral"}>{route.active ? "Rute aktif" : "Rute nonaktif"}</Pill>}
       />
 

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { UI_COPY } from "@/lib/ui/copy";
 import type { ReactNode } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { serviceStatusLabel, tripStatusLabel } from "@/lib/validation";
@@ -58,9 +59,10 @@ export function Notice({
   kind?: "info" | "success" | "error" | "warning";
   children: ReactNode;
 }) {
+  const message = typeof children === "string" && /^(Data|Daftar) belum dapat dimuat\./.test(children) ? UI_COPY.loadFailed : children;
   return (
     <p className={`form-alert ${kind}`} role={kind === "error" ? "alert" : "status"}>
-      {children}
+      {message}
     </p>
   );
 }

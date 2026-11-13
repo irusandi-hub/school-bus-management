@@ -34,7 +34,7 @@ export async function saveStudent(_prev: ActionState, formData: FormData): Promi
   const errors: FieldErrors = {};
 
   if (!isValidAdmissionsNumber(admissionsNumber)) {
-    errors.admissions_number = "Admissions Number 2–32 karakter: huruf, angka, garis miring, atau tanda hubung.";
+    errors.admissions_number = "Nomor induk siswa 2–32 karakter: huruf, angka, garis miring, atau tanda hubung.";
   }
   if (fullName.length < 2 || fullName.length > 120) errors.full_name = "Nama siswa harus 2–120 karakter.";
   if (!UUID_PATTERN.test(schoolId)) errors.school_id = "Pilih sekolah siswa.";
@@ -92,7 +92,7 @@ export async function saveStudent(_prev: ActionState, formData: FormData): Promi
 
   if (error) {
     return writeFailure(error, {
-      unique: "Admissions Number sudah dipakai siswa lain. Gunakan nomor lain.",
+      unique: "Nomor induk siswa sudah dipakai siswa lain. Gunakan nomor lain.",
       foreignKey: "Sekolah atau wali yang dipilih tidak tersedia. Muat ulang halaman lalu pilih kembali.",
     });
   }

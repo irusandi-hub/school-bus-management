@@ -44,7 +44,7 @@ export async function saveDriver(_prev: ActionState, formData: FormData): Promis
   if (licenseNumber && (licenseNumber.length < 3 || licenseNumber.length > 40)) {
     errors.license_number = "Nomor SIM 3–40 karakter.";
   }
-  if (!projectAreaId) errors.project_area_id = "Pilih Project Area untuk pengemudi ini.";
+  if (!projectAreaId) errors.project_area_id = "Pilih Area Operasional untuk pengemudi ini.";
 
   if (Object.keys(errors).length > 0) return failure("Periksa kembali isian yang ditandai.", errors);
 
@@ -61,7 +61,7 @@ export async function saveDriver(_prev: ActionState, formData: FormData): Promis
 
   if (error) {
     return writeFailure(error, {
-      foreignKey: "Project Area yang dipilih tidak tersedia. Muat ulang halaman lalu pilih kembali.",
+      foreignKey: "Area Operasional yang dipilih tidak tersedia. Muat ulang halaman lalu pilih kembali.",
       unique: "Data pengemudi sudah terdaftar untuk akun tersebut.",
     });
   }

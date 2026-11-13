@@ -26,11 +26,7 @@ export function AreaError({
       <span className="state-icon" aria-hidden="true">
         <Icon name="alert" size={22} />
       </span>
-      <strong>{area} gagal dimuat</strong>
-      <p>
-        Data tidak dapat diambil saat ini. Periksa koneksi Anda lalu coba lagi. Tidak ada perubahan data yang
-        tersimpan dari halaman ini.
-      </p>
+      <strong>{area} belum dapat dimuat.</strong>
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
         <button type="button" className="btn btn-primary btn-sm" onClick={reset}>
           <Icon name="refresh" size={15} />
@@ -52,7 +48,6 @@ export function LoadingState({ title, variant = "split" }: { title: string; vari
       <div className="admin-page-head">
         <div>
           <h1>{title}</h1>
-          <p>Mengambil data terbaru…</p>
         </div>
       </div>
 

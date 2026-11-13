@@ -64,7 +64,7 @@ export default async function RoutesPage({
         { value: "", label: schools.length === 0 ? "Belum ada sekolah aktif di area ini" : "Pilih sekolah" },
         ...schools.map((school) => ({ value: school.id, label: school.name })),
       ],
-      help: "Project Area rute diturunkan dari sekolah yang dipilih agar tidak terjadi pencampuran data.",
+      help: "Area Operasional rute diturunkan dari sekolah yang dipilih agar tidak terjadi pencampuran data.",
     },
     {
       name: "direction",
@@ -89,12 +89,12 @@ export default async function RoutesPage({
     <>
       <PageHeader
         title="Rute & titik jemput"
-        description="Rute menghubungkan sekolah, Project Area, urutan titik jemput, dan siswa yang dilayani. Rute tidak dapat dihapus; nonaktifkan bila tidak dipakai lagi."
+        description="Kelola urutan titik jemput dan siswa per rute. Nonaktifkan rute yang tidak digunakan."
       />
 
       <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath="/admin/rute" compact />
 
-      {error && <Notice kind="error">Daftar rute belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
+      {error && <Notice kind="error">Daftar rute belum dapat dimuat. Coba lagi.</Notice>}
       {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
       {schools.length === 0 && (
         <Notice kind="warning">
@@ -115,7 +115,7 @@ export default async function RoutesPage({
               <thead>
                 <tr>
                   <th scope="col">Rute</th>
-                  <th scope="col">Project Area</th>
+                  <th scope="col">Area Operasional</th>
                   <th scope="col">Arah</th>
                   <th scope="col">Titik</th>
                   <th scope="col">Status</th>

@@ -417,3 +417,10 @@ Lihat `TECHNICAL_SPEC_REVIEW.md`, bagian 19 pada `MASTER_SPEC.md`, serta `OPERAT
 - **Sumber kebenaran:** Prop tripStatus berasal dari perjalanan tersimpan yang dipilih server melalui orderDriverSessions; tidak memakai state klik, localStorage, atau flag frontend. Perjalanan baru memakai status baris sesi baru.
 - **Validasi:** 232/232 tes, TypeScript check, build produksi lulus. Chromium fixture simulasi memverifikasi navigasi nonaktif awal → aktif setelah Mulai → tetap aktif saat reload sesi berjalan → nonaktif setelah Akhiri → tetap nonaktif setelah reload → aktif lagi pada sesi kedua → nonaktif setelah selesai. Dua sesi dengan ID berbeda tetap ada di riwayat. Percobaan awal browser perlu koreksi waitFor render setelah reload; uji ulang pada proses simulasi baru lulus lengkap.
 - **Deployment:** Preview READY memerlukan akses Vercel yang terautentikasi; jangan menganggap push sebagai bukti deployment sukses.
+
+## DEC-045 — Redaksi bersama dan informasi siswa berikutnya (2026-11-13)
+- Standar: `docs/UI_COPY_STANDARD.md`; Area Operasional, Nomor induk siswa, Ringkasan perjalanan; pesan pemuatan/galat tidak berulang.
+- Identitas berikutnya hanya dirender bila status sesi server `in_progress`. Sesi terjadwal/selesai/batal menampilkan satu pesan, termasuk setelah reload; tanpa state klik lokal.
+- Tindakan siswa, perjalanan, integrasi peta, akses, dan database tidak diubah.
+- Verifikasi: 235 tes lulus, TypeScript dan build lulus. Chromium 102 kombinasi (17 URL × 360/390/430/768/1024/1440), tanpa overflow halaman atau pemotongan keterangan yang diperiksa. Dua sesi, pemuatan ulang, pesan semua siswa selesai, dan riwayat lulus pada proses uji terisolasi.
+- Batas bukti: browser memakai lingkungan uji bawaan yang telah ada, bukan database hosted. Pemeriksaan otomatis bukan jaminan semua teks/status dinamis telah ditinjau visual manual. Timeout awal menunggu networkidle/h1 dan benturan sesi uji ditangani dengan menunggu render serta mengisolasi proses; hasil di atas berasal dari pengujian ulang.

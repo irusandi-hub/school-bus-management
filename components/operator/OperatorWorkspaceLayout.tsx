@@ -21,7 +21,7 @@ export async function OperatorWorkspaceLayout({ children }: { children: React.Re
         <div className="sidebar-bottom">
           <span className="security-icon"><Icon name="shield" size={13} /></span>
           <strong>Operator Utama</strong>
-          <p>Akses global seluruh Project Area.</p>
+          <p>Akses global seluruh Area Operasional.</p>
         </div>
       </aside>
       <main className="main">
@@ -34,7 +34,7 @@ export async function OperatorWorkspaceLayout({ children }: { children: React.Re
           />
           <div className="topbar-context">
             <span className="topbar-kicker">Operator Utama</span>
-            <strong>Ruang kerja Project Area</strong>
+            <strong>Ruang kerja Area Operasional</strong>
           </div>
           <div className="top-actions">
             <form action={signOutAction}>
@@ -47,7 +47,7 @@ export async function OperatorWorkspaceLayout({ children }: { children: React.Re
         {children}
         <footer className="page-footer">
           <span>School Bus Management · Operator Utama</span>
-          <span>Kendali global · Project Area · audit operasional</span>
+          <span>Kendali global · Area Operasional · audit operasional</span>
         </footer>
       </main>
       <BottomNav

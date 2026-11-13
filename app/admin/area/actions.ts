@@ -31,7 +31,7 @@ export async function saveProjectArea(_prev: ActionState, formData: FormData): P
   const contactPhone = readOptionalText(formData, "contact_phone");
 
   const errors: FieldErrors = {};
-  if (name.length < 2 || name.length > 120) errors.name = "Nama Project Area harus 2–120 karakter.";
+  if (name.length < 2 || name.length > 120) errors.name = "Nama Area Operasional harus 2–120 karakter.";
   if (!/^[A-Z0-9][A-Z0-9-]{1,19}$/.test(code)) {
     errors.code = "Kode area 2–20 karakter: huruf kapital, angka, atau tanda hubung.";
   }
@@ -55,11 +55,11 @@ export async function saveProjectArea(_prev: ActionState, formData: FormData): P
     ? await ctx.supabase.from("project_areas").update(payload).eq("id", id)
     : await ctx.supabase.from("project_areas").insert(payload);
 
-  if (error) return writeFailure(error, { unique: "Kode Project Area sudah dipakai. Gunakan kode lain." });
+  if (error) return writeFailure(error, { unique: "Kode Area Operasional sudah dipakai. Gunakan kode lain." });
 
   revalidatePath(path);
   revalidatePath("/admin");
-  return success(id ? "Project Area berhasil diperbarui." : "Project Area baru berhasil ditambahkan.");
+  return success(id ? "Area Operasional berhasil diperbarui." : "Area Operasional baru berhasil ditambahkan.");
 }
 
 export async function setProjectAreaActive(formData: FormData) {
@@ -75,7 +75,7 @@ export async function setProjectAreaActive(formData: FormData) {
 
   if (error) {
     redirect(
-      `${path}?jenis=error&pesan=${encodeURIComponent("Status Project Area belum dapat diubah. Coba lagi atau hubungi pengelola sistem.")}`,
+      `${path}?jenis=error&pesan=${encodeURIComponent("Status Area Operasional belum dapat diubah. Coba lagi atau hubungi pengelola sistem.")}`,
     );
   }
 
@@ -84,8 +84,8 @@ export async function setProjectAreaActive(formData: FormData) {
   redirect(
     `${path}?pesan=${encodeURIComponent(
       active
-        ? "Project Area diaktifkan kembali."
-        : "Project Area dinonaktifkan. Data operasional dan riwayatnya tetap tersimpan.",
+        ? "Area Operasional diaktifkan kembali."
+        : "Area Operasional dinonaktifkan. Data operasional dan riwayatnya tetap tersimpan.",
     )}`,
   );
 }

@@ -108,7 +108,7 @@ export default async function SiswaPage({
   const fields: FieldDef[] = [
     {
       name: "admissions_number",
-      label: "Admissions Number",
+      label: "Nomor induk siswa",
       required: true,
       maxLength: 32,
       defaultValue: editing?.admissions_number,
@@ -191,13 +191,13 @@ export default async function SiswaPage({
     <>
       <PageHeader
         title="Data Siswa"
-        description="Data siswa, sekolah, wali, dan titik rumah pada konteks Project Area aktif. Status layanan diubah melalui halaman detail agar riwayat perubahan tersimpan."
+        description="Kelola siswa, sekolah, wali, dan titik jemput. Ubah status layanan melalui detail siswa."
       />
 
       <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath={path} compact />
 
       {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
-      {error && <Notice kind="error">Daftar siswa belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
+      {error && <Notice kind="error">Daftar siswa belum dapat dimuat. Coba lagi.</Notice>}
       {!canCreate && (
         <Notice kind="warning">
           Data siswa belum dapat ditambahkan karena belum ada {schoolOptions.length === 0 ? "sekolah" : "wali"} aktif.{" "}
@@ -216,7 +216,7 @@ export default async function SiswaPage({
             key={`${q}|${status}|${schoolFilter}|${page}`}
             action={path}
             q={q}
-            placeholder="Cari nama atau Admissions Number"
+            placeholder="Cari nama atau Nomor induk siswa"
             total={total}
             resetHref={path}
             filters={
@@ -243,7 +243,7 @@ export default async function SiswaPage({
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th scope="col">Admissions Number</th>
+                  <th scope="col">Nomor induk siswa</th>
                   <th scope="col">Nama siswa</th>
                   <th scope="col">Sekolah</th>
                   <th scope="col">Wali</th>

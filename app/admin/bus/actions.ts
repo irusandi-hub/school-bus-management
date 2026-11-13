@@ -43,7 +43,7 @@ export async function saveBus(_prev: ActionState, formData: FormData): Promise<A
   }
   if (model && model.length > 80) errors.model = "Model maksimal 80 karakter.";
   if (notes && notes.length > 300) errors.notes = "Catatan maksimal 300 karakter.";
-  if (!projectAreaId) errors.project_area_id = "Pilih Project Area untuk bus ini.";
+  if (!projectAreaId) errors.project_area_id = "Pilih Area Operasional untuk bus ini.";
 
   if (Object.keys(errors).length > 0) return failure("Periksa kembali isian yang ditandai.", errors);
 
@@ -63,7 +63,7 @@ export async function saveBus(_prev: ActionState, formData: FormData): Promise<A
   if (error) {
     return writeFailure(error, {
       unique: "Kode armada atau nomor polisi sudah dipakai bus lain. Gunakan nilai lain.",
-      foreignKey: "Project Area yang dipilih tidak tersedia. Muat ulang halaman lalu pilih kembali.",
+      foreignKey: "Area Operasional yang dipilih tidak tersedia. Muat ulang halaman lalu pilih kembali.",
     });
   }
 

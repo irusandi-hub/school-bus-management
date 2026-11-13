@@ -62,7 +62,7 @@ export default async function TripsPage() {
 
       <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={areaContext.selectedId} nextPath="/admin/perjalanan" compact />
 
-      {error && <Notice kind="error">Daftar perjalanan belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
+      {error && <Notice kind="error">Daftar perjalanan belum dapat dimuat. Coba lagi.</Notice>}
 
       <section className="panel">
         <header className="panel-head">

@@ -39,7 +39,7 @@ export async function saveSchool(_prev: ActionState, formData: FormData): Promis
     errors.code = "Kode 2–20 karakter: huruf kapital, angka, atau tanda hubung.";
   }
   if (city.length < 2) errors.city = "Kota wajib diisi minimal 2 karakter.";
-  if (!projectAreaId) errors.project_area_id = "Pilih Project Area untuk sekolah ini.";
+  if (!projectAreaId) errors.project_area_id = "Pilih Area Operasional untuk sekolah ini.";
   if (contactEmail && !isValidEmail(contactEmail)) errors.contact_email = "Format email belum benar.";
   if (contactPhone && !isValidPhone(contactPhone)) {
     errors.contact_phone = "Gunakan format nomor telepon yang valid, misalnya +9665xxxxxxxx.";

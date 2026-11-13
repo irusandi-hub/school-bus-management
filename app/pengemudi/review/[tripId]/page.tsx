@@ -18,7 +18,7 @@ import { resolveStudentTripStates } from "@/lib/driver/trip-progress";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { formatDate, formatDateTime, formatTime, routeDirectionLabel } from "@/lib/validation";
 
-export const metadata: Metadata = { title: "Review Perjalanan | Pengemudi" };
+export const metadata: Metadata = { title: "Ringkasan Perjalanan | Pengemudi" };
 
 type ReviewTrip = {
   id: string;
@@ -94,10 +94,10 @@ export default async function DriverTripReviewPage({
         <DriverOperationsPage searchParams={Promise.resolve({})} />
         <TripReviewModal>
         <PageHeader
-          title="Review perjalanan"
+          title="Ringkasan perjalanan"
           description="Ringkasan tugas yang sudah selesai dan tersimpan."
         />
-        <Notice kind="error">Review perjalanan belum dapat dimuat. Muat ulang halaman atau coba lagi.</Notice>
+        <Notice kind="error">Ringkasan perjalanan belum dapat dimuat. Coba lagi.</Notice>
         </TripReviewModal>
       </>
     );
@@ -154,7 +154,7 @@ export default async function DriverTripReviewPage({
       <DriverOperationsPage searchParams={Promise.resolve({})} />
       <TripReviewModal>
       <PageHeader
-        title="Review perjalanan"
+        title="Ringkasan perjalanan"
         description="Ringkasan tugas yang sudah selesai. Data diambil dari perjalanan dan catatan yang tersimpan."
       />
 
@@ -207,7 +207,7 @@ export default async function DriverTripReviewPage({
           {eventsError ? (
             <div className="table-empty">
               <strong>Status siswa belum dapat dimuat</strong>
-              <p>Muat ulang halaman atau coba lagi nanti.</p>
+              <p>Coba lagi.</p>
             </div>
           ) : (
             <div className="admin-table-wrap">

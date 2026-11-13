@@ -9,7 +9,7 @@ export const adminGroups: NavGroup[] = [
     items: [
       { href: "/operator", label: "Ringkasan", icon: "dashboard", short: "Ringkasan" },
       { href: "/admin/sekolah", label: "Sekolah", icon: "school", short: "Sekolah" },
-      { href: "/admin/area", label: "Project Area", icon: "operator", short: "Area" },
+      { href: "/admin/area", label: "Area Operasional", icon: "operator", short: "Area" },
       { href: "/admin/siswa", label: "Data siswa", icon: "students", short: "Siswa" },
       { href: "/admin/wali", label: "Akun wali", icon: "guardian", short: "Wali" },
       { href: "/admin/bus", label: "Bus", icon: "bus", short: "Bus" },

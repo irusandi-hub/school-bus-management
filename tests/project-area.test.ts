@@ -71,7 +71,7 @@ describe("Project Area", () => {
     const hrefs = adminGroups.flatMap((group) => group.items.map((item) => item.href));
 
     assert.ok(hrefs.includes("/admin/area"));
-    assert.ok(labels.includes("Project Area"));
+    assert.ok(labels.includes("Area Operasional"));
     assert.equal(labels.some((label) => /perusahaan/i.test(label)), false);
   });
 

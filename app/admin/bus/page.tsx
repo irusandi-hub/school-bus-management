@@ -112,15 +112,15 @@ export default async function BusPage({
     },
     {
       name: "project_area_id",
-      label: "Project Area",
+      label: "Area Operasional",
       type: "select",
       required: true,
       fullWidth: true,
       defaultValue: editing?.project_area_id ?? selectedId ?? "",
-      options: [{ value: "", label: "Pilih Project Area" }, ...areaOptions],
+      options: [{ value: "", label: "Pilih Area Operasional" }, ...areaOptions],
       help:
         areaOptions.length === 0
-          ? "Belum ada Project Area aktif. Tambahkan area terlebih dahulu."
+          ? "Belum ada Area Operasional aktif. Tambahkan area terlebih dahulu."
           : "Area operasional bus. Penugasan hanya boleh menggabungkan bus, pengemudi, dan rute dari area yang sama.",
     },
     {
@@ -137,13 +137,13 @@ export default async function BusPage({
     <>
       <PageHeader
         title="Bus"
-        description="Data armada per Project Area untuk kebutuhan penugasan. Kapasitas dan nomor polisi divalidasi agar penugasan berikutnya tidak memakai data yang tidak konsisten."
+        description="Kelola bus, plat nomor, dan kapasitas per Area Operasional."
       />
 
       <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath={path} compact />
 
       {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
-      {error && <Notice kind="error">Daftar bus belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
+      {error && <Notice kind="error">Daftar bus belum dapat dimuat. Coba lagi.</Notice>}
 
       <div className="admin-split">
         <section className="panel">
@@ -170,7 +170,7 @@ export default async function BusPage({
                   <th scope="col">Kode armada</th>
                   <th scope="col">Nomor polisi</th>
                   <th scope="col">Kapasitas</th>
-                  <th scope="col">Project Area</th>
+                  <th scope="col">Area Operasional</th>
                   <th scope="col">Status</th>
                   <th scope="col">Tindakan</th>
                 </tr>

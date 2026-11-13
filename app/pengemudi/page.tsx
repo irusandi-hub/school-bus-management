@@ -190,7 +190,7 @@ export default async function DriverOperationsPage({
           </p>
         </section>
         {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
-        {error && <Notice kind="error">Tugas hari ini belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
+        {error && <Notice kind="error">Tugas hari ini belum dapat dimuat. Coba lagi.</Notice>}
         <section className="panel">
           <EmptyState
             icon={completedToday ? "check" : "inbox"}
@@ -393,7 +393,7 @@ export default async function DriverOperationsPage({
       )}
 
       {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
-      {error && <Notice kind="error">Tugas hari ini belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
+      {error && <Notice kind="error">Tugas hari ini belum dapat dimuat. Coba lagi.</Notice>}
       {stopsResult.error && <Notice kind="error">Urutan titik jemput belum dapat dimuat.</Notice>}
       {rosterResult.error && <Notice kind="error">Daftar siswa belum dapat dimuat.</Notice>}
       {eventsResult.error && <Notice kind="error">Status siswa belum dapat dimuat.</Notice>}

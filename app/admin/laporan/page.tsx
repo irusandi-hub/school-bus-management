@@ -70,7 +70,7 @@ export default async function ReportsPage() {
 
       <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath="/admin/laporan" compact />
 
-      {audits.error && <Notice kind="error">Jejak audit belum dapat dimuat. Muat ulang halaman atau coba lagi nanti.</Notice>}
+      {audits.error && <Notice kind="error">Jejak audit belum dapat dimuat. Coba lagi.</Notice>}
 
       <MetricStrip
         label="Ringkasan operasional"
@@ -136,7 +136,7 @@ export default async function ReportsPage() {
               jejak audit agar data pribadi tidak menumpuk di luar tabel asalnya.
             </p>
             <p>
-              Jejak audit platform dapat dibaca dan ditinjau oleh Operator Utama. Project Area hanya menjadi konteks kerja dan pengelompokan untuk pemetaan serta audit, bukan akun atau pembatas akses.
+              Jejak audit platform dapat dibaca dan ditinjau oleh Operator Utama. Area Operasional hanya menjadi konteks kerja dan pengelompokan untuk pemetaan serta audit, bukan akun atau pembatas akses.
             </p>
           </div>
         </section>

@@ -30,7 +30,7 @@ export function TripReviewModal({ children }: { children: ReactNode }) {
     <dialog
       ref={dialog}
       className={styles.dialog}
-      aria-label="Review perjalanan"
+      aria-label="Ringkasan perjalanan"
       onCancel={(event) => {
         event.preventDefault();
         closeReview();

@@ -47,7 +47,7 @@ export async function saveRoute(_prev: ActionState, formData: FormData): Promise
   if (!school) return failure("Sekolah tidak ditemukan. Muat ulang halaman lalu pilih kembali.");
   if (!school.active) return failure("Sekolah nonaktif tidak dapat dipakai untuk rute baru.");
   if (!school.project_area_id) {
-    return failure("Sekolah belum memiliki Project Area. Lengkapi data sekolah terlebih dahulu.");
+    return failure("Sekolah belum memiliki Area Operasional. Lengkapi data sekolah terlebih dahulu.");
   }
 
   const payload = {
@@ -152,7 +152,7 @@ export async function assignStudentToStop(formData: FormData) {
   const studentAreaId = (studentArea as unknown as { schools: { project_area_id: string | null } | null } | null)
     ?.schools?.project_area_id;
   if (!routeArea?.project_area_id || !studentAreaId || routeArea.project_area_id !== studentAreaId) {
-    backTo(target, "Siswa dan rute berasal dari Project Area berbeda.", "error");
+    backTo(target, "Siswa dan rute berasal dari Area Operasional berbeda.", "error");
   }
 
   const { data: existing } = await ctx.supabase

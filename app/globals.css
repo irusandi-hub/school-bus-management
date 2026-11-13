@@ -2803,3 +2803,7 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
 .driver-app .compact-identity-row form button{min-height:40px}
 .driver-app .ops-workspace :is(.ops-next-empty p,.ops-panel-eyebrow,.route-foot,.route-warn summary,.route-stops summary,.route-note summary,.ops-student-state .pill,.ops-data-note){font-size:12px;line-height:1.4;white-space:normal;overflow-wrap:anywhere}
 .driver-app .compact-driver-identity{max-width:100%}
+
+/* Shared explanatory copy: preserve layout and hierarchy, allow readable wrapping. */
+:is(.admin-workspace,.guardian-shell,.driver-app) :is(.panel-subtitle,.field-hint,.field-error,.form-note,.form-alert,.table-empty p,.state-panel p){font-size:clamp(12px,.9vw,14px);line-height:1.5;overflow-wrap:anywhere;white-space:normal}
+:is(.admin-workspace,.guardian-shell,.driver-app) .admin-page-head-copy p{overflow-wrap:anywhere;white-space:normal}
