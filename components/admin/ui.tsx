@@ -241,9 +241,7 @@ export async function Pagination({
   nextHref?: string;
 }) {
   if (total === 0) return null;
-  const cookieStore = await cookies();
-  const savedLocale = cookieStore.get("sbm_locale")?.value;
-  const locale = isLocale(savedLocale) ? savedLocale : defaultLocale;
+  const locale = await getRequestLocale();
   const t = (key: Parameters<typeof translate>[1]) => translate(locale, key);
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
