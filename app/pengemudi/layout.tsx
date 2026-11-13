@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
+import { defaultLocale, isLocale } from "@/lib/i18n/config";
+import { translate } from "@/lib/i18n/messages";
 import { ConfigNotice } from "@/components/admin/ui";
 import { BrandLogo } from "@/components/brand-logo";
 import { LocalizedText } from "@/components/i18n/LocaleProvider";
@@ -11,6 +14,9 @@ export const metadata: Metadata = { title: "Pengemudi | School Bus" };
 export const dynamic = "force-dynamic";
 
 export default async function DriverLayout({ children }: { children: React.ReactNode }) {
+  const cookieStore = await cookies();
+  const savedLocale = cookieStore.get("sbm_locale")?.value;
+  const locale = isLocale(savedLocale) ? savedLocale : defaultLocale;
   const access = await requireDriver();
   if (access.status === "unconfigured") return <ConfigNotice />;
 
@@ -19,16 +25,16 @@ export default async function DriverLayout({ children }: { children: React.React
   return (
     <div className="driver-app">
       <header className="driver-head">
-        <BrandLogo href="/pengemudi" subtitle="Area Pengemudi" size="sm" />
+        <BrandLogo href="/pengemudi" subtitle={translate(locale, "driverArea")} size="sm" />
         <span>{name}</span>
         <form action={signOutAction}><button className="btn btn-ghost btn-sm" type="submit"><LocalizedText k="signOut" /></button></form>
       </header>
       <main className="driver-main">{children}</main>
       <footer className="driver-foot">
-        <span>Hanya tugas dan perjalanan milik akun ini</span>
-        <span>GPS belum aktif · kamera mengikuti status perjalanan</span>
+        <span>{translate(locale, "driverFooterScope")}</span>
+        <span>{translate(locale, "driverFooterGps")}</span>
       </footer>
-      <BottomNav items={driverBottomNav} rootHref="/pengemudi" ariaLabel="Navigasi pengemudi" />
+      <BottomNav items={driverBottomNav} rootHref="/pengemudi" ariaLabel={translate(locale, "navigationDriver")} />
     </div>
   );
 }
