@@ -64,7 +64,7 @@ export function DriverBroadcastPanel({
             <Icon name="alert" size={11} /> {c("Jangan mengoperasikan HP saat mengemudi. Tidak direkam.")}
           </small>
         </div>
-        <div className="broadcast-compact-controls" title={broadcast.detail}>
+        <div className="broadcast-compact-controls" title={c(broadcast.detail)}>
           <button
             className="broadcast-expand"
             type="button"
@@ -138,10 +138,10 @@ export function DriverBroadcastPanel({
             <strong>{c("Pratinjau layar penuh")}</strong>
             <p>
               {source === "bus"
-                ? "{c("Kamera bus belum terpasang. Pratinjau tersedia setelah perangkat kamera bus terhubung.")}"
+                ? c("Kamera bus belum terpasang. Pratinjau tersedia setelah perangkat kamera bus terhubung.")
                 : broadcast.phase === "active"
-                  ? "{c("Gunakan kontrol siaran di panel kamera untuk mengaktifkan video. Pratinjau ini tidak merekam.")}"
-                  : "{c("Video tampil di sini saat siaran kamera aktif. Tidak ada rekaman.")}"}
+                  ? c("Gunakan kontrol siaran di panel kamera untuk mengaktifkan video. Pratinjau ini tidak merekam.")
+                  : c("Video tampil di sini saat siaran kamera aktif. Tidak ada rekaman.")}
             </p>
             <small>{c("Status:")} {shortStatus}</small>
           </div>
