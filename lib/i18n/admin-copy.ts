@@ -341,6 +341,20 @@ const copy: Record<string, Record<Locale, string>> = {
   "Belum ada data sekolah": { id: "Belum ada data sekolah", en: "No school records yet", ar: "لا توجد سجلات مدارس بعد" },
   "Belum ada data bus": { id: "Belum ada data bus", en: "No bus records yet", ar: "لا توجد سجلات حافلات بعد" },
   "Belum ada data pengemudi": { id: "Belum ada data pengemudi", en: "No driver records yet", ar: "لا توجد سجلات سائقين بعد" },
+  "Tanggal": { id: "Tanggal", en: "Date", ar: "التاريخ" },
+  "Nama": { id: "Nama", en: "Name", ar: "الاسم" },
+  "Status": { id: "Status", en: "Status", ar: "الحالة" },
+  "Berlangsung": { id: "Berlangsung", en: "In progress", ar: "قيد التنفيذ" },
+  "Selesai": { id: "Selesai", en: "Completed", ar: "مكتمل" },
+  "Belum dimulai": { id: "Belum dimulai", en: "Not started", ar: "لم تبدأ" },
+  "Menunggu": { id: "Menunggu", en: "Waiting", ar: "بانتظار" },
+  "Tidak ada": { id: "Tidak ada", en: "None", ar: "لا يوجد" },
+  "Pelat": { id: "Pelat", en: "Plate", ar: "اللوحة" },
+  "Rute & titik jemput": { id: "Rute & titik jemput", en: "Routes & pickup stops", ar: "المسارات ونقاط الصعود" },
+  "Anak saya": { id: "Anak saya", en: "My children", ar: "أبنائي" },
+  "Riwayat": { id: "Riwayat", en: "History", ar: "السجل" },
+  "Operator Utama": { id: "Operator Utama", en: "Main Operator", ar: "المشغّل الرئيسي" },
+  "Kelola siswa, sekolah, wali, dan titik jemput. Ubah status layanan melalui detail siswa.": { id: "Kelola siswa, sekolah, wali, dan titik jemput. Ubah status layanan melalui detail siswa.", en: "Manage students, schools, guardians and pickup points. Change service status from the student details page.", ar: "إدارة الطلاب والمدارس وأولياء الأمور ونقاط الصعود. غيّر حالة الخدمة من صفحة تفاصيل الطالب." },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
