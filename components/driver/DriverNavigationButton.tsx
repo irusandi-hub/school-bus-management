@@ -47,8 +47,7 @@ export async function DriverNavigationButton({
           {label}
         </button>
         <p className="nav-missing">
-          {disabledMessage ??
-            `${destinationName ? `${destinationName} ${c("belum memiliki koordinat tersimpan. Navigasi tidak dibuka karena alamat tidak boleh ditebak.")}` : c("Titik ini belum memiliki koordinat tersimpan. Navigasi tidak dibuka karena alamat tidak boleh ditebak.")`}
+          {disabledMessage ? c(disabledMessage) : destinationName ? `${destinationName} ${c("belum memiliki koordinat tersimpan. Navigasi tidak dibuka karena alamat tidak boleh ditebak.")}` : c("Titik ini belum memiliki koordinat tersimpan. Navigasi tidak dibuka karena alamat tidak boleh ditebak.")}
         </p>
       </div>
     );
@@ -108,7 +107,7 @@ export async function CoordinateLine({ destination }: { destination: Coordinate 
   return (
     <span className="nav-coordinate">
       <Icon name="pin" size={12} /> {coordinates}
-      {!hasValidCoordinates(destination) && " · {c("perlu diperiksa")}"}
+      {!hasValidCoordinates(destination) && <> · {c("perlu diperiksa")}</>}
     </span>
   );
 }
