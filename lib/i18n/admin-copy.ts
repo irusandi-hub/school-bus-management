@@ -211,6 +211,17 @@ const copy: Record<string, Record<Locale, string>> = {
   "Menuju lokasi": { id: "Menuju lokasi", en: "En route", ar: "في الطريق" },
   "Tiba": { id: "Tiba", en: "Arrived", ar: "وصل" },
   "Selesai": { id: "Selesai", en: "Done", ar: "مكتمل" },
+  "Belum ada titik jemput": { id: "Belum ada titik jemput", en: "No pickup stops yet", ar: "لا توجد نقاط صعود بعد" },
+  "Operator Utama belum menambahkan titik pada rute ini. Navigasi tidak dapat dibuka tanpa titik yang tersimpan.": { id: "Operator Utama belum menambahkan titik pada rute ini. Navigasi tidak dapat dibuka tanpa titik yang tersimpan.", en: "The Main Operator has not added stops to this route. Navigation cannot open without saved stops.", ar: "لم يضف المشغّل الرئيسي نقاطاً إلى هذا المسار. لا يمكن فتح الملاحة دون نقاط محفوظة." },
+  "Menuju lokasi": { id: "Menuju lokasi", en: "En route", ar: "في الطريق" },
+  "Alamat & peta": { id: "Alamat & peta", en: "Address & map", ar: "العنوان والخريطة" },
+  "Gerbang sekolah": { id: "Gerbang sekolah", en: "School gate", ar: "بوابة المدرسة" },
+  "belum ada siswa": { id: "belum ada siswa", en: "no students", ar: "لا يوجد طلاب" },
+  "Koordinat belum tersedia": { id: "Koordinat belum tersedia", en: "Coordinates unavailable", ar: "الإحداثيات غير متاحة" },
+  "Buka di aplikasi peta": { id: "Buka di aplikasi peta", en: "Open in map app", ar: "افتح في تطبيق الخرائط" },
+  "Peta titik ini belum tersedia": { id: "Peta titik ini belum tersedia", en: "Map for this stop is unavailable", ar: "خريطة هذه النقطة غير متاحة" },
+  "di aplikasi peta": { id: "di aplikasi peta", en: "in the map app", ar: "في تطبيق الخرائط" },
+  "di aplikasi peta,": { id: "di aplikasi peta,", en: "in the map app,", ar: "في تطبيق الخرائط،" },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
