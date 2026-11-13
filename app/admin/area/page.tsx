@@ -143,7 +143,7 @@ export default async function ProjectAreaPage({
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th scope="col">Nama area</th>
+                  <th scope="col"><AdminCopy value="Nama area" /></th>
                   <th scope="col"><AdminCopy value="Kode" /></th>
                   <th scope="col"><AdminCopy value="Kota" /></th>
                   <th scope="col"><AdminCopy value="Kontak" /></th>
