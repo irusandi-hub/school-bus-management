@@ -5,6 +5,7 @@ import { useActionState, useRef } from "react";
 import { useConfirm } from "@/components/ui/DialogProvider";
 import { idleState, type ActionState } from "@/lib/validation";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 export type FieldDef = {
   name: string;
@@ -37,7 +38,8 @@ type Props = {
 };
 
 export function RecordForm({ action, fields, submitLabel, hidden, note, secondary, confirmMessage, disabledReason }: Props) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
+  const copy = (value: string | undefined) => translateAdminCopy(value, locale);
   const [state, formAction, pending] = useActionState<ActionState, FormData>(action, idleState);
   const confirm = useConfirm();
   const confirming = useRef(false);
@@ -53,7 +55,7 @@ export function RecordForm({ action, fields, submitLabel, hidden, note, secondar
       const form = event.currentTarget;
       const submitter = (event.nativeEvent as SubmitEvent).submitter;
       confirming.current = true;
-      const accepted = await confirm({ title: t("confirmChange"), message: confirmMessage, confirmText: t("save"), cancelText: t("cancelLabel") });
+      const accepted = await confirm({ title: t("confirmChange"), message: copy(confirmMessage) ?? confirmMessage, confirmText: t("save"), cancelText: t("cancelLabel") });
       confirming.current = false;
       if (!accepted || !form.isConnected) return;
       approved.current = true;
@@ -64,7 +66,7 @@ export function RecordForm({ action, fields, submitLabel, hidden, note, secondar
 
       {disabledReason && (
         <p className="form-alert warning" role="status">
-          {disabledReason}
+          {copy(disabledReason)}
         </p>
       )}
 
@@ -86,11 +88,11 @@ export function RecordForm({ action, fields, submitLabel, hidden, note, secondar
                     defaultChecked={Boolean(field.defaultValue)}
                     disabled={formDisabled}
                   />
-                  <span>{field.label}</span>
+                  <span>{copy(field.label)}</span>
                 </label>
                 {field.help && (
                   <p className="field-hint" id={helpId}>
-                    {field.help}
+                    {copy(field.help)}
                   </p>
                 )}
                 {error && (
@@ -105,7 +107,7 @@ export function RecordForm({ action, fields, submitLabel, hidden, note, secondar
           return (
             <div className={field.fullWidth ? "field field-wide" : "field"} key={field.name}>
               <label htmlFor={field.name}>
-                {field.label}
+                {copy(field.label)}
                 {field.required ? " *" : ""}
               </label>
 
@@ -117,7 +119,7 @@ export function RecordForm({ action, fields, submitLabel, hidden, note, secondar
                   required={field.required}
                   readOnly={field.readOnly}
                   disabled={formDisabled}
-                  placeholder={field.placeholder}
+                  placeholder={copy(field.placeholder)}
                   maxLength={field.maxLength}
                   defaultValue={(field.defaultValue as string | null) ?? ""}
                   aria-invalid={error ? true : undefined}
@@ -135,7 +137,7 @@ export function RecordForm({ action, fields, submitLabel, hidden, note, secondar
                 >
                   {field.options?.map((option) => (
                     <option key={option.value} value={option.value}>
-                      {option.label}
+                      {copy(option.label)}
                     </option>
                   ))}
                 </select>
@@ -178,7 +180,7 @@ export function RecordForm({ action, fields, submitLabel, hidden, note, secondar
         })}
       </div>
 
-      {note && <p className="form-note">{note}</p>}
+      {note && <p className="form-note">{copy(note)}</p>}
 
       {state.status === "error" && (
         <p className="form-alert error" role="alert">
@@ -197,11 +199,11 @@ export function RecordForm({ action, fields, submitLabel, hidden, note, secondar
           type="submit"
           disabled={pending || formDisabled}
         >
-          {pending ? t("savingLabel") : submitLabel}
+          {pending ? t("savingLabel") : copy(submitLabel)}
         </button>
         {secondary && (
           <Link className="btn btn-ghost" href={secondary.href}>
-            {secondary.label}
+            {copy(secondary.label)}
           </Link>
         )}
       </div>
