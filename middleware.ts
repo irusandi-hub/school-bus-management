@@ -14,7 +14,8 @@ export async function middleware(request: NextRequest) {
   // gerbang di setiap layout dan Server Action tetap berjalan. Mode ini tidak pernah
   // aktif di produksi dan tidak memakai klien Supabase sama sekali.
   if (isDevOpenAccess()) return NextResponse.next();
-  // Cookie demo ditandatangani server dan hanya valid pada Preview dengan secret khusus.\n  if (getDemoOtpAccountFromRequest(request)) return NextResponse.next();
+  // Cookie demo hanya dilewatkan middleware di Preview; identitasnya diverifikasi dengan HMAC pada server sebelum akses diberikan.
+  if (process.env.VERCEL_ENV === "preview" && request.cookies.has("schoolbus_demo_session")) return NextResponse.next();
 
   const config = supabaseConfig();
   if (!config) return NextResponse.next();
