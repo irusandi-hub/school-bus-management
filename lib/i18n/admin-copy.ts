@@ -500,6 +500,14 @@ const copy: Record<string, Record<Locale, string>> = {
   "ini yang dapat membuka area ini.": { id: "ini yang dapat membuka area ini.", en: "can access this area.", ar: "هو من يمكنه فتح هذه المنطقة." },
   "Akses dibuka saat anak berada di dalam bus dan berakhir ketika anak turun.": { id: "Akses dibuka saat anak berada di dalam bus dan berakhir ketika anak turun.", en: "Access opens while the child is on the bus and ends when the child gets off.", ar: "يُفتح الوصول أثناء وجود الطفل في الحافلة وينتهي عند نزوله." },
   "Tidak ada rekaman video yang disimpan oleh aplikasi.": { id: "Tidak ada rekaman video yang disimpan oleh aplikasi.", en: "The app does not store video recordings.", ar: "لا يحتفظ التطبيق بتسجيلات الفيديو." },
+  "Perjalanan sudah selesai.": { id: "Perjalanan sudah selesai.", en: "Trip completed.", ar: "اكتملت الرحلة." },
+  "Perjalanan sedang berlangsung.": { id: "Perjalanan sedang berlangsung.", en: "Trip in progress.", ar: "الرحلة جارية." },
+  "Perjalanan dibatalkan.": { id: "Perjalanan dibatalkan.", en: "Trip cancelled.", ar: "تم إلغاء الرحلة." },
+  "Mulai untuk membuka tindakan siswa dan kamera.": { id: "Mulai untuk membuka tindakan siswa dan kamera.", en: "Start the trip to enable student actions and the camera.", ar: "ابدأ الرحلة لتفعيل إجراءات الطلاب والكاميرا." },
+  "Pilih tugas hari ini": { id: "Pilih tugas hari ini", en: "Select today's task", ar: "اختر مهمة اليوم" },
+  "Daftar siswa dan tindakan": { id: "Daftar siswa dan tindakan", en: "Student list and actions", ar: "قائمة الطلاب والإجراءات" },
+  "Memulai…": { id: "Memulai…", en: "Starting…", ar: "جارٍ البدء…" },
+  "Lengkapi pemeriksaan keselamatan.": { id: "Lengkapi pemeriksaan keselamatan.", en: "Complete the safety checks.", ar: "أكمل فحوصات السلامة." },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
