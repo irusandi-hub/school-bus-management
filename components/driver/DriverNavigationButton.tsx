@@ -44,7 +44,7 @@ export async function DriverNavigationButton({
       <div className="nav-action">
         <button className={`btn btn-secondary${sizeClass} nav-disabled`} type="button" disabled>
           <Icon name="gpsOff" size={size === "sm" ? 14 : 17} />
-          {label}
+          {c(label)}
         </button>
         <p className="nav-missing">
           {disabledMessage ? c(disabledMessage) : destinationName ? `${destinationName} ${c("belum memiliki koordinat tersimpan. Navigasi tidak dibuka karena alamat tidak boleh ditebak.")}` : c("Titik ini belum memiliki koordinat tersimpan. Navigasi tidak dibuka karena alamat tidak boleh ditebak.")}
@@ -63,7 +63,7 @@ export async function DriverNavigationButton({
         aria-label={`${c("Buka navigasi ke")} ${destinationName ?? c("tujuan")}`}
       >
         <Icon name="navigation" size={size === "sm" ? 14 : 18} />
-        {label}
+        {c(label)}
       </a>
 
       {showAlternatives && (
