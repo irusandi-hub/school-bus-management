@@ -104,7 +104,7 @@ export async function FullRouteNavigator({
             <Icon name="gpsOff" size={19} />
           </span>
           <span className="route-cta-copy">
-            <strong>Buka Navigasi</strong>
+            <strong>{c("Buka Navigasi")}</strong>
             <small>{ctaReason}</small>
           </span>
         </button>
