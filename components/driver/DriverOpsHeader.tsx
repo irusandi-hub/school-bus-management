@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { BrandLogo } from "@/components/brand-logo";
+import { Icon } from "@/components/ui/Icon";
 import { signOutAction } from "@/lib/auth-actions";
 import type { TripProgress } from "@/lib/driver/trip-progress";
 
@@ -50,14 +51,22 @@ export function DriverOpsHeader({
     <section className="ops-head" aria-label="Profil pengemudi, tugas, dan progres perjalanan">
       {/* Baris 1: identitas brand, rute terpotong, dan profil. */}
       <div className="compact-identity-row">
-        <BrandLogo href="/pengemudi" size="sm" />
-        <h1 className="compact-route" title={`${routeName} • ${shortDate}`}>
-          <span>{routeName || "Rute"}</span><time dateTime={serviceDate}> • {shortDate}</time>
-        </h1>
+        <div className="compact-brand-route">
+          <BrandLogo href="/pengemudi" size="sm" />
+          <h1 className="compact-route" title={`${routeName} • ${shortDate}`}>
+            <span>{routeName || "Rute"}</span><time dateTime={serviceDate}> • {shortDate}</time>
+          </h1>
+        </div>
         <div className="compact-driver-identity">
           <strong>{driverName || "Pengemudi"}</strong>
           <span>ID {shortId} • {plateNumber || "Plat belum tercatat"}</span>
         </div>
+        <form action={signOutAction} className="compact-logout-form">
+          <button className="compact-logout" type="submit" aria-label="Keluar" title="Keluar">
+            <Icon name="logout" size={17} />
+          </button>
+        </form>
+      </div>
         <form action={signOutAction}><button className="btn btn-ghost btn-sm" type="submit">Keluar</button></form>
       </div>
 
