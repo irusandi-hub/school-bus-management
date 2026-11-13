@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import { LIVE_STATE_COPY, resolveLivePlayback, type LiveVideoState } from "@/lib/guardian/live";
 import { tripCamera } from "@/lib/camera/trip-connection";
 import { CameraStatus } from "./CameraStatus";
@@ -45,6 +46,7 @@ export function ParentLiveVideo({
   compact = false,
   presentation = "default",
 }: ParentLiveVideoProps) {
+  const { t } = useLocale();
   const [expanded, setExpanded] = useState(false);
   const [media, setMedia] = useState<MediaStream | null>(null);
   const [connection, setConnection] = useState("");
@@ -57,6 +59,8 @@ export function ParentLiveVideo({
   const displayState = media ? "live" : connection.includes("berakhir") ? "ended" : playback.state;
   const isLive = Boolean(media) || playback.canPlay;
   const copy = LIVE_STATE_COPY[displayState];
+  const copyTitle = t(({ "awaiting-boarding": "awaitingChildOnBus", "on-board-camera-off": "cameraNotConnected", ended: "cameraEnded", live: "liveStream" } as const)[displayState]);
+  const copyDetail = t(({ "awaiting-boarding": "cameraAccessAfterBoarding", "on-board-camera-off": "cameraBoardedNoStream", ended: "cameraNoRecording", live: "cameraNoRecording" } as const)[displayState]);
   const isGuardianCard = presentation === "guardian-card";
   const placeholderIcon =
     displayState === "ended" ? "check" : displayState === "awaiting-boarding" ? "bus" : "cameraOff";
@@ -80,15 +84,15 @@ export function ParentLiveVideo({
   const stage = isLive ? (
     <video ref={node => { if (node) node.srcObject = media; }} className="live-player" controls autoPlay muted playsInline preload="metadata">
       <source src={media ? undefined : streamUrl ?? undefined} type={streamMimeType ?? undefined} />
-      Peramban Anda tidak mendukung pemutaran video.
+      {t("videoUnsupported")}
     </video>
   ) : (
     <div className={`live-placeholder state-${displayState}`}>
       <span className="live-placeholder-icon" aria-hidden="true">
         <Icon name={placeholderIcon} size={26} />
       </span>
-      <strong>{copy.title}</strong>
-      <p>{copy.detail}</p>
+      <strong>{copyTitle}</strong>
+      <p>{copyDetail}</p>
     </div>
   );
 
@@ -103,7 +107,7 @@ export function ParentLiveVideo({
             <Icon name={isLive ? "camera" : "cameraOff"} size={16} />
           </span>
           <div>
-            <strong>{isGuardianCard ? (busLabel ? `Kamera perjalanan · ${busLabel}` : "Kamera perjalanan") : "Live video"}</strong>
+            <strong>{isGuardianCard ? (busLabel ? `${t("cameraTitle")} · ${busLabel}` : t("cameraTitle"))  : t("liveVideo")}</strong>
             <span>{isGuardianCard ? tripLabel : `${childName} · ${tripLabel}`}</span>
           </div>
         </div>
@@ -117,7 +121,7 @@ export function ParentLiveVideo({
             <CameraStatus state={displayState} />
           )}
           {simulated && (
-            <span className="live-demo" title="Data simulasi pengembangan, bukan siaran nyata">
+            <span className="live-demo" title={t("simulatedData")}>
               Data simulasi
             </span>
           )}
@@ -132,12 +136,12 @@ export function ParentLiveVideo({
           <>
             <span className="live-meta">
               <Icon name="clock" size={12} />
-              {updatedAt ? `Diperbarui ${updatedAt}` : "Belum ada pembaruan"}
+              {updatedAt ? `${t("updated")} ${updatedAt}` : t("noUpdate")}
             </span>
-            <span className="live-meta">{busLabel ?? "Bus belum ditetapkan"}</span>
+            <span className="live-meta">{busLabel ?? t("busNotAssigned")}</span>
           </>
         ) : (
-          !isLive && <span className="live-meta">Pembesaran aktif saat siaran tersedia</span>
+          !isLive && <span className="live-meta">{t("zoomWhenLive")}</span>
         )}
         <button
           className="btn btn-secondary btn-sm live-expand"
@@ -156,7 +160,7 @@ export function ParentLiveVideo({
           className="live-fullscreen"
           role="dialog"
           aria-modal="true"
-          aria-label={`Live video ${childName} diperbesar`}
+          aria-label={`${t("liveVideo")} ${childName}`}
         >
           <header className="live-fullscreen-head">
             <div>
@@ -186,7 +190,7 @@ export function ParentLiveVideo({
 
           <div className="live-fullscreen-stage">{stage}</div>
           <p className="live-fullscreen-note">
-            {copy.detail} Tekan Esc atau Tutup untuk kembali.
+            {copy.detail} Tekan Esc atau {t("close")} untuk kembali.
           </p>
         </div>
       )}
