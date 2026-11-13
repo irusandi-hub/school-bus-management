@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdminCopy } from "@/components/i18n/AdminCopy";
 import type { Metadata } from "next";
 import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
 import { RecordForm, type FieldDef } from "@/components/admin/RecordForm";
@@ -153,13 +154,13 @@ export default async function PengemudiPage({
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th scope="col">Nama pengemudi</th>
-                  <th scope="col">Telepon</th>
-                  <th scope="col">Nomor SIM</th>
-                  <th scope="col">Area Operasional</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Akun masuk</th>
-                  <th scope="col">Tindakan</th>
+                  <th scope="col"><AdminCopy value="Nama pengemudi" /></th>
+                  <th scope="col"><AdminCopy value="Telepon" /></th>
+                  <th scope="col"><AdminCopy value="Nomor SIM" /></th>
+                  <th scope="col"><AdminCopy value="Area Operasional" /></th>
+                  <th scope="col"><AdminCopy value="Status" /></th>
+                  <th scope="col"><AdminCopy value="Akun masuk" /></th>
+                  <th scope="col"><AdminCopy value="Tindakan" /></th>
                 </tr>
               </thead>
               <tbody>
