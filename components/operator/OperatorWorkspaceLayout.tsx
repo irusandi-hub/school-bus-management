@@ -7,17 +7,21 @@ import { BottomNav } from "@/components/ui/BottomNav";
 import { Icon } from "@/components/ui/Icon";
 import { adminBottomNav, adminGroups } from "@/components/ui/nav-config";
 import { requireOperator } from "@/lib/auth";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translate } from "@/lib/i18n/messages";
 import { signOutAction } from "@/lib/auth-actions";
 
 /** One global workspace for all platform administration and operations. */
 export async function OperatorWorkspaceLayout({ children }: { children: React.ReactNode }) {
+  const locale = await getRequestLocale();
+  const t = (key: Parameters<typeof translate>[1]) => translate(locale, key);
   const access = await requireOperator();
   if (access.status === "unconfigured") return <ConfigNotice />;
 
   return (
     <div className="app-shell admin-shell operator-shell">
       <aside className="sidebar">
-        <BrandLogo href="/operator" subtitle="Operator Utama" ariaLabel="School Bus Operator" className="brand" />
+        <BrandLogo href="/operator" subtitle={t("operator")} ariaLabel="School Bus Operator" className="brand" />
         <div className="nav-group"><AdminNav /></div>
         <div className="sidebar-bottom">
           <span className="security-icon"><Icon name="shield" size={13} /></span>
@@ -55,8 +59,8 @@ export async function OperatorWorkspaceLayout({ children }: { children: React.Re
         items={adminBottomNav}
         groups={adminGroups}
         rootHref="/operator"
-        ariaLabel="Navigasi Operator"
-        areaLabel="Operator Utama"
+        ariaLabel={locale === "ar" ? "قائمة المشغّل" : locale === "en" ? "Operator navigation" : "Navigasi Operator"}
+        areaLabel={t("operator")}
       />
     </div>
   );
