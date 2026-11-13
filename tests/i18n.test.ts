@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { defaultLocale, getDirection, isLocale } from "../lib/i18n/config.ts";
 import { translate } from "../lib/i18n/messages.ts";
 import { translateNavigationLabel } from "../lib/i18n/navigation.ts";
+import { translateAdminCopy } from "../lib/i18n/admin-copy.ts";
 
 test("Indonesian remains the default locale", () => {
   assert.equal(defaultLocale, "id");
@@ -35,4 +36,16 @@ test("shared navigation labels are translated without changing route identity", 
   assert.equal(translateNavigationLabel("Pengemudi", "ar"), "السائقون");
   assert.equal(translateNavigationLabel("Ringkasan", "id"), "Ringkasan");
   assert.equal(translateNavigationLabel("Unmapped custom label", "en"), "Unmapped custom label");
+});
+
+
+test("shared operational copy has Indonesian, English, and Arabic variants", () => {
+  assert.equal(translateAdminCopy("Status layanan", "id"), "Status layanan");
+  assert.equal(translateAdminCopy("Status layanan", "en"), "Service status");
+  assert.equal(translateAdminCopy("Status layanan", "ar"), "حالة الخدمة");
+});
+
+test("unmapped operational copy remains unchanged instead of disappearing", () => {
+  assert.equal(translateAdminCopy("Custom user-provided label", "ar"), "Custom user-provided label");
+  assert.equal(translateAdminCopy(undefined, "en"), undefined);
 });
