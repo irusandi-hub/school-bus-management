@@ -13,7 +13,7 @@ const reasons: Record<string, string> = {
   auth_callback: "Tautan verifikasi tidak dapat diproses. Minta tautan baru dari halaman Aktivasi Akun.",
 };
 
-const doors: Record<string, { label: string; detail: string }> = {
+const doors: Record<string, { labelKey: "operator" | "driverArea" | "guardianPortal"; detailKey: "loginOperatorDetail" | "loginDriverDetail" | "loginGuardianDetail" }> = {
   operator: { labelKey: "operator", detailKey: "loginOperatorDetail" },
   pengemudi: { labelKey: "driverArea", detailKey: "loginDriverDetail" },
   wali: { labelKey: "guardianPortal", detailKey: "loginGuardianDetail" },
