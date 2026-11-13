@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ConfigNotice } from "@/components/admin/ui";
 import { BrandLogo } from "@/components/brand-logo";
 import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
+import { LocalizedText } from "@/components/i18n/LocaleProvider";
 import { BottomNav } from "@/components/ui/BottomNav";
 import { Icon } from "@/components/ui/Icon";
 import { PortalNav } from "@/components/ui/PortalNav";
@@ -31,7 +32,7 @@ export default async function GuardianLayout({ children }: { children: React.Rea
           <form action={signOutAction}>
             <button className="btn btn-ghost btn-sm" type="submit">
               <Icon name="logout" size={15} />
-              Keluar
+              <LocalizedText k="signOut" />
             </button>
           </form>
         </div>
