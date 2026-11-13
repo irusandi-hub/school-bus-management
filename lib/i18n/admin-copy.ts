@@ -257,6 +257,9 @@ const copy: Record<string, Record<Locale, string>> = {
   "Akhiri": { id: "Akhiri", en: "End trip", ar: "إنهاء" },
   "Memeriksa…": { id: "Memeriksa…", en: "Checking…", ar: "جارٍ التحقق…" },
   "Mengakhiri…": { id: "Mengakhiri…", en: "Ending…", ar: "جارٍ الإنهاء…" },
+  "Kabin sudah diperiksa, tidak ada penumpang yang tertinggal di dalam bus.": { id: "Kabin sudah diperiksa, tidak ada penumpang yang tertinggal di dalam bus.", en: "The cabin has been checked; no passengers remain on the bus.", ar: "تم فحص المقصورة والتأكد من عدم بقاء أي راكب داخل الحافلة." },
+  "Barang yang diketahui tertinggal di dalam bus akan diamankan, dan bukan tanggung jawab pengemudi jika kehilangan.": { id: "Barang yang diketahui tertinggal di dalam bus akan diamankan, dan bukan tanggung jawab pengemudi jika kehilangan.", en: "Any belongings found left on the bus will be secured. The driver is not responsible for subsequent loss.", ar: "سيتم تأمين المتعلقات التي يُعثر عليها داخل الحافلة، ولا يتحمل السائق مسؤولية فقدانها لاحقاً." },
+  "Status seluruh penumpang sudah dituntaskan.": { id: "Status seluruh penumpang sudah dituntaskan.", en: "All passenger statuses have been completed.", ar: "تم استكمال حالات جميع الركاب." },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
