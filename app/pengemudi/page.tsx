@@ -33,7 +33,7 @@ import {
 import { DEFAULT_NAVIGATION_PROVIDER, buildRouteDirectionsUrl } from "@/lib/navigation/external";
 import { createServerSupabase } from "@/lib/supabase/server";
 import type { RouteStopRow, TripEventRow, TripRow } from "@/lib/types";
-import { formatDate, formatDateTime, formatTime, serviceDateInTimeZone } from "@/lib/validation";
+import { serviceDateInTimeZone } from "@/lib/validation";
 import { startTrip } from "./actions";
 
 export const metadata: Metadata = { title: "Operasional Hari Ini | Pengemudi" };
@@ -81,6 +81,10 @@ export default async function DriverOperationsPage({
   const locale = isLocale(savedLocale) ? savedLocale : defaultLocale;
   const t = (key: MessageKey) => translate(locale, key);
   const directionLabel = (value: string) => value === "morning" ? t("morningDirection") : value === "afternoon" ? t("afternoonDirection") : t("directionNotRecorded");
+  const dateLocale = locale === "ar" ? "ar-SA-u-ca-gregory" : locale === "en" ? "en-GB" : "id-ID";
+  const formatDateLocalized = (value: string) => new Intl.DateTimeFormat(dateLocale, { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Riyadh" }).format(new Date(`${value.slice(0, 10)}T12:00:00+03:00`));
+  const formatDateTimeLocalized = (value: string | null) => value ? new Intl.DateTimeFormat(dateLocale, { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Riyadh" }).format(new Date(value)) : "—";
+  const formatTimeLocalized = (value: string | null) => value ? new Intl.DateTimeFormat(dateLocale, { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Riyadh" }).format(new Date(value)) : "—";
   const access = await requireDriver();
   if (access.status === "unconfigured") return <ConfigNotice />;
 
@@ -152,7 +156,7 @@ export default async function DriverOperationsPage({
                   <EmptyRow colSpan={5} title={t("noTripHistory")} detail={t("historyEmptyDetail")} />
                 ) : history.map((item) => (
                   <tr key={item.id} data-trip-id={item.id}>
-                    <td data-label="Tanggal">{formatDate(item.trip_assignments?.service_date ?? item.created_at)}</td>
+                    <td data-label="Tanggal">{formatDateLocalized(item.trip_assignments?.service_date ?? item.created_at)}</td>
                     <td data-label="Rute">
                       <strong>{item.trip_assignments?.routes?.route_name ?? "Rute"}</strong>
                       <small>{item.trip_assignments?.routes?.school_name} · {directionLabel(item.trip_assignments?.routes?.direction ?? "")}</small>
@@ -160,9 +164,9 @@ export default async function DriverOperationsPage({
                     <td data-label="Bus">{item.trip_assignments?.buses?.fleet_code ?? "—"}</td>
                     <td data-label="Status"><TripStatusPill status={item.status} /></td>
                     <td data-label="Waktu">
-                      <small>{t("start")} {formatTime(item.started_at)}</small>
+                      <small>{t("start")} {formatTimeLocalized(item.started_at)}</small>
                       <small>{t("arrive")} {formatTime(item.arrived_at)}</small>
-                      <small>{t("finish")} {item.completed_at ? formatDateTime(item.completed_at) : "—"}</small>
+                      <small>{t("finish")} {item.completed_at ? formatDateTimeLocalized(item.completed_at) : "—"}</small>
                     </td>
                   </tr>
                 ))}
