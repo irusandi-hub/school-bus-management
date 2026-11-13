@@ -6,6 +6,7 @@ import { useLocale } from "@/components/i18n/LocaleProvider";
 import { resolveLivePlayback, type LiveVideoState } from "@/lib/guardian/live";
 import { tripCamera } from "@/lib/camera/trip-connection";
 import { CameraStatus } from "./CameraStatus";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 export type ParentLiveVideoProps = {
   tripId?: string | null;
@@ -46,7 +47,8 @@ export function ParentLiveVideo({
   compact = false,
   presentation = "default",
 }: ParentLiveVideoProps) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
   const [expanded, setExpanded] = useState(false);
   const [media, setMedia] = useState<MediaStream | null>(null);
   const [connection, setConnection] = useState("");
@@ -127,7 +129,7 @@ export function ParentLiveVideo({
         </div>
       </header>
 
-      {connection && <p role="status">{connection}</p>}
+      {connection && <p role="status">{c(connection)}</p>}
       <div className="live-stage">{stage}</div>
 
       <footer className="live-foot">
@@ -182,7 +184,7 @@ export function ParentLiveVideo({
                 autoFocus
               >
                 <Icon name="shrink" size={14} />
-                Tutup
+                {t("close")}
               </button>
             </div>
           </header>
