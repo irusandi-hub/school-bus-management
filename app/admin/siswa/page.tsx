@@ -310,7 +310,7 @@ export default async function SiswaPage({
         <aside className="panel admin-form-panel" id="form">
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">{editing ? "Ubah data siswa" : "Tambah siswa"}</h2>
+              <h2 className="panel-title"><AdminCopy value={editing ? "Ubah data siswa" : "Tambah siswa"} /></h2>
               <div className="panel-subtitle">
                 {editing ? `Memperbarui ${editing.full_name}` : "Data langsung tersimpan"}
               </div>
