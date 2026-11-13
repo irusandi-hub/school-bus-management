@@ -2924,3 +2924,10 @@ html[dir="rtl"] .landing-hero-copy,html[dir="rtl"] .landing-cta{text-align:right
 html[dir="rtl"] .landing-role-head{direction:rtl}
 html[dir="rtl"] .landing-footer-meta{direction:rtl}
 @media(max-width:640px){.locale-switcher-compact select{max-width:112px;padding:6px 7px;font-size:11px}}
+
+/* Keep the language selector visible without changing the approved landing composition. */
+.landing-controls{position:relative}
+.landing-locale{position:absolute;top:14px;right:clamp(16px,4vw,56px);z-index:20}
+html[dir="rtl"] .landing-locale{right:auto;left:clamp(16px,4vw,56px)}
+.landing-locale .locale-switcher{background:rgba(255,255,255,.88);backdrop-filter:blur(8px);padding:5px 7px;border:1px solid rgba(229,236,235,.8);border-radius:12px}
+@media(max-width:640px){.landing-locale{top:8px;right:12px}.landing-locale .locale-switcher{gap:4px}.landing-locale .locale-switcher select{max-width:112px}}
