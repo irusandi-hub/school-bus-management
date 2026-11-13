@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
+import { defaultLocale, isLocale } from "@/lib/i18n/config";
 import { ConfigNotice, EmptyState, Notice } from "@/components/admin/ui";
 import { ChildOverviewCard } from "@/components/guardian/ChildOverviewCard";
 import { GuardianOpsHeader } from "@/components/guardian/GuardianOpsHeader";
@@ -13,6 +15,9 @@ import { createServerSupabase } from "@/lib/supabase/server";
 export const metadata: Metadata = { title: "Anak Saya | Portal Wali" };
 
 export default async function GuardianHomePage() {
+  const cookieStore = await cookies();
+  const savedLocale = cookieStore.get("sbm_locale")?.value;
+  const locale = isLocale(savedLocale) ? savedLocale : defaultLocale;
   const access = await requireGuardian();
   if (access.status === "unconfigured") return <ConfigNotice />;
 
@@ -32,7 +37,7 @@ export default async function GuardianHomePage() {
     const journey = resolveChildJourney({
       trip,
       event: event ? { event_type: event.eventType, occurred_at: event.occurredAt } : null,
-    });
+    }, locale);
     const placement =
       child.placements.find((entry) => entry.direction === trip?.direction) ??
       child.placements.find((entry) => entry.direction === "morning") ??
@@ -42,7 +47,7 @@ export default async function GuardianHomePage() {
     const directionStatuses = ["morning", "afternoon"].map((direction) => {
       const directionTrip = child.todayTrips.find((row) => row.direction === direction) ?? null;
       if (!directionTrip) {
-        return { direction, label: "Belum dijadwalkan", tone: "neutral" as const };
+        return { direction, label: locale === "en" ? "Not scheduled" : locale === "ar" ? "غير مجدول" : "Belum dijadwalkan", tone: "neutral" as const };
       }
       const directionEvent = directionTrip.tripId
         ? liveEvents.get(liveEventKey(directionTrip.tripId, child.student.id)) ?? null
@@ -52,7 +57,7 @@ export default async function GuardianHomePage() {
         event: directionEvent
           ? { event_type: directionEvent.eventType, occurred_at: directionEvent.occurredAt }
           : null,
-      });
+      }, locale);
       return { direction, label: status.label, tone: status.tone };
     });
 
@@ -112,6 +117,7 @@ export default async function GuardianHomePage() {
                 <ChildOverviewCard
                   key={child.student.id}
                   child={child}
+                  locale={locale}
                   trip={trip}
                   journey={journey}
                   placement={placement}
