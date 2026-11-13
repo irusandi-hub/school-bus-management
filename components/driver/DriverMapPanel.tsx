@@ -4,6 +4,8 @@ import { Icon } from "@/components/ui/Icon";
 import { useDriverLocation } from "./useDriverLocation";
 import { useDriverLocationPublisher } from "./useDriverLocationPublisher";
 import { DriverRouteMap, type DriverMapStop } from "./DriverRouteMap";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 /**
  * Kartu peta di bawah dua panel operasional.
@@ -21,24 +23,26 @@ export function DriverMapPanel({
   active: boolean;
   tripId: string | null;
 }) {
+  const { locale } = useLocale();
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
   const gps = useDriverLocation(active);
   const publisher = useDriverLocationPublisher({ active, tripId, location: gps.location });
   const gpsLabel =
     gps.status === "active" && gps.location
-      ? `GPS HP · ±${Math.round(gps.location.accuracy)} m`
+      ? `${c("GPS HP")} · ±${Math.round(gps.location.accuracy)} m`
       : gps.status === "locating"
-        ? "Mencari GPS HP"
+        ? c("Mencari GPS HP")
         : gps.status === "denied"
-          ? "GPS HP ditolak"
+          ? c("GPS HP ditolak")
           : gps.status === "unsupported"
-            ? "GPS HP tidak didukung"
+            ? c("GPS HP tidak didukung")
             : gps.status === "invalid"
-              ? "Sinyal GPS lemah"
+              ? c("Sinyal GPS lemah")
               : gps.status === "stale"
-                ? "GPS HP menunggu"
+                ? c("GPS HP menunggu")
                 : gps.status === "unavailable"
-                  ? "GPS HP belum tersedia"
-                  : "GPS HP belum aktif";
+                  ? c("GPS HP belum tersedia")
+                  : c("GPS HP belum aktif");
   const mappedStops = stops.filter(
     (stop) =>
       typeof stop.latitude === "number" &&
@@ -57,13 +61,13 @@ export function DriverMapPanel({
             <Icon name="pin" size={15} />
           </span>
           <div>
-            <h2 id="ops-map-title">Peta rute</h2>
+            <h2 id="ops-map-title">{c("Peta rute")}</h2>
             <small>
-              Geser/cubit peta · {mappedStops} titik · S = sekolah
+              {c("Geser/cubit peta")} · {mappedStops} {c("titik")} · S = {c("sekolah")}
             </small>
           </div>
         </div>
-        <span className="ops-map-gps" role="status" title={`${gps.message} ${publisher.message}`}>
+        <span className="ops-map-gps" role="status" title={`${c(gps.message)} ${c(publisher.message)}`}>
           <Icon name={gps.status === "active" ? "pin" : "gpsOff"} size={12} />
           {gpsLabel}
         </span>
