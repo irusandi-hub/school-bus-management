@@ -2808,3 +2808,42 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
 /* Shared explanatory copy: preserve layout and hierarchy, allow readable wrapping. */
 :is(.admin-workspace,.guardian-shell,.driver-app) :is(.panel-subtitle,.field-hint,.field-error,.form-note,.form-alert,.table-empty p,.state-panel p){font-size:clamp(12px,.9vw,14px);line-height:1.5;overflow-wrap:anywhere;white-space:normal}
 :is(.admin-workspace,.guardian-shell,.driver-app) .admin-page-head-copy p{overflow-wrap:anywhere;white-space:normal}
+
+
+/* Driver header refinement: keep identity, tabs and primary trip action compact. */
+.driver-app .ops-head{padding:10px 11px;margin-bottom:8px;border-radius:15px;box-shadow:0 7px 18px #FFC4311A}
+.driver-app .compact-identity-row{display:flex;align-items:center;flex-wrap:nowrap;gap:7px;min-width:0}
+.driver-app .compact-brand-route{display:flex;align-items:center;gap:5px;flex:1 1 45%;min-width:0}
+.driver-app .compact-brand-route .brand-logo{min-height:34px;gap:4px;flex:none}
+.driver-app .compact-brand-route .brand-logo-mark{width:25px;height:25px}
+.driver-app .compact-brand-route .brand-logo-word{font-size:13px}
+.driver-app .compact-brand-route .compact-route{flex:1 1 auto;min-width:0;font-size:9.5px;line-height:1.2}
+.driver-app .compact-driver-identity{flex:0 1 auto;min-width:0;max-width:43%;gap:1px;font-size:10px;line-height:1.25}
+.driver-app .compact-driver-identity strong{font-size:10.5px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.driver-app .compact-driver-identity span{font-size:8.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.driver-app .compact-logout-form{flex:none;margin:0}
+.driver-app .compact-logout{display:grid;place-items:center;width:31px;height:31px;padding:0;border:1px solid #6B512044;border-radius:9px;background:#FFF4D0;color:#493A16}
+.driver-app .compact-logout:focus-visible{outline:2px solid #0F1B3D;outline-offset:2px}
+.driver-app .compact-driver-tabs{gap:14px;margin-top:5px;font-size:11px}
+.driver-app .compact-driver-tabs a{min-height:30px;padding:0 3px}
+.driver-app .compact-action-row{gap:5px;margin-top:7px}
+.driver-app .compact-counters{gap:3px}
+.driver-app .compact-counter{gap:2px;padding:6px 5px;font-size:9.5px}
+.driver-app .compact-counter b{font-size:12px}
+.driver-app .compact-action-row .ops-start-action{width:150px;min-height:48px;padding:8px 9px;gap:7px;border:1px solid #0F1B3D;border-radius:11px;background:#0F1B3D;color:#fff;font-size:12px;font-weight:800;box-shadow:0 4px 10px #0F1B3D26}
+.driver-app .compact-action-row .ops-start-action svg{display:block;flex:none;width:21px;height:21px}
+.driver-app .compact-action-row .ops-start-action:hover{background:#172957;border-color:#172957}
+.driver-app .compact-action-row .ops-start-action:disabled{background:#59647A;border-color:#59647A;color:#fff;opacity:.75}
+@media(max-width:390px){
+  .driver-app .ops-head{padding:9px 9px}
+  .driver-app .compact-identity-row{gap:5px}
+  .driver-app .compact-brand-route{gap:4px;flex-basis:43%}
+  .driver-app .compact-brand-route .brand-logo-word{font-size:12px}
+  .driver-app .compact-driver-identity{max-width:42%}
+  .driver-app .compact-driver-identity strong{font-size:9.5px}
+  .driver-app .compact-driver-identity span{font-size:8px}
+  .driver-app .compact-logout{width:29px;height:29px}
+  .driver-app .compact-counter{padding:5px 4px;font-size:9px}
+  .driver-app .compact-counter b{font-size:11px}
+  .driver-app .compact-action-row .ops-start-action{width:140px;min-height:46px;font-size:11.5px}
+}
