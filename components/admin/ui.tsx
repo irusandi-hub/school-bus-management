@@ -206,9 +206,7 @@ export async function ListToolbar({
   total: number;
   resetHref?: string;
 }) {
-  const cookieStore = await cookies();
-  const savedLocale = cookieStore.get("sbm_locale")?.value;
-  const locale = isLocale(savedLocale) ? savedLocale : defaultLocale;
+  const locale = await getRequestLocale();
   const t = (key: Parameters<typeof translate>[1]) => translate(locale, key);
   return (
     <form className="list-toolbar" method="get" action={action}>
