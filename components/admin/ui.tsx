@@ -133,24 +133,25 @@ export function StatCard({
 }
 
 /** State kosong yang dipakai di luar tabel (panel, kartu, halaman). */
-export function MetricStrip({
+export async function MetricStrip({
   label,
   items,
 }: {
   label: string;
   items: { label: string; value: ReactNode; note?: string; icon: string }[];
 }) {
+  const locale = await getRequestLocale();
   return (
-    <section className="metric-strip" aria-label={label}>
+    <section className="metric-strip" aria-label={translateAdminCopy(label, locale)}>
       {items.map((item) => (
         <div className="metric-item" key={item.label}>
           <span className="metric-icon" aria-hidden="true">
             <Icon name={item.icon} size={16} />
           </span>
           <div className="metric-copy">
-            <span className="metric-label">{item.label}</span>
+            <span className="metric-label">{translateAdminCopy(item.label, locale)}</span>
             <strong className="metric-value">{item.value}</strong>
-            {item.note && <small>{item.note}</small>}
+            {item.note && <small>{translateAdminCopy(item.note, locale)}</small>}
           </div>
         </div>
       ))}
