@@ -46,10 +46,7 @@ export default async function GuardianHistoryPage() {
         <div>
           <p className="eyebrow">RIWAYAT</p>
           <h1><LocalizedText k="guardianHistory" /></h1>
-          <p>
-            Hanya perjalanan pada rute anak Anda yang terhubung dengan akun ini. Riwayat tidak dapat diubah atau
-            dihapus dari portal.
-          </p>
+          <p><LocalizedText k="historyIntro" /></p>
         </div>
       </section>
 
@@ -81,10 +78,7 @@ export default async function GuardianHistoryPage() {
                   <td colSpan={5}>
                     <div className="table-empty">
                       <strong><LocalizedText k="noTripHistory" /></strong>
-                      <p>
-                        Riwayat muncul setelah pengemudi memulai dan menyelesaikan perjalanan pada rute anak Anda.
-                        Tidak ada data contoh yang ditampilkan.
-                      </p>
+                      <p><LocalizedText k="historyEmptyDetail" /></p>
                     </div>
                   </td>
                 </tr>
@@ -107,8 +101,8 @@ export default async function GuardianHistoryPage() {
                       <Pill tone={tripTone(trip.status)}>{tripStatusLabel(trip.status)}</Pill>
                     </td>
                     <td data-label="Waktu">
-                      <small>Mulai {formatTime(trip.startedAt)}</small>
-                      <small>Tiba {formatTime(trip.arrivedAt)}</small>
+                      <small><LocalizedText k="start" /> {formatTime(trip.startedAt)}</small>
+                      <small><LocalizedText k="arrive" /> {formatTime(trip.arrivedAt)}</small>
                     </td>
                   </tr>
                 ))
@@ -119,8 +113,7 @@ export default async function GuardianHistoryPage() {
       </section>
 
       <Notice kind="info">
-        Peta dan posisi bus langsung belum tersedia. Halaman riwayat hanya menampilkan waktu dan status yang benar-benar
-        dicatat sistem.
+        <LocalizedText k="historyMapUnavailable" />
       </Notice>
     </>
   );
