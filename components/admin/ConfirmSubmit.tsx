@@ -29,6 +29,7 @@ export function ConfirmSubmit({
 }: Props) {
   const { t, locale } = useLocale();
   const copy = (value: string | undefined) => translateAdminCopy(value, locale);
+  const childContent = typeof children === "string" ? copy(children) ?? children : children;
   const { pending } = useFormStatus();
   const confirm = useConfirm();
   const locked = useRef(false);
