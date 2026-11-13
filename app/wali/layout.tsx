@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
+import { defaultLocale, isLocale } from "@/lib/i18n/config";
+import { translate } from "@/lib/i18n/messages";
 import { ConfigNotice } from "@/components/admin/ui";
 import { BrandLogo } from "@/components/brand-logo";
 import { LocalizedText } from "@/components/i18n/LocaleProvider";
@@ -18,13 +21,16 @@ const portalNavItems = [
 ];
 
 export default async function GuardianLayout({ children }: { children: React.ReactNode }) {
+  const cookieStore = await cookies();
+  const savedLocale = cookieStore.get("sbm_locale")?.value;
+  const locale = isLocale(savedLocale) ? savedLocale : defaultLocale;
   const access = await requireGuardian();
   if (access.status === "unconfigured") return <ConfigNotice />;
 
   return (
     <div className="portal-shell guardian-shell">
       <header className="portal-head compact-area-header">
-        <BrandLogo href="/wali" subtitle="Portal Orang Tua/Wali" size="sm" className="brand" />
+        <BrandLogo href="/wali" subtitle={translate(locale, "guardianPortal")} size="sm" className="brand" />
         <PortalNav items={portalNavItems} rootHref="/wali" />
         <div className="portal-account">
           <form action={signOutAction}>
@@ -37,10 +43,10 @@ export default async function GuardianLayout({ children }: { children: React.Rea
       </header>
       {children}
       <footer className="page-footer">
-        <span>School Bus Management · Portal Wali</span>
-        <span>Hanya anak yang terhubung dan aktif · Lokasi mengikuti GPS HP pengemudi</span>
+        <span>School Bus Management · {translate(locale, "guardianPortal")}</span>
+        <span>{translate(locale, "guardianFooter")}</span>
       </footer>
-      <BottomNav items={guardianBottomNav} rootHref="/wali" ariaLabel="Navigasi seluler wali" />
+      <BottomNav items={guardianBottomNav} rootHref="/wali" ariaLabel={translate(locale, "navigationGuardian")} />
     </div>
   );
 }
