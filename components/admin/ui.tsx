@@ -73,14 +73,16 @@ export async function Notice({
   );
 }
 
-export function Pill({
+export async function Pill({
   tone = "neutral",
   children,
 }: {
   tone?: "neutral" | "success" | "warning" | "danger" | "info";
   children: ReactNode;
 }) {
-  return <span className={`pill ${tone}`}>{children}</span>;
+  const locale = await getRequestLocale();
+  const content = typeof children === "string" ? translateAdminCopy(children, locale) ?? children : children;
+  return <span className={`pill ${tone}`}>{content}</span>;
 }
 
 /** Status perjalanan memakai satu pemetaan warna di seluruh area. */
