@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 import type { DeviceLocation } from "@/lib/driver/device-location";
 import type { DriverLocationStatus } from "./useDriverLocation";
 import "leaflet/dist/leaflet.css";
@@ -48,6 +50,8 @@ export function DriverRouteMap({
   locationStatus: DriverLocationStatus;
   locationMessage: string;
 }) {
+  const { locale } = useLocale();
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<import("leaflet").Map | null>(null);
   const driverMarker = useRef<import("leaflet").Marker | null>(null);
@@ -128,8 +132,8 @@ export function DriverRouteMap({
         title.textContent = `${stop.order}. ${stop.name}`;
         const detail = document.createElement("small");
         detail.textContent = stop.isSchool
-          ? "Sekolah"
-          : `${stop.studentCount} siswa${stop.skipped && stop.skipReason ? ` · ${stop.skipReason}` : ""}`;
+          ? c("Sekolah")
+          : `${stop.studentCount} ${c("Siswa").toLocaleLowerCase(locale)}${stop.skipped && stop.skipReason ? ` · ${c(stop.skipReason)}` : ""}`;
         tooltip.className = "ops-map-tooltip-copy";
         tooltip.append(title, detail);
         marker.bindTooltip(tooltip, {
@@ -164,7 +168,7 @@ export function DriverRouteMap({
       setMapReady(false);
       map?.remove();
     };
-  }, [validStops]);
+  }, [validStops, locale]);
 
   // Marker posisi HP diperbarui tanpa membangun ulang peta atau mengubah
   // urutan/titik pemberhentian.
@@ -198,15 +202,15 @@ export function DriverRouteMap({
       const marker = L.marker([driverLocation.latitude, driverLocation.longitude], {
         icon,
         keyboard: false,
-        title: "Posisi HP pengemudi",
+        title: c("Posisi HP pengemudi"),
         zIndexOffset: 500,
       }).addTo(map);
 
       const tooltip = document.createElement("span");
       const title = document.createElement("strong");
-      title.textContent = "Posisi HP pengemudi";
+      title.textContent = c("Posisi HP pengemudi");
       const detail = document.createElement("small");
-      detail.textContent = `Sumber utama · akurasi ±${Math.round(driverLocation.accuracy)} m`;
+      detail.textContent = `${c("Sumber utama · akurasi")} ±${Math.round(driverLocation.accuracy)} m`;
       tooltip.className = "ops-map-tooltip-copy";
       tooltip.append(title, detail);
       marker.bindTooltip(tooltip, {
@@ -222,16 +226,16 @@ export function DriverRouteMap({
     return () => {
       disposed = true;
     };
-  }, [driverLocation, mapReady]);
+  }, [driverLocation, mapReady, locale]);
 
   const locate = () => {
     const map = mapRef.current;
     if (!driverLocation) {
-      setLocateNotice(locationStatus === "locating" ? "Mencari GPS HP. Tunggu sampel lokasi pertama." : locationMessage);
+      setLocateNotice(locationStatus === "locating" ? c("Mencari GPS HP. Tunggu sampel lokasi pertama.") : c(locationMessage));
       return;
     }
     if (!map) {
-      setLocateNotice("Peta masih dimuat. Coba lagi sebentar.");
+      setLocateNotice(c("Peta masih dimuat. Coba lagi sebentar."));
       return;
     }
 
@@ -239,7 +243,7 @@ export function DriverRouteMap({
       animate: true,
       duration: 0.6,
     });
-    setLocateNotice("Peta dipusatkan ke posisi HP.");
+    setLocateNotice(c("Peta dipusatkan ke posisi HP."));
     window.clearTimeout(locateTimer.current);
     locateTimer.current = window.setTimeout(() => setLocateNotice(null), 2_500);
   };
@@ -249,8 +253,8 @@ export function DriverRouteMap({
   if (validStops.length === 0) {
     return (
       <div className="ops-map-empty" role="status">
-        <strong>Koordinat titik belum tersedia</strong>
-        <p>Peta hanya dapat ditampilkan dari koordinat rute yang tersimpan.</p>
+        <strong>{c("Koordinat titik belum tersedia")}</strong>
+        <p>{c("Peta hanya dapat ditampilkan dari koordinat rute yang tersimpan.")}</p>
       </div>
     );
   }
@@ -263,14 +267,14 @@ export function DriverRouteMap({
           className="ops-map-canvas"
           role="region"
           aria-busy={tileState === "loading"}
-          aria-label={`Peta ${validStops.length} titik rute dari koordinat tersimpan; dapat digeser dan diperbesar, bukan navigasi belokan`}
+          aria-label={`${c("Peta")} ${validStops.length} ${c("titik rute dari koordinat tersimpan; dapat digeser dan diperbesar, bukan navigasi belokan")}`}
         />
         <button
           className="ops-map-locate"
           type="button"
           onClick={locate}
-          aria-label="Pusatkan peta ke posisi HP pengemudi"
-          title={driverLocation ? "Pusatkan ke posisi HP" : locationMessage}
+          aria-label={c("Pusatkan peta ke posisi HP pengemudi")}
+          title={driverLocation ? c("Pusatkan ke posisi HP") : c(locationMessage)}
         >
           <Icon name="navigation" size={13} />
         </button>
@@ -281,21 +285,21 @@ export function DriverRouteMap({
         )}
         {tileState !== "ready" && (
           <div className={`ops-map-status is-${tileState}`} role="status">
-            <strong>{tileState === "error" ? "Peta tidak dapat dimuat" : "Memuat peta OpenStreetMap…"}</strong>
+            <strong>{tileState === "error" ? c("Peta tidak dapat dimuat") : c("Memuat peta OpenStreetMap…")}</strong>
             <small>
               {tileState === "error"
-                ? "Koordinat tetap tersedia di daftar titik. Periksa koneksi lalu muat ulang."
-                : "Menunggu ubin peta dari OpenStreetMap."}
+                ? c("Koordinat tetap tersedia di daftar titik. Periksa koneksi lalu muat ulang.")
+                : c("Menunggu ubin peta dari OpenStreetMap.")}
             </small>
           </div>
         )}
       </div>
       <div className="ops-map-foot">
         <span>
-          <strong>Garis urutan titik</strong>, bukan jalur jalan. Navigasi belokan belum tersedia.
+          <strong>{c("Garis urutan titik")}</strong>, {c("bukan jalur jalan. Navigasi belokan belum tersedia.")}
         </span>
         {missingCount > 0 && (
-          <span className="ops-map-missing">{missingCount} titik tanpa koordinat tidak ditampilkan.</span>
+          <span className="ops-map-missing">{missingCount} {c("titik tanpa koordinat tidak ditampilkan.")}</span>
         )}
       </div>
     </>
