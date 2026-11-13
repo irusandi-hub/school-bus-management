@@ -14,7 +14,7 @@ export function OpenSafetyCheckLink() {
       type="button"
       onClick={() => window.dispatchEvent(new Event("schoolbus:open-trip-safety"))}
     >
-      <Icon name="shield" size={16} /> Akhiri Perjalanan
+      <Icon name="shield" size={16} /> {label}
     </button>
   );
 }
