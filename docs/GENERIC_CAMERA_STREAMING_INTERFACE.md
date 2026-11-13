@@ -17,7 +17,7 @@ Keduanya adalah opsi, bukan pernyataan bahwa perangkat yang ada pasti mendukungn
 ## 2. Arsitektur logis
 
 1. Pengguna meminta akses melalui aplikasi.
-2. Backend aplikasi memverifikasi identitas, peran, organisasi, penugasan bus/perjalanan, dan kondisi akses terkini.
+2. Backend aplikasi memverifikasi identitas, peran, penugasan bus/perjalanan, relasi wali, dan kondisi akses terkini. Operator memiliki akses global; batas hanya berlaku untuk Pengemudi dan Orang Tua/Wali.
 3. Konektor server berkomunikasi dengan sumber yang terdaftar menggunakan kredensial yang disimpan di server.
 4. Backend membuat sesi streaming yang terbatas dan mengembalikan metadata pemutaran yang diperlukan klien.
 5. Backend memeriksa ulang izin ketika sesi diperbarui atau diperpanjang, dan mencabut/menghentikan akses saat kondisi izin berakhir.
@@ -30,7 +30,7 @@ Setiap sumber atau konektor harus mendokumentasikan kemampuan berikut. Jika tida
 
 | Area | Informasi/kemampuan minimum yang harus dibuktikan |
 |---|---|
-| Identitas sumber | ID sumber unik, ID bus yang dipetakan, perangkat/kanal kamera, organisasi pemilik/pengelola, dan status pemetaan. |
+| Identitas sumber | ID sumber unik, ID bus yang dipetakan, perangkat/kanal kamera, sekolah/operator pengelola sebagai data, dan status pemetaan. |
 | Otorisasi integrasi | Metode resmi API/SDK/protokol; alur autentikasi server-ke-sumber; hak penggunaan/integrasi tertulis; scope akses minimum. |
 | Pembuatan sesi | Membuat sesi stream untuk sumber tertentu dan mengembalikan ID sesi, metadata pemutaran, waktu mulai, serta waktu kedaluwarsa. |
 | Metadata media | Protokol/transport, format/container, codec, resolusi, frame rate, audio jika ada, persyaratan browser/perangkat, dan batas latensi yang terukur. |
@@ -52,7 +52,7 @@ Backend harus mengevaluasi izin saat sesi dibuat dan setiap kali sesi diperpanja
 
 - **Pengemudi:** sesi kerja aktif dan penugasan bus yang sah.
 - **Orang tua/wali:** relasi wali–siswa disetujui; siswa tertentu telah dikonfirmasi berada di bus; perjalanan dan penugasan cocok; izin akses belum dicabut.
-- **Batas organisasi:** pengguna hanya dapat mengakses organisasi, bus, perjalanan, dan siswa dalam lingkup kewenangannya.
+- **Batas akses:** Operator dapat mengakses seluruh bus/perjalanan/siswa; Pengemudi hanya penugasan yang diberikan; Orang Tua/Wali hanya anak dan perjalanan yang berhak. Jangan memakai organisasi/wilayah sebagai filter akses Operator.
 - **Perubahan status:** ketika anak dikonfirmasi turun, relasi dicabut, penugasan berakhir, sesi kerja berakhir, atau akses dinonaktifkan, sesi terkait harus dihentikan/dicabut sesuai kemampuan yang sudah diverifikasi.
 - **Pemisahan anak:** akses wali terhadap satu anak tidak boleh memberi akses otomatis ke anak lain di bus yang sama.
 - **Akses langsung:** endpoint backend dan sumber stream tidak boleh mengizinkan klien melewati pemeriksaan izin aplikasi.
@@ -91,7 +91,7 @@ Setiap konektor harus menyediakan bukti untuk tes berikut sebelum dinyatakan lul
 
 1. Sumber yang terdaftar dan berwenang dapat memulai live stream.
 2. Pengguna tanpa login atau tanpa peran yang sesuai ditolak oleh backend.
-3. Pengguna organisasi lain, wali yang tidak terhubung, dan wali dengan relasi yang dicabut ditolak.
+3. Pengemudi yang tidak ditugaskan, wali yang tidak terhubung, dan wali dengan relasi yang dicabut ditolak; Operator tetap memiliki akses global.
 4. Wali ditolak jika anak belum dikonfirmasi berada di bus atau sudah dikonfirmasi turun.
 5. Sesi berhenti/ditolak setelah izin dicabut; token/URL lama tidak dapat membuka kembali akses setelah batas waktu pencabutan yang disetujui.
 6. Sesi kedaluwarsa tidak dapat dipakai ulang tanpa refresh yang sah.

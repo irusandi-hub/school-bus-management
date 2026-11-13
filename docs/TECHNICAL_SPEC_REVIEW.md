@@ -3,6 +3,8 @@
 **Status:** BELUM DIPUTUSKAN / BELUM TERVERIFIKASI  
 **Tujuan:** Menentukan apakah spesifikasi cukup matang untuk menyusun arsitektur teknis. Ini bukan persetujuan untuk mulai coding.
 
+> **DEC-033 (2026-11-08) mengikat checklist ini.** Hanya ada tiga ekosistem: Operator, Pengemudi, dan Orang Tua/Wali. Satu Operator Utama memiliki akses global; Admin Pusat/Sekolah bukan role/akun terpisah; wilayah/organisasi bukan batas akses Operator. Butir lama yang menyebut Admin Pusat, empat area, atau isolasi organisasi harus dibaca sebagai legacy dan disesuaikan.
+
 ## A. Kondisi proyek
 - [ ] Dipastikan apakah proyek dimulai dari nol atau ada aplikasi/repository/database yang harus dipertahankan.
 - [ ] Pemilik produk dan pihak yang berwenang menyetujui perubahan ditentukan.
@@ -10,7 +12,7 @@
 - [x] Target skala pelayanan awal sekitar 100 bus; jumlah sekolah, siswa, pengemudi, perjalanan, pengguna bersamaan, dan stop maksimum masih harus ditentukan.
 
 ## B. Platform dan penggunaan
-- [ ] Kebutuhan platform awal dijawab: Admin, Pengemudi, dan Wali masing-masing membutuhkan web dan mobile. Detail OS, kesetaraan fitur antarplatform, dan kebutuhan offline belum diputuskan.
+- [ ] Kebutuhan platform awal dijawab: Operator, Pengemudi, dan Wali masing-masing membutuhkan web dan mobile. Detail OS, kesetaraan fitur antarplatform, dan kebutuhan offline belum diputuskan.
 - [ ] Kebutuhan koneksi buruk/offline ditentukan.
 - [ ] Bahasa, zona waktu, aksesibilitas, dan dukungan perangkat ditentukan.
 - [ ] Alur login, pemulihan akun, sesi, dan pencabutan akses ditetapkan.
@@ -30,7 +32,7 @@
 - [ ] Kemampuan mengunci urutan stop sambil menghitung ulang jalur antartitik dibuktikan.
 - [ ] Strategi perhitungan awal dan pembaruan rute untuk 20/30/40+ stop diuji dengan data simulasi.
 - [ ] Perilaku saat tidak ada rute aman ditetapkan.
-- [ ] Aturan rekomendasi titik jemput bersama dan persetujuan admin ditetapkan.
+- [ ] Aturan rekomendasi titik jemput bersama dan persetujuan Operator ditetapkan.
 
 ## E. GPS dan validasi lokasi
 - [x] Sumber GPS fase pertama ditetapkan: ponsel Android pengemudi yang sedang ditugaskan. GPS/AVL bawaan bus ditunda ke fase berikutnya. Kelayakan teknis perangkat dan perilaku operasional tetap harus diuji.
@@ -72,7 +74,7 @@ Kamera adalah fitur tambahan, bukan gerbang untuk menyelesaikan navigasi dan lap
 - Wilayah operasi: Arab Saudi; kota pilot disetujui Dammam dan sekitarnya.
 - Kondisi awal: proyek baru dari nol.
 - Sumber GPS fase pertama: ponsel Android pengemudi yang sedang ditugaskan; GPS/AVL bawaan bus ditunda ke fase berikutnya. Interval, kesegaran, akurasi, perangkat minimum, baterai/data, background, dan offline belum diputuskan dan harus diuji.
-- Platform: Admin Pusat, Pengemudi, dan Wali membutuhkan web serta mobile; cakupan fitur dan OS belum dirinci.
+- Platform: Operator, Pengemudi, dan Wali membutuhkan web serta mobile; cakupan fitur dan OS belum dirinci.
 - Target skala awal sekitar 100 bus. Detail sekolah/siswa/pengguna bersamaan masih BELUM DIPUTUSKAN. Sumber GPS fase pertama telah ditetapkan sebagai ponsel Android pengemudi yang sedang ditugaskan; parameter dan kelayakan lapangannya belum terverifikasi.
 - Kamera/DVR sudah terpasang. Metode integrasi stream tetap netral: perangkat/DVR langsung atau aplikasi/platform AV yang sudah ada; kelayakan tiap opsi BELUM TERVERIFIKASI.
 - Temuan rinci dan sumber awal untuk konteks Arab Saudi tercatat di `docs/TECHNICAL_REVIEW_FINDINGS.md`.
@@ -99,10 +101,10 @@ Sumber riset dan batasan bukti dicatat di `docs/TECHNICAL_REVIEW_FINDINGS.md`. I
 
 ## Gerbang lanjutan: operasi Arab Saudi
 
-- [x] Ruang lingkup produk diklarifikasi: penyedia aplikasi untuk sekolah, operator bus sekolah/pengemudi, dan orang tua/wali; sekolah dan operator dapat memakai aplikasi bersama atau masing-masing.
+- [x] Ruang lingkup produk diklarifikasi dan diperbarui oleh DEC-033: tiga ekosistem Operator, Pengemudi, dan Orang Tua/Wali. Sekolah dan perusahaan bus adalah data yang dikelola Operator, bukan akun/tenant.
 - [ ] Susun T&C yang mewajibkan pengguna/organisasi memiliki izin, kewenangan, dan hak yang diperlukan di wilayah operasinya; tinjau oleh penasihat hukum. T&C tidak otomatis menghapus kewajiban hukum penyedia aplikasi.
 - [ ] Tentukan apakah onboarding hanya meminta pernyataan kewenangan atau juga meminta nomor/dokumen izin, serta proses perubahan/berakhirnya izin.
-- [ ] Tetapkan batas akses sekolah/operator/pengemudi/wali dan pencabutan akses ketika penugasan atau kontrak berakhir.
+- [ ] Tetapkan batas akses Operator/Pengemudi/Wali dan pencabutan akses ketika penugasan atau relasi berakhir. Operator tidak dibatasi wilayah/organisasi.
 - [ ] Jangan mengasumsikan integrasi dengan Noor.
 - [ ] Konfirmasi persyaratan TGA/MoE terbaru untuk jenis operator, kendaraan, pengemudi, AVL, dan kamera. Gunakan sumber lama hanya sebagai petunjuk awal, bukan spesifikasi final.
 - [ ] Tinjau keputusan TGA yang diterbitkan pada April 2026 terkait jadwal persyaratan uji kompetensi profesional pengemudi dan tentukan apakah relevan dengan model operasi.
@@ -120,7 +122,7 @@ Sumber pendukung dan batasan bukti dicatat di docs/TECHNICAL_REVIEW_FINDINGS.md.
 - [ ] Petakan tanggung jawab dan batas akses untuk sekolah yang mengoperasikan bus sendiri versus sekolah yang memakai perusahaan transportasi.
 - [ ] Tentukan apakah satu sekolah boleh memakai kedua model dan apakah satu perusahaan boleh melayani beberapa sekolah.
 - [ ] Tentukan siapa yang bertanggung jawab atas lisensi, pengemudi, bus, rute, GPS/AVL, kamera/DVR atau aplikasi AV yang sudah ada, hubungan wali–siswa, dan respons insiden.
-- [ ] Definisikan isolasi data dan izin jika perusahaan melayani lebih dari satu sekolah; jangan menganggap staf perusahaan otomatis dapat melihat seluruh data sekolah.
+- [ ] Pastikan Operator Utama dapat mengelola seluruh sekolah/wilayah, sedangkan Pengemudi dan Wali tetap terisolasi sesuai penugasan/relasi. Jangan membangun tenant atau filter akses Operator berdasarkan sekolah/organisasi.
 - [ ] Konfirmasi persyaratan perizinan terbaru untuk kedua pola dengan TGA/MoE atau penasihat Saudi yang kompeten.
 - [ ] Untuk pilot Dammam dan sekitarnya, uji bukti cakupan routing bus besar, peta, GPS, dan integrasi stream kamera/AV.
 
@@ -133,7 +135,7 @@ Sumber pendukung dan batasan bukti dicatat di docs/TECHNICAL_REVIEW_FINDINGS.md.
 
 - [ ] Tinjau dan isi `docs/OPERATING_MODEL_RESPONSIBILITY_MATRIX.md` bersama pemilik produk, perwakilan sekolah, dan calon operator transportasi.
 - [ ] Jangan mengubah nilai TBD menjadi keputusan tanpa konfirmasi tertulis atau bukti yang relevan.
-- [ ] Verifikasi tanggung jawab, pemisahan data multi-sekolah, pengelolaan akses, dan proses berakhirnya kontrak sebelum desain izin disetujui.
+- [ ] Verifikasi tanggung jawab, otorisasi Operator global, isolasi Pengemudi/Wali, dan proses berakhirnya penugasan/relasi sebelum desain izin disetujui.
 
 Status: dokumen pendukung dibuat; keputusan operasional belum final; tidak ada provider dipilih dan tidak ada coding fitur bisnis.
 
@@ -171,7 +173,7 @@ Lihat `docs/GENERIC_CAMERA_STREAMING_INTERFACE.md`. Status pekerjaan ini adalah 
 Urutan kerja yang disarankan:
 1. **Navigasi dan perjalanan:** model perjalanan, penugasan, rute/versi rute, urutan stop, validasi GPS, status jemput/turun, penanganan data lokasi usang/offline, dan perilaku saat rute tidak aman.
 2. **Informasi dan laporan wali:** status anak, lokasi bus beserta waktu pembaruan, riwayat keikutsertaan, laporan yang mudah dipahami, pembatasan akses per relasi wali, dan ekspor terbatas.
-3. **Administrasi, akses, dan audit:** master data, isolasi organisasi, persetujuan relasi wali, koreksi dan audit.
+3. **Administrasi, akses, dan audit:** master data, otorisasi Operator global, isolasi Pengemudi/Wali, persetujuan relasi wali, koreksi dan audit.
 4. **Kamera live:** fitur tambahan; evaluasi integrasi dan pencabutan akses tidak boleh mendahului atau menghambat validasi prioritas inti.
 
 Gerbang teknis untuk navigasi tetap penting: bukti cakupan routing yang sesuai untuk bus di Dammam dan sekitarnya, profil kendaraan yang dibutuhkan, kualitas data jalan, kestabilan urutan stop, dan pengujian GPS. Jangan menyatakan routing bus besar lulus sebelum dibuktikan.
@@ -196,7 +198,7 @@ Gunakan dokumen alur inti sebagai acuan untuk memecah pekerjaan teknis berikutny
 ## Pembaruan kebutuhan akun wali dan pesan penolakan — 2026-10-30
 
 - [x] Relasi ditetapkan: satu siswa hanya memiliki satu akun orang tua/wali; satu akun wali dapat terhubung dengan beberapa siswa. Tidak ada kategori khusus “akun keluarga”.
-- [x] Email wali harus dipra-daftarkan Admin Pusat dan disimpan di database; signup memakai email terdaftar, verifikasi email, lalu pembuatan kata sandi. Login memakai email dan kata sandi, bukan Admissions Number.
+- [x] Email wali harus dipra-daftarkan Operator dan disimpan di database; signup memakai email terdaftar, verifikasi email, lalu pembuatan kata sandi. Login memakai email dan kata sandi, bukan Admissions Number.
 - [x] Signup dan sign-in mensyaratkan setidaknya satu siswa terkait dengan status layanan aktif. Jika ada siswa aktif lain, akun tetap berfungsi hanya untuk siswa aktif; jika semuanya nonaktif, akses layanan ditolak.
 - [x] Status layanan siswa dipisahkan dari kehadiran/perjalanan dan status GPS; riwayat tidak dihapus otomatis ketika status berubah.
 - [x] Setiap penolakan atau kegagalan harus memberi pesan jelas, ringkas, akurat, dan langkah berikutnya bila memungkinkan. Pesan tidak boleh membocorkan data pribadi atau keberadaan akun.
@@ -225,3 +227,15 @@ Checklist tinjauan harus mengikuti tahap kesiapan, bukan memaksa pengujian terha
 Nilai radius penjemputan, ambang GPS usang, interval pengiriman, dan batas akurasi bukan angka yang boleh dianggap final hanya karena pernah muncul sebagai contoh. Tetapkan melalui konfigurasi/keputusan yang disetujui dan uji ketika implementasi serta kondisi uji tersedia. Kamera live tetap fitur tambahan; ketiadaan konfigurasi kamera bukan alasan menunda tinjauan atau validasi alur inti navigasi dan laporan.
 
 **Status saat pembaruan ini:** tidak ada pengujian aplikasi, GPS, kamera, atau routing yang diklaim telah dilakukan. Perubahan ini hanya memperjelas urutan dan prasyarat verifikasi.
+
+## Pembaruan arsitektur tiga ekosistem — 2026-11-08
+
+- [x] Keputusan produk DEC-033 ditetapkan: Operator, Pengemudi, dan Orang Tua/Wali; satu Operator Utama dengan akses global; tidak ada Admin Pusat/Sekolah sebagai role/akun; wilayah/organisasi bukan batas akses Operator.
+- [x] Dokumen arsitektur dan aturan agen diperbarui agar tidak membangun multi-operator tenant atau pembatasan Operator berdasarkan wilayah.
+- [ ] Refactor kode: satukan `admin`/`operator` menjadi satu ruang kerja dan role Operator, hapus gate/layout Admin terpisah, dan pertahankan route kompatibilitas hanya sebagai redirect sementara.
+- [ ] Audit seluruh role types, route, layout, redirect, middleware, Server Action, server loader, SQL function, constraint, grant, RLS, linking akun, dan tes.
+- [ ] Siapkan dan uji migrasi transisi yang memetakan akun `admin` lama ke Operator tanpa kehilangan data; jangan menjalankan migrasi pada database hosted/produksi tanpa persetujuan eksplisit.
+- [ ] Buktikan melalui tes bahwa Operator dapat mengelola seluruh wilayah, sedangkan Pengemudi dan Orang Tua tetap terisolasi.
+- [ ] Perbarui README, master spec, matriks tanggung jawab, backlog, dan dokumen vendor agar tidak ada lagi instruksi Admin Pusat/empat area/multi-operator.
+
+**Status:** keputusan dan arah dokumen sudah ditetapkan; implementasi dan verifikasi RLS tiga ekosistem **BELUM DIKERJAKAN**.

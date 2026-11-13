@@ -2,8 +2,11 @@
 
 Dokumen ini melengkapi `AGENTS.md` dan berfokus pada proses kerja.
 
+Sumber aturan produk tertinggi adalah `docs/PRODUCT_ARCHITECTURE_THREE_ECOSYSTEMS.md` dan DEC-033. Dokumen lama yang menyebut Admin Pusat, empat area, multi-operator, atau pembatasan Operator berdasarkan organisasi/wilayah harus dibaca sebagai legacy dan tidak boleh dijadikan dasar pekerjaan baru.
+
 ## Wajib
-- Gunakan `docs/MASTER_SPEC.md` sebagai sumber kebutuhan induk.
+- Gunakan `docs/PRODUCT_ARCHITECTURE_THREE_ECOSYSTEMS.md` dan `docs/MASTER_SPEC.md` sebagai sumber kebutuhan induk; jika keduanya berbeda, aturan tiga ekosistem yang berlaku.
+- Patuhi tiga ekosistem: Operator, Pengemudi, dan Orang Tua/Wali. Satu Operator Utama memiliki akses global; Pengemudi hanya tugas yang diberikan; Orang Tua hanya anak/perjalanan yang berhak.
 - Periksa repository dan status Git sebelum bekerja.
 - Bedakan fakta yang diamati, rekomendasi, asumsi, dan hal yang belum diketahui.
 - Ajukan pertanyaan spesifik jika keputusan penting belum tersedia.
@@ -17,6 +20,7 @@ Dokumen ini melengkapi `AGENTS.md` dan berfokus pada proses kerja.
 - Menganggap UI yang selesai berarti backend/keamanan juga selesai.
 - Memasukkan data pribadi anak/orang tua atau rahasia ke commit.
 - Mengubah kebijakan akses, aturan status, urutan rute, validasi GPS, atau akses kamera tanpa persetujuan.
+- Menambahkan role Admin Pusat/Sekolah, dashboard Admin terpisah, multi-operator tenant, atau filter akses Operator berdasarkan wilayah/organisasi.
 - Melakukan migrasi produksi, deployment, merge, atau tindakan destruktif tanpa instruksi eksplisit.
 - Mengklaim fitur nyata berfungsi tanpa uji integrasi yang sesuai.
 

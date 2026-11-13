@@ -4,15 +4,17 @@
 **Versi:** 0.1 — draf induk kebutuhan  
 **Status:** Draf kebutuhan produk; belum menjadi spesifikasi teknis final.
 
+> **DEC-033 (2026-11-08):** Aturan produk tertinggi adalah tiga ekosistem — Operator, Pengemudi, dan Orang Tua/Wali — dengan satu Operator Utama yang memiliki akses global. Admin Pusat bukan role/area terpisah, Sekolah bukan akun, dan wilayah/organisasi bukan batas akses Operator. Bagian dokumen ini yang masih menyebut Admin Pusat, organisasi, atau empat area adalah legacy sampai refactor kode diterapkan.
+
 ## 1. Prinsip
 Jangan mulai coding berdasarkan asumsi. Tandai hal yang belum diputuskan sebagai `BELUM DIPUTUSKAN` dan kemampuan eksternal yang belum dibuktikan sebagai `BELUM TERVERIFIKASI`. Keselamatan anak, privasi, auditabilitas, dan bukti pengujian lebih penting daripada sekadar kecepatan.
 
 ## 2. Peran
-- **Admin Pusat:** mengelola data induk, sekolah, siswa, wali, bus, pengemudi, jadwal, penugasan, titik jemput, kamera, perjalanan, rute, laporan, koreksi dan audit.
+- **Operator (satu Operator Utama):** mengelola seluruh data dan operasional aplikasi — data induk, sekolah, siswa, wali, bus, pengemudi, jadwal, penugasan, titik jemput, kamera, perjalanan, rute, laporan, koreksi, dan audit — tanpa pembatasan wilayah/organisasi.
 - **Pengemudi:** melihat penugasan sendiri, memulai/menutup sesi kerja, melihat siswa yang ditugaskan, mengikuti rute disetujui, mengonfirmasi status siswa, melaporkan kesalahan, mengakses kamera selama tugas aktif, dan memeriksa kabin sebelum menutup sesi.
 - **Orang Tua/Wali:** hanya melihat anak yang relasinya telah disetujui, status perjalanan, lokasi bus dan waktu pembaruan, kamera live saat anak dikonfirmasi berada di bus dan akses sah, serta riwayat anak sendiri.
 
-Semua peran login masing-masing. Otorisasi harus ditegakkan di server dan database, bukan hanya dengan menyembunyikan menu.
+Semua peran login masing-masing. Otorisasi harus ditegakkan di server dan database, bukan hanya dengan menyembunyikan menu. Operator memiliki akses global; Pengemudi dibatasi identitas/penugasan; Orang Tua dibatasi relasi anak. Wilayah hanya data pemetaan/audit, bukan tenant atau batas akses.
 
 ## 3. Prioritas produk dan lingkup awal
 
@@ -21,7 +23,7 @@ Semua peran login masing-masing. Otorisasi harus ditegakkan di server dan databa
 Urutan prioritas:
 1. **Navigasi dan operasional perjalanan:** penugasan, perjalanan pagi/sore, rute yang disetujui, urutan stop, validasi GPS, status jemput/turun, penanganan GPS usang/offline, dan konsistensi rute aktif.
 2. **Informasi dan laporan orang tua:** status anak, lokasi bus dengan waktu pembaruan yang jelas, riwayat keikutsertaan, laporan yang mudah dipahami, serta ekspor terbatas sesuai hak akses.
-3. **Administrasi dan pengawasan:** pengelolaan sekolah, siswa, wali, bus, pengemudi, penugasan, koreksi data, audit, dan pemisahan akses antarorganisasi.
+3. **Administrasi dan pengawasan:** pengelolaan sekolah, siswa, wali, bus, pengemudi, penugasan, koreksi data, dan audit oleh satu Operator Utama dengan akses global; pembatasan akses hanya untuk Pengemudi dan Orang Tua/Wali.
 4. **Fitur tambahan:** live stream kamera, yang dapat diaktifkan setelah kebutuhan inti berjalan dan kompatibilitas/izin integrasinya dipastikan.
 
 Lingkup dasar mencakup login dan peran; data sekolah/siswa/wali/bus/pengemudi; persetujuan relasi wali; penugasan; perjalanan pagi dan sore terpisah; rute default yang disetujui; validasi GPS; lokasi bus dengan indikator kedaluwarsa; riwayat keikutsertaan; laporan/ekspor terbatas; audit dan status integrasi. Kamera live dicatat sebagai kemampuan tambahan, bukan gerbang peluncuran fitur inti.
@@ -29,7 +31,7 @@ Lingkup dasar mencakup login dan peran; data sekolah/siswa/wali/bus/pengemudi; p
 Bukan kebutuhan awal kecuali disetujui kemudian: notifikasi rutin SMS/WhatsApp, push notification sebagai ketergantungan wajib, penagihan/pembayaran, playback atau unduh rekaman kamera, dan pengubahan otomatis urutan stop selama perjalanan aktif.
 
 ## 4. Akun, email, dan relasi orang tua/wali
-- Email orang tua/wali harus didaftarkan oleh Admin Pusat dan disimpan di database sebelum proses signup. Signup hanya dapat dimulai dengan email yang telah terdaftar; sistem mengirim tautan verifikasi ke alamat tersebut. Setelah verifikasi, pengguna membuat kata sandi dan masuk menggunakan email serta kata sandi.
+- Email orang tua/wali harus didaftarkan oleh Operator dan disimpan di database sebelum proses signup. Signup hanya dapat dimulai dengan email yang telah terdaftar; sistem mengirim tautan verifikasi ke alamat tersebut. Setelah verifikasi, pengguna membuat kata sandi dan masuk menggunakan email serta kata sandi.
 - Nomor Admissions Number adalah identitas siswa, bukan username atau kredensial login.
 - Satu siswa hanya boleh memiliki satu relasi akun orang tua/wali aktif. Satu akun orang tua/wali dapat terhubung ke satu atau beberapa siswa. Tidak ada jenis akun khusus “akun keluarga”; jumlah kartu siswa yang ditampilkan mengikuti relasi yang sah.
 - Signup mensyaratkan email terdaftar yang terhubung dengan setidaknya satu siswa berstatus layanan aktif. Sign-in juga hanya diizinkan jika akun memiliki setidaknya satu siswa berstatus layanan aktif.
@@ -48,26 +50,26 @@ Sekolah; Siswa; Orang tua/wali; Relasi siswa–wali; Titik jemput; Bus (kapasita
 - Keikutsertaan yang dikonfirmasi dihitung; “tidak ikut” tidak dihitung; “belum dikonfirmasi” dikecualikan dari hitungan final.
 - “Tidak masuk sekolah” berbeda dari “tidak menggunakan bus”.
 - Riwayat operasional disimpan sejak versi pertama. Rekap penggunaan dan kemungkinan tagihan masa depan harus dipisahkan. Aturan tagihan untuk perjalanan batal belum diputuskan.
-- Admin dapat melihat/mengekspor sesuai kewenangan. Wali hanya dapat mengakses riwayat anak yang berhak dilihat.
+- Operator dapat melihat/mengekspor seluruh data. Wali hanya dapat mengakses riwayat anak yang berhak dilihat.
 - Laporan PDF harus mudah dibaca; CSV untuk data tabular. Berbagi memakai fitur berbagi perangkat atau tautan aman yang kedaluwarsa, bukan tautan publik permanen.
 - Koreksi historis wajib menyimpan pelaksana, waktu, alasan, dan nilai sebelum/sesudah bila relevan.
 
 ## 7. Rute dan bus besar
 - Rute default dihitung saat data awal atau data relevan berubah, bukan saat pengemudi menekan Mulai.
-- Admin meninjau dan menyetujui versi rute, urutan stop, jalur jalan, estimasi waktu/jarak, profil kendaraan, waktu kalkulasi, dan status persetujuan.
+- Operator meninjau dan menyetujui versi rute, urutan stop, jalur jalan, estimasi waktu/jarak, profil kendaraan, waktu kalkulasi, dan status persetujuan.
 - Pengemudi memuat rute yang disimpan saat mulai. Tidak ada optimasi ulang atau perubahan urutan otomatis saat mulai.
 - Harus diuji untuk 20/30/40+ stop serta pembatasan kendaraan berat, tinggi/berat/dimensi, jalan satu arah, larangan belok, U-turn, penutupan jalan, tempat berhenti aman, dan lalu lintas jika tersedia.
 - Jangan mengklaim penyedia mendukung kendala bus besar sebelum diverifikasi dengan bukti.
 - Stop siswa yang tidak ikut dilewati tanpa mengurutkan ulang stop lainnya.
 - Penutupan jalan boleh menghitung ulang jalur di antara stop tetapi tidak mengubah urutan stop. Jika tidak ada jalur aman, beri peringatan.
 - Perubahan data membuat versi rute untuk perjalanan berikutnya; jangan mengubah rute aktif diam-diam.
-- Koordinat berdekatan sekitar 5–10 m hanya memunculkan saran titik jemput bersama; admin harus menyetujui. Identitas dan konfirmasi siswa tetap terpisah.
+- Koordinat berdekatan sekitar 5–10 m hanya memunculkan saran titik jemput bersama; Operator harus menyetujui. Identitas dan konfirmasi siswa tetap terpisah.
 
 ## 8. GPS dan validasi jemput/turun
 - Koordinat tersimpan menjadi acuan.
 - Radius awal 100 m; validasi juga memeriksa akurasi dan kesegaran GPS.
 - Di luar radius, GPS tidak akurat, kedaluwarsa, atau tidak tersedia berarti konfirmasi normal tidak sah.
-- Admin dapat menyetujui titik alternatif. Pengecualian darurat harus berwenang dan diaudit.
+- Operator dapat menyetujui titik alternatif. Pengecualian darurat harus berwenang dan diaudit.
 - Simpan lokasi, waktu, akurasi, jarak, hasil validasi, aktor, siswa, dan perjalanan sesuai kebutuhan.
 - Wali harus melihat status kedaluwarsa/tidak tersedia saat data lokasi usang atau perangkat offline.
 
@@ -84,7 +86,7 @@ Kamera bukan fungsi inti yang harus selesai sebelum navigasi dan laporan orang t
 Sesi kerja pengemudi berbeda dari sesi perjalanan anak. Sebelum menutup tugas, pengemudi harus memeriksa kabin secara fisik. Jika ada siswa yang masih tercatat di bus atau statusnya belum jelas, sistem memperingatkan dan menahan penutupan normal sesuai kebijakan. Catat pelaksana, waktu, dan hasil pemeriksaan.
 
 ## 11. Keamanan dan privasi
-Data anak, kontak wali, dan lokasi harus dibatasi berdasarkan kebutuhan. Terapkan hak akses minimum, otorisasi server/database, audit tindakan admin dan ekspor, sesi yang dapat dicabut, tautan kedaluwarsa, retensi sesuai hukum, backup dan uji pemulihan. Jangan menggunakan data produksi nyata untuk pengujian tanpa izin dan perlindungan.
+Data anak, kontak wali, dan lokasi harus dibatasi berdasarkan kebutuhan. Terapkan hak akses minimum, otorisasi server/database, audit tindakan Operator dan ekspor, sesi yang dapat dicabut, tautan kedaluwarsa, retensi sesuai hukum, backup dan uji pemulihan. Jangan menggunakan data produksi nyata untuk pengujian tanpa izin dan perlindungan.
 
 ## 12. Kriteria penerimaan awal
 - Pengemudi tidak dapat mengubah nomor wali; permintaan ditolak server.
@@ -104,7 +106,7 @@ Data anak, kontak wali, dan lokasi harus dibatasi berdasarkan kebutuhan. Terapka
 
 ## 13. Hal yang belum diputuskan atau harus diverifikasi
 - Apakah ada aplikasi/database lama yang harus dipertahankan.
-- Platform final (admin web, aplikasi pengemudi, portal wali), metode login, pemulihan akun, dan kebutuhan offline.
+- Platform final (web Operator, aplikasi pengemudi, portal wali), metode login, pemulihan akun, dan kebutuhan offline.
 - Wilayah operasi awal: Arab Saudi; kota pilot disetujui Dammam dan sekitarnya. Kewajiban hukum spesifik terkait anak, lokasi, kamera, serta transportasi tetap perlu ditinjau.
 - Skala target awal: pelayanan sekitar 100 bus. Jumlah sekolah, siswa, pengemudi, pengguna bersamaan, dan pola penugasan masih harus ditentukan.
 - Prosedur pembuktian relasi wali dan definisi final semua status.
@@ -125,23 +127,23 @@ Status yang digunakan: `BELUM DIPUTUSKAN`, `BELUM TERVERIFIKASI`, `BELUM DIKERJA
 ## 16. Model produk: penyedia aplikasi
 
 Produk ini adalah **aplikasi untuk mendukung operasional**, bukan penyedia layanan transportasi sekolah. Pengguna utamanya:
-- Sekolah;
-- Perusahaan/operator bus sekolah dan pengemudinya;
-- Orang tua/wali siswa.
+- **Operator** — satu Operator Utama yang mengelola seluruh data dan operasional aplikasi;
+- **Pengemudi** — menjalankan tugas yang diberikan Operator;
+- **Orang Tua/Wali** — memantau anak dan perjalanan yang berhak diakses.
 
-Sekolah dan operator dapat memakai aplikasi bersama-sama atau secara terpisah sesuai model operasional yang sah. Aplikasi harus mendukung pembatasan akses sesuai organisasi, hubungan kerja, penugasan, dan tujuan penggunaan; keanggotaan pada satu organisasi tidak otomatis memberikan akses ke organisasi lain.
+Sekolah dan perusahaan bus adalah **data/entitas yang dikelola Operator**, bukan akun, role, atau tenant terpisah. Tidak ada akun Sekolah, Admin Pusat, atau operator kedua. Wilayah operasi hanyalah data pemetaan, pembagian tugas, dan audit; wilayah/`operator_id` tidak boleh menjadi filter RLS atau pembatas kewenangan Operator. Operator Utama selalu dapat melihat dan mengelola seluruh data lintas sekolah/wilayah.
 
 ### Kewenangan dan izin pengguna
 
-Pihak yang menggunakan aplikasi untuk menjalankan kegiatan operasional wajib memiliki izin, kewenangan, dan hak yang diperlukan serta mematuhi peraturan yang berlaku di wilayah operasinya. Prinsip ini harus dinyatakan dengan jelas dalam Terms & Conditions. Organisasi pengguna juga bertanggung jawab untuk memastikan bahwa data yang dimasukkan atau dibagikan memang boleh diproses untuk tujuan tersebut.
+Pihak yang menggunakan aplikasi untuk menjalankan kegiatan operasional wajib memiliki izin, kewenangan, dan hak yang diperlukan serta mematuhi peraturan yang berlaku di wilayah operasinya. Prinsip ini harus dinyatakan dengan jelas dalam Terms & Conditions. Operator juga bertanggung jawab untuk memastikan bahwa data yang dimasukkan atau dibagikan memang boleh diproses untuk tujuan tersebut.
 
-T&C harus menjelaskan bahwa aplikasi tidak menggantikan izin atau kewenangan operasional. Organisasi perlu memberi tahu jika kewenangan, izin, kontrak, atau hak akses yang relevan berubah atau berakhir. Prosedur onboarding, bukti izin yang diminta (jika ada), penangguhan, dan pencabutan akses masih BELUM DIPUTUSKAN.
+T&C harus menjelaskan bahwa aplikasi tidak menggantikan izin atau kewenangan operasional. Operator perlu memberi tahu jika kewenangan, izin, kontrak, atau hak akses yang relevan berubah atau berakhir. Prosedur onboarding, bukti izin yang diminta (jika ada), penangguhan, dan pencabutan akses masih BELUM DIPUTUSKAN.
 
 Ketentuan kontrak tidak otomatis menghapus kewajiban hukum yang mungkin melekat pada penyedia aplikasi. T&C dan pemberitahuan privasi harus ditinjau oleh penasihat hukum yang kompeten untuk wilayah peluncuran; spesifikasi ini bukan pendapat hukum.
 
 ### Batas tanggung jawab
 
-Pihak sekolah/operator bertanggung jawab atas kegiatan yang dijalankan dan keputusan operasional yang menjadi kewenangannya, termasuk memastikan izin serta penugasan yang sah. Penyedia aplikasi menyediakan fungsi perangkat lunak dan kontrol teknis sesuai lingkup produk, serta memenuhi kewajiban yang berlaku bagi penyedia aplikasi. Pembagian tanggung jawab yang tepat harus diselaraskan dengan hukum, kontrak, dan peran aktual setiap pihak; tidak boleh ditentukan sepihak hanya dengan kalimat umum di T&C.
+Operator bertanggung jawab atas kegiatan yang dijalankan dan keputusan operasional yang menjadi kewenangannya, termasuk memastikan izin serta penugasan yang sah. Penyedia aplikasi menyediakan fungsi perangkat lunak dan kontrol teknis sesuai lingkup produk, serta memenuhi kewajiban yang berlaku bagi penyedia aplikasi. Pembagian tanggung jawab yang tepat harus diselaraskan dengan hukum, kontrak, dan peran aktual setiap pihak; tidak boleh ditentukan sepihak hanya dengan kalimat umum di T&C.
 
 Lihat juga `docs/OPERATING_MODEL_RESPONSIBILITY_MATRIX.md` dan `docs/DECISIONS_LOG.md`.
 
@@ -181,7 +183,7 @@ Dokumen alur inti memprioritaskan navigasi dan laporan orang tua. Kamera live ad
 Setiap kondisi penolakan atau kegagalan di seluruh peran dan fitur wajib memberikan informasi yang jelas, ringkas, akurat, dan relevan dengan tindakan yang sedang dilakukan. Berlaku untuk autentikasi, formulir, CRUD, validasi data, otorisasi, penugasan, perjalanan, GPS, kamera/video, ekspor, dan operasi sistem.
 
 - Jelaskan apa yang tidak dapat dilakukan dan alasan yang aman untuk diungkapkan.
-- Berikan langkah berikutnya bila pengguna dapat menyelesaikan masalah, misalnya melengkapi data, mencoba kembali, atau menghubungi Admin Pusat.
+- Berikan langkah berikutnya bila pengguna dapat menyelesaikan masalah, misalnya melengkapi data, mencoba kembali, atau menghubungi Operator.
 - Tombol yang dinonaktifkan harus disertai alasan yang dapat dipahami; kegagalan tidak boleh hanya ditunjukkan dengan layar kosong, indikator berputar tanpa akhir, atau perubahan yang tidak terjadi.
 - Gunakan pesan umum yang aman bila rincian dapat membocorkan keberadaan akun, data siswa, atau izin pengguna lain. Jangan mengungkap rahasia, token, stack trace, kredensial, atau detail internal server.
 - Bila penyebab belum diketahui, nyatakan bahwa permintaan belum berhasil dan berikan langkah pemulihan yang aman; jangan mengarang penyebab.
@@ -208,7 +210,7 @@ Bagian ini memperbarui status keputusan yang sebelumnya masih tertulis terbuka. 
 6. Kamera live sebagai fitur tambahan setelah alur inti; kesiapan kamera tidak boleh memblokir alur inti.
 
 ### Platform per peran
-Kebutuhan web dan mobile untuk Admin Pusat, Pengemudi, dan Wali tetap tercatat sebagai arah produk. Kesetaraan fitur antarplatform, OS minimum, dan pembagian fitur per peran belum disetujui. Jangan mengasumsikan setiap fitur harus identik di web dan mobile. Rancangan platform harus mengutamakan kebutuhan kerja: administrasi pada layar yang sesuai untuk pengelolaan data, perjalanan/GPS pada perangkat pengemudi, dan akses informasi wali yang responsif. Rekomendasi implementasi platform harus diajukan sebagai rancangan untuk ditinjau, bukan dianggap keputusan produk.
+Kebutuhan web dan mobile untuk Operator, Pengemudi, dan Wali tetap tercatat sebagai arah produk. Kesetaraan fitur antarplatform, OS minimum, dan pembagian fitur per peran belum disetujui. Jangan mengasumsikan setiap fitur harus identik di web dan mobile. Rancangan platform harus mengutamakan kebutuhan kerja: administrasi pada layar yang sesuai untuk pengelolaan data, perjalanan/GPS pada perangkat pengemudi, dan akses informasi wali yang responsif. Rekomendasi implementasi platform harus diajukan sebagai rancangan untuk ditinjau, bukan dianggap keputusan produk.
 
 ### Routing
 HERE adalah kandidat pertama untuk proof of concept, bukan vendor terpilih atau disetujui. PoC terblokir sampai ada konfirmasi tertulis lisensi komersial untuk use case yang tepat, bukti cakupan Dammam, kredensial, profil bus aktual dari operator, dan titik uji anonim yang disetujui. Uji 20/30/40+ stop dan peninjauan manusia wajib dilakukan sebelum menyatakan routing layak.
