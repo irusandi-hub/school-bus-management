@@ -2,6 +2,8 @@
 
 Catat keputusan yang disetujui pemilik produk. Jangan mencatat rekomendasi yang belum disetujui sebagai keputusan final.
 
+> **Catatan supersession (DEC-033, 2026-11-08):** Entri historis di bawah dipertahankan sebagai catatan. Untuk desain dan implementasi baru, entri yang menyebut Admin Pusat sebagai role/area terpisah, empat area, atau pembatasan Operator berdasarkan organisasi/wilayah dibaca sebagai **legacy** dan tidak berlaku sejauh bertentangan dengan DEC-033. Hanya ada tiga ekosistem: Operator, Pengemudi, dan Orang Tua/Wali; satu Operator Utama memiliki akses global; wilayah dan organisasi adalah data, bukan batas akses Operator.
+
 ## Format entri
 - **ID:** DEC-XXX
 - **Tanggal:**
