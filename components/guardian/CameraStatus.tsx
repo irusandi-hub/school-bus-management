@@ -15,7 +15,7 @@ export function CameraStatus({ state }: { state: LiveVideoState }) {
     state === "ended"
       ? t("cameraEnded")
       : state === "live"
-        ? t("cameraTitle")
+        ? t("cameraConnected")
         : t("cameraNotConnected");
 
   return (
