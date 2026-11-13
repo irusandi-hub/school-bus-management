@@ -6,7 +6,7 @@ import { translateNavigationLabel } from "@/lib/i18n/navigation";
 import { UI_COPY } from "@/lib/ui/copy";
 import type { ReactNode } from "react";
 import { Icon } from "@/components/ui/Icon";
-import { serviceStatusLabel, tripStatusLabel } from "@/lib/validation";
+
 
 export type Crumb = { href?: string; label: string };
 
@@ -221,11 +221,11 @@ export async function ListToolbar({
       </div>
       {filters}
       <button className="btn btn-secondary" type="submit">
-        Terapkan
+        {t("apply")}
       </button>
       {resetHref && (
         <Link className="toolbar-reset" href={resetHref}>
-          Reset
+          {t("reset")}
         </Link>
       )}
       <span className="toolbar-count">{total} {t("dataCount")}</span>
@@ -255,11 +255,11 @@ export async function Pagination({
 
   return (
     <nav className="pagination" aria-label={t("dataNavigation")}>
-      {prevHref ? <Link href={prevHref}>‹ {t("previous")}</Link> : <span className="pagination-disabled">‹ Sebelumnya</span>}
+      {prevHref ? <Link href={prevHref}>‹ {t("previous")}</Link> : <span className="pagination-disabled">‹ {t("previous")}</span>}
       <span>
         {t("page")} {page} {t("of")} {totalPages}
       </span>
-      {nextHref ? <Link href={nextHref}>{t("next")} ›</Link> : <span className="pagination-disabled">Berikutnya ›</span>}
+      {nextHref ? <Link href={nextHref}>{t("next")} ›</Link> : <span className="pagination-disabled">{t("next")} ›</span>}
     </nav>
   );
 }
