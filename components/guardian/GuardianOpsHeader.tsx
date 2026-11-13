@@ -1,6 +1,7 @@
 import { Icon } from "@/components/ui/Icon";
 import { LocalizedText } from "@/components/i18n/LocaleProvider";
-import { formatDate } from "@/lib/validation";
+import type { Locale } from "@/lib/i18n/config";
+import { translate } from "@/lib/i18n/messages";
 
 /**
  * Profil wali versi strip ringkas.
@@ -11,6 +12,7 @@ import { formatDate } from "@/lib/validation";
  */
 export function GuardianOpsHeader({
   guardianName,
+  locale,
   email,
   phone,
   serviceDate,
@@ -20,6 +22,7 @@ export function GuardianOpsHeader({
   waitingCount,
 }: {
   guardianName: string;
+  locale: Locale;
   email: string | null;
   phone: string | null;
   serviceDate: string;
@@ -29,10 +32,13 @@ export function GuardianOpsHeader({
   waitingCount: number;
 }) {
   const initial = (guardianName || "W").slice(0, 1).toUpperCase();
+  const t = (key: Parameters<typeof translate>[1]) => translate(locale, key);
+  const dateLocale = locale === "ar" ? "ar-SA" : locale === "en" ? "en-GB" : "id-ID";
+  const formattedDate = new Intl.DateTimeFormat(dateLocale, { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Riyadh" }).format(new Date(`${serviceDate}T12:00:00+03:00`));
 
   return (
     <>
-      <section className="guardian-profile" aria-label="Profil wali">
+      <section className="guardian-profile" aria-label={locale === "ar" ? "ملف ولي الأمر" : locale === "en" ? "Guardian profile" : "Profil wali"}>
         <div className="guardian-profile-main">
           <span className="guardian-profile-avatar" aria-hidden="true">
             {initial}
@@ -54,13 +60,13 @@ export function GuardianOpsHeader({
             <Icon name="calendar" size={16} />
           </span>
           <span>
-            <strong>{formatDate(serviceDate)}</strong>
+            <strong>{formattedDate}</strong>
             <small><LocalizedText k="today" /></small>
           </span>
         </div>
       </section>
 
-      <div className="guardian-stat-chips" aria-label="Ringkasan hari ini">
+      <div className="guardian-stat-chips" aria-label={locale === "ar" ? "ملخص اليوم" : locale === "en" ? "Today’s summary" : "Ringkasan hari ini"}>
         <span className="guardian-stat-chip">
           <span className="guardian-stat-chip-icon" aria-hidden="true">
             <Icon name="users" size={15} />
