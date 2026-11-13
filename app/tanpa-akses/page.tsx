@@ -2,6 +2,8 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { signOutAction } from "@/lib/auth-actions";
 import { getViewerState } from "@/lib/auth";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 export const metadata: Metadata = { title: "Akses belum tersedia | School Bus" };
 
@@ -25,33 +27,34 @@ export default async function NoAccessPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  const locale = await getRequestLocale();
+  const copy = (value: string) => translateAdminCopy(value, locale) ?? value;
   const params = await searchParams;
   const raw = typeof params.alasan === "string" ? params.alasan : "";
   const reason = reasons[raw] ?? reasons["peran-tidak-dikenal"];
   const state = await getViewerState();
   const name =
     state.status === "authenticated"
-      ? state.viewer.profile?.full_name || state.viewer.email || "Pengguna"
-      : "Pengguna";
+      ? state.viewer.profile?.full_name || state.viewer.email || copy("Pengguna")
+      : copy("Pengguna");
 
   return (
     <main className="auth-page">
       <section className="auth-card access-denied">
         <span className="gate-icon gate-icon-neutral" aria-hidden="true">!</span>
-        <p className="eyebrow">AKSES TERBATAS</p>
-        <h1>{reason.title}</h1>
-        <p className="auth-copy">{reason.detail}</p>
+        <p className="eyebrow">{copy("AKSES TERBATAS")}</p>
+        <h1>{copy(reason.title)}</h1>
+        <p className="auth-copy">{copy(reason.detail)}</p>
         <p className="form-note">
-          Masuk sebagai <strong>{name}</strong>. Tidak ada data organisasi, siswa, atau perjalanan yang ditampilkan
-          pada halaman ini.
+          {copy("Masuk sebagai")} <strong>{name}</strong>. {copy("Tidak ada data organisasi, siswa, atau perjalanan yang ditampilkan pada halaman ini.")}
         </p>
         <form action={signOutAction}>
           <button className="btn btn-primary btn-lg" type="submit">
-            Keluar dari akun
+            {copy("Keluar dari akun")}
           </button>
         </form>
         <Link className="auth-back" href="/">
-          Kembali ke gerbang akses
+          {copy("Kembali ke gerbang akses")}
         </Link>
       </section>
     </main>
