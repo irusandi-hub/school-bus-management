@@ -671,6 +671,19 @@ const copy: Record<string, Record<Locale, string>> = {
   "Memuat data pengelola…": { id: "Memuat data pengelola…", en: "Loading operator data…", ar: "جارٍ تحميل بيانات المشغّل…" },
   "Memuat tugas…": { id: "Memuat tugas…", en: "Loading tasks…", ar: "جارٍ تحميل المهام…" },
   "Memuat data anak…": { id: "Memuat data anak…", en: "Loading child data…", ar: "جارٍ تحميل بيانات الطفل…" },
+  "Beranda": { id: "Beranda", en: "Home", ar: "الرئيسية" },
+  "Mode demo": { id: "Mode demo", en: "Demo mode", ar: "الوضع التجريبي" },
+  "Tutup informasi mode demo": { id: "Tutup informasi mode demo", en: "Close demo mode information", ar: "إغلاق معلومات الوضع التجريبي" },
+  "Ini versi uji coba. Akses dibuka tanpa login dan data yang tampil adalah data contoh.": { id: "Ini versi uji coba. Akses dibuka tanpa login dan data yang tampil adalah data contoh.", en: "This is a test version. Access is open without login and the displayed data is sample data.", ar: "هذه نسخة تجريبية. الوصول متاح دون تسجيل دخول والبيانات المعروضة تجريبية." },
+  "Lingkungan": { id: "Lingkungan", en: "Environment", ar: "البيئة" },
+  "Akses": { id: "Akses", en: "Access", ar: "الوصول" },
+  "Dibuka": { id: "Dibuka", en: "Open", ar: "مفتوح" },
+  "Data": { id: "Data", en: "Data", ar: "البيانات" },
+  "Contoh": { id: "Contoh", en: "Sample", ar: "عينة" },
+  "Area saat ini": { id: "Area saat ini", en: "Current area", ar: "القسم الحالي" },
+  "Versi": { id: "Versi", en: "Version", ar: "الإصدار" },
+  "Pintasan area demo": { id: "Pintasan area demo", en: "Demo area shortcuts", ar: "اختصارات أقسام العرض التجريبي" },
+  "Login dan hak akses akan diaktifkan di tahap berikutnya.": { id: "Login dan hak akses akan diaktifkan di tahap berikutnya.", en: "Login and access permissions will be enabled in a later phase.", ar: "سيتم تفعيل تسجيل الدخول وأذونات الوصول في مرحلة لاحقة." },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
