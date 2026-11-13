@@ -26,7 +26,7 @@ const doors: Record<string, { label: string; detail: string }> = {
   wali: {
     label: "Orang Tua/Wali",
     detail:
-      "Masuk menggunakan nomor HP terdaftar dan kode OTP. Akun harus memiliki siswa dengan layanan aktif.",
+      "Masukkan nomor HP simulasi untuk membuka form OTP. Akses akun tetap ditentukan oleh kode OTP dan identitas yang terdaftar.",
   },
 };
 
@@ -64,14 +64,14 @@ export default async function LoginPage({
           </p>
         ) : (
           <p className="auth-copy">
-            Masukkan nomor HP yang terdaftar untuk menerima kode OTP simulasi. Hak akses tetap mengikuti identitas akun, bukan pilihan peran di halaman ini.
+            Masukkan nomor HP simulasi (contoh: 0123456789) untuk membuka form OTP. Nomor ini tidak dicocokkan dengan akun; hak akses mengikuti kode OTP dan identitas yang terdaftar.
           </p>
         )}
 
         <LoginForm next={safeNextPath(rawNext, "")} reason={reason} />
 
         <p className="auth-footnote">
-          Kode OTP simulasi digunakan untuk keperluan demo. Nomor HP harus sesuai dengan akun yang terdaftar. Untuk bantuan akses, hubungi Pengelola.
+          Nomor HP hanya pemicu tampilan form OTP dan tidak mengirim SMS. Kode OTP tetap menggunakan kode yang sudah terdaftar di sistem demo. Untuk bantuan akses, hubungi Pengelola.
         </p>
 
         <div className="auth-links">
