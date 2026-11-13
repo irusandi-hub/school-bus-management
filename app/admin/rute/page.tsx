@@ -164,7 +164,7 @@ export default async function RoutesPage({
         <section className="panel admin-form-panel">
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">{editing ? "Ubah rute" : "Tambah rute"}</h2>
+              <h2 className="panel-title"><AdminCopy value={editing ? "Ubah rute" : "Tambah rute"} /></h2>
               <div className="panel-subtitle"><AdminCopy value="Nama, sekolah tujuan, dan arah perjalanan" /></div>
             </div>
           </header>
