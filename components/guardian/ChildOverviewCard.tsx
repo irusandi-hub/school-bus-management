@@ -8,7 +8,7 @@ import type { Locale } from "@/lib/i18n/config";
 import { translate } from "@/lib/i18n/messages";
 import type { ChildLiveVideoView } from "@/lib/guardian/live-view";
 import type { JourneyStatus, JourneyTone } from "@/lib/guardian/journey";
-import { formatTime, routeDirectionLabel } from "@/lib/validation";
+import { formatTime } from "@/lib/validation";
 
 type DirectionStatus = {
   direction: string;
