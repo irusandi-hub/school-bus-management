@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LocalizedOption } from "@/components/i18n/LocalizedOption";
 import { AdminCopy } from "@/components/i18n/AdminCopy";
 import type { Metadata } from "next";
 import { RecordForm, type FieldDef } from "@/components/admin/RecordForm";
@@ -223,7 +224,7 @@ export default async function SiswaPage({
             filters={
               <>
                 <select name="sekolah" defaultValue={schoolFilter} aria-label="Filter sekolah">
-                  <option value="">Semua sekolah</option>
+                  <LocalizedOption value="" label="Semua sekolah" />
                   {schools.map((school) => (
                     <option key={school.id} value={school.id}>
                       {school.name}
@@ -231,10 +232,10 @@ export default async function SiswaPage({
                   ))}
                 </select>
                 <select name="status" defaultValue={status} aria-label="Filter status layanan">
-                  <option value="">Semua status</option>
-                  <option value="active">Aktif</option>
-                  <option value="paused">Sementara tidak aktif</option>
-                  <option value="ended">Dihentikan</option>
+                  <LocalizedOption value="" label="Semua status" />
+                  <LocalizedOption value="active" label="Aktif" />
+                  <LocalizedOption value="paused" label="Sementara tidak aktif" />
+                  <LocalizedOption value="ended" label="Dihentikan" />
                 </select>
               </>
             }
