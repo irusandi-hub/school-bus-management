@@ -18,7 +18,7 @@ import { requireDriver } from "@/lib/auth";
 import { SAFETY_CHECKS } from "@/lib/driver/trip-end";
 import { resolveStudentTripStates } from "@/lib/driver/trip-progress";
 import { createServerSupabase } from "@/lib/supabase/server";
-import { formatDate, formatDateTime, formatTime, routeDirectionLabel } from "@/lib/validation";
+import { routeDirectionLabel } from "@/lib/validation";
 
 export const metadata: Metadata = { title: "Ringkasan Perjalanan | Pengemudi" };
 
@@ -173,7 +173,7 @@ export default async function DriverTripReviewPage({
           <div>
             <h2 className="panel-title">{assignment?.routes?.route_name ?? "Rute"}</h2>
             <div className="panel-subtitle">
-              {{c(routeDirectionLabel(direction))} · {formatLocalDate(assignment?.service_date ?? trip.completed_at)} ·{" "}
+              {c(routeDirectionLabel(direction))} · {formatLocalDate(assignment?.service_date ?? trip.completed_at)} ·{" "}
               {assignment?.routes?.school_name ?? c("Sekolah belum tercatat")}
             </div>
           </div>
@@ -187,11 +187,11 @@ export default async function DriverTripReviewPage({
             </div>
             <div>
               <dt>{c("Tiba di sekolah")}</dt>
-              <dd>{formatTime(trip.arrived_at)}</dd>
+              <dd>{formatLocalTime(trip.arrived_at)}</dd>
             </div>
             <div>
               <dt>{c("Selesai")}</dt>
-              <dd>{formatTime(trip.completed_at)}</dd>
+              <dd>{formatLocalTime(trip.completed_at)}</dd>
             </div>
           </dl>
           <p className="ops-review-meta">
@@ -247,7 +247,7 @@ export default async function DriverTripReviewPage({
                             {student.status ? (c(EVENT_LABELS[student.status] ?? student.status)) : c("Belum tercatat")}
                           </Pill>
                         </td>
-                        <td data-label={c("Waktu")}>{student.statusAt ? formatTime(student.statusAt) : "—"}</td>
+                        <td data-label={c("Waktu")}>{student.statusAt ? formatLocalTime(student.statusAt) : "—"}</td>
                         <td data-label={c("Catatan")}>
                           {student.issueNote ?? student.statusNotes ?? <span className="ops-review-meta">—</span>}
                         </td>
@@ -284,7 +284,7 @@ export default async function DriverTripReviewPage({
             </ul>
             <p className="ops-review-meta">
               {safetyRecorded
-                ? `Checklist dikonfirmasi sebelum penutupan pukul ${formatTime(trip.safety_checked_at)}.`
+                ? `Checklist dikonfirmasi sebelum penutupan pukul ${formatLocalTime(trip.safety_checked_at)}.`
                 : c("Perjalanan ini tidak memiliki waktu pencatatan pemeriksaan keselamatan.")}
               {typeof trip.student_count_confirmed === "number"
                 ? ` ${c("Jumlah siswa dikonfirmasi:")} ${trip.student_count_confirmed}.`
