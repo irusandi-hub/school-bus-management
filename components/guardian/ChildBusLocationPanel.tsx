@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import { GuardianDriverMap } from "@/components/guardian/GuardianDriverMap";
 import {
   resolveGuardianLocationView,
@@ -35,6 +36,7 @@ export function ChildBusLocationPanel({
   tripId: string | null;
   initialTripStatus: string | null;
 }) {
+  const { t } = useLocale();
   const titleId = `guardian-map-title-${childId}`;
   const finalStatus = initialTripStatus === "completed" || initialTripStatus === "cancelled";
   const [payload, setPayload] = useState<GuardianLocationPayload | null>(null);
@@ -146,6 +148,10 @@ export function ChildBusLocationPanel({
     now,
   });
 
+  const viewTitle = t(({ live: "locationTitle", ended: "locationEnded", scheduled: "locationNotStarted", stale: "locationStale", offline: "locationOffline", loading: "locationLoading", unavailable: "locationUnavailable" } as const)[view.state]);
+  const viewDetail = t(({ live: "locationLiveDetail", ended: "locationNoShare", scheduled: "locationStartsAfter", stale: "locationStaleDetail", offline: "locationOfflineDetail", loading: "locationLoadingDetail", unavailable: "locationNoPosition" } as const)[view.state]);
+  const updatedLabel = view.state === "ended" ? t("locationEnded") : view.state === "unavailable" ? t("noUpdate") : view.state === "scheduled" ? t("locationNotStarted") : view.state === "offline" ? t("connectionTrying") : view.state === "loading" ? t("locationLoading") : view.updatedLabel.startsWith("Koneksi terputus") ? `${t("locationOffline")} · ${view.updatedLabel.split("·").at(-1)?.trim()}` : view.updatedLabel.startsWith("Terakhir") ? `${t("lastSeen")} ${view.updatedLabel.slice(8)}` : view.updatedLabel.startsWith("Diperbarui") ? `${t("updated")} ${view.updatedLabel.slice(11)}` : view.updatedLabel;
+
   return (
     <section className="guardian-map-panel" aria-labelledby={titleId}>
       <header className="guardian-map-head">
@@ -153,11 +159,11 @@ export function ChildBusLocationPanel({
           <span className="guardian-map-title-icon" aria-hidden="true">
             <Icon name="pin" size={15} />
           </span>
-          <strong id={titleId}>Lokasi pengemudi</strong>
+          <strong id={titleId}>{t("locationTitle")}</strong>
         </div>
         <span className={`guardian-map-updated is-${view.state}`} role="status">
           <Icon name={iconForState(view.state)} size={12} />
-          {view.updatedLabel}
+          {updatedLabel}
         </span>
       </header>
 
@@ -179,12 +185,12 @@ export function ChildBusLocationPanel({
               <span className="guardian-map-placeholder-icon" aria-hidden="true">
                 <Icon name={iconForState(view.state)} size={22} />
               </span>
-              <strong>{view.title}</strong>
-              <p>{view.detail}</p>
+              <strong>{viewTitle}</strong>
+              <p>{viewDetail}</p>
               <small>
                 {view.state === "ended"
-                  ? "Lokasi tidak disimpan sebagai riwayat."
-                  : "Hanya posisi HP pengemudi; bukan posisi bus atau perkiraan."}
+                  ? t("locationNotHistory")
+                  : t("locationOnlyPhone")}
               </small>
             </div>
           </>
