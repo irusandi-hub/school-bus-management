@@ -199,7 +199,7 @@ export default async function DriverOperationsPage({
           </div>
           <p className="ops-empty-copy">
             {completedToday
-              ? t("completedTripForDate").replace("{date}", formatDate(date))
+              ? t("completedTripForDate").replace("{date}", formatDateLocalized(date))
               : t("noAssignmentForDate").replace("{date}", formatDate(date))}
           </p>
         </section>
@@ -536,10 +536,10 @@ export default async function DriverOperationsPage({
                 <p>{t("noTripIssues")}</p>
               )}
               <p className="ops-review-meta">
-                {formatDate(selected.service_date)} · {routeDirectionLabel(direction)} · Bus{" "}
+                {formatDateLocalized(selected.service_date)} · {directionLabel(direction)} · Bus{" "}
                 {selected.buses?.fleet_code ?? "—"}
                 {trip?.started_at ? ` · Mulai ${formatTimeLocalized(trip.started_at)}` : ""}
-                {trip?.completed_at ? ` · Selesai ${formatDateTimeLocalized(trip.completed_at)}` : ""}
+                {trip?.completed_at ? ` · ${t("finish")} ${formatDateTimeLocalized(trip.completed_at)}` : ""}
               </p>
             </div>
           </details>

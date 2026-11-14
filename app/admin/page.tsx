@@ -7,7 +7,7 @@ import { ConfigNotice, MetricStrip, PageHeader, Pill } from "@/components/admin/
 import { ProjectAreaTabs } from "@/components/admin/ProjectAreaTabs";
 import { adminReadContext } from "@/lib/admin/read";
 import { getProjectAreaContext, loadProjectAreaScope } from "@/lib/project-areas/context";
-import { formatDate, serviceDateInTimeZone } from "@/lib/validation";
+import { serviceDateInTimeZone } from "@/lib/validation";
 
 export const metadata: Metadata = { title: "Ringkasan | Operator" };
 
@@ -16,6 +16,8 @@ export default async function AdminHomePage() {
   const savedLocale = cookieStore.get("sbm_locale")?.value;
   const locale = isLocale(savedLocale) ? savedLocale : defaultLocale;
   const t = (key: Parameters<typeof translate>[1]) => translate(locale, key);
+  const dateLocale = locale === "ar" ? "ar-SA-u-ca-gregory" : locale === "en" ? "en-GB" : "id-ID";
+  const formatLocalDate = (value: string) => new Intl.DateTimeFormat(dateLocale, { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Riyadh" }).format(new Date(`${value.slice(0, 10)}T12:00:00+03:00`));
   const supabase = await adminReadContext();
   if (!supabase) return <ConfigNotice />;
 
@@ -65,7 +67,7 @@ export default async function AdminHomePage() {
       <PageHeader
         title={t("overview")}
         description={`${t("operatorControl")} ${contextLabel}.`}
-        actions={<Pill tone="info">{formatDate(date)}</Pill>}
+        actions={<Pill tone="info">{formatLocalDate(date)}</Pill>}
       />
 
       <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath="/admin" compact />

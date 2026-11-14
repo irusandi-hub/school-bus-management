@@ -251,7 +251,7 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
                 ) : (
                   trips.map((trip) => (
                     <tr key={trip.id}>
-                      <td data-label="Tanggal">{formatDate(trip.serviceDate)}</td>
+                      <td data-label="Tanggal">{formatLocalDate(trip.serviceDate)}</td>
                       <td data-label="Rute">
                         <strong>{trip.routeName}</strong>
                         <small>{c(trip.direction === "morning" ? "Pagi" : "Sore")}</small>
@@ -301,7 +301,7 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
                     {c(tripEventLabel(event.event_type))}
                   </Pill>
                   <div>
-                    <small>{formatDateTime(event.occurred_at)}</small>
+                    <small>{formatLocalDateTime(event.occurred_at)}</small>
                     {event.notes && <p>{event.notes}</p>}
                   </div>
                 </li>
