@@ -63,7 +63,7 @@ export function TripCameraPublisher({ tripId }: { tripId: string }) {
   return (
     <div className="broadcast-publisher-inline">
       <span className="broadcast-publisher-status" role="status">
-        {status}
+        {c(status)}
       </span>
       <p className="broadcast-consent-inline">
         {c("Menekan Mulai siaran berarti mengizinkan kamera belakang tanpa audio selama perjalanan ini.")}
