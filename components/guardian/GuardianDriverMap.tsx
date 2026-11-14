@@ -21,6 +21,7 @@ export type GuardianDriverPoint = {
 export function GuardianDriverMap({ point }: { point: GuardianDriverPoint }) {
   const { locale } = useLocale();
   const c = (value: string) => translateAdminCopy(value, locale) ?? value;
+  const mapTitle = c("Posisi HP pengemudi");
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<import("leaflet").Map | null>(null);
   const markerRef = useRef<import("leaflet").Marker | null>(null);
@@ -74,7 +75,7 @@ export function GuardianDriverMap({ point }: { point: GuardianDriverPoint }) {
       markerRef.current = L.marker([point.latitude, point.longitude], {
         icon,
         keyboard: false,
-        title: c("Posisi HP pengemudi"),
+        title: mapTitle,
         zIndexOffset: 500,
       }).addTo(map);
 
@@ -92,7 +93,7 @@ export function GuardianDriverMap({ point }: { point: GuardianDriverPoint }) {
     };
     // Peta hanya dibuat sekali; perubahan koordinat ditangani effect berikutnya.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [c]);
+  }, [mapTitle]);
 
   useEffect(() => {
     markerRef.current?.setLatLng([point.latitude, point.longitude]);
