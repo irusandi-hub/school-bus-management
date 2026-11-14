@@ -48,7 +48,7 @@ export default async function GuardianHomePage() {
     const directionStatuses = ["morning", "afternoon"].map((direction) => {
       const directionTrip = child.todayTrips.find((row) => row.direction === direction) ?? null;
       if (!directionTrip) {
-        return { direction, label: locale === "en" ? "Not scheduled" : locale === "ar" ? "غير مجدول" : "Belum dijadwalkan", tone: "neutral" as const };
+        return { direction, label: translate(locale, "notScheduled"), tone: "neutral" as const };
       }
       const directionEvent = directionTrip.tripId
         ? liveEvents.get(liveEventKey(directionTrip.tripId, child.student.id)) ?? null
