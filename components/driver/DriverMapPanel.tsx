@@ -63,7 +63,7 @@ export function DriverMapPanel({
           <div>
             <h2 id="ops-map-title">{c("Peta rute")}</h2>
             <small>
-              {c("Geser/cubit peta")} · {mappedStops} {c("titik")} · S = {c("sekolah")}
+              {c("Geser/cubit peta")} · {mappedStops} {c("titik")} · S = {c("Sekolah")}
             </small>
           </div>
         </div>
