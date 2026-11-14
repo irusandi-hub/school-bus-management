@@ -27,7 +27,7 @@ export default async function GuardianHomePage() {
   const supabase = await createServerSupabase();
   if (!supabase) return <ConfigNotice />;
 
-  const children = await loadChildren(supabase);
+  const children = await loadChildren(supabase, access.guardianId);
   const liveEvents = await loadTodayStudentEvents(supabase, children);
   const simulated = isDevOpenAccess();
   const guardianName = access.viewer.profile?.full_name || access.viewer.email || c("Wali");
