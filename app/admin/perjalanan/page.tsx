@@ -5,13 +5,9 @@ import { ProjectAreaTabs } from "@/components/admin/ProjectAreaTabs";
 import { adminReadContext } from "@/lib/admin/read";
 import { getProjectAreaContext, loadProjectAreaScope } from "@/lib/project-areas/context";
 import type { TripRow } from "@/lib/types";
-import {
-  formatDate,
-  formatDateTime,
-  formatTime,
-  routeDirectionLabel,
-  tripStatusLabel,
-} from "@/lib/validation";
+import { routeDirectionLabel, tripStatusLabel } from "@/lib/validation";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 export const metadata: Metadata = { title: "Perjalanan | Operator" };
 
