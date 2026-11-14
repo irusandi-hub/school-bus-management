@@ -59,8 +59,16 @@ export default async function PengemudiPage({
   if (status === "nonaktif") query = query.eq("active", false);
   if (selectedId) query = query.eq("project_area_id", selectedId);
 
-  const { data, count, error } = await query;
+  let editQuery = editId ? supabase.from("drivers").select(selectColumns).eq("id", editId) : null;
+  if (editQuery && selectedId) editQuery = editQuery.eq("project_area_id", selectedId);
+
+  const [listResult, editResult] = await Promise.all([
+    query,
+    editQuery ? editQuery.maybeSingle() : Promise.resolve({ data: null }),
+  ]);
+  const { data, count, error } = listResult;
   const rows = (data ?? []) as unknown as DriverRow[];
+  const editing = (editResult.data as unknown as DriverRow | null) ?? null;
 
   const linkedIds = rows.filter((row) => row.profile_id).map((row) => row.profile_id as string);
   let emailRows: { profile_id: string; email: string }[] = [];
@@ -70,14 +78,6 @@ export default async function PengemudiPage({
   }
   const emailById = new Map<string, string>(emailRows.map((row) => [row.profile_id, row.email]));
   const total = count ?? 0;
-
-  let editing: DriverRow | null = null;
-  if (editId) {
-    let editQuery = supabase.from("drivers").select(selectColumns).eq("id", editId);
-    if (selectedId) editQuery = editQuery.eq("project_area_id", selectedId);
-    const { data: editRow } = await editQuery.maybeSingle();
-    editing = (editRow as unknown as DriverRow | null) ?? null;
-  }
 
   const areaOptions = areaContext.areas
     .filter((area) => area.active || area.id === editing?.project_area_id)
