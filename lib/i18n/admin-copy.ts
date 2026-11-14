@@ -954,6 +954,8 @@ const copy: Record<string, Record<Locale, string>> = {
   "Akun wali diaktifkan kembali.": { id: "Akun wali diaktifkan kembali.", en: "Guardian account reactivated.", ar: "تمت إعادة تفعيل حساب ولي الأمر." },
   "Akun wali dinonaktifkan dan akses layanannya dicabut. Relasi siswa dan riwayat tetap tersimpan.": { id: "Akun wali dinonaktifkan dan akses layanannya dicabut. Relasi siswa dan riwayat tetap tersimpan.", en: "Guardian account deactivated and service access revoked. Student links and history are retained.", ar: "تم إلغاء تفعيل حساب ولي الأمر وسحب الوصول إلى الخدمة. ستظل ارتباطات الطلاب والسجلات محفوظة." },
   "Riwayat status belum dapat dimuat.": { id: "Riwayat status belum dapat dimuat.", en: "Service status history could not be loaded.", ar: "تعذر تحميل سجل حالة الخدمة." },
+  "Cari pada daftar ini": { id: "Cari pada daftar ini", en: "Search this list", ar: "ابحث في هذه القائمة" },
+  "Belum ada siswa yang ditemukan. Coba nama lain.": { id: "Belum ada siswa yang ditemukan. Coba nama lain.", en: "No students found. Try another name.", ar: "لم يتم العثور على طلاب. جرّب اسماً آخر." },
   "Belum ada riwayat status": { id: "Belum ada riwayat status", en: "No status history yet", ar: "لا يوجد سجل حالات بعد" },
   "Riwayat akan tercatat otomatis setelah status layanan diubah pertama kali.": { id: "Riwayat akan tercatat otomatis setelah status layanan diubah pertama kali.", en: "History will be recorded automatically after the service status is changed for the first time.", ar: "سيتم تسجيل السجل تلقائياً بعد تغيير حالة الخدمة لأول مرة." },
 };
