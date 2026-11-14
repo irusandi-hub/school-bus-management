@@ -3,6 +3,7 @@ import { BrandLogo } from "@/components/brand-logo";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { ConfigNotice } from "@/components/admin/ui";
 import { LocalizedText } from "@/components/i18n/LocaleProvider";
+import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
 import { BottomNav } from "@/components/ui/BottomNav";
 import { Icon } from "@/components/ui/Icon";
 import { adminBottomNav, adminGroups } from "@/components/ui/nav-config";
@@ -42,6 +43,7 @@ export async function OperatorWorkspaceLayout({ children }: { children: React.Re
             <strong><LocalizedText k="operatorWorkspace" /></strong>
           </div>
           <div className="top-actions">
+            <LocaleSwitcher />
             <form action={signOutAction}>
               <button className="btn btn-ghost btn-sm topbar-exit" type="submit">
                 <Icon name="logout" size={15} /><span><LocalizedText k="signOut" /></span>
