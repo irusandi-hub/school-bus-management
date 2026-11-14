@@ -2992,3 +2992,8 @@ html[dir="rtl"] :is(.record-form,.inline-form,.student-read-filters) label{text-
 html[dir="rtl"] :is(.admin-page-head,.panel-head,.form-actions,.row-actions,.crumbs,.pagination){direction:rtl}
 html[dir="rtl"] :is([data-icon="chevronRight"],[data-icon="chevronLeft"],[data-icon="arrowRight"],[data-icon="arrowLeft"]){transform:rotate(180deg)}
 @media(max-width:640px){html[dir="rtl"] .global-locale-switcher{right:10px;left:auto}}
+
+/* Keep the fixed selector clear of the compact live driver header. */
+.driver-app:has(.ops-head) .ops-head-top{padding-right:178px}
+html[dir="rtl"] :is(input[type="email"],input[type="tel"],input[type="url"],input[type="number"]){direction:ltr;text-align:left}
+@media(max-width:640px){.driver-app:has(.ops-head) .ops-head-top{padding-right:145px}}
