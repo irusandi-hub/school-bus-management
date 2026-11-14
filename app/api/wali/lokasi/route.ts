@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { guardianRequestAccess } from "@/lib/auth";
+import { guardianRequestAccess, requireGuardian } from "@/lib/auth";
+import { isDevOpenAccess } from "@/lib/dev-open-access";
 import { createServerSupabase } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -36,21 +37,36 @@ export async function GET(request: Request) {
     return noStore({ error: "Perjalanan tidak valid." }, 400);
   }
 
-  const access = await guardianRequestAccess();
-  if (access === "unconfigured") {
-    return noStore({ error: "Koneksi database belum dikonfigurasi." }, 503);
-  }
-  if (access === "anonymous") {
-    return noStore({ error: "Sesi wali tidak ditemukan." }, 401);
-  }
-  if (access !== "ready") {
-    return noStore({ error: "Akses wali tidak tersedia." }, 403);
+  let demoGuardianId: string | undefined;
+  if (isDevOpenAccess()) {
+    const access = await requireGuardian();
+    if (access.status === "unconfigured") {
+      return noStore({ error: "Koneksi database belum dikonfigurasi." }, 503);
+    }
+    if (access.status !== "ready") {
+      return noStore({ error: "Akses wali tidak tersedia." }, 403);
+    }
+    demoGuardianId = access.guardianId;
+  } else {
+    const access = await guardianRequestAccess();
+    if (access === "unconfigured") {
+      return noStore({ error: "Koneksi database belum dikonfigurasi." }, 503);
+    }
+    if (access === "anonymous") {
+      return noStore({ error: "Sesi wali tidak ditemukan." }, 401);
+    }
+    if (access !== "ready") {
+      return noStore({ error: "Akses wali tidak tersedia." }, 403);
+    }
   }
 
   const supabase = await createServerSupabase();
   if (!supabase) return noStore({ error: "Koneksi database belum dikonfigurasi." }, 503);
 
-  const { data, error } = await supabase.rpc("guardian_trip_location", { p_trip_id: tripId });
+  const { data, error } = await supabase.rpc("guardian_trip_location", {
+    p_trip_id: tripId,
+    ...(demoGuardianId ? { p_guardian_id: demoGuardianId } : {}),
+  });
   if (error) {
     // Semua penolakan relasi memakai status yang sama agar id perjalanan anak
     // lain tidak dapat ditebak dari perbedaan respons.
