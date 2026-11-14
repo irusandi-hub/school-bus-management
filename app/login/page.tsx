@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { BrandLogo } from "@/components/brand-logo";
 import { LocalizedText } from "@/components/i18n/LocaleProvider";
+import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
 import { LoginForm } from "./login-form";
 import { homeForRole } from "@/lib/access";
 import { getViewerState } from "@/lib/auth";
@@ -45,7 +46,8 @@ export default async function LoginPage({
   }
 
   return (
-    <main className="auth-page otp-page">
+    <main className="auth-page otp-page relative">
+      <div className="absolute end-5 top-5 z-50"><LocaleSwitcher /></div>
       <section className="auth-card otp-card">
         <BrandLogo href="/" ariaLabel="Kembali ke beranda" className="auth-logo" />
         <h1><LocalizedText k="otpTitle" /></h1>
