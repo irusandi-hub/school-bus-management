@@ -112,7 +112,7 @@ export function BottomNav({
             aria-labelledby="operator-menu-title"
           >
             <div className="menu-sheet-head">
-              <BrandLogo size="sm" subtitle={areaLabel} className="menu-sheet-brand" />
+              <BrandLogo size="sm" subtitle={translateNavigationLabel(areaLabel, locale)} className="menu-sheet-brand" />
               <button
                 ref={closeRef}
                 type="button"
@@ -150,7 +150,7 @@ export function BottomNav({
             </div>
 
             <div className="menu-sheet-foot">
-              {areaLabel}. {translateAdminCopy("Semua tujuan sidebar tersedia di sini.", locale)}
+              {translateNavigationLabel(areaLabel, locale)}. {translateAdminCopy("Semua tujuan sidebar tersedia di sini.", locale) ?? "Semua tujuan sidebar tersedia di sini."}
             </div>
           </div>
         </>

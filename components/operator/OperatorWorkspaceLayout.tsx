@@ -21,7 +21,7 @@ export async function OperatorWorkspaceLayout({ children }: { children: React.Re
   return (
     <div className="app-shell admin-shell operator-shell">
       <aside className="sidebar">
-        <BrandLogo href="/operator" subtitle={t("operator")} ariaLabel="School Bus Operator" className="brand" />
+        <BrandLogo href="/operator" subtitle={t("operator")} ariaLabel={t("operator")} className="brand" />
         <div className="nav-group"><AdminNav /></div>
         <div className="sidebar-bottom">
           <span className="security-icon"><Icon name="shield" size={13} /></span>
