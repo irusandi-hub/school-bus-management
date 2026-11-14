@@ -3,7 +3,7 @@
 import { useRef, useState, type ClipboardEvent, type FormEvent, type KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "@/components/i18n/LocaleProvider";
-import { DEMO_OTP_DESTINATIONS, isDemoOtpValid, type DemoOtpRole } from "@/lib/demo-otp";
+import type { DemoOtpRole } from "@/lib/demo-otp";
 
 const OTP_LENGTH = 6;
 
@@ -61,7 +61,7 @@ export function LoginForm({
     }
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!simulationEnabled || pending) return;
 
@@ -70,15 +70,26 @@ export function LoginForm({
       setError(t("otpIncomplete"));
       return;
     }
-    if (!isDemoOtpValid(role, code)) {
-      setError(t("otpInvalid"));
-      return;
-    }
 
     setError("");
     setPending(true);
-    router.replace(DEMO_OTP_DESTINATIONS[role]);
-    router.refresh();
+    try {
+      const response = await fetch("/api/demo-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ role, code }),
+      });
+      const result = await response.json().catch(() => null) as { destination?: string; message?: string } | null;
+      if (!response.ok || !result?.destination) {
+        setError(result?.message ?? t("otpInvalid"));
+        setPending(false);
+        return;
+      }
+      router.replace(result.destination);
+    } catch {
+      setError(t("otpInvalid"));
+      setPending(false);
+    }
   }
 
   return (
