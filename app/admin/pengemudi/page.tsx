@@ -215,7 +215,7 @@ export default async function PengemudiPage({
                               required
                               maxLength={254}
                               placeholder={c("Email akun")}
-                              aria-label={c("Email akun untuk")} + ` ${row.full_name}`}
+                              aria-label={`${c("Email akun untuk")} ${row.full_name}`}
                             />
                             <ConfirmSubmit
                               className="row-link"
