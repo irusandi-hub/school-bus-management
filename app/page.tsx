@@ -5,7 +5,6 @@ import "./landing.css";
 import { LandingControls, LandingDownloads, LandingRoleArrow } from "@/components/landing-controls";
 import { LocalizedText } from "@/components/i18n/LocaleProvider";
 
-import { isDevOpenAccess } from "@/lib/dev-open-access";
 
 const HERO_IMAGE = {
   src: "/assets/landing/hero-bus.webp",
@@ -84,7 +83,7 @@ const STRIP_ITEMS = [
 const ROLE_CARDS = [
   {
     id: "parent",
-    href: "/wali",
+    href: "/login?peran=wali",
     entryLabel: "Masuk sebagai Orang Tua",
     title: "Orang Tua / Wali",
     description: "Anak Dijemput. Perjalanan Terpantau. Kedatangan Terinformasikan.",
@@ -158,7 +157,7 @@ const ROLE_CARDS = [
   },
   {
     id: "driver",
-    href: "/pengemudi",
+    href: "/login?peran=pengemudi",
     entryLabel: "Masuk sebagai Pengemudi",
     title: "Pengemudi",
     description: "Rute Adaptif. Urutan Tetap Terjaga.",
@@ -236,7 +235,7 @@ const ROLE_CARDS = [
   },
   {
     id: "operator",
-    href: "/operator",
+    href: "/login?peran=operator",
     entryLabel: "Masuk sebagai Pengelola",
     title: "Pengelola",
     description: "Proyek Terkendali. Operasional Terukur.",
@@ -306,8 +305,6 @@ const ROLE_CARDS = [
 ];
 
 export default function LandingPage() {
-  // Masa depan: panah aktif setelah pengguna registrasi/masuk. Saat ini akses dibuka untuk pengembangan.
-  const ROLE_ENTRY_ENABLED = isDevOpenAccess();
   return (
     <div className="landing">
       <LandingControls>
@@ -399,7 +396,7 @@ export default function LandingPage() {
                   ))}
                 </div>
               </div>
-              <LandingRoleArrow enabled={ROLE_ENTRY_ENABLED} href={role.href} label={role.entryLabel} />
+              <LandingRoleArrow href={role.href} label={role.entryLabel} />
             </article>
           ))}
         </section>
