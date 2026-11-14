@@ -2940,3 +2940,17 @@ html[dir="rtl"] .auth-locale{justify-content:flex-start}
 html[lang="ar"] body{font-family:'Noto Sans Arabic','DM Sans',Arial,sans-serif}
 html[lang="ar"] .page-title,html[lang="ar"] .welcome h2,html[lang="ar"] .panel-title,html[lang="ar"] .landing-title,html[lang="ar"] .landing-cta-title{font-family:'Noto Sans Arabic',Arial,sans-serif;letter-spacing:0}
 
+
+
+/* Minimal OTP-only entry screen: six clear digits, no account information panels. */
+.otp-card{width:min(100%,420px);padding:30px 28px}
+.otp-card .auth-logo{display:flex;justify-content:center;margin:0 auto 24px}
+.otp-card h1{text-align:center;margin:0 0 24px}
+.otp-form{gap:16px}
+.otp-fieldset{min-width:0;margin:0;padding:0;border:0}
+.otp-code-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px;width:100%}
+.otp-code-input{width:100%;min-width:0;height:58px;padding:0!important;border:1px solid #dce6e2;border-radius:12px;background:#fbfdfc;color:var(--ink);text-align:center;font-size:23px;font-weight:800;font-variant-numeric:tabular-nums;outline:none}
+.otp-code-input:focus{border-color:var(--green);box-shadow:0 0 0 3px #176b5520;background:#fff}
+.otp-form button{min-height:48px;margin-top:0}
+.otp-form .form-alert{margin:0}
+@media(max-width:380px){.otp-card{padding:26px 20px}.otp-code-grid{gap:6px}.otp-code-input{height:52px;font-size:21px}}
