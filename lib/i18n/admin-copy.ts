@@ -805,6 +805,8 @@ const copy: Record<string, Record<Locale, string>> = {
   "Alasan": { id: "Alasan", en: "Reason", ar: "السبب" },
   "Dicatat oleh": { id: "Dicatat oleh", en: "Recorded by", ar: "سجّل بواسطة" },
 
+  "Koordinat harus berupa angka.": { id: "Koordinat harus berupa angka.", en: "Coordinates must be numeric.", ar: "يجب أن تكون الإحداثيات أرقاماً." },
+  "Tuliskan alasan yang jelas, misalnya tanggal berhenti atau permintaan wali.": { id: "Tuliskan alasan yang jelas, misalnya tanggal berhenti atau permintaan wali.", en: "Provide a clear reason, such as the end date or a guardian request.", ar: "اكتب سبباً واضحاً، مثل تاريخ الإيقاف أو طلب ولي الأمر." },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
