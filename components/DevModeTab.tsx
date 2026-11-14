@@ -1,15 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
-const areas = [["/", "Beranda"], ["/wali", "Orang Tua"], ["/pengemudi", "Pengemudi"], ["/operator", "Pengelola"]] as const;
-
 // Panel ini hanya untuk masa pengembangan.
-export function DevModeTab({ environment, sha, branch }: { environment: string; sha?: string; branch?: string }) {
+export function DevModeTab({ environment }: { environment: string; sha?: string; branch?: string }) {
   const { locale } = useLocale();
   const c = (value: string) => translateAdminCopy(value, locale) ?? value;
   const [open, setOpen] = useState(false);
@@ -18,7 +15,6 @@ export function DevModeTab({ environment, sha, branch }: { environment: string; 
   const root = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
   const close = useRef<HTMLButtonElement>(null);
-  const area = "Beranda";
   useEffect(() => { setOpen(false); }, [pathname]);
   useEffect(() => {
     if (!open) return;
@@ -38,11 +34,8 @@ export function DevModeTab({ environment, sha, branch }: { environment: string; 
     {open && <section className="dev-mode-panel" id="dev-mode-panel" aria-labelledby="dev-mode-title">
       <header><h2 id="dev-mode-title">{c("Mode demo")}</h2><button ref={close} type="button" aria-label={c("Tutup informasi mode demo")} onClick={() => { setOpen(false); trigger.current?.focus({ preventScroll: true }); }}>×</button></header>
       <p>{c("Ini versi uji coba. Akses dibuka tanpa login dan data yang tampil adalah data contoh.")}</p>
-      <dl><div><dt>{c("Lingkungan")}</dt><dd>{environment}</dd></div><div><dt>{c("Akses")}</dt><dd>{c("Dibuka")}</dd></div><div><dt>{c("Data")}</dt><dd>{c("Contoh")}</dd></div><div><dt>{c("Area saat ini")}</dt><dd>{c(area)}</dd></div>
-        {(sha || branch) && <div><dt>{c("Versi")}</dt><dd>{[sha?.slice(0, 7), branch].filter(Boolean).join(" · ")}</dd></div>}
-      </dl>
-      <nav aria-label={c("Pintasan area demo")}>{areas.map(([href, label]) => <Link key={href} href={href} onClick={() => setOpen(false)}>{c(label)}</Link>)}</nav>
-      <p>{c("Akses demo hanya tersedia di lingkungan pengembangan. Pada layanan normal, masuk dan hak akses mengikuti akun Anda.")}</p>
+      <dl><div><dt>{c("Lingkungan")}</dt><dd>{environment}</dd></div><div><dt>{c("Akses")}</dt><dd>{c("Dibuka")}</dd></div><div><dt>{c("Data")}</dt><dd>{c("Contoh")}</dd></div></dl>
+      <p>{c("Ini adalah lingkungan demo untuk mencoba tampilan dan alur aplikasi. Data yang ditampilkan merupakan data simulasi, bukan data operasional.")}</p>
     </section>}
   </div>;
 }
