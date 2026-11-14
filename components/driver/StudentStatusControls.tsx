@@ -220,7 +220,7 @@ export function StudentStatusControls({
         </details>
       ) : (
         <span className="ops-issue-disabled" aria-disabled="true" title={actionHint ?? undefined}>
-          Catat kendala
+          {t("issueDisabled")}
         </span>
       )}
 
