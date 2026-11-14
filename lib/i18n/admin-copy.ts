@@ -861,6 +861,8 @@ const copy: Record<string, Record<Locale, string>> = {
   "Laporan & audit": { id: "Laporan & audit", en: "Reports & Audit", ar: "التقارير والتدقيق" },
   "Sistem": { id: "Sistem", en: "System", ar: "النظام" },
   "Ringkasan data operasional dan jejak aktivitas platform. Konteks:": { id: "Ringkasan data operasional dan jejak aktivitas platform. Konteks:", en: "Operational data summary and platform activity log. Context:", ar: "ملخص البيانات التشغيلية وسجل نشاط المنصة. السياق:" },
+  "Belum ada sekolah aktif pada konteks ini. Tambahkan sekolah terlebih dahulu agar rute dapat dibuat.": { id: "Belum ada sekolah aktif pada konteks ini. Tambahkan sekolah terlebih dahulu agar rute dapat dibuat.", en: "There are no active schools in this context. Add a school first to create a route.", ar: "لا توجد مدارس نشطة في هذا السياق. أضف مدرسة أولاً لإنشاء مسار." },
+  "rute tercatat": { id: "rute tercatat", en: "routes recorded", ar: "مسارات مسجلة" },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
