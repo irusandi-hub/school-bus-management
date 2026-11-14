@@ -5,6 +5,8 @@ import { translate } from "@/lib/i18n/messages";
 import { ConfigNotice } from "@/components/admin/ui";
 import { BrandLogo } from "@/components/brand-logo";
 import { LocalizedText } from "@/components/i18n/LocaleProvider";
+import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
+import { Icon } from "@/components/ui/Icon";
 import { BottomNav } from "@/components/ui/BottomNav";
 import { signOutAction } from "@/lib/auth-actions";
 import { driverBottomNav } from "@/components/ui/nav-config";
@@ -27,7 +29,14 @@ export default async function DriverLayout({ children }: { children: React.React
       <header className="driver-head">
         <BrandLogo href="/pengemudi" subtitle={translate(locale, "driverArea")} size="sm" />
         <span>{name}</span>
-        <form action={signOutAction}><button className="btn btn-ghost btn-sm" type="submit"><LocalizedText k="signOut" /></button></form>
+        <div className="flex flex-none items-center gap-2">
+          <LocaleSwitcher />
+          <form action={signOutAction} className="compact-logout-form">
+            <button className="compact-logout" type="submit" aria-label={translate(locale, "signOut")} title={translate(locale, "signOut")}>
+              <Icon name="logout" size={17} />
+            </button>
+          </form>
+        </div>
       </header>
       <main className="driver-main">{children}</main>
       <footer className="driver-foot">
