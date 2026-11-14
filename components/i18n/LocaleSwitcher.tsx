@@ -1,6 +1,6 @@
 "use client";
 
-import { type Locale } from "@/lib/i18n/config";
+import { localeDisplayNames, locales, type Locale } from "@/lib/i18n/config";
 import { useRouter } from "next/navigation";
 import { useLocale } from "./LocaleProvider";
 
@@ -20,9 +20,9 @@ export function LocaleSwitcher({ compact = false }: { compact?: boolean }) {
           router.refresh();
         }}
       >
-        <option value="id" dir="auto">🇮🇩 Bahasa Indonesia</option>
-        <option value="en" dir="auto">🇬🇧 English</option>
-        <option value="ar" dir="auto">🇸🇦 العربية</option>
+        {locales.map((option) => (
+          <option key={option} value={option} dir="auto">{localeDisplayNames[option]}</option>
+        ))}
       </select>
     </label>
   );

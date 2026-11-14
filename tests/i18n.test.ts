@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { defaultLocale, getDirection, isLocale } from "../lib/i18n/config.ts";
+import { defaultLocale, getDirection, isLocale, localeDisplayNames } from "../lib/i18n/config.ts";
 import { translate } from "../lib/i18n/messages.ts";
 import { translateNavigationLabel } from "../lib/i18n/navigation.ts";
 import { translateAdminCopy } from "../lib/i18n/admin-copy.ts";
@@ -63,7 +63,7 @@ test("dynamic operator confirmations preserve names across locales", () => {
 });
 
 test("language switcher navigation labels have localized self-names", () => {
-  assert.equal(translate("id", "languageName"), "Bahasa Indonesia");
-  assert.equal(translate("en", "languageName"), "English");
-  assert.equal(translate("ar", "languageName"), "العربية");
+  assert.equal(localeDisplayNames.id, "🇮🇩 Bahasa Indonesia");
+  assert.equal(localeDisplayNames.en, "🇬🇧 English");
+  assert.equal(localeDisplayNames.ar, "🇸🇦 العربية");
 });
