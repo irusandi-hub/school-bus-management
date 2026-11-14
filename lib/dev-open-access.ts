@@ -110,6 +110,27 @@ export const DEV_VIEWER = {
   },
 } as const;
 
+export const DEV_GUARDIAN_VIEWERS = {
+  one: {
+    userId: DEV_VIEWER.parent.userId,
+    email: DEV_VIEWER.parent.email,
+    fullName: DEV_VIEWER.parent.fullName,
+    guardianId: "51111111-0000-4000-8000-0000000005f1",
+  },
+  two: {
+    userId: "51111111-0000-4000-8000-0000000000a5",
+    email: "wali.contoh.dua@example.test",
+    fullName: "Wali Contoh Dua",
+    guardianId: "51111111-0000-4000-8000-0000000005f2",
+  },
+  three: {
+    userId: "51111111-0000-4000-8000-0000000000a6",
+    email: "wali.contoh.tiga@example.test",
+    fullName: "Wali Contoh Tiga",
+    guardianId: "51111111-0000-4000-8000-0000000005f3",
+  },
+} as const;
+
 /** Data Project Area dan pengemudi simulasi yang dipakai gerbang workspace. */
 export const DEV_PROJECT_AREA = {
   id: "51111111-0000-4000-8000-0000000001b1",
