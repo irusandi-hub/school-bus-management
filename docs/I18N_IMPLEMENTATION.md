@@ -15,7 +15,7 @@
 - No new runtime dependency or Supabase schema change is required.
 
 ## Scope of this implementation stage
-The locale foundation, landing page, shared navigation, workspace shell labels, and account entry forms are localized. Remaining page-level content, data tables, validation messages, dialogs, and operational workflows must be migrated page by page. Do not declare full application localization complete until every route and interactive state has been reviewed in all three locales.
+The locale foundation, landing page, shared navigation, workspace shell labels, and account entry forms are localized. The current migration also covers the Operator administration modules (areas, schools, buses, drivers, guardians, students, routes, assignments, trips, and reports), the Driver dashboard and trip review, and the Guardian dashboard, child detail, and trip history. Shared loading/error states, driver safety feedback, navigation copy, and guardian live-map status copy have also been connected to the locale dictionary. Remaining work is a route-by-route visual and interactive review in all three locales, plus automated test, typecheck, and production-build verification. Do not declare full application localization complete until those checks pass.
 
 ## Acceptance checklist
 - [ ] Indonesian is selected by default for a new visitor.
