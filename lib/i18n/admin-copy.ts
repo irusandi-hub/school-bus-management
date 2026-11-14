@@ -791,9 +791,30 @@ const copy: Record<string, Record<Locale, string>> = {
   "Belum bisa diakhiri: catat status": { id: "Belum bisa diakhiri: catat status", en: "Cannot end yet: record the status", ar: "لا يمكن الإنهاء بعد: سجّل الحالة" },
   "penumpang belum dipastikan turun dari bus.": { id: "penumpang belum dipastikan turun dari bus.", en: "passengers have not been confirmed off the bus.", ar: "لم يتم التأكد من نزول الركاب من الحافلة." },
 
+  "Lepas tautan": { id: "Lepas tautan", en: "Unlink account", ar: "إلغاء ربط الحساب" },
+  "Tautkan": { id: "Tautkan", en: "Link account", ar: "ربط الحساب" },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
   if (value === undefined) return undefined;
-  return copy[value]?.[locale] ?? value;
+  const direct = copy[value]?.[locale];
+  if (direct) return direct;
+
+  const patterns: [RegExp, (match: RegExpMatchArray) => string][] = [
+    [/^Nonaktifkan (.+)\? Area nonaktif tidak muncul pada pemilih dashboard, tetapi data dan riwayatnya tetap tersimpan\.$/, (m) => locale === "en" ? `Deactivate ${m[1]}? Inactive areas will no longer appear in the dashboard selector, but their data and history will be retained.` : locale === "ar" ? `هل تريد تعطيل ${m[1]}؟ لن تظهر المناطق المعطلة في محدد لوحة المعلومات، لكن ستظل بياناتها وسجلاتها محفوظة.` : value],
+    [/^Nonaktifkan (.+)\? Data sekolah dan riwayat terkait tetap tersimpan\.$/, (m) => locale === "en" ? `Deactivate ${m[1]}? School data and related history will be retained.` : locale === "ar" ? `هل تريد تعطيل ${m[1]}؟ ستظل بيانات المدرسة والسجلات المرتبطة بها محفوظة.` : value],
+    [/^Nonaktifkan (.+)\? Data bus dan riwayat penugasan tetap tersimpan\.$/, (m) => locale === "en" ? `Deactivate ${m[1]}? Bus data and assignment history will be retained.` : locale === "ar" ? `هل تريد تعطيل ${m[1]}؟ ستظل بيانات الحافلة وسجل التكليفات محفوظين.` : value],
+    [/^Aktifkan kembali (.+)\?$/, (m) => locale === "en" ? `Reactivate ${m[1]}?` : locale === "ar" ? `هل تريد إعادة تفعيل ${m[1]}؟` : value],
+    [/^Nonaktifkan akun wali (.+)\? Akses layanannya dicabut, tetapi relasi siswa dan riwayat tetap tersimpan\.$/, (m) => locale === "en" ? `Deactivate guardian account ${m[1]}? Service access will be revoked, but student links and history will be retained.` : locale === "ar" ? `هل تريد تعطيل حساب ولي الأمر ${m[1]}؟ سيتم إلغاء الوصول إلى الخدمة، مع الاحتفاظ بارتباطات الطلاب والسجل.` : value],
+    [/^Aktifkan kembali akun wali (.+)\?$/, (m) => locale === "en" ? `Reactivate guardian account ${m[1]}?` : locale === "ar" ? `هل تريد إعادة تفعيل حساب ولي الأمر ${m[1]}؟` : value],
+    [/^Nonaktifkan pengemudi (.+)\? Data dan riwayat penugasan tetap tersimpan\.$/, (m) => locale === "en" ? `Deactivate driver ${m[1]}? Driver data and assignment history will be retained.` : locale === "ar" ? `هل تريد تعطيل السائق ${m[1]}؟ ستظل بيانات السائق وسجل التكليفات محفوظين.` : value],
+    [/^Aktifkan kembali pengemudi (.+)\?$/, (m) => locale === "en" ? `Reactivate driver ${m[1]}?` : locale === "ar" ? `هل تريد إعادة تفعيل السائق ${m[1]}؟` : value],
+    [/^Lepas tautan akun (.+) dari (.+)\? Akun tersebut tidak lagi dapat masuk area Pengemudi\.$/, (m) => locale === "en" ? `Unlink account ${m[1]} from ${m[2]}? That account will no longer be able to access the Driver area.` : locale === "ar" ? `هل تريد إلغاء ربط الحساب ${m[1]} من ${m[2]}؟ لن يتمكن هذا الحساب بعد ذلك من دخول مساحة السائق.` : value],
+    [/^Tautkan akun ini ke (.+)\? Peran akun menjadi Pengemudi dan hanya dapat melihat penugasan miliknya\.$/, (m) => locale === "en" ? `Link this account to ${m[1]}? Its role will become Driver and it will only be able to view its own assignments.` : locale === "ar" ? `هل تريد ربط هذا الحساب بـ ${m[1]}؟ سيصبح دور الحساب سائقاً ولن يتمكن إلا من عرض تكليفاته.` : value],
+  ];
+  for (const [pattern, render] of patterns) {
+    const match = value.match(pattern);
+    if (match) return render(match);
+  }
+  return value;
 }
