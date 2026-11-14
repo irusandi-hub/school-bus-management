@@ -12,6 +12,15 @@ export const DEMO_OTP_DESTINATIONS: Record<DemoOtpRole, string> = {
   wali: "/wali",
 };
 
+export type DemoGuardianKey = "one" | "two" | "three";
+
+export function demoGuardianKeyForOtp(code: string): DemoGuardianKey | null {
+  if (code === "345001") return "one";
+  if (code === "345002") return "two";
+  if (code === "345003") return "three";
+  return null;
+}
+
 export function isDemoOtpValid(role: DemoOtpRole, code: string): boolean {
   return DEMO_OTP_CODES[role].includes(code);
 }
