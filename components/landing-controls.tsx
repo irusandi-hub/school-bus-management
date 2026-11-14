@@ -51,9 +51,9 @@ export function LandingDownloads() {
   </div>;
 }
 
-export function LandingRoleArrow({ enabled, href, label }: { enabled: boolean; href: string; label: string }) {
+export function LandingRoleArrow({ href, label }: { href: string; label: string }) {
   const { t } = useLocale();
-  const localizedLabel = href === "/wali" ? t("parentEntry") : href === "/pengemudi" ? t("driverEntry") : t("managerEntry");
+  const localizedLabel = href.includes("peran=wali") ? t("parentEntry") : href.includes("peran=pengemudi") ? t("driverEntry") : t("managerEntry");
   const icon = <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 12h14M13 6.2l5.8 5.8L13 17.8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
-  return enabled ? <Link href={href} className="landing-role-arrow" aria-label={localizedLabel || label}>{icon}</Link> : <NoticeButton id={`role-${href.slice(1)}`} message={t("accessAfterLogin")} className="landing-role-arrow landing-role-arrow-muted" label={localizedLabel || label}>{icon}</NoticeButton>;
+  return <Link href={href} className="landing-role-arrow" aria-label={localizedLabel || label}>{icon}</Link>;
 }
