@@ -18,7 +18,7 @@ export function DevModeTab({ environment, sha, branch }: { environment: string; 
   const root = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
   const close = useRef<HTMLButtonElement>(null);
-  const area = (pathname === "/admin" || pathname.startsWith("/admin/")) ? "Pengelola" : areas.find(([href]) => href === pathname || (href !== "/" && pathname.startsWith(`${href}/`)))?.[1] ?? "Beranda";
+  const area = "Beranda";
   useEffect(() => { setOpen(false); }, [pathname]);
   useEffect(() => {
     if (!open) return;
