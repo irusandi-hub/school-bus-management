@@ -58,14 +58,14 @@ export default async function TripsPage() {
   return (
     <>
       <PageHeader
-        title="Perjalanan"
-        description="Perjalanan dibuat dan diakhiri oleh pengemudi yang ditugaskan. Operator Utama memantau status dan waktu, bukan memulai perjalanan dari sini."
+        title={c("Perjalanan")}
+        description={c("Perjalanan dibuat dan diakhiri oleh pengemudi yang ditugaskan. Operator Utama memantau status dan waktu, bukan memulai perjalanan dari sini.")}
         actions={<Pill tone={active > 0 ? "info" : "neutral"}>{active} {c("Berlangsung")}</Pill>}
       />
 
       <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={areaContext.selectedId} nextPath="/admin/perjalanan" compact />
 
-      {error && <Notice kind="error">Daftar perjalanan belum dapat dimuat. Coba lagi.</Notice>}
+      {error && <Notice kind="error">{c("Daftar perjalanan belum dapat dimuat. Coba lagi.")}</Notice>}
 
       <section className="panel">
         <header className="panel-head">
@@ -89,22 +89,22 @@ export default async function TripsPage() {
               {trips.length === 0 ? (
                 <EmptyRow
                   colSpan={5}
-                  title="Belum ada perjalanan"
-                  detail="Perjalanan akan muncul setelah pengemudi memulai tugas yang ditugaskan. Tidak ada perjalanan contoh yang ditampilkan."
+                  title={c("Belum ada perjalanan")}
+                  detail={c("Perjalanan akan muncul setelah pengemudi memulai tugas yang ditugaskan. Tidak ada perjalanan contoh yang ditampilkan.")}
                 />
               ) : (
                 trips.map((trip) => (
                   <tr key={trip.id}>
                     <td>{formatDate(trip.trip_assignments?.service_date ?? trip.created_at)}</td>
                     <td>
-                      <strong>{trip.trip_assignments?.routes?.route_name ?? "Rute"}</strong>
+                      <strong>{trip.trip_assignments?.routes?.route_name ?? c("Rute")}</strong>
                       <small>
                         {trip.trip_assignments?.routes?.school_name} ·{" "}
                         {c(routeDirectionLabel(trip.trip_assignments?.routes?.direction ?? ""))}
                       </small>
                     </td>
                     <td>
-                      <strong>{trip.trip_assignments?.drivers?.full_name ?? "Pengemudi"}</strong>
+                      <strong>{trip.trip_assignments?.drivers?.full_name ?? c("Pengemudi")}</strong>
                       <small>
                         {trip.trip_assignments?.buses?.fleet_code}
                         {trip.trip_assignments?.buses?.plate_number
