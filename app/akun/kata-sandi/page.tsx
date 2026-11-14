@@ -35,7 +35,7 @@ export default async function KataSandiPage({
           <BrandLogo className="auth-logo" />
           <h1>{t("databaseNotConfigured")}</h1>
           <p className="auth-copy">
-            {locale === "en" ? "Account activation is unavailable because the database connection has not been configured. Contact the Main Operator." : locale === "ar" ? "يتعذر تفعيل الحساب لأن اتصال قاعدة البيانات لم يتم إعداده. تواصل مع المشغّل الرئيسي." : "Aktivasi akun belum dapat dilakukan karena koneksi database belum diatur. Hubungi Operator Utama."}
+            {copy("Aktivasi akun belum dapat dilakukan karena koneksi database belum diatur. Hubungi Operator Utama.")}
           </p>
           <Link className="auth-back" href="/">
             {t("backHome")}
@@ -59,7 +59,7 @@ export default async function KataSandiPage({
         <p className="eyebrow">{t("activationEyebrow")}</p>
         <h1>{t("activationTitle")}</h1>
         <p className="auth-copy">
-          <strong>{viewer.email ?? (locale === "en" ? "Your email" : locale === "ar" ? "بريدك الإلكتروني" : "Email Anda")}</strong> · {t("passwordActivationIntro")}
+          <strong>{viewer.email ?? copy("Email Anda")}</strong> · {t("passwordActivationIntro")}
         </p>
 
         {notice && (
