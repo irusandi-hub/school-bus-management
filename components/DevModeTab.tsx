@@ -148,7 +148,6 @@ export function DevModeTab({ environment }: { environment: string; sha?: string;
   const [section, setSection] = useState<Section>("about");
   const [copied, setCopied] = useState<string | null>(null);
   const pathname = usePathname();
-  if (pathname !== "/") return null;
   const root = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
   const close = useRef<HTMLButtonElement>(null);
@@ -184,6 +183,8 @@ export function DevModeTab({ environment }: { environment: string; sha?: string;
       setCopied(null);
     }
   };
+
+  if (pathname !== "/") return null;
 
   return <div className="dev-mode-banner" ref={root} data-open={open} data-environment={environment}>
     <button ref={trigger} type="button" className="dev-mode-tab" aria-label={t.demoLabel} aria-expanded={open} aria-controls={open ? "dev-mode-panel" : undefined} onClick={() => setOpen(!open)}>
