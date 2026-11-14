@@ -862,6 +862,10 @@ const copy: Record<string, Record<Locale, string>> = {
   "Posisi HP pengemudi, akurasi sekitar": {"id":"Posisi HP pengemudi, akurasi sekitar","en":"Driver phone location, accuracy about","ar":"موقع هاتف السائق، دقة نحو"},
   "meter": {"id":"meter","en":"meters","ar":"متر"},
   "Memuat peta…": {"id":"Memuat peta…","en":"Loading map…","ar":"جارٍ تحميل الخريطة…"},
+  "Sesi Anda sudah berakhir. Silakan masuk kembali untuk melanjutkan.": { id: "Sesi Anda sudah berakhir. Silakan masuk kembali untuk melanjutkan.", en: "Your session has expired. Sign in again to continue.", ar: "انتهت جلستك. سجّل الدخول مرة أخرى للمتابعة." },
+  "Aktivasi akun belum dapat dilakukan karena koneksi database belum diatur. Hubungi Operator Utama.": { id: "Aktivasi akun belum dapat dilakukan karena koneksi database belum diatur. Hubungi Operator Utama.", en: "Account activation is unavailable because the database connection has not been configured. Contact the Main Operator.", ar: "يتعذر تفعيل الحساب لأن اتصال قاعدة البيانات لم يتم إعداده. تواصل مع المشغّل الرئيسي." },
+  "Email Anda": { id: "Email Anda", en: "Your email", ar: "بريدك الإلكتروني" },
+  "Simpan kata sandi": { id: "Simpan kata sandi", en: "Save password", ar: "حفظ كلمة المرور" },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
