@@ -136,7 +136,7 @@ export default async function DriverOperationsPage({
               <strong>{access.driver.full_name || "Pengemudi"}</strong>
               <small>ID {access.driver.id.slice(0, 8).toUpperCase()} · {t("activeAccount")}</small>
             </div>
-            <nav className="portal-nav compact-driver-tabs" aria-label="Navigasi Pengemudi">
+            <nav className="portal-nav compact-driver-tabs" aria-label={t("navigationDriver")}>
               <Link href="/pengemudi">{t("driverDashboard")}</Link>
               <Link href="/pengemudi?tab=riwayat" aria-current="page">{t("history")}</Link>
             </nav>

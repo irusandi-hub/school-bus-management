@@ -68,7 +68,7 @@ export async function DriverOpsHeader({
           <span>ID {shortId} • {plateNumber || <LocalizedText k="plateNotRecorded" />}</span>
         </div>
         <form action={signOutAction} className="compact-logout-form">
-          <button className="compact-logout" type="submit" aria-label="Keluar" title="Keluar">
+          <button className="compact-logout" type="submit" aria-label={t("signOut")} title="Keluar">
             <Icon name="logout" size={17} />
           </button>
         </form>
