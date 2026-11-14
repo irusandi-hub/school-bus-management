@@ -88,7 +88,7 @@ export default async function AdminHomePage() {
           <div>
             <h2 className="panel-title">{t("todayOperations")}</h2>
             <div className="panel-subtitle">
-              {assignments.length} penugasan · {contextLabel}
+              {assignments.length} {t("assignments")} · {contextLabel}
             </div>
           </div>
           <Link className="btn btn-secondary btn-sm" href="/admin/penugasan">
