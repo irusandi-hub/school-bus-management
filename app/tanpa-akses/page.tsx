@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { signOutAction } from "@/lib/auth-actions";
+import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
 import { getViewerState } from "@/lib/auth";
 import { getRequestLocale } from "@/lib/i18n/server";
 import { translateAdminCopy } from "@/lib/i18n/admin-copy";
@@ -39,7 +40,8 @@ export default async function NoAccessPage({
       : copy("Pengguna");
 
   return (
-    <main className="auth-page">
+    <main className="auth-page relative">
+      <div className="absolute end-5 top-5 z-50"><LocaleSwitcher /></div>
       <section className="auth-card access-denied">
         <span className="gate-icon gate-icon-neutral" aria-hidden="true">!</span>
         <p className="eyebrow">{copy("AKSES TERBATAS")}</p>
