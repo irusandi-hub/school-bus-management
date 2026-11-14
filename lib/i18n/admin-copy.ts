@@ -839,8 +839,7 @@ const copy: Record<string, Record<Locale, string>> = {
   "Aktivasi akun belum dapat dilakukan karena koneksi database belum diatur. Hubungi Operator Utama.": { id: "Aktivasi akun belum dapat dilakukan karena koneksi database belum diatur. Hubungi Operator Utama.", en: "Account activation is unavailable because the database connection has not been configured. Contact the Main Operator.", ar: "يتعذر تفعيل الحساب لأن اتصال قاعدة البيانات لم يتم إعداده. تواصل مع المشغّل الرئيسي." },
   "Email Anda": { id: "Email Anda", en: "Your email", ar: "بريدك الإلكتروني" },
   "Simpan kata sandi": { id: "Simpan kata sandi", en: "Save password", ar: "حفظ كلمة المرور" },
-  "Kabin sudah diperiksa, tidak ada penumpang yang tertinggal di dalam bus.": { id: "Kabin sudah diperiksa, tidak ada penumpang yang tertinggal di dalam bus.", en: "The cabin has been checked and no passengers have been left behind on the bus.", ar: "تم فحص المقصورة والتأكد من عدم بقاء أي ركاب في الحافلة." },
-  "Barang yang diketahui tertinggal di dalam bus akan diamankan, dan bukan tanggung jawab pengemudi jika kehilangan.": { id: "Barang yang diketahui tertinggal di dalam bus akan diamankan, dan bukan tanggung jawab pengemudi jika kehilangan.", en: "Any belongings known to be left on the bus will be secured; the driver is not responsible for losses.", ar: "سيتم تأمين المتعلقات المعروفة التي تُركت في الحافلة؛ ولا يتحمل السائق مسؤولية فقدانها." },
+  "Minimal 8 karakter.": { id: "Minimal 8 karakter.", en: "At least 8 characters.", ar: "8 أحرف على الأقل." },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
