@@ -21,6 +21,8 @@ import { getProjectAreaContext } from "@/lib/project-areas/context";
 import type { BusRow } from "@/lib/types";
 import { sanitizeSearch } from "@/lib/validation";
 import { saveBus, setBusActive } from "./actions";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 export const metadata: Metadata = { title: "Bus | Operator" };
 
@@ -32,6 +34,8 @@ export default async function BusPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  const locale = await getRequestLocale();
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
   const params = await searchParams;
   const supabase = await adminReadContext();
   if (!supabase) return <ConfigNotice />;
@@ -138,14 +142,14 @@ export default async function BusPage({
   return (
     <>
       <PageHeader
-        title="Bus"
-        description="Kelola bus, plat nomor, dan kapasitas per Area Operasional."
+        title={c("Bus")}
+        description={c("Kelola bus, plat nomor, dan kapasitas per Area Operasional.")}
       />
 
       <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath={path} compact />
 
-      {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
-      {error && <Notice kind="error">Daftar bus belum dapat dimuat. Coba lagi.</Notice>}
+      {notice && <Notice kind={notice.kind}>{c(notice.message)}</Notice>}
+      {error && <Notice kind="error">{c("Daftar bus belum dapat dimuat. Coba lagi.")}</Notice>}
 
       <div className="admin-split">
         <section className="panel">
@@ -153,11 +157,11 @@ export default async function BusPage({
             key={`${q}|${status}|${page}`}
             action={path}
             q={q}
-            placeholder="Cari kode armada atau nomor polisi"
+            placeholder={c("Cari kode armada atau nomor polisi")}
             total={total}
             resetHref={path}
             filters={
-              <select name="status" defaultValue={status} aria-label="Filter status bus">
+              <select name="status" defaultValue={status} aria-label={c("Filter status")}>
                 <LocalizedOption value="" label="Semua status" />
                 <LocalizedOption value="aktif" label="Aktif" />
                 <LocalizedOption value="nonaktif" label="Nonaktif" />
@@ -181,11 +185,11 @@ export default async function BusPage({
                 {rows.length === 0 ? (
                   <EmptyRow
                     colSpan={6}
-                    title={q || status ? "Tidak ada bus yang cocok" : "Belum ada data bus"}
+                    title={c(q || status ? "Tidak ada bus yang cocok" : "Belum ada data bus")}
                     detail={
                       q || status
-                        ? "Ubah kata kunci atau filter, lalu terapkan kembali."
-                        : "Tambahkan bus pertama melalui formulir di samping."
+                        ? c("Ubah kata kunci atau filter, lalu terapkan kembali.")
+                        : c("Tambahkan bus pertama melalui formulir di samping.")
                     }
                   />
                 ) : (
@@ -196,15 +200,15 @@ export default async function BusPage({
                         {row.model && <small>{row.model}</small>}
                       </td>
                       <td>{row.plate_number ?? "—"}</td>
-                      <td>{row.capacity} kursi</td>
-                      <td>{row.project_areas?.name ?? "Belum ditetapkan"}</td>
+                      <td>{row.capacity} {c("kursi")}</td>
+                      <td>{row.project_areas?.name ?? c("Belum ditetapkan")}</td>
                       <td>
-                        <Pill tone={row.active ? "success" : "neutral"}>{row.active ? "Aktif" : "Nonaktif"}</Pill>
+                        <Pill tone={row.active ? "success" : "neutral"}>{row.active ? c("Aktif") : c("Nonaktif")}</Pill>
                       </td>
                       <td>
                         <div className="row-actions">
                           <Link className="row-link" href={listHref(path, { ...baseQuery, page, edit: row.id })}>
-                            Ubah
+                            {c("Ubah")}
                           </Link>
                           <form action={setBusActive} className="row-form">
                             <input type="hidden" name="id" value={row.id} />
@@ -217,7 +221,7 @@ export default async function BusPage({
                                   : `Aktifkan kembali ${row.fleet_code}?`
                               }
                             >
-                              {row.active ? "Nonaktifkan" : "Aktifkan"}
+                              {row.active ? c("Nonaktifkan") : c("Aktifkan")}
                             </ConfirmSubmit>
                           </form>
                         </div>
@@ -243,7 +247,7 @@ export default async function BusPage({
             <div>
               <h2 className="panel-title"><AdminCopy value={editing ? "Ubah data bus" : "Tambah bus"} /></h2>
               <div className="panel-subtitle">
-                {editing ? `Memperbarui ${editing.fleet_code}` : "Data langsung tersimpan"}
+                {editing ? `${c("Memperbarui")} ${editing.fleet_code}` : c("Data langsung tersimpan")}
               </div>
             </div>
           </header>
@@ -254,7 +258,7 @@ export default async function BusPage({
               fields={fields}
               hidden={{ id: editing?.id ?? "" }}
               submitLabel={editing ? "Simpan perubahan" : "Tambah bus"}
-              note="Menonaktifkan bus tidak menghapus data atau riwayat penugasan yang sudah tercatat."
+              note={c("Menonaktifkan bus tidak menghapus data atau riwayat penugasan yang sudah tercatat.")}
               secondary={editing ? { href: listHref(path, baseQuery), label: "Batal" } : undefined}
             />
           </div>
