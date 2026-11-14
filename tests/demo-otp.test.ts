@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { DEMO_OTP_DESTINATIONS, isDemoOtpRole, isDemoOtpValid } from "../lib/demo-otp.ts";
+import { DEMO_OTP_DESTINATIONS, demoGuardianKeyForOtp, isDemoOtpRole, isDemoOtpValid } from "../lib/demo-otp.ts";
 
 describe("OTP simulasi berdasarkan kartu peran", () => {
   it("menerima kode tetap untuk Operator dan Pengemudi", () => {
@@ -26,6 +26,13 @@ describe("OTP simulasi berdasarkan kartu peran", () => {
       pengemudi: "/pengemudi",
       wali: "/wali",
     });
+  });
+
+  it("memetakan OTP wali ke akun contoh yang berbeda", () => {
+    assert.equal(demoGuardianKeyForOtp("345001"), "one");
+    assert.equal(demoGuardianKeyForOtp("345002"), "two");
+    assert.equal(demoGuardianKeyForOtp("345003"), "three");
+    assert.equal(demoGuardianKeyForOtp("345004"), null);
   });
 
   it("hanya menerima nama peran yang dikenal", () => {
