@@ -33,10 +33,10 @@ export default async function GuardianLayout({ children }: { children: React.Rea
       <header className="portal-head compact-area-header">
         <div className="flex min-w-0 items-center gap-2">
           <BrandLogo href="/wali" subtitle={translate(locale, "guardianPortal")} size="sm" className="brand" />
-          <LocaleSwitcher />
         </div>
         <PortalNav items={portalNavItems} rootHref="/wali" />
-        <div className="portal-account">
+        <div className="portal-account flex items-center gap-2">
+          <LocaleSwitcher />
           <form action={signOutAction}>
             <button className="btn btn-ghost btn-sm" type="submit">
               <Icon name="logout" size={15} />
