@@ -11,7 +11,7 @@ const languageMeta: Record<Locale, { flag: string; code: string }> = {
   ar: { flag: "🇸🇦", code: "AR" },
 };
 
-export function LocaleSwitcher() {
+export function LocaleSwitcher({ compact: _compact = false }: { compact?: boolean } = {}) {
   const { locale, setLocale } = useLocale();
   const router = useRouter();
   const detailsRef = useRef<HTMLDetailsElement>(null);
