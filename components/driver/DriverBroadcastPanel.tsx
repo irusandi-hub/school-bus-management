@@ -90,7 +90,7 @@ export function DriverBroadcastPanel({
           </label>
           {source === "bus" ? (
             <button className="btn btn-secondary btn-sm" type="button" disabled>
-              Mulai siaran
+              {c("Mulai siaran")}
             </button>
           ) : broadcast.canPublish && tripId ? (
             <TripCameraPublisher tripId={tripId} />
@@ -111,7 +111,7 @@ export function DriverBroadcastPanel({
             </details>
           ) : (
             <button className="btn btn-secondary btn-sm" type="button" disabled>
-              Mulai siaran
+              {c("Mulai siaran")}
             </button>
           )}
         </div>
