@@ -44,6 +44,21 @@ describe("klien simulasi pengembangan", () => {
     assert.equal(result.count, 5);
   });
 
+  it("membagi lima siswa aktif ke tiga akun wali", async () => {
+    const supabase = createSimulationClient();
+    const result = (await supabase
+      .from("students")
+      .select("guardian_id")
+      .eq("service_status", "active")) as Result;
+
+    const counts = new Map<string, number>();
+    for (const student of rows(result)) {
+      const guardianId = String(student.guardian_id);
+      counts.set(guardianId, (counts.get(guardianId) ?? 0) + 1);
+    }
+    assert.deepEqual([...counts.values()].sort(), [1, 1, 3]);
+  });
+
   it("menyediakan minimal lima siswa aktif pada rute Pengemudi di Vercel Preview", async () => {
     const supabase = createSimulationClient();
     const result = (await supabase
