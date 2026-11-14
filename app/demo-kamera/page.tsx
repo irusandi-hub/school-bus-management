@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
-import dynamic from "next/dynamic";
+import dynamicImport from "next/dynamic";
 import { deploymentKind } from "@/lib/dev-open-access";
 import { cameraDemoEnabled } from "@/lib/camera/demo-policy";
-const CameraDeviceDemo = dynamic(
+const CameraDeviceDemo = dynamicImport(
   () => import("@/components/camera/CameraDeviceDemo").then((module) => module.CameraDeviceDemo),
   {
     loading: () => (
