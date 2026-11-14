@@ -200,7 +200,7 @@ export default async function DriverOperationsPage({
           <p className="ops-empty-copy">
             {completedToday
               ? t("completedTripForDate").replace("{date}", formatDateLocalized(date))
-              : t("noAssignmentForDate").replace("{date}", formatDate(date))}
+              : t("noAssignmentForDate").replace("{date}", formatDateLocalized(date))}
           </p>
         </section>
         {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
