@@ -3077,3 +3077,7 @@ html[dir="rtl"] :is(.landing-header,.portal-head,.compact-identity-row,.operator
 .dev-mode-privacy p{margin:5px 0 0;font-size:11px;line-height:1.6}
 .dev-mode-panel :is(button):focus-visible{outline:3px solid #725719;outline-offset:2px}
 @media(max-width:420px){.dev-mode-panel{width:min(92vw,360px);max-height:calc(100dvh - 104px);top:max(64px,8dvh);padding:13px}}
+
+.dev-mode-tech{margin-top:12px;padding-top:10px;border-top:1px solid #eee4c9}
+.dev-mode-tech h3{margin:0 0 7px;font-size:12px;font-weight:800}
+.dev-mode-tech .dev-mode-notes{gap:7px}
