@@ -50,7 +50,7 @@ export function PasswordForm() {
       )}
 
       <button type="submit" disabled={pending}>
-        {pending ? t("savingLabel") : (locale === "id" ? "Simpan kata sandi" : locale === "en" ? "Save password" : "حفظ كلمة المرور")}
+        {pending ? t("savingLabel") : (copy("Simpan kata sandi") ?? "Simpan kata sandi")}
       </button>
     </form>
   );
