@@ -923,3 +923,94 @@ body:has(.landing) .dev-mode-short {
     padding-top: 0;
   }
 }
+
+
+/* Final landing header alignment: compact, equal controls and no reserved blank row. */
+.landing-header {
+  min-height: 0;
+  align-items: center;
+  padding: 4px 0 8px;
+}
+.landing-header .locale-menu {
+  margin-top: 0;
+}
+.landing-header .locale-menu > [role="group"] {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  width: 46px;
+  min-width: 46px;
+  padding: 4px;
+  gap: 2px;
+  border-radius: 12px;
+}
+.landing-header .locale-menu > [role="group"] button {
+  display: grid;
+  width: 36px;
+  min-width: 36px;
+  height: 34px;
+  min-height: 34px;
+  padding: 0;
+  place-items: center;
+  border-radius: 8px;
+  font-size: 21px;
+  line-height: 1;
+}
+.landing-hero {
+  padding-top: 0;
+}
+
+/* DEMO uses the same 36px control footprint as the globe, aligned on its centerline. */
+body:has(.landing) .dev-mode-banner {
+  position: absolute;
+  top: 25px;
+  right: max(60px, calc((100vw - 1180px) / 2 + 76px));
+  left: auto;
+  bottom: auto;
+  width: 36px;
+  height: 36px;
+  z-index: 90;
+  line-height: 1;
+}
+body:has(.landing) .dev-mode-tab {
+  display: block;
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+  padding: 0;
+}
+body:has(.landing) .dev-mode-tab-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #ead99f;
+  border-radius: 50%;
+  background: #fff7d8;
+}
+body:has(.landing) .dev-mode-indicator {
+  width: 5px;
+  height: 5px;
+}
+body:has(.landing) .dev-mode-short {
+  writing-mode: horizontal-tb;
+  font-size: 7px;
+  letter-spacing: 0;
+}
+body:has(.landing) .dev-mode-panel {
+  top: 70px;
+}
+@media (max-width: 767px) {
+  .landing-header {
+    padding-bottom: 6px;
+  }
+  .landing-hero {
+    padding-top: 0;
+  }
+}
