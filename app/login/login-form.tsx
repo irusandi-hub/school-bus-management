@@ -81,7 +81,7 @@ export function LoginForm({
       });
       const result = await response.json().catch(() => null) as { destination?: string; message?: string } | null;
       if (!response.ok || !result?.destination) {
-        setError(result?.message ?? t("otpInvalid"));
+        setError(t("otpInvalid"));
         setPending(false);
         return;
       }
