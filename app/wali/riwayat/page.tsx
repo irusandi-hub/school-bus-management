@@ -35,7 +35,7 @@ export default async function GuardianHistoryPage() {
   const supabase = await createServerSupabase();
   if (!supabase) return <ConfigNotice />;
 
-  const children = await loadChildren(supabase);
+  const children = await loadChildren(supabase, access.guardianId);
   const grouped = await Promise.all(
     children.map(async (child) => ({
       child,
