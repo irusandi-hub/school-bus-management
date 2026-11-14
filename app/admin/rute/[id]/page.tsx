@@ -124,8 +124,8 @@ export default async function RouteDetailPage({
     <>
       <Breadcrumbs
         items={[
-          { href: "/admin", label: "Ringkasan" },
-          { href: "/admin/rute", label: "Rute" },
+          { href: "/admin", label: c("Ringkasan") },
+          { href: "/admin/rute", label: c("Rute") },
           { label: route.route_name },
         ]}
       />
@@ -133,10 +133,10 @@ export default async function RouteDetailPage({
       <PageHeader
         title={route.route_name}
         description={`${route.project_areas?.name ?? c("Area Operasional")} · ${route.schools?.name ?? route.school_name} · ${c(routeDirectionLabel(route.direction))} · ${stops.length} ${c("titik")}`}
-        actions={<Pill tone={route.active ? "success" : "neutral"}>{route.active ? "Rute aktif" : "Rute nonaktif"}</Pill>}
+        actions={<Pill tone={route.active ? "success" : "neutral"}>{route.active ? c("Rute aktif") : c("Rute nonaktif")}</Pill>}
       />
 
-      {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
+      {notice && <Notice kind={notice.kind}>{c(notice.message)}</Notice>}
 
       <div className="detail-grid">
         <section className="panel">
@@ -160,8 +160,8 @@ export default async function RouteDetailPage({
                 {stops.length === 0 ? (
                   <EmptyRow
                     colSpan={4}
-                    title="Belum ada titik jemput"
-                    detail="Tambahkan titik pertama pada formulir di samping. Koordinat titik diperlukan untuk urutan perjalanan."
+                    title={c("Belum ada titik jemput")}
+                    detail={c("Tambahkan titik pertama pada formulir di samping. Koordinat titik diperlukan untuk urutan perjalanan.")}
                   />
                 ) : (
                   stops.map((stop) => (
@@ -204,8 +204,8 @@ export default async function RouteDetailPage({
               action={saveStop}
               fields={stopFields}
               hidden={{ route_id: id, ...(editingStop ? { id: editingStop.id } : {}) }}
-              submitLabel={editingStop ? "Simpan titik" : "Tambah titik"}
-              secondary={editingStop ? { href: `/admin/rute/${id}`, label: "Batalkan" } : undefined}
+              submitLabel={editingStop ? c("Simpan titik") : c("Tambah titik")}
+              secondary={editingStop ? { href: `/admin/rute/${id}`, label: c("Batalkan") } : undefined}
             />
           </div>
         </section>
@@ -216,19 +216,19 @@ export default async function RouteDetailPage({
           <div>
             <h2 className="panel-title">{c("Siswa pada rute ini")}</h2>
             <div className="panel-subtitle">
-              Roster ini menjadi daftar siswa pada perjalanan pengemudi dan dasar riwayat perjalanan wali
+              {c("Roster ini menjadi daftar siswa pada perjalanan pengemudi dan dasar riwayat perjalanan wali")}
             </div>
           </div>
-          <Pill tone="info">{roster.length} penempatan aktif</Pill>
+          <Pill tone="info">{roster.length} {c("penempatan aktif")}</Pill>
         </header>
 
         <form className="inline-form roster-form" action={assignStudentToStop}>
           <input type="hidden" name="return_to" value={`/admin/rute/${id}`} />
           <label>
-            Siswa
+            {c("Siswa")}
             <select name="student_id" required defaultValue="">
               <option value="" disabled>
-                {students.length === 0 ? "Belum ada siswa aktif di sekolah ini" : "Pilih siswa"}
+                {c(students.length === 0 ? "Belum ada siswa aktif di sekolah ini" : "Pilih siswa")}
               </option>
               {students.map((student) => (
                 <option key={student.id} value={student.id}>
@@ -238,10 +238,10 @@ export default async function RouteDetailPage({
             </select>
           </label>
           <label>
-            Titik jemput
+            {c("Titik jemput")}
             <select name="stop_id" required defaultValue="">
               <option value="" disabled>
-                {stops.length === 0 ? "Tambahkan titik terlebih dahulu" : "Pilih titik"}
+                {c(stops.length === 0 ? "Tambahkan titik terlebih dahulu" : "Pilih titik")}
               </option>
               {stops.map((stop) => (
                 <option key={stop.id} value={stop.id}>
@@ -251,20 +251,20 @@ export default async function RouteDetailPage({
             </select>
           </label>
           <label>
-            Arah
+            {c("Arah")}
             <select name="direction" defaultValue={route.direction}>
-              <option value="morning">Pagi</option>
-              <option value="afternoon">Sore</option>
+              <option value="morning">{c("Pagi")}</option>
+              <option value="afternoon">{c("Sore")}</option>
             </select>
           </label>
           <button className="btn btn-primary" type="submit" disabled={students.length === 0 || stops.length === 0}>
-            Tempatkan siswa
+            {c("Tempatkan siswa")}
           </button>
           {(students.length === 0 || stops.length === 0) && (
             <p className="form-note roster-form-note" role="status">
               {stops.length === 0
-                ? "Tambahkan minimal satu titik jemput sebelum menempatkan siswa pada rute ini."
-                : "Belum ada siswa aktif di sekolah tujuan rute ini. Tambahkan siswa terlebih dahulu melalui menu Data Siswa."}
+                ? c("Tambahkan minimal satu titik jemput sebelum menempatkan siswa pada rute ini.")
+                 : c("Belum ada siswa aktif di sekolah tujuan rute ini. Tambahkan siswa terlebih dahulu melalui menu Data Siswa.")}
             </p>
           )}
         </form>
@@ -273,7 +273,7 @@ export default async function RouteDetailPage({
           <table className="admin-table">
             <thead>
               <tr>
-                <th scope="col">Siswa</th>
+                <th scope="col">{c("Siswa")}</th>
                 <th scope="col"><AdminCopy value="Titik" /></th>
                 <th scope="col"><AdminCopy value="Arah" /></th>
                 <th scope="col"><AdminCopy value="Tindakan" /></th>
@@ -283,14 +283,14 @@ export default async function RouteDetailPage({
               {roster.length === 0 ? (
                 <EmptyRow
                   colSpan={4}
-                  title="Belum ada siswa pada rute ini"
-                  detail="Gunakan formulir di atas untuk menempatkan siswa pada titik jemput. Satu siswa hanya memiliki satu titik aktif per arah."
+                  title={c("Belum ada siswa pada rute ini")}
+                  detail={c("Gunakan formulir di atas untuk menempatkan siswa pada titik jemput. Satu siswa hanya memiliki satu titik aktif per arah.")}
                 />
               ) : (
                 roster.map((entry) => (
                   <tr key={entry.id}>
                     <td>
-                      <strong>{entry.students?.full_name ?? "Siswa"}</strong>
+                      <strong>{entry.students?.full_name ?? c("Siswa")}</strong>
                       <small>{entry.students?.admissions_number}</small>
                     </td>
                     <td>
@@ -301,8 +301,8 @@ export default async function RouteDetailPage({
                       <form action={removeStudentFromRoute}>
                         <input type="hidden" name="id" value={entry.id} />
                         <input type="hidden" name="return_to" value={`/admin/rute/${id}`} />
-                        <ConfirmSubmit message="Keluarkan siswa ini dari rute aktif? Riwayat penempatan tetap tersimpan.">
-                          Keluarkan
+                        <ConfirmSubmit message={c("Keluarkan siswa ini dari rute aktif? Riwayat penempatan tetap tersimpan.")}>
+                          {c("Keluarkan")}
                         </ConfirmSubmit>
                       </form>
                     </td>
@@ -315,8 +315,8 @@ export default async function RouteDetailPage({
       </section>
 
       <Notice kind="info">
-        Perjalanan baru dibuat oleh pengemudi saat memulai tugas. Rute dan roster ini tidak membuat perjalanan atau
-        posisi GPS secara otomatis.
+        {c("Perjalanan baru dibuat oleh pengemudi saat memulai tugas. Rute dan roster ini tidak membuat perjalanan atau")}
+        {c("posisi GPS secara otomatis.")}
       </Notice>
     </>
   );
