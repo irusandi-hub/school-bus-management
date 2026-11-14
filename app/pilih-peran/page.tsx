@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { BrandLogo } from "@/components/brand-logo";
+import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
 import { getRequestLocale } from "@/lib/i18n/server";
 import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
@@ -16,7 +17,8 @@ export default async function ChooseRolePage() {
   const locale = await getRequestLocale();
   const copy = (value: string) => translateAdminCopy(value, locale) ?? value;
   return (
-    <main className="sbm-role-explore">
+    <main className="sbm-role-explore relative">
+      <div className="absolute end-5 top-5 z-50"><LocaleSwitcher /></div>
       <section className="sbm-role-explore-card" aria-labelledby="explore-title">
         <BrandLogo href="/" ariaLabel="Kembali ke beranda" className="sbm-role-explore-brand" />
         <h1 id="explore-title">{copy("Pilih tampilan pengguna")}</h1>
