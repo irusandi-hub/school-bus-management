@@ -153,7 +153,7 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
           <div className="pickup-body">
             {child.placements.length === 0 ? (
               <p className="muted-hint">
-                {c("Rute dan titik jemput belum diatur Operator Utama. Hubungi Operator Utama bila anak Anda sudah menggunakan layanan.")}
+                {c("{c("Rute dan titik jemput belum diatur Operator Utama. Hubungi Operator Utama bila anak Anda sudah menggunakan layanan.")}")}
               </p>
             ) : (
               <ul className="pickup-list">
@@ -260,8 +260,8 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
                         <Pill tone={tripTone(trip.status)}>{c(tripStatusLabel(trip.status))}</Pill>
                       </td>
                       <td data-label="Waktu">
-                        <small>Mulai {formatLocalTime(trip.startedAt)}</small>
-                        <small>Tiba {formatLocalTime(trip.arrivedAt)}</small>
+                        <small>{c("Mulai")} {formatLocalTime(trip.startedAt)}</small>
+                        <small>{c("Tiba")} {formatLocalTime(trip.arrivedAt)}</small>
                       </td>
                     </tr>
                   ))

@@ -78,7 +78,7 @@ export default async function TripsPage() {
               <tr>
                 <th scope="col"><AdminCopy value="Tanggal" /></th>
                 <th scope="col"><AdminCopy value="Rute" /></th>
-                <th scope="col">Pengemudi &amp; bus</th>
+                <th scope="col"><AdminCopy value="Pengemudi & bus" /></th>
                 <th scope="col"><AdminCopy value="Status" /></th>
                 <th scope="col"><AdminCopy value="Waktu" /></th>
               </tr>

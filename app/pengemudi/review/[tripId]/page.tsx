@@ -102,7 +102,7 @@ export default async function DriverTripReviewPage({
         <DriverOperationsPage searchParams={Promise.resolve({})} />
         <TripReviewModal>
         <PageHeader
-          title="Ringkasan perjalanan"
+          title={c("Ringkasan perjalanan")}
           description={c("Ringkasan tugas yang sudah selesai dan tersimpan.")}
         />
         <Notice kind="error">{c("Ringkasan perjalanan belum dapat dimuat. Coba lagi.")}</Notice>
@@ -162,7 +162,7 @@ export default async function DriverTripReviewPage({
       <DriverOperationsPage searchParams={Promise.resolve({})} />
       <TripReviewModal>
       <PageHeader
-        title="Ringkasan perjalanan"
+        title={c("Ringkasan perjalanan")}
         description={c("Ringkasan tugas yang sudah selesai. Data diambil dari perjalanan dan catatan yang tersimpan.")}
       />
 
@@ -232,8 +232,8 @@ export default async function DriverTripReviewPage({
                   {students.length === 0 ? (
                     <EmptyRow
                       colSpan={4}
-                      title="Belum ada catatan siswa"
-                      detail="Tidak ada status siswa yang tersimpan pada perjalanan ini."
+                      title={c("Tidak ada catatan siswa")}
+                      detail={c("Tidak ada status siswa yang tersimpan pada perjalanan ini.")}
                     />
                   ) : (
                     students.map((student) => (
