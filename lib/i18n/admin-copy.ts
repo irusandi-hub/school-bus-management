@@ -961,7 +961,7 @@ export function translateAdminCopy(value: string | undefined, locale: Locale): s
   if (direct) return direct;
 
   const patterns: [RegExp, (match: RegExpMatchArray) => string][] = [
-    [/^Status layanan diubah menjadi “(.+)”\\. Riwayat perubahan tersimpan\\.$/, (m) => locale === "en" ? `Service status changed to “${translateAdminCopy(m[1], locale) ?? m[1]}”. Change history has been saved.` : locale === "ar" ? `تم تغيير حالة الخدمة إلى “${translateAdminCopy(m[1], locale) ?? m[1]}”. تم حفظ سجل التغيير.` : value],
+    [/^Status layanan diubah menjadi “(.+)”\. Riwayat perubahan tersimpan\.$/, (m) => locale === "en" ? `Service status changed to “${translateAdminCopy(m[1], locale) ?? m[1]}”. Change history has been saved.` : locale === "ar" ? `تم تغيير حالة الخدمة إلى “${translateAdminCopy(m[1], locale) ?? m[1]}”. تم حفظ سجل التغيير.` : value],
     [/^Status Turun berhasil dicatat untuk (\d+) siswa\. Status Tidak Ikut tetap dipertahankan\.$/, (m) => locale === "en" ? `Drop-off was recorded for ${m[1]} students. Absent statuses were preserved.` : locale === "ar" ? `تم تسجيل النزول لـ ${m[1]} طالباً. وتم الاحتفاظ بحالات الغياب.` : value],
     [/^Masih ada (\d+) siswa pada rute ini yang belum dicatat statusnya \(naik, tidak ikut, atau turun\)\.$/, (m) => locale === "en" ? `${m[1]} students on this route still have no recorded status (boarded, absent, or dropped off).` : locale === "ar" ? `لا تزال حالة ${m[1]} من الطلاب في هذا المسار غير مسجلة (صعد أو غائب أو نزل).` : value],
     [/^Pemeriksaan keselamatan belum lengkap: (.+)$/, (m) => locale === "en" ? `The safety check is incomplete: ${translateAdminCopy(m[1], locale) ?? m[1]}` : locale === "ar" ? `فحص السلامة غير مكتمل: ${translateAdminCopy(m[1], locale) ?? m[1]}` : value],
