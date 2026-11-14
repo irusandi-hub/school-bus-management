@@ -14,6 +14,7 @@ export function DevModeTab({ environment, sha, branch }: { environment: string; 
   const c = (value: string) => translateAdminCopy(value, locale) ?? value;
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  if (pathname !== "/") return null;
   const root = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
   const close = useRef<HTMLButtonElement>(null);
