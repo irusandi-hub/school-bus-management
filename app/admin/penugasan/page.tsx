@@ -137,19 +137,19 @@ export default async function AssignmentsPage() {
   return (
     <>
       <PageHeader
-        title="Penugasan"
-        description="Tugaskan rute, pengemudi, dan bus dari area yang sama pada tanggal layanan."
+        title={c("Penugasan")}
+        description={c("Tugaskan rute, pengemudi, dan bus dari area yang sama pada tanggal layanan.")}
       />
 
       <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath="/admin/penugasan" compact />
 
       {assignmentsResult.error && (
-        <Notice kind="error">Daftar penugasan belum dapat dimuat. Coba lagi.</Notice>
+        <Notice kind="error">{c("Daftar penugasan belum dapat dimuat. Coba lagi.")}</Notice>
       )}
       {!ready && (
         <Notice kind="warning">
-          Penugasan memerlukan minimal satu rute aktif, satu pengemudi aktif, dan satu bus aktif pada konteks ini.
-          Lengkapi data tersebut terlebih dahulu.
+          {c("Penugasan memerlukan minimal satu rute aktif, satu pengemudi aktif, dan satu bus aktif pada konteks ini.")}
+          {c("Lengkapi data tersebut terlebih dahulu.")}
         </Notice>
       )}
 
@@ -175,8 +175,8 @@ export default async function AssignmentsPage() {
                 {assignments.length === 0 ? (
                   <EmptyRow
                     colSpan={4}
-                    title="Belum ada penugasan"
-                    detail="Buat penugasan pertama melalui formulir di samping setelah rute, pengemudi, dan bus tersedia."
+                    title={c("Belum ada penugasan")}
+                    detail={c("Buat penugasan pertama melalui formulir di samping setelah rute, pengemudi, dan bus tersedia.")}
                   />
                 ) : (
                   assignments.map((assignment) => {
@@ -204,7 +204,7 @@ export default async function AssignmentsPage() {
                               {c(tripStatusLabel(trip.status))}
                             </Pill>
                           ) : (
-                            <Pill tone="neutral">Belum dimulai</Pill>
+                            <Pill tone="neutral">{c("Belum dimulai")}</Pill>
                           )}
                         </td>
                       </tr>
@@ -231,9 +231,9 @@ export default async function AssignmentsPage() {
               disabledReason={
                 ready
                   ? undefined
-                  : "Penugasan dapat dibuat setelah tersedia rute, pengemudi, dan bus aktif pada Area Operasional yang sama."
+                  : c("Penugasan dapat dibuat setelah tersedia rute, pengemudi, dan bus aktif pada Area Operasional yang sama.")
               }
-              note="Data dari area berbeda ditolak oleh aplikasi dan database. Penugasan tidak membuat perjalanan sebelum pengemudi menekan Mulai Perjalanan."
+              note={c("Data dari area berbeda ditolak oleh aplikasi dan database. Penugasan tidak membuat perjalanan sebelum pengemudi menekan Mulai Perjalanan.")}
             />
           </div>
         </section>
