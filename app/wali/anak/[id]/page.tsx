@@ -153,7 +153,7 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
           <div className="pickup-body">
             {child.placements.length === 0 ? (
               <p className="muted-hint">
-                {c("{c("Rute dan titik jemput belum diatur Operator Utama. Hubungi Operator Utama bila anak Anda sudah menggunakan layanan.")}")}
+                {c("Rute dan titik jemput belum diatur Operator Utama. Hubungi Operator Utama bila anak Anda sudah menggunakan layanan.")}
               </p>
             ) : (
               <ul className="pickup-list">
