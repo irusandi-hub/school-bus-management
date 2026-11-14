@@ -6,12 +6,18 @@ import { ConfigNotice, EmptyRow, Notice, PageHeader, Pill } from "@/components/a
 import { adminReadContext } from "@/lib/admin/read";
 import { getProjectAreaContext, loadProjectAreaScope } from "@/lib/project-areas/context";
 import type { TripAssignmentRow } from "@/lib/types";
-import { formatDate, routeDirectionLabel, serviceDateInTimeZone, tripStatusLabel } from "@/lib/validation";
+import { routeDirectionLabel, serviceDateInTimeZone, tripStatusLabel } from "@/lib/validation";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 import { saveAssignment } from "./actions";
 
 export const metadata: Metadata = { title: "Penugasan | Operator" };
 
 export default async function AssignmentsPage() {
+  const locale = await getRequestLocale();
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
+  const dateLocale = locale === "ar" ? "ar-SA-u-ca-gregory" : locale === "en" ? "en-GB" : "id-ID";
+  const formatLocalDate = (value: string) => new Intl.DateTimeFormat(dateLocale, { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Riyadh" }).format(new Date(`${value.slice(0, 10)}T12:00:00+03:00`));
   const supabase = await adminReadContext();
   if (!supabase) return <ConfigNotice />;
 
@@ -87,7 +93,7 @@ export default async function AssignmentsPage() {
         { value: "", label: routes.length === 0 ? "Belum ada rute aktif di konteks ini" : "Pilih rute" },
         ...routes.map((route) => ({
           value: route.id,
-          label: `${route.route_name} · ${route.school_name} (${routeDirectionLabel(route.direction)})${
+          label: `${route.route_name} · ${route.school_name} (${c(routeDirectionLabel(route.direction))})${
             selectedId ? "" : ` · ${route.project_areas?.name ?? "Tanpa area"}`
           }`,
         })),
@@ -152,7 +158,7 @@ export default async function AssignmentsPage() {
           <header className="panel-head">
             <div>
               <h2 className="panel-title"><AdminCopy value="Daftar penugasan" /></h2>
-              <div className="panel-subtitle">60 penugasan terbaru · {areaContext.selected?.name ?? "Semua Area"}</div>
+              <div className="panel-subtitle">{c("60 penugasan terbaru")} · {areaContext.selected?.name ?? c("Semua Area")}</div>
             </div>
           </header>
           <div className="admin-table-wrap">
@@ -177,11 +183,11 @@ export default async function AssignmentsPage() {
                     const trip = assignment.trips?.[0];
                     return (
                       <tr key={assignment.id}>
-                        <td>{formatDate(assignment.service_date)}</td>
+                        <td>{formatLocalDate(assignment.service_date)}</td>
                         <td>
                           <strong>{assignment.routes?.route_name ?? "Rute"}</strong>
                           <small>
-                            {assignment.routes?.school_name} · {routeDirectionLabel(assignment.routes?.direction ?? "")}
+                            {assignment.routes?.school_name} · {c(routeDirectionLabel(assignment.routes?.direction ?? ""))}
                             {assignment.routes?.project_areas?.name ? ` · ${assignment.routes.project_areas.name}` : ""}
                           </small>
                         </td>
@@ -195,7 +201,7 @@ export default async function AssignmentsPage() {
                         <td>
                           {trip ? (
                             <Pill tone={trip.status === "in_progress" ? "info" : trip.status === "completed" ? "success" : "neutral"}>
-                              {tripStatusLabel(trip.status)}
+                              {c(tripStatusLabel(trip.status))}
                             </Pill>
                           ) : (
                             <Pill tone="neutral">Belum dimulai</Pill>

@@ -138,7 +138,7 @@ export default async function RoutesPage({
                         <small>{route.schools?.name ?? route.school_name}</small>
                       </td>
                       <td>{route.project_areas?.name ?? "Belum ditetapkan"}</td>
-                      <td>{routeDirectionLabel(route.direction)}</td>
+                      <td><AdminCopy value={routeDirectionLabel(route.direction)} /></td>
                       <td>{route.route_stops?.length ?? 0}</td>
                       <td>
                         <Pill tone={route.active ? "success" : "neutral"}>{route.active ? "Aktif" : "Nonaktif"}</Pill>

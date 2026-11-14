@@ -252,7 +252,7 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
               ) : (
                 placements.map((placement) => (
                   <tr key={placement.id}>
-                    <td>{routeDirectionLabel(placement.direction)}</td>
+                    <td>{c(routeDirectionLabel(placement.direction))}</td>
                     <td>{placement.routes?.route_name ?? "—"}</td>
                     <td>
                       {placement.route_stops?.stop_order}. {placement.route_stops?.stop_name}
@@ -326,9 +326,9 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
             <thead>
               <tr>
                 <th scope="col"><AdminCopy value="Waktu" /></th>
-                <th scope="col">Perubahan</th>
-                <th scope="col">Alasan</th>
-                <th scope="col">Dicatat oleh</th>
+                <th scope="col"><AdminCopy value="Perubahan" /></th>
+                <th scope="col"><AdminCopy value="Alasan" /></th>
+                <th scope="col"><AdminCopy value="Dicatat oleh" /></th>
               </tr>
             </thead>
             <tbody>
@@ -346,8 +346,8 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
                   <tr key={entry.id}>
                     <td>{formatLocalDateTime(entry.changed_at)}</td>
                     <td>
-                      {entry.previous_status ? `${serviceStatusLabel(entry.previous_status)} → ` : "Awal → "}
-                      {serviceStatusLabel(entry.new_status)}
+                      {entry.previous_status ? `${c(serviceStatusLabel(entry.previous_status))} → ` : `${c("Awal")} → `}
+                      {c(serviceStatusLabel(entry.new_status))}
                     </td>
                     <td>{entry.reason}</td>
                     <td>{entry.profiles?.full_name ?? "Tidak tercatat"}</td>

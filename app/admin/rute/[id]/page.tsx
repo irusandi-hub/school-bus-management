@@ -296,7 +296,7 @@ export default async function RouteDetailPage({
                     <td>
                       {entry.route_stops?.stop_order}. {entry.route_stops?.stop_name}
                     </td>
-                    <td>{routeDirectionLabel(entry.direction)}</td>
+                    <td>{c(routeDirectionLabel(entry.direction))}</td>
                     <td>
                       <form action={removeStudentFromRoute}>
                         <input type="hidden" name="id" value={entry.id} />

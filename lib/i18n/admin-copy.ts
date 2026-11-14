@@ -793,6 +793,17 @@ const copy: Record<string, Record<Locale, string>> = {
 
   "Lepas tautan": { id: "Lepas tautan", en: "Unlink account", ar: "إلغاء ربط الحساب" },
   "Tautkan": { id: "Tautkan", en: "Link account", ar: "ربط الحساب" },
+  "60 penugasan terbaru": { id: "60 penugasan terbaru", en: "Latest 60 assignments", ar: "أحدث 60 تكليفاً" },
+  "Lengkapi data tersebut terlebih dahulu.": { id: "Lengkapi data tersebut terlebih dahulu.", en: "Complete that information first.", ar: "أكمل تلك البيانات أولاً." },
+  "Belum ada rute aktif di konteks ini": { id: "Belum ada rute aktif di konteks ini", en: "No active routes in this context", ar: "لا توجد مسارات نشطة في هذا السياق" },
+  "Belum ada pengemudi aktif di konteks ini": { id: "Belum ada pengemudi aktif di konteks ini", en: "No active drivers in this context", ar: "لا يوجد سائقون نشطون في هذا السياق" },
+  "Belum ada bus aktif di konteks ini": { id: "Belum ada bus aktif di konteks ini", en: "No active buses in this context", ar: "لا توجد حافلات نشطة في هذا السياق" },
+  "Tanpa area": { id: "Tanpa area", en: "No area", ar: "بلا منطقة" },
+  "kursi": { id: "kursi", en: "seats", ar: "مقاعد" },
+  "Awal": { id: "Awal", en: "Initial", ar: "البداية" },
+  "Perubahan": { id: "Perubahan", en: "Change", ar: "التغيير" },
+  "Alasan": { id: "Alasan", en: "Reason", ar: "السبب" },
+  "Dicatat oleh": { id: "Dicatat oleh", en: "Recorded by", ar: "سجّل بواسطة" },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
