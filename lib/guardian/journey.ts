@@ -1,5 +1,5 @@
-import type { Locale } from "@/lib/i18n/config";
-import { translate } from "@/lib/i18n/messages";
+import type { Locale } from "../i18n/config.ts";
+import { translate } from "../i18n/messages.ts";
 
 /**
  * Status perjalanan yang ditampilkan kepada wali.

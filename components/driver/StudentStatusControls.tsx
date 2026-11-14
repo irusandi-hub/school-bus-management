@@ -1,8 +1,8 @@
 "use client";
 
-import { useActionState, useEffect, useState, type ButtonHTMLAttributes } from "react";
+import { useActionState, useEffect, useState, type ButtonHTMLAttributes, type ReactNode } from "react";
 import { useFormStatus } from "react-dom";
-import { Pill } from "@/components/admin/ui";
+
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 import { Icon } from "@/components/ui/Icon";
@@ -49,6 +49,11 @@ function SubmitAction(props: ActionButtonProps) {
   return <ActionButton {...props} pending={pending} />;
 }
 
+/** Penanda status sinkron: komponen klien tidak boleh memakai Pill server (async + next/headers). */
+function StatusPill({ tone, children }: { tone: "neutral" | "success" | "warning" | "danger" | "info"; children: ReactNode }) {
+  return <span className={`pill ${tone}`}>{children}</span>;
+}
+
 function statusTone(status: string | null) {
   if (status === "boarded") return "success" as const;
   if (status === "dropped_off") return "info" as const;
@@ -82,7 +87,8 @@ export function StudentStatusControls({
   initialStatus: string | null;
   initialIssueNote: string | null;
 }) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
+  const copy = (value: string) => translateAdminCopy(value, locale) ?? value;
   const [status, setStatus] = useState<string | null>(initialStatus);
   const [issueNote, setIssueNote] = useState<string | null>(initialIssueNote);
   const [state, formAction, pending] = useActionState<StudentEventState, FormData>(
@@ -166,7 +172,7 @@ export function StudentStatusControls({
       )}
 
       <div className="ops-student-state" aria-live="polite">
-        <Pill tone={statusTone(status)}>{status === "boarded" ? t("board") : status === "dropped_off" ? t("droppedOff") : status === "absent" ? t("absent") : status ? copy(tripEventLabel(status)) : t("unrecorded")}</Pill>
+        <StatusPill tone={statusTone(status)}>{status === "boarded" ? t("board") : status === "dropped_off" ? t("droppedOff") : status === "absent" ? t("absent") : status ? copy(tripEventLabel(status)) : t("unrecorded")}</StatusPill>
         {pending && <span className="ops-action-pending">{t("saving")}</span>}
       </div>
 

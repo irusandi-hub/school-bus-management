@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import { describe, it } from "node:test";
+import { messages } from "../lib/i18n/messages.ts";
 
 describe("tombol perjalanan pengemudi", () => {
   it("mempertahankan layout operasional yang disetujui dan satu aksi utama yang berubah sesuai status", () => {
@@ -37,7 +38,7 @@ describe("tombol perjalanan pengemudi", () => {
     assert.match(panel, /const allRequiredChecksConfirmed = SAFETY_CHECKS\.every/);
     assert.match(panel, /const requirementsMet = canEndTrip && allRequiredChecksConfirmed && unclearStudents === 0/);
     assert.match(panel, /disabled={!requirementsMet}/);
-    assert.match(panel, />\s*Akhiri\s*</);
+    assert.match(panel, /\{copy\("Akhiri"\)\}/);
     assert.match(panel, /Semua penumpang sudah turun/);
     assert.match(panel, /disabled={unclearStudents === 0 && Boolean\(trip\.arrived_at\)}/);
     assert.match(panel, /kecuali yang berstatus Tidak Ikut/);
@@ -46,7 +47,8 @@ describe("tombol perjalanan pengemudi", () => {
     assert.match(panel, /schoolbus:open-trip-safety/);
     assert.match(panel, /initialOpen/);
     assert.match(panel, /router\.replace\(`\/pengemudi\?tugas=/);
-    assert.match(panel, /aria-label="Tutup pemeriksaan"/);
+    assert.match(panel, /aria-label=\{t\("close"\)\}/);
+    assert.equal(messages.id.close, "Tutup");
     assert.match(panel, /event\.key === "Escape"/);
     assert.doesNotMatch(panel, /arrivalReady/);
     assert.ok(panel.indexOf("if (!trip.arrived_at)") < panel.indexOf("else if (unrecordedNames.length > 0)"));
@@ -71,7 +73,8 @@ describe("tombol perjalanan pengemudi", () => {
     const oldHistoryRoute = fs.readFileSync("app/pengemudi/riwayat/page.tsx", "utf8");
     assert.match(page, /tab=riwayat/);
     assert.match(page, /firstParam\(query\.tab\) === "riwayat"/);
-    assert.match(page, /Navigasi Pengemudi/);
+    assert.match(page, /aria-label=\{t\("navigationDriver"\)\}/);
+    assert.equal(messages.id.navigationDriver, "Navigasi pengemudi");
     assert.match(oldHistoryRoute, /redirect\("\/pengemudi\?tab=riwayat"\)/);
   });
 

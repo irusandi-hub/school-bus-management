@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import { describe, it } from "node:test";
+import { translateAdminCopy } from "../lib/i18n/admin-copy.ts";
 
 describe("review perjalanan pengemudi", () => {
   it("mengarahkan perjalanan yang selesai ke halaman review, bukan langsung ke dashboard", () => {
@@ -50,7 +51,11 @@ describe("review sebagai overlay dashboard", () => {
     assert.match(modal, /router.replace\("\/pengemudi"\)/);
     assert.match(modal, /router.refresh\(\)/);
     assert.doesNotMatch(modal, /router.back\(/);
-    assert.match(modal, /aria-label="Tutup review dan kembali ke halaman utama Pengemudi"/);
+    assert.match(modal, /aria-label=\{copy\("Tutup review dan kembali ke halaman utama Pengemudi"\)\}/);
+    assert.equal(
+      translateAdminCopy("Tutup review dan kembali ke halaman utama Pengemudi", "en"),
+      "Close review and return to the Driver home page",
+    );
     assert.match(modal, /onClick=\{closeReview\}/);
     assert.match(modal, /onCancel=/);
     assert.match(modal, /showModal\(\)/);

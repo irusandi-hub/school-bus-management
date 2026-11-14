@@ -101,7 +101,7 @@ test("workspace loading and guardian map states have localized labels", () => {
 test("safety checklist validation translates its embedded checklist label", () => {
   assert.equal(
     translateAdminCopy("Pemeriksaan keselamatan belum lengkap: Kabin sudah diperiksa, tidak ada penumpang yang tertinggal di dalam bus.", "en"),
-    "The safety check is incomplete: The cabin has been checked and no passengers have been left behind on the bus.",
+    "The safety check is incomplete: The cabin has been checked; no passengers remain on the bus.",
   );
 });
 
