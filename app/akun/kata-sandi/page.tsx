@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { BrandLogo } from "@/components/brand-logo";
+import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
 import { PasswordForm } from "./password-form";
 import { getViewerState } from "@/lib/auth";
 import { homeForRole } from "@/lib/access";
@@ -30,7 +31,8 @@ export default async function KataSandiPage({
   if (state.status === "anonymous") redirect("/login?alasan=sesi-berakhir");
   if (state.status === "unconfigured") {
     return (
-      <main className="auth-page">
+      <main className="auth-page relative">
+      <div className="absolute end-5 top-5 z-50"><LocaleSwitcher /></div>
         <section className="auth-card">
           <BrandLogo className="auth-logo" />
           <h1>{t("databaseNotConfigured")}</h1>
