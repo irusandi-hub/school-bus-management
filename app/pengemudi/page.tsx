@@ -133,7 +133,7 @@ export default async function DriverOperationsPage({
           <div className="ops-head-top">
             <span className="ops-avatar" aria-hidden="true">{(access.driver.full_name || "P").slice(0, 1).toUpperCase()}</span>
             <div className="ops-ident">
-              <strong>{access.driver.full_name || "Pengemudi"}</strong>
+              <strong>{access.driver.full_name || c("Pengemudi")}</strong>
               <small>ID {access.driver.id.slice(0, 8).toUpperCase()} · {t("activeAccount")}</small>
             </div>
             <nav className="portal-nav compact-driver-tabs" aria-label={t("navigationDriver")}>
@@ -160,7 +160,7 @@ export default async function DriverOperationsPage({
                   <tr key={item.id} data-trip-id={item.id}>
                     <td data-label={t("date")}>{formatDateLocalized(item.trip_assignments?.service_date ?? item.created_at)}</td>
                     <td data-label={t("route")}>
-                      <strong>{item.trip_assignments?.routes?.route_name ?? "Rute"}</strong>
+                      <strong>{item.trip_assignments?.routes?.route_name ?? c("Rute")}</strong>
                       <small>{item.trip_assignments?.routes?.school_name} · {directionLabel(item.trip_assignments?.routes?.direction ?? "")}</small>
                     </td>
                     <td data-label={t("bus")}>{item.trip_assignments?.buses?.fleet_code ?? "—"}</td>
@@ -189,7 +189,7 @@ export default async function DriverOperationsPage({
               {(access.driver.full_name || "P").slice(0, 1).toUpperCase()}
             </span>
             <div className="ops-ident">
-              <strong>{access.driver.full_name || "Pengemudi"}</strong>
+              <strong>{access.driver.full_name || c("Pengemudi")}</strong>
               <small>ID {access.driver.id.slice(0, 8).toUpperCase()} · Akun aktif</small>
             </div>
             <nav className="portal-nav compact-driver-tabs" aria-label={t("navigationDriver")}>
@@ -203,7 +203,7 @@ export default async function DriverOperationsPage({
               : t("noAssignmentForDate").replace("{date}", formatDateLocalized(date))}
           </p>
         </section>
-        {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
+        {notice && <Notice kind={notice.kind}>{c(notice.message)}</Notice>}
         {error && <Notice kind="error">{t("todayTaskLoadError")}</Notice>}
         <section className="panel">
           <EmptyState
@@ -325,10 +325,10 @@ export default async function DriverOperationsPage({
     return {
       id: entry.student_id,
       admissionsNumber: entry.students?.admissions_number ?? null,
-      name: entry.students?.full_name ?? "Siswa",
+      name: entry.students?.full_name ?? c("Siswa"),
       stopId: entry.stop_id,
       stopOrder: entry.route_stops?.stop_order ?? 0,
-      stopName: entry.route_stops?.stop_name ?? "Titik jemput",
+      stopName: entry.route_stops?.stop_name ?? c("Titik jemput"),
       address: entry.students?.home_address ?? null,
       status: state?.status ?? null,
       statusNotes: state?.statusNotes ?? null,
@@ -340,10 +340,10 @@ export default async function DriverOperationsPage({
     return {
       key: entry.id,
       studentId: entry.student_id,
-      name: entry.students?.full_name ?? "Siswa",
+      name: entry.students?.full_name ?? c("Siswa"),
       admissionsNumber: entry.students?.admissions_number ?? null,
       stopOrder: entry.route_stops?.stop_order ?? 0,
-      stopName: entry.route_stops?.stop_name ?? "Titik jemput",
+      stopName: entry.route_stops?.stop_name ?? c("Titik jemput"),
       address: entry.students?.home_address ?? null,
       // Status tindakan hanya milik sesi aktif; sesi selesai kembali ke tampilan awal.
       status: trip?.status === "in_progress" ? state?.status ?? null : null,
@@ -407,7 +407,7 @@ export default async function DriverOperationsPage({
         </nav>
       )}
 
-      {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
+      {notice && <Notice kind={notice.kind}>{c(notice.message)}</Notice>}
       {error && <Notice kind="error">{t("todayTaskLoadError")}</Notice>}
       {stopsResult.error && <Notice kind="error">{t("stopsLoadError")}</Notice>}
       {rosterResult.error && <Notice kind="error">{t("rosterLoadError")}</Notice>}
@@ -418,7 +418,7 @@ export default async function DriverOperationsPage({
       <DriverOpsHeader
         driverName={access.driver.full_name}
         driverId={access.driver.id}
-        routeName={selected.routes?.route_name ?? "Rute"}
+        routeName={selected.routes?.route_name ?? c("Rute")}
         schoolName={selected.routes?.school_name ?? ""}
         direction={direction}
         serviceDate={selected.service_date}
@@ -516,7 +516,7 @@ export default async function DriverOperationsPage({
               <span>
                 <Icon name="report" size={15} /> {t("tripNotes")}
               </span>
-              <small>{issueNotes.length > 0 ? `${issueNotes.length} {t("issuesRecorded")}` : t("noIssues")}</small>
+              <small>{issueNotes.length > 0 ? `${issueNotes.length} ${t("issuesRecorded")}` : t("noIssues")}</small>
             </summary>
             <div className="ops-review-body">
               {trip?.safety_check_notes && (
@@ -536,9 +536,9 @@ export default async function DriverOperationsPage({
                 <p>{t("noTripIssues")}</p>
               )}
               <p className="ops-review-meta">
-                {formatDateLocalized(selected.service_date)} · {directionLabel(direction)} · Bus{" "}
+                {formatDateLocalized(selected.service_date)} · {directionLabel(direction)} · {c("Bus")}{" "}
                 {selected.buses?.fleet_code ?? "—"}
-                {trip?.started_at ? ` · Mulai ${formatTimeLocalized(trip.started_at)}` : ""}
+                {trip?.started_at ? ` · ${c("Mulai")} ${formatTimeLocalized(trip.started_at)}` : ""}
                 {trip?.completed_at ? ` · ${t("finish")} ${formatDateTimeLocalized(trip.completed_at)}` : ""}
               </p>
             </div>
