@@ -69,12 +69,14 @@ export async function DriverOpsHeader({
           <strong>{driverName || <LocalizedText k="driver" />}</strong>
           <span>ID {shortId} • {plateNumber || <LocalizedText k="plateNotRecorded" />}</span>
         </div>
-        <div className="flex flex-none items-center"><LocaleSwitcher /></div>
-        <form action={signOutAction} className="compact-logout-form">
-          <button className="compact-logout" type="submit" aria-label={translate(locale, "signOut")} title={translate(locale, "signOut")}>
-            <Icon name="logout" size={17} />
-          </button>
-        </form>
+        <div className="flex flex-none items-center gap-2">
+          <LocaleSwitcher />
+          <form action={signOutAction} className="compact-logout-form">
+            <button className="compact-logout" type="submit" aria-label={translate(locale, "signOut")} title={translate(locale, "signOut")}>
+              <Icon name="logout" size={17} />
+            </button>
+          </form>
+        </div>
       </div>
 
       <nav className="portal-nav compact-driver-tabs" aria-label={locale === "ar" ? "قائمة السائق" : locale === "en" ? "Driver navigation" : "Navigasi Pengemudi"}>
