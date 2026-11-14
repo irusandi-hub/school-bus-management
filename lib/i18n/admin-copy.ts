@@ -790,6 +790,7 @@ const copy: Record<string, Record<Locale, string>> = {
   "Perjalanan akan muncul setelah pengemudi memulai tugas yang ditugaskan.": { id: "Perjalanan akan muncul setelah pengemudi memulai tugas yang ditugaskan.", en: "Trips appear after a driver starts an assigned task.", ar: "ستظهر الرحلات بعد أن يبدأ السائق المهمة المكلّف بها." },
   "Belum bisa diakhiri: catat status": { id: "Belum bisa diakhiri: catat status", en: "Cannot end yet: record the status", ar: "لا يمكن الإنهاء بعد: سجّل الحالة" },
   "penumpang belum dipastikan turun dari bus.": { id: "penumpang belum dipastikan turun dari bus.", en: "passengers have not been confirmed off the bus.", ar: "لم يتم التأكد من نزول الركاب من الحافلة." },
+
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {

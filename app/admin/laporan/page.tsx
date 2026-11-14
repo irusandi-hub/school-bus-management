@@ -7,10 +7,14 @@ import { adminReadContext } from "@/lib/admin/read";
 import { getProjectAreaContext, loadProjectAreaScope } from "@/lib/project-areas/context";
 import type { AuditLogRow } from "@/lib/types";
 import { formatDateTime, serviceDateInTimeZone } from "@/lib/validation";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 export const metadata: Metadata = { title: "Laporan & Audit | Operator" };
 
 export default async function ReportsPage() {
+  const locale = await getRequestLocale();
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
   const supabase = await adminReadContext();
   if (!supabase) return <ConfigNotice />;
 
@@ -95,7 +99,7 @@ export default async function ReportsPage() {
               <h2 className="panel-title"><AdminCopy value="Status modul" /></h2>
               <div className="panel-subtitle"><AdminCopy value="Fitur yang belum tersedia tidak ditampilkan sebagai tombol berjalan" /></div>
             </div>
-            <Pill tone="warning">Terbatas</Pill>
+            <Pill tone="warning">{c("Terbatas")}</Pill>
           </header>
           <ul className="check-list">
             <li>
@@ -112,8 +116,7 @@ export default async function ReportsPage() {
               <strong><AdminCopy value="GPS langsung & kamera bus" /></strong>
               <span>—</span>
               <small>
-                GPS dan kamera bus belum terintegrasi. Siaran kamera perjalanan mengikuti status dan izin pengemudi,
-                bukan laporan yang dibuat-buat.
+                {c("GPS dan kamera bus belum terintegrasi. Siaran kamera perjalanan mengikuti status dan izin pengemudi, bukan laporan yang dibuat-buat.")}
               </small>
             </li>
             <li>
@@ -133,11 +136,10 @@ export default async function ReportsPage() {
           </header>
           <div className="audit-note">
             <p>
-              Audit mencatat aktor, jenis data, operasi, dan waktu. Nilai kolom serta data pribadi tidak disalin ke
-              jejak audit agar data pribadi tidak menumpuk di luar tabel asalnya.
+              {c("Audit mencatat aktor, jenis data, operasi, dan waktu. Nilai kolom serta data pribadi tidak disalin ke jejak audit agar data pribadi tidak menumpuk di luar tabel asalnya.")}
             </p>
             <p>
-              Jejak audit platform dapat dibaca dan ditinjau oleh Operator Utama. Area Operasional hanya menjadi konteks kerja dan pengelompokan untuk pemetaan serta audit, bukan akun atau pembatas akses.
+              {c("Jejak audit platform dapat dibaca dan ditinjau oleh Operator Utama. Area Operasional hanya menjadi konteks kerja dan pengelompokan untuk pemetaan serta audit, bukan akun atau pembatas akses.")}
             </p>
           </div>
         </section>

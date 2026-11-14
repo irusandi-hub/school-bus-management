@@ -24,6 +24,12 @@ function tripTone(status: string) {
 }
 
 export default async function TripsPage() {
+  const locale = await getRequestLocale();
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
+  const dateLocale = locale === "ar" ? "ar-SA-u-ca-gregory" : locale === "en" ? "en-GB" : "id-ID";
+  const formatDate = (value: string) => new Intl.DateTimeFormat(dateLocale, { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Riyadh" }).format(new Date(`${value.slice(0, 10)}T12:00:00+03:00`));
+  const formatDateTime = (value: string | null) => value ? new Intl.DateTimeFormat(dateLocale, { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Riyadh" }).format(new Date(value)) : "—";
+  const formatTime = (value: string | null) => value ? new Intl.DateTimeFormat(dateLocale, { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Riyadh" }).format(new Date(value)) : "—";
   const supabase = await adminReadContext();
   if (!supabase) return <ConfigNotice />;
 
@@ -58,7 +64,7 @@ export default async function TripsPage() {
       <PageHeader
         title="Perjalanan"
         description="Perjalanan dibuat dan diakhiri oleh pengemudi yang ditugaskan. Operator Utama memantau status dan waktu, bukan memulai perjalanan dari sini."
-        actions={<Pill tone={active > 0 ? "info" : "neutral"}>{active} berlangsung</Pill>}
+        actions={<Pill tone={active > 0 ? "info" : "neutral"}>{active} {c("Berlangsung")}</Pill>}
       />
 
       <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={areaContext.selectedId} nextPath="/admin/perjalanan" compact />
@@ -98,7 +104,7 @@ export default async function TripsPage() {
                       <strong>{trip.trip_assignments?.routes?.route_name ?? "Rute"}</strong>
                       <small>
                         {trip.trip_assignments?.routes?.school_name} ·{" "}
-                        {routeDirectionLabel(trip.trip_assignments?.routes?.direction ?? "")}
+                        {c(routeDirectionLabel(trip.trip_assignments?.routes?.direction ?? ""))}
                       </small>
                     </td>
                     <td>
@@ -111,12 +117,12 @@ export default async function TripsPage() {
                       </small>
                     </td>
                     <td>
-                      <Pill tone={tripTone(trip.status)}>{tripStatusLabel(trip.status)}</Pill>
+                      <Pill tone={tripTone(trip.status)}>{c(tripStatusLabel(trip.status))}</Pill>
                     </td>
                     <td>
-                      <small>Mulai {formatTime(trip.started_at)}</small>
-                      <small>Tiba {formatTime(trip.arrived_at)}</small>
-                      <small>Selesai {trip.completed_at ? formatDateTime(trip.completed_at) : "—"}</small>
+                      <small>{c("Mulai")} {formatTime(trip.started_at)}</small>
+                      <small>{c("Tiba")} {formatTime(trip.arrived_at)}</small>
+                      <small>{c("Selesai")} {trip.completed_at ? formatDateTime(trip.completed_at) : "—"}</small>
                     </td>
                   </tr>
                 ))
@@ -126,10 +132,7 @@ export default async function TripsPage() {
         </div>
       </section>
 
-      <Notice kind="info">
-        Lokasi GPS terbaru hanya tersedia selama perjalanan berlangsung dan ditampilkan pada portal wali yang berhak.
-        Halaman ini tidak menampilkan lokasi lama sebagai posisi terkini dan tidak mengubah status kamera.
-      </Notice>
+      <Notice kind="info">{c("Lokasi GPS terbaru hanya tersedia selama perjalanan berlangsung dan ditampilkan pada portal wali yang berhak. Halaman ini tidak menampilkan lokasi lama sebagai posisi terkini dan tidak mengubah status kamera.")}</Notice>
     </>
   );
 }
