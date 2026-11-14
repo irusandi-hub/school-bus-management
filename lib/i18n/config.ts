@@ -6,7 +6,7 @@ export type TextDirection = "ltr" | "rtl";
 export const defaultLocale: Locale = "id";
 
 export const localeDisplayNames: Record<Locale, string> = {
-  id: "🇮🇩 Bahasa Indonesia",
+  id: "🇮🇩 Bahasa",
   en: "🇬🇧 English",
   ar: "🇸🇦 العربية",
 };
