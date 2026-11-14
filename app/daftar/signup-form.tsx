@@ -39,7 +39,7 @@ export function SignupForm() {
       )}
       {state.status === "success" && (
         <p className="form-alert success" role="status">
-          {state.message}
+          {copy(state.message)}
         </p>
       )}
 
