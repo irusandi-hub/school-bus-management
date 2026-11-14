@@ -847,6 +847,9 @@ const copy: Record<string, Record<Locale, string>> = {
   "Data dari area berbeda ditolak oleh aplikasi dan database. Penugasan tidak membuat perjalanan sebelum pengemudi menekan Mulai Perjalanan.": { id: "Data dari area berbeda ditolak oleh aplikasi dan database. Penugasan tidak membuat perjalanan sebelum pengemudi menekan Mulai Perjalanan.", en: "Data from different areas is rejected by the app and database. An assignment does not create a trip until the driver selects Start Trip.", ar: "يرفض التطبيق وقاعدة البيانات البيانات القادمة من مناطق مختلفة. لا ينشئ التكليف رحلة حتى يضغط السائق على بدء الرحلة." }
 
   "Memperbarui": { id: "Memperbarui", en: "Updating", ar: "جارٍ التحديث" },
+  "Tertaut": { id: "Tertaut", en: "Linked", ar: "مرتبط" },
+  "Email akun": { id: "Email akun", en: "Account email", ar: "البريد الإلكتروني للحساب" },
+  "Email akun untuk": { id: "Email akun untuk", en: "Account email for", ar: "البريد الإلكتروني للحساب الخاص بـ" },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
