@@ -54,15 +54,15 @@ export default async function ProjectAreaPage({
   if (status === "aktif") query = query.eq("active", true);
   if (status === "nonaktif") query = query.eq("active", false);
 
-  const { data, count, error } = await query;
+  const editQuery = editId
+    ? supabase.from("project_areas").select(selectColumns).eq("id", editId).maybeSingle()
+    : Promise.resolve({ data: null });
+
+  const [listResult, editResult] = await Promise.all([query, editQuery]);
+  const { data, count, error } = listResult;
   const rows = (data ?? []) as ProjectAreaRow[];
   const total = count ?? 0;
-
-  let editing: ProjectAreaRow | null = null;
-  if (editId) {
-    const { data: editRow } = await supabase.from("project_areas").select(selectColumns).eq("id", editId).maybeSingle();
-    editing = (editRow as ProjectAreaRow | null) ?? null;
-  }
+  const editing = (editResult.data as ProjectAreaRow | null) ?? null;
 
   const notice = noticeFromParams(params);
   const baseQuery = { q, status: status || undefined };
