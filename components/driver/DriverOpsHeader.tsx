@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { cookies } from "next/headers";
 import { defaultLocale, isLocale } from "@/lib/i18n/config";
+import { translate } from "@/lib/i18n/messages";
 import Link from "next/link";
 import { BrandLogo } from "@/components/brand-logo";
 import { Icon } from "@/components/ui/Icon";
@@ -68,7 +69,7 @@ export async function DriverOpsHeader({
           <span>ID {shortId} • {plateNumber || <LocalizedText k="plateNotRecorded" />}</span>
         </div>
         <form action={signOutAction} className="compact-logout-form">
-          <button className="compact-logout" type="submit" aria-label={t("signOut")} title="Keluar">
+          <button className="compact-logout" type="submit" aria-label={translate(locale, "signOut")} title="Keluar">
             <Icon name="logout" size={17} />
           </button>
         </form>
