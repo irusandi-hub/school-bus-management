@@ -78,3 +78,22 @@ test("specific account reactivation prompts are translated before generic prompt
   );
   assert.equal(translateAdminCopy("Aktifkan kembali Dammam?", "en"), "Reactivate Dammam?");
 });
+
+test("driver trip feedback is translated for all supported locales", () => {
+  assert.equal(translateAdminCopy("Perjalanan dimulai.", "en"), "Trip started.");
+  assert.equal(translateAdminCopy("Perjalanan dimulai.", "ar"), "بدأت الرحلة.");
+  assert.equal(
+    translateAdminCopy("Status Turun berhasil dicatat untuk 3 siswa. Status Tidak Ikut tetap dipertahankan.", "en"),
+    "Drop-off was recorded for 3 students. Absent statuses were preserved.",
+  );
+  assert.equal(
+    translateAdminCopy("Masih ada 2 siswa pada rute ini yang belum dicatat statusnya (naik, tidak ikut, atau turun).", "ar"),
+    "لا تزال حالة 2 من الطلاب في هذا المسار غير مسجلة (صعد أو غائب أو نزل).",
+  );
+});
+
+test("workspace loading and guardian map states have localized labels", () => {
+  assert.equal(translateAdminCopy("Memuat data anak…", "en"), "Loading child data…");
+  assert.equal(translateAdminCopy("Peta tidak dapat dimuat", "ar"), "تعذر تحميل الخريطة");
+  assert.equal(translateAdminCopy("Posisi HP pengemudi", "en"), "Driver phone location");
+});
