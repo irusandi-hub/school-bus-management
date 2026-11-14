@@ -315,8 +315,7 @@ export default async function RouteDetailPage({
       </section>
 
       <Notice kind="info">
-        {c("Perjalanan baru dibuat oleh pengemudi saat memulai tugas. Rute dan roster ini tidak membuat perjalanan atau")}
-        {c("posisi GPS secara otomatis.")}
+        {c("Perjalanan baru dibuat oleh pengemudi saat memulai tugas. Rute dan roster ini tidak membuat perjalanan atau posisi GPS secara otomatis.")}
       </Notice>
     </>
   );
