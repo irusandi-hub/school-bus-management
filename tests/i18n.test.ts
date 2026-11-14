@@ -119,6 +119,6 @@ test("live camera and driver action feedback are localized", () => {
   assert.equal(translateAdminCopy("untuk kembali.", "ar"), "للعودة.");
   assert.equal(
     translateAdminCopy("Status siswa tercatat pada perjalanan ini.", "en"),
-    "Student status was recorded on this trip.",
+    "Student status recorded for this trip.",
   );
 });
