@@ -4,6 +4,7 @@ import { BrandLogo } from "@/components/brand-logo";
 import "./landing.css";
 import { LandingControls, LandingDownloads, LandingRoleArrow } from "@/components/landing-controls";
 import { LocalizedText } from "@/components/i18n/LocaleProvider";
+import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
 
 
 const HERO_IMAGE = {
@@ -311,6 +312,7 @@ export default function LandingPage() {
       <div className="landing-shell">
         <header className="landing-header">
           <BrandLogo size="lg" />
+          <LocaleSwitcher />
         </header>
 
         <section className="landing-hero" aria-labelledby="landing-title">
