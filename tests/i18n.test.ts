@@ -62,9 +62,9 @@ test("dynamic operator confirmations preserve names across locales", () => {
 });
 
 test("language switcher navigation labels have localized self-names", () => {
-  assert.equal(localeDisplayNames.id, "🇮🇩 Bahasa");
-  assert.equal(localeDisplayNames.en, "🇬🇧 English");
-  assert.equal(localeDisplayNames.ar, "🇸🇦 العربية");
+  assert.equal(localeDisplayNames.id, "Bahasa");
+  assert.equal(localeDisplayNames.en, "English");
+  assert.equal(localeDisplayNames.ar, "العربية");
 });
 
 test("specific account reactivation prompts are translated before generic prompts", () => {
