@@ -3039,3 +3039,41 @@ html[dir="rtl"] :is(.landing-header,.portal-head,.compact-identity-row,.operator
 .guardian-shell .portal-account { gap:8px; }
 .guardian-shell .portal-account form { display:flex; flex:none; margin:0; }
 .driver-app .compact-identity-row > .flex.flex-none { gap:8px; }
+
+
+/* Informasi DEMO: tiga bagian ringkas dengan detail yang dapat dibuka. */
+.dev-mode-panel{width:min(92vw,380px);max-height:min(78dvh,calc(100dvh - 120px));padding:16px}
+.dev-mode-panel .dev-mode-close{display:inline-flex;align-items:center;justify-content:center;min-width:36px;min-height:36px;width:36px;height:36px;font-size:22px;line-height:1}
+.dev-mode-status{display:flex;align-items:center;gap:7px;margin-top:12px;font-size:11px;font-weight:800;color:#476b38}
+.dev-mode-status-dot{width:7px;height:7px;border-radius:50%;background:#6c9b4d;flex:none}
+.dev-mode-panel .dev-mode-section{margin-top:10px;border:1px solid #eadfb9;border-radius:11px;background:#fffefa;overflow:hidden}
+.dev-mode-panel .dev-mode-section-toggle{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:42px;padding:8px 11px;border:0;border-radius:0;background:#fff8df;color:#594b2e;font-size:12px;font-weight:800;text-align:start}
+.dev-mode-panel .dev-mode-section-toggle span:last-child{font-size:18px;line-height:1}
+.dev-mode-section-content{padding:10px 11px 12px}
+.dev-mode-section-content p{margin:7px 0;font-size:11px;line-height:1.55}
+.dev-mode-section-content dl{margin:0}
+.dev-mode-section-content dl>div{grid-template-columns:minmax(78px,34%) minmax(0,1fr);padding:4px 0;font-size:11px}
+.dev-mode-profile-list,.dev-mode-notes{display:grid;gap:8px;margin:8px 0;padding-inline-start:17px}
+.dev-mode-profile-list li,.dev-mode-notes li{padding-inline-start:2px;font-size:11px;line-height:1.45}
+.dev-mode-profile-list li strong{display:block;font-size:11px}
+.dev-mode-profile-list li span{display:block;color:#766b56}
+.dev-mode-muted{color:#766b56}
+.dev-mode-login{margin-top:12px;padding-top:10px;border-top:1px solid #eee4c9}
+.dev-mode-login h3{margin:0 0 8px;font-size:12px;font-weight:800}
+.dev-mode-phone{display:grid;grid-template-columns:1fr auto;gap:4px 8px;padding:9px;border-radius:9px;background:#fff8df;font-size:11px}
+.dev-mode-phone span{font-weight:800;letter-spacing:.04em}
+.dev-mode-phone p{grid-column:1/-1;margin:2px 0 0;color:#766b56;font-size:10px}
+.dev-mode-account-list{display:grid;gap:0;margin:8px 0 0;padding:0;list-style:none}
+.dev-mode-account-list li{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid #eee8d8}
+.dev-mode-account-main{display:grid;gap:2px;min-width:0}
+.dev-mode-account-main strong{font-size:11px}
+.dev-mode-account-main span{color:#766b56;font-size:10px;overflow-wrap:anywhere}
+.dev-mode-code{display:flex;align-items:center;gap:5px;flex:none}
+.dev-mode-code code{font-size:12px;font-weight:800;letter-spacing:.06em}
+.dev-mode-panel .dev-mode-copy{display:inline-flex;align-items:center;justify-content:center;min-width:32px;min-height:32px;width:32px;height:32px;padding:0;border:1px solid #ead99f;border-radius:8px;background:#fff8df;font-size:15px}
+.dev-mode-copy-feedback{color:#476b38;font-weight:700}
+.dev-mode-privacy{padding:10px;border:1px solid #e7d49a;border-radius:9px;background:#fff7d8}
+.dev-mode-privacy strong{font-size:11px}
+.dev-mode-privacy p{margin:5px 0 0;font-size:11px;line-height:1.6}
+.dev-mode-panel :is(button):focus-visible{outline:3px solid #725719;outline-offset:2px}
+@media(max-width:420px){.dev-mode-panel{width:min(92vw,360px);max-height:calc(100dvh - 104px);top:max(64px,8dvh);padding:13px}}
