@@ -32,23 +32,18 @@ export default async function TripsPage() {
   const areaContext = await getProjectAreaContext(supabase);
   const scope = await loadProjectAreaScope(supabase, areaContext.selectedId);
 
-  let assignmentIds: string[] = [];
-  if (areaContext.selectedId) {
-    const { data: areaAssignments } = await supabase
-      .from("trip_assignments")
-      .select("id")
-      .in("route_id", scope.routeIds);
-    assignmentIds = ((areaAssignments ?? []) as { id: string }[]).map((row) => row.id);
-  }
-
+  const tripDetails =
+    "service_date, routes(route_name, school_name, direction, project_areas(name)), buses(fleet_code, plate_number), drivers(full_name)";
   let tripsQuery = supabase
     .from("trips")
     .select(
-      "id, assignment_id, status, started_at, completed_at, arrived_at, created_at, trip_assignments(service_date, routes(route_name, school_name, direction, project_areas(name)), buses(fleet_code, plate_number), drivers(full_name))",
+      areaContext.selectedId
+        ? `id, assignment_id, status, started_at, completed_at, arrived_at, created_at, trip_assignments!inner(${tripDetails})`
+        : `id, assignment_id, status, started_at, completed_at, arrived_at, created_at, trip_assignments(${tripDetails})`,
     )
     .order("created_at", { ascending: false })
     .limit(60);
-  if (areaContext.selectedId) tripsQuery = tripsQuery.in("assignment_id", assignmentIds);
+  if (areaContext.selectedId) tripsQuery = tripsQuery.in("trip_assignments.route_id", scope.routeIds);
 
   const { data, error } = await tripsQuery;
 
