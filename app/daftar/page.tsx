@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { BrandLogo } from "@/components/brand-logo";
 import { LocalizedText } from "@/components/i18n/LocaleProvider";
+import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
 import { SignupForm } from "./signup-form";
 
 export default function DaftarPage() {
   return (
-    <main className="auth-page">
+    <main className="auth-page relative">
+      <div className="absolute end-5 top-5 z-50"><LocaleSwitcher /></div>
       <section className="auth-card">
         <BrandLogo className="auth-logo" />
         <p className="eyebrow"><LocalizedText k="activateGuardian" /></p>
