@@ -184,7 +184,7 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
           <header className="panel-head">
             <div>
               <h2 className="panel-title"><AdminCopy value="Status layanan" /></h2>
-              <div className="panel-subtitle">{c("Perubahan status selalu memerlukan alasan")}</div>
+              <div className="panel-subtitle">{c("{c("Perubahan status selalu memerlukan alasan")}")}</div>
             </div>
             <Pill tone={statusTone(student.service_status)}>{serviceStatusLabel(student.service_status)}</Pill>
           </header>

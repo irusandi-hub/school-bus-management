@@ -784,6 +784,9 @@ const copy: Record<string, Record<Locale, string>> = {
   "Tidak ada catatan siswa": { id: "Tidak ada catatan siswa", en: "No student records", ar: "لا توجد سجلات طلاب" },
   "Menu pengelola": { id: "Menu pengelola", en: "Operator menu", ar: "قائمة المشغّل" },
   "Informasi akun wali": { id: "Informasi akun wali", en: "Guardian account information", ar: "معلومات حساب ولي الأمر" },
+  "Titik tidak dapat dihapus agar riwayat tetap utuh; ubah bila perlu": { id: "Titik tidak dapat dihapus agar riwayat tetap utuh; ubah bila perlu", en: "Stops cannot be deleted to preserve history; edit them if needed", ar: "لا يمكن حذف النقاط للحفاظ على السجل؛ عدّلها عند الحاجة" },
+  "Koordinat": { id: "Koordinat", en: "Coordinates", ar: "الإحداثيات" },
+  "Ubah": { id: "Ubah", en: "Edit", ar: "تعديل" },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
