@@ -38,7 +38,6 @@ test("shared navigation labels are translated without changing route identity", 
   assert.equal(translateNavigationLabel("Unmapped custom label", "en"), "Unmapped custom label");
 });
 
-
 test("shared operational copy has Indonesian, English, and Arabic variants", () => {
   assert.equal(translateAdminCopy("Status layanan", "id"), "Status layanan");
   assert.equal(translateAdminCopy("Status layanan", "en"), "Service status");
@@ -63,7 +62,7 @@ test("dynamic operator confirmations preserve names across locales", () => {
 });
 
 test("language switcher navigation labels have localized self-names", () => {
-  assert.equal(localeDisplayNames.id, "🇮🇩 Bahasa Indonesia");
+  assert.equal(localeDisplayNames.id, "🇮🇩 Bahasa");
   assert.equal(localeDisplayNames.en, "🇬🇧 English");
   assert.equal(localeDisplayNames.ar, "🇸🇦 العربية");
 });
