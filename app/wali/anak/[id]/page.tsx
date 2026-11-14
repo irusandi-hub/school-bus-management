@@ -71,7 +71,7 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
 
   return (
     <>
-      <Breadcrumbs items={[{ href: "/wali", label: "Anak saya" }, { label: student.full_name }]} />
+      <Breadcrumbs items={[{ href: "/wali", label: c("Anak saya") }, { label: student.full_name }]} />
 
       <section className="child-detail-head">
         <span className="child-avatar child-avatar-lg" aria-hidden="true">
@@ -85,7 +85,7 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
         <ServiceStatusPill status={student.service_status} />
       </section>
 
-      {eventsResult.error && <Notice kind="error">Riwayat kehadiran belum dapat dimuat.</Notice>}
+      {eventsResult.error && <Notice kind="error">{c("Riwayat kehadiran belum dapat dimuat.")}</Notice>}
 
       <section className="panel live-panel" aria-label={`${c("Live video")} ${student.full_name}`}>
         <header className="panel-head">
@@ -122,7 +122,7 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
           <dl className="detail-list">
             <div>
               <dt>{c("Sekolah")}</dt>
-              <dd>{student.schools?.name ?? "Belum ditetapkan"}</dd>
+              <dd>{student.schools?.name ?? c("Belum ditetapkan")}</dd>
             </div>
             <div>
               <dt>{c("Kota sekolah")}</dt>
@@ -174,11 +174,11 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
             <dl className="detail-list pickup-details">
               <div>
                 <dt>{c("Alamat rumah")}</dt>
-                <dd>{student.home_address ?? "Belum diisi"}</dd>
+                <dd>{student.home_address ?? c("Belum diisi")}</dd>
               </div>
               <div>
                 <dt>{c("Catatan titik jemput")}</dt>
-                <dd>{student.pickup_notes ?? "Belum diisi"}</dd>
+                <dd>{student.pickup_notes ?? c("Belum diisi")}</dd>
               </div>
             </dl>
           </div>
