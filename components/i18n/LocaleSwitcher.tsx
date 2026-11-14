@@ -23,11 +23,11 @@ export function LocaleSwitcher({ compact: _compact = false }: { compact?: boolea
   }
 
   return (
-    <details ref={detailsRef} className="relative z-[80]">
+    <details ref={detailsRef} className="relative z-[100]">
       <summary
         aria-label={locale === "ar" ? "اختيار اللغة" : locale === "en" ? "Choose language" : "Pilih bahasa"}
         title={locale === "ar" ? "اختيار اللغة" : locale === "en" ? "Choose language" : "Pilih bahasa"}
-        className="flex h-9 min-w-9 cursor-pointer list-none items-center justify-center rounded-lg border border-current/15 bg-white/90 px-2 text-xs font-bold shadow-sm outline-none transition hover:bg-white focus-visible:ring-2 focus-visible:ring-emerald-700 [&::-webkit-details-marker]:hidden"
+        className="flex h-9 min-w-9 cursor-pointer list-none items-center justify-center gap-1.5 rounded-lg border border-current/15 bg-white/90 px-2.5 text-xs font-bold shadow-sm outline-none transition hover:bg-white focus-visible:ring-2 focus-visible:ring-emerald-700 [&::-webkit-details-marker]:hidden"
       >
         <span aria-hidden="true" className="text-base leading-none">{languageMeta[locale].flag}</span>
         <span className="ms-1 text-[10px] tracking-wide">{languageMeta[locale].code}</span>
@@ -35,7 +35,7 @@ export function LocaleSwitcher({ compact: _compact = false }: { compact?: boolea
       <div
         role="group"
         aria-label={locale === "ar" ? "اللغات" : locale === "en" ? "Languages" : "Pilihan bahasa"}
-        className="absolute end-0 top-[calc(100%+8px)] min-w-40 overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 text-slate-800 shadow-xl"
+        className="absolute end-0 top-[calc(100%+6px)] z-[101] min-w-40 overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 text-slate-800 shadow-xl"
       >
         {locales.map((option) => (
           <button
