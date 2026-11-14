@@ -4,6 +4,11 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { Icon } from "@/components/ui/Icon";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import {
+  resolveGuardianLocationView,
+  type GuardianLocationPayload,
+} from "@/lib/guardian/driver-location";
+
 const GuardianDriverMap = dynamic(
   () => import("@/components/guardian/GuardianDriverMap").then((module) => module.GuardianDriverMap),
   {
@@ -14,10 +19,6 @@ const GuardianDriverMap = dynamic(
     ),
   },
 );
-import {
-  resolveGuardianLocationView,
-  type GuardianLocationPayload,
-} from "@/lib/guardian/driver-location";
 
 const POLL_INTERVAL_MS = 2_000;
 
