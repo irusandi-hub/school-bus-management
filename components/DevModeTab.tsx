@@ -148,8 +148,8 @@ const copy = {
 } as const;
 
 const demoAccounts = [
-  { label: "mainOperator", code: "123456", children: [] as string[] },
-  { label: "driver", code: "234567", children: [] as string[] },
+  { label: "mainOperator", code: "123456", children: [] as string[], familySize: 0 },
+  { label: "driver", code: "234567", children: [] as string[], familySize: 0 },
   { label: "parentA", code: "345001", children: ["Anak 1", "Anak 2", "Anak 3"], familySize: 3 },
   { label: "parentB", code: "345002", children: ["Anak 4"], familySize: 1 },
   { label: "parentC", code: "345003", children: ["Anak 5"], familySize: 1 },
