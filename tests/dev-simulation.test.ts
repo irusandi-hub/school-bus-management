@@ -97,7 +97,32 @@ describe("klien simulasi pengembangan", () => {
       .from("guardians")
       .select("id", { count: "exact", head: true })
       .is("profile_id", null)) as Result;
-    assert.equal(unlinked.count, 1);
+    assert.equal(unlinked.count, 0);
+    // Test null filtering independently of the three linked OTP guardians.
+    const detached = await supabase.from("guardians").update({ profile_id: null }).eq("id", "51111111-0000-4000-8000-0000000005f3");
+    assert.equal(detached.error, null);
+    const after = (await supabase.from("guardians").select("id", { count: "exact", head: true }).is("profile_id", null)) as Result;
+    assert.equal(after.count, 1);
+  });
+
+  it("matches SQL LIKE wildcards, escapes, case, Unicode and NULL without changing other filters", async () => {
+    const client = createSimulationClient();
+    await client.from("students").update({ full_name: "A%_.[x]\\Z\n😀" }).eq("id", STUDENT_1);
+    async function matches(pattern: string, operator = "like") {
+      return rows(await client.from("students").select("id").eq("id", STUDENT_1).or(`full_name.${operator}.${pattern}`) as Result).length;
+    }
+    assert.equal(await matches("A%"), 1);
+    assert.equal(await matches("a%"), 0);
+    assert.equal(await matches("a%", "ilike"), 1);
+    assert.equal(await matches("%😀"), 1);
+    assert.equal(await matches("%_"), 1);
+    assert.equal(await matches(String.raw`A\%\_.[x]\\Z%`), 1);
+    assert.equal(await matches("A%.[y]%"), 0);
+    assert.equal(await matches("%", "ilike"), 1);
+    await client.from("students").update({ full_name: null }).eq("id", STUDENT_1);
+    assert.equal(await matches("%"), 0);
+    const filtered = await client.from("students").select("id").eq("id", STUDENT_2).or("full_name.ilike.%dua%,admissions_number.eq.nope");
+    assert.deepEqual(rows(filtered as Result).map(row => row.id), [STUDENT_2]);
   });
 
   it("menolak duplikasi nilai unik dengan kode galat yang dipetakan aplikasi", async () => {

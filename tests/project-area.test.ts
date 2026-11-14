@@ -3,6 +3,7 @@ import fs from "node:fs";
 import { describe, it } from "node:test";
 import { createSimulationClient, resetSimulationData } from "../lib/dev-simulation/client.ts";
 import { loadProjectAreaScope, safeWorkspacePath } from "../lib/project-areas/scope.ts";
+import { DEV_GUARDIAN_VIEWERS } from "../lib/dev-open-access.ts";
 import type { ServerSupabase } from "../lib/admin/support.ts";
 import { adminGroups } from "../components/ui/nav-config.ts";
 
@@ -43,6 +44,18 @@ describe("Project Area", () => {
     assert.deepEqual(riyadh.schoolIds, ["51111111-0000-4000-8000-0000000002c2"]);
     assert.deepEqual(riyadh.routeIds, []);
     assert.deepEqual(riyadh.guardianIds, ["51111111-0000-4000-8000-0000000005f2"]);
+  });
+
+  it("links all three OTP guardians to profiles and derives area membership from children", async () => {
+    const supabase = simulated();
+    const result = await supabase.from("guardians").select("id, profile_id");
+    const guardians = result.data as {id:string;profile_id:string}[];
+    assert.equal(guardians.length, 3);
+    for (const account of Object.values(DEV_GUARDIAN_VIEWERS)) {
+      assert.equal(guardians.find(row => row.id === account.guardianId)?.profile_id, account.userId);
+    }
+    const empty = await loadProjectAreaScope(supabase, "51111111-0000-4000-8000-0000000001b3");
+    assert.deepEqual(empty.guardianIds, []);
   });
 
   it("does not filter anything in the global Semua Area context", async () => {

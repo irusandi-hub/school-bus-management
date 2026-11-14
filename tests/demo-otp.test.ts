@@ -18,6 +18,13 @@ describe("OTP simulasi berdasarkan kartu peran", () => {
     assert.equal(isDemoOtpValid("operator", "234567"), false);
     assert.equal(isDemoOtpValid("pengemudi", "123456"), false);
     assert.equal(isDemoOtpValid("wali", "345004"), false);
+    for (const code of ["", "345001 ", " 345001", "3450010", "34500", "٣٤٥٠٠١", "abcdef"]) {
+      assert.equal(isDemoOtpValid("wali", code), false);
+    }
+    for (const code of ["345001", "345002", "345003"]) {
+      assert.equal(isDemoOtpValid("operator", code), false);
+      assert.equal(isDemoOtpValid("pengemudi", code), false);
+    }
   });
 
   it("mengirim tiap peran ke ruang kerja yang benar", () => {
