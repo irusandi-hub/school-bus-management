@@ -850,6 +850,8 @@ const copy: Record<string, Record<Locale, string>> = {
   "Tertaut": { id: "Tertaut", en: "Linked", ar: "مرتبط" },
   "Email akun": { id: "Email akun", en: "Account email", ar: "البريد الإلكتروني للحساب" },
   "Email akun untuk": { id: "Email akun untuk", en: "Account email for", ar: "البريد الإلكتروني للحساب الخاص بـ" },
+  "Data Siswa": { id: "Data Siswa", en: "Student Records", ar: "سجلات الطلاب" },
+  "Detail & status": { id: "Detail & status", en: "Details & status", ar: "التفاصيل والحالة" },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
@@ -858,6 +860,8 @@ export function translateAdminCopy(value: string | undefined, locale: Locale): s
   if (direct) return direct;
 
   const patterns: [RegExp, (match: RegExpMatchArray) => string][] = [
+    [/^Data siswa belum dapat ditambahkan karena belum ada (sekolah|wali) aktif\\.$/, (m) => locale === "en" ? `Student records cannot be added because there is no active ${m[1] === "sekolah" ? "school" : "guardian"}.` : locale === "ar" ? `لا يمكن إضافة سجلات الطلاب لعدم وجود ${m[1] === "sekolah" ? "مدرسة" : "ولي أمر"} نشط.` : value],
+    [/^Formulir aktif setelah ada (sekolah|wali) aktif\\. Lengkapi data tersebut agar relasi siswa dan akses wali dapat ditetapkan dengan benar\\.$/, (m) => locale === "en" ? `The form will be enabled once an active ${m[1] === "sekolah" ? "school" : "guardian"} is available. Complete that information so student links and guardian access can be set correctly.` : locale === "ar" ? `سيتم تفعيل النموذج بعد توفر ${m[1] === "sekolah" ? "مدرسة" : "ولي أمر"} نشط. أكمل هذه البيانات حتى يمكن إعداد ارتباط الطالب ووصول ولي الأمر بشكل صحيح.` : value],
     [/^Nonaktifkan (.+)\? Area nonaktif tidak muncul pada pemilih dashboard, tetapi data dan riwayatnya tetap tersimpan\.$/, (m) => locale === "en" ? `Deactivate ${m[1]}? Inactive areas will no longer appear in the dashboard selector, but their data and history will be retained.` : locale === "ar" ? `هل تريد تعطيل ${m[1]}؟ لن تظهر المناطق المعطلة في محدد لوحة المعلومات، لكن ستظل بياناتها وسجلاتها محفوظة.` : value],
     [/^Nonaktifkan (.+)\? Data sekolah dan riwayat terkait tetap tersimpan\.$/, (m) => locale === "en" ? `Deactivate ${m[1]}? School data and related history will be retained.` : locale === "ar" ? `هل تريد تعطيل ${m[1]}؟ ستظل بيانات المدرسة والسجلات المرتبطة بها محفوظة.` : value],
     [/^Nonaktifkan (.+)\? Data bus dan riwayat penugasan tetap tersimpan\.$/, (m) => locale === "en" ? `Deactivate ${m[1]}? Bus data and assignment history will be retained.` : locale === "ar" ? `هل تريد تعطيل ${m[1]}؟ ستظل بيانات الحافلة وسجل التكليفات محفوظين.` : value],
