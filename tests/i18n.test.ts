@@ -129,3 +129,11 @@ test("development banner describes demo-only access accurately", () => {
   assert.match(translateAdminCopy(message, "ar") ?? "", /بيئات التطوير فقط/);
   assert.equal(translateAdminCopy(message, "id"), message);
 });
+
+
+test("operator student search copy is localized", () => {
+  assert.equal(translateAdminCopy("Cari pada daftar ini", "en"), "Search this list");
+  assert.equal(translateAdminCopy("Cari pada daftar ini", "ar"), "ابحث في هذه القائمة");
+  assert.equal(translateAdminCopy("Belum ada siswa yang ditemukan. Coba nama lain.", "en"), "No students found. Try another name.");
+  assert.equal(translateAdminCopy("Belum ada siswa yang ditemukan. Coba nama lain.", "ar"), "لم يتم العثور على طلاب. جرّب اسماً آخر.");
+});
