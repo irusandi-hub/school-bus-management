@@ -686,7 +686,7 @@ const copy: Record<string, Record<Locale, string>> = {
   "Area saat ini": { id: "Area saat ini", en: "Current area", ar: "القسم الحالي" },
   "Versi": { id: "Versi", en: "Version", ar: "الإصدار" },
   "Pintasan area demo": { id: "Pintasan area demo", en: "Demo area shortcuts", ar: "اختصارات أقسام العرض التجريبي" },
-  "Login dan hak akses akan diaktifkan di tahap berikutnya.": { id: "Login dan hak akses akan diaktifkan di tahap berikutnya.", en: "Login and access permissions will be enabled in a later phase.", ar: "سيتم تفعيل تسجيل الدخول وأذونات الوصول في مرحلة لاحقة." },
+  "Akses demo hanya tersedia di lingkungan pengembangan. Pada layanan normal, masuk dan hak akses mengikuti akun Anda.": { id: "Akses demo hanya tersedia di lingkungan pengembangan. Pada layanan normal, masuk dan hak akses mengikuti akun Anda.", en: "Demo access is only available in development environments. In the normal service, sign-in and permissions follow your account.", ar: "يتوفر الوصول التجريبي في بيئات التطوير فقط. في الخدمة العادية، يعتمد تسجيل الدخول والصلاحيات على حسابك." },
   "Aktif menggunakan layanan": { id: "Aktif menggunakan layanan", en: "Actively using the service", ar: "يستخدم الخدمة بنشاط" },
   "Sementara tidak menggunakan": { id: "Sementara tidak menggunakan", en: "Temporarily not using the service", ar: "لا يستخدم الخدمة مؤقتاً" },
   "Layanan dihentikan": { id: "Layanan dihentikan", en: "Service ended", ar: "تم إنهاء الخدمة" },
