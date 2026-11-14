@@ -21,6 +21,8 @@ import { getProjectAreaContext, loadProjectAreaScope } from "@/lib/project-areas
 import type { GuardianRow } from "@/lib/types";
 import { sanitizeSearch } from "@/lib/validation";
 import { saveGuardian, setGuardianActive } from "./actions";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 export const metadata: Metadata = { title: "Akun Wali | Operator" };
 
@@ -32,6 +34,8 @@ export default async function WaliPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  const locale = await getRequestLocale();
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
   const params = await searchParams;
   const supabase = await adminReadContext();
   if (!supabase) return <ConfigNotice />;
@@ -118,14 +122,14 @@ export default async function WaliPage({
   return (
     <>
       <PageHeader
-        title="Akun Wali"
-        description="Daftarkan email wali agar akun dapat diaktifkan melalui verifikasi email."
+        title={c("Akun Wali")}
+        description={c("Daftarkan email wali agar akun dapat diaktifkan melalui verifikasi email.")}
       />
 
       <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath={path} compact />
 
-      {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
-      {error && <Notice kind="error">Daftar wali belum dapat dimuat. Coba lagi.</Notice>}
+      {notice && <Notice kind={notice.kind}>{c(notice.message)}</Notice>}
+      {error && <Notice kind="error">{c("Daftar wali belum dapat dimuat. Coba lagi.")}</Notice>}
 
       <div className="admin-split">
         <section className="panel">
@@ -133,11 +137,11 @@ export default async function WaliPage({
             key={`${q}|${status}|${page}`}
             action={path}
             q={q}
-            placeholder="Cari nama atau email wali"
+            placeholder={c("Cari nama atau email wali")}
             total={total}
             resetHref={path}
             filters={
-              <select name="status" defaultValue={status} aria-label="Filter status wali">
+              <select name="status" defaultValue={status} aria-label={c("Filter status")}>
                 <LocalizedOption value="" label="Semua status" />
                 <LocalizedOption value="aktif" label="Aktif" />
                 <LocalizedOption value="nonaktif" label="Nonaktif" />
@@ -161,11 +165,11 @@ export default async function WaliPage({
                 {rows.length === 0 ? (
                   <EmptyRow
                     colSpan={6}
-                    title={q || status ? "Tidak ada wali yang cocok" : "Belum ada email wali terdaftar"}
+                    title={c(q || status ? "Tidak ada wali yang cocok" : "Belum ada email wali terdaftar")}
                     detail={
                       q || status
-                        ? "Ubah kata kunci atau filter status, lalu terapkan kembali."
-                        : "Daftarkan email wali terlebih dahulu, lalu hubungkan siswa melalui menu Data Siswa."
+                        ? c("Ubah kata kunci atau filter status, lalu terapkan kembali.")
+                        : c("Daftarkan email wali terlebih dahulu, lalu hubungkan siswa melalui menu Data Siswa.")
                     }
                   />
                 ) : (
@@ -179,17 +183,17 @@ export default async function WaliPage({
                         <td>{row.email}</td>
                         <td>{row.phone ?? "—"}</td>
                         <td>
-                          {linked} siswa
+                          {linked} {c("siswa")}
                           {linked === 0 && <small><AdminCopy value="Belum ada relasi siswa" /></small>}
                         </td>
                         <td>
-                          <Pill tone={row.active ? "success" : "neutral"}>{row.active ? "Aktif" : "Nonaktif"}</Pill>
-                          <small>{row.profile_id ? "Akun sudah dibuat" : "Menunggu aktivasi wali"}</small>
+                          <Pill tone={row.active ? "success" : "neutral"}>{row.active ? c("Aktif") : c("Nonaktif")}</Pill>
+                          <small>{row.profile_id ? c("Akun sudah dibuat") : c("Menunggu aktivasi wali")}</small>
                         </td>
                         <td>
                           <div className="row-actions">
                             <Link className="row-link" href={listHref(path, { ...baseQuery, page, edit: row.id })}>
-                              Ubah
+                              {c("Ubah")}
                             </Link>
                             <form action={setGuardianActive} className="row-form">
                               <input type="hidden" name="id" value={row.id} />
@@ -202,7 +206,7 @@ export default async function WaliPage({
                                     : `Aktifkan kembali akun wali ${row.full_name}?`
                                 }
                               >
-                                {row.active ? "Nonaktifkan" : "Aktifkan"}
+                                {row.active ? c("Nonaktifkan") : c("Aktifkan")}
                               </ConfirmSubmit>
                             </form>
                           </div>
@@ -229,7 +233,7 @@ export default async function WaliPage({
             <div>
               <h2 className="panel-title"><AdminCopy value={editing ? "Ubah data wali" : "Daftarkan email wali"} /></h2>
               <div className="panel-subtitle">
-                {editing ? `Memperbarui ${editing.full_name}` : "Prasyarat aktivasi akun wali"}
+                {editing ? `${c("Memperbarui")} ${editing.full_name}` : c("Prasyarat aktivasi akun wali")}
               </div>
             </div>
           </header>
@@ -240,7 +244,7 @@ export default async function WaliPage({
               fields={fields}
               hidden={{ id: editing?.id ?? "" }}
               submitLabel={editing ? "Simpan perubahan" : "Daftarkan email"}
-              note="Satu siswa hanya memiliki satu wali. Satu akun wali dapat terhubung ke beberapa siswa. Aktivasi hanya berhasil bila minimal satu siswa berstatus layanan aktif."
+              note={c("Satu siswa hanya memiliki satu wali. Satu akun wali dapat terhubung ke beberapa siswa. Aktivasi hanya berhasil bila minimal satu siswa berstatus layanan aktif.")}
               secondary={editing ? { href: listHref(path, baseQuery), label: "Batal" } : undefined}
             />
           </div>
