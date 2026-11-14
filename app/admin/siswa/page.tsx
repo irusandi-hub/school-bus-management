@@ -58,8 +58,6 @@ export default async function SiswaPage({
 
   let schoolQuery = supabase.from("schools").select("id, name, active").order("name", { ascending: true });
   if (selectedId) schoolQuery = schoolQuery.eq("project_area_id", selectedId);
-  const { data: schoolRows } = await schoolQuery;
-  const schools = (schoolRows ?? []) as { id: string; name: string; active: boolean }[];
 
   let query = supabase
     .from("students")
@@ -72,24 +70,25 @@ export default async function SiswaPage({
   if (schoolFilter) query = query.eq("school_id", schoolFilter);
   if (selectedId) query = query.in("school_id", scope.schoolIds);
 
-  const { data, count, error } = await query;
+  let editQuery = editId ? supabase.from("students").select(selectColumns).eq("id", editId) : null;
+  if (editQuery && selectedId) editQuery = editQuery.in("school_id", scope.schoolIds);
+
+  const [schoolResult, studentsResult, editResult, guardiansResult, linksResult] = await Promise.all([
+    schoolQuery,
+    query,
+    editQuery ? editQuery.maybeSingle() : Promise.resolve({ data: null }),
+    supabase.from("guardians").select("id, full_name, email, active").order("full_name", { ascending: true }),
+    supabase.from("students").select("guardian_id"),
+  ]);
+
+  const schools = (schoolResult.data ?? []) as { id: string; name: string; active: boolean }[];
+  const { data, count, error } = studentsResult;
   const rows = (data ?? []) as unknown as StudentRow[];
   const total = count ?? 0;
+  const editing = (editResult.data as unknown as StudentRow | null) ?? null;
 
-  let editing: StudentRow | null = null;
-  if (editId) {
-    let editQuery = supabase.from("students").select(selectColumns).eq("id", editId);
-    if (selectedId) editQuery = editQuery.in("school_id", scope.schoolIds);
-    const { data: editRow } = await editQuery.maybeSingle();
-    editing = (editRow as unknown as StudentRow | null) ?? null;
-  }
-
-  const { data: guardianRows } = await supabase
-    .from("guardians")
-    .select("id, full_name, email, active")
-    .order("full_name", { ascending: true });
-  const allGuardians = (guardianRows ?? []) as { id: string; full_name: string; email: string; active: boolean }[];
-  const { data: allLinks } = await supabase.from("students").select("guardian_id");
+  const allGuardians = (guardiansResult.data ?? []) as { id: string; full_name: string; email: string; active: boolean }[];
+  const allLinks = linksResult.data ?? [];
   const attachedGuardians = new Set(
     ((allLinks ?? []) as { guardian_id: string | null }[]).map((row) => row.guardian_id).filter(Boolean) as string[],
   );
