@@ -166,7 +166,7 @@ export default async function DriverTripReviewPage({
         description={c("Ringkasan tugas yang sudah selesai. Data diambil dari perjalanan dan catatan yang tersimpan.")}
       />
 
-      {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
+      {notice && <Notice kind={notice.kind}>{c(notice.message)}</Notice>}
 
       <section className="panel">
         <header className="panel-head">
@@ -284,7 +284,7 @@ export default async function DriverTripReviewPage({
             </ul>
             <p className="ops-review-meta">
               {safetyRecorded
-                ? `Checklist dikonfirmasi sebelum penutupan pukul ${formatLocalTime(trip.safety_checked_at)}.`
+                ? `${c("Checklist dikonfirmasi sebelum penutupan pukul")} ${formatLocalTime(trip.safety_checked_at)}.`
                 : c("Perjalanan ini tidak memiliki waktu pencatatan pemeriksaan keselamatan.")}
               {typeof trip.student_count_confirmed === "number"
                 ? ` ${c("Jumlah siswa dikonfirmasi:")} ${trip.student_count_confirmed}.`
