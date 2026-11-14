@@ -28,10 +28,14 @@ const copy = {
     parentDesc: "Mengenal pemantauan perjalanan anak.",
     school: "Sekolah",
     schoolDesc: "Mengenal pengelolaan layanan transportasi sekolah.",
-    login: "Cara masuk ke Demo",
-    phone: "Nomor HP Demo",
-    phoneHelp: "Masukkan nomor ini untuk membuka form OTP. Nomor ini hanya memunculkan form, tidak memilih akun atau mengirim SMS.",
-    otpHelp: "Pilih kode sesuai profil yang ingin dicoba.",
+    login: "Kode OTP Demo",
+    otpHelp: "Gunakan kode sesuai profil yang ingin dicoba.",
+    techTitle: "Teknologi dan integrasi",
+    maps: "Navigasi saat ini menggunakan Google Maps. Layanan peta dan routing lain dapat diintegrasikan sesuai kebutuhan.",
+    routing: "Perhitungan rute dapat dikembangkan dengan data lalu lintas terkini, urutan pemberhentian, dan kebutuhan operasional bus.",
+    cameraTech: "Untuk Demo, kamera perangkat mobile dapat digunakan. Pada operasional, aplikasi dapat diintegrasikan dengan sistem kamera atau DVR yang sudah terpasang di bus.",
+    gpsTech: "Lokasi dapat memanfaatkan GPS ponsel pengemudi atau perangkat GPS kendaraan yang kompatibel.",
+    flexible: "Integrasi dapat disesuaikan dengan perangkat dan penyedia layanan yang dipilih, sehingga sistem tidak bergantung pada satu jenis perangkat.",
     mainOperator: "Pengelola",
     parentA: "Orang Tua A",
     parentB: "Orang Tua B",
@@ -69,10 +73,14 @@ const copy = {
     parentDesc: "Explore the child journey monitoring experience.",
     school: "School",
     schoolDesc: "Explore school transportation service management.",
-    login: "How to enter the Demo",
-    phone: "Demo phone number",
-    phoneHelp: "Enter this number to open the OTP form. It only opens the form; it does not select an account or send an SMS.",
+    login: "Demo OTP Codes",
     otpHelp: "Use the code for the profile you want to explore.",
+    techTitle: "Technology and integration",
+    maps: "Navigation currently opens Google Maps. Other map and routing services can be integrated as needed.",
+    routing: "Routing can be enhanced with live traffic data, planned stop order, and bus operational requirements.",
+    cameraTech: "For the Demo, a mobile device camera can be used. In operation, the app can integrate with camera or DVR systems already installed on the bus.",
+    gpsTech: "Location can use the driver phone GPS or a compatible vehicle GPS device.",
+    flexible: "Integrations can be adapted to the selected devices and service providers, without depending on a single device type.",
     mainOperator: "Operator",
     parentA: "Parent A",
     parentB: "Parent B",
@@ -110,10 +118,14 @@ const copy = {
     parentDesc: "تعرّف على متابعة رحلة الطفل.",
     school: "المدرسة",
     schoolDesc: "تعرّف على إدارة خدمات النقل المدرسي.",
-    login: "طريقة الدخول إلى العرض التجريبي",
-    phone: "رقم الهاتف التجريبي",
-    phoneHelp: "أدخل هذا الرقم لفتح نموذج رمز التحقق. لا يحدد الرقم الحساب ولا يرسل رسالة نصية.",
+    login: "رموز الدخول التجريبية",
     otpHelp: "استخدم الرمز الخاص بالملف الذي تريد تجربته.",
+    techTitle: "التقنيات والتكامل",
+    maps: "تستخدم الملاحة حالياً خرائط Google. ويمكن دمج خدمات خرائط وتوجيه أخرى حسب الحاجة.",
+    routing: "يمكن تطوير حساب المسارات بالاستفادة من بيانات المرور المباشرة وترتيب المحطات ومتطلبات تشغيل الحافلات.",
+    cameraTech: "يمكن استخدام كاميرا الهاتف في العرض التجريبي. وفي التشغيل الفعلي، يمكن ربط التطبيق بأنظمة الكاميرات أو أجهزة DVR المثبتة في الحافلة.",
+    gpsTech: "يمكن تحديد الموقع باستخدام GPS هاتف السائق أو جهاز GPS متوافق في المركبة.",
+    flexible: "يمكن تكييف التكامل مع الأجهزة ومزودي الخدمات المختارين، دون الاعتماد على نوع واحد من الأجهزة.",
     mainOperator: "المشغّل",
     parentA: "ولي الأمر أ",
     parentB: "ولي الأمر ب",
@@ -224,11 +236,6 @@ export function DevModeTab({ environment }: { environment: string; sha?: string;
           </ul>
           <div className="dev-mode-login">
             <h3>{t.login}</h3>
-            <div className="dev-mode-phone">
-              <strong>{t.phone}</strong>
-              <span dir="ltr">0123456789</span>
-              <p>{t.phoneHelp}</p>
-            </div>
             <p className="dev-mode-muted">{t.otpHelp}</p>
             <ul className="dev-mode-account-list">
               {demoAccounts.map((account) => {
@@ -246,6 +253,16 @@ export function DevModeTab({ environment }: { environment: string; sha?: string;
               })}
             </ul>
             {copied && <p className="dev-mode-copy-feedback" role="status">{t.copied}</p>}
+          </div>
+          <div className="dev-mode-tech">
+            <h3>{t.techTitle}</h3>
+            <ul className="dev-mode-notes">
+              <li>{t.maps}</li>
+              <li>{t.routing}</li>
+              <li>{t.cameraTech}</li>
+              <li>{t.gpsTech}</li>
+              <li>{t.flexible}</li>
+            </ul>
           </div>
         </div>}
       </section>
