@@ -97,3 +97,10 @@ test("workspace loading and guardian map states have localized labels", () => {
   assert.equal(translateAdminCopy("Peta tidak dapat dimuat", "ar"), "تعذر تحميل الخريطة");
   assert.equal(translateAdminCopy("Posisi HP pengemudi", "en"), "Driver phone location");
 });
+
+test("safety checklist validation translates its embedded checklist label", () => {
+  assert.equal(
+    translateAdminCopy("Pemeriksaan keselamatan belum lengkap: Kabin sudah diperiksa, tidak ada penumpang yang tertinggal di dalam bus.", "en"),
+    "The safety check is incomplete: The cabin has been checked and no passengers have been left behind on the bus.",
+  );
+});
