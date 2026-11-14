@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { Icon } from "@/components/ui/Icon";
 import { useDriverLocation } from "./useDriverLocation";
@@ -37,6 +38,29 @@ export function DriverMapPanel({
 }) {
   const { locale } = useLocale();
   const c = (value: string) => translateAdminCopy(value, locale) ?? value;
+  const panelRef = useRef<HTMLElement>(null);
+  const [mapVisible, setMapVisible] = useState(false);
+
+  useEffect(() => {
+    const node = panelRef.current;
+    if (!node || mapVisible) return;
+    if (typeof IntersectionObserver === "undefined") {
+      setMapVisible(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setMapVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "240px 0px" },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [mapVisible]);
   const gps = useDriverLocation(active);
   const publisher = useDriverLocationPublisher({ active, tripId, location: gps.location });
   const gpsLabel =
@@ -66,7 +90,7 @@ export function DriverMapPanel({
   ).length;
 
   return (
-    <section className="panel ops-map" aria-labelledby="ops-map-title">
+    <section ref={panelRef} className="panel ops-map" aria-labelledby="ops-map-title">
       <header className="ops-map-head">
         <div className="ops-map-heading">
           <span className="ops-map-icon" aria-hidden="true">
@@ -85,12 +109,18 @@ export function DriverMapPanel({
         </span>
       </header>
 
-      <DriverRouteMap
-        stops={stops}
-        driverLocation={gps.location}
-        locationStatus={gps.status}
-        locationMessage={gps.message}
-      />
+      {mapVisible ? (
+        <DriverRouteMap
+          stops={stops}
+          driverLocation={gps.location}
+          locationStatus={gps.status}
+          locationMessage={gps.message}
+        />
+      ) : (
+        <div className="ops-map-empty" role="status">
+          <strong>{c("Peta akan dimuat saat bagian ini terlihat.")}</strong>
+        </div>
+      )}
     </section>
   );
 }
