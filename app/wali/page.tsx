@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { defaultLocale, isLocale } from "@/lib/i18n/config";
 import { translate } from "@/lib/i18n/messages";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 import { ConfigNotice, EmptyState, Notice } from "@/components/admin/ui";
 import { ChildOverviewCard } from "@/components/guardian/ChildOverviewCard";
 import { GuardianOpsHeader } from "@/components/guardian/GuardianOpsHeader";
@@ -19,6 +20,7 @@ export default async function GuardianHomePage() {
   const cookieStore = await cookies();
   const savedLocale = cookieStore.get("sbm_locale")?.value;
   const locale = isLocale(savedLocale) ? savedLocale : defaultLocale;
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
   const access = await requireGuardian();
   if (access.status === "unconfigured") return <ConfigNotice />;
 
@@ -28,7 +30,7 @@ export default async function GuardianHomePage() {
   const children = await loadChildren(supabase);
   const liveEvents = await loadTodayStudentEvents(supabase, children);
   const simulated = isDevOpenAccess();
-  const guardianName = access.viewer.profile?.full_name || access.viewer.email || "Wali";
+  const guardianName = access.viewer.profile?.full_name || access.viewer.email || c("Wali");
 
   const cards = children.map((child) => {
     const trip = selectLiveTrip(child.todayTrips);
