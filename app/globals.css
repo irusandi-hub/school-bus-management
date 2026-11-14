@@ -3010,3 +3010,32 @@ html[dir="rtl"] :is(.landing-header,.portal-head,.compact-identity-row,.operator
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 }
+
+
+/* Consistent compact account controls across operator, driver and guardian areas. */
+.driver-app .compact-identity-row .locale-menu > summary,
+.guardian-shell .portal-account .locale-menu > summary,
+.operator-shell .top-actions .locale-menu > summary {
+  width:36px;
+  height:36px;
+  min-width:36px;
+  min-height:36px;
+}
+.driver-app .compact-identity-row .compact-logout,
+.guardian-shell .portal-account .compact-logout {
+  display:grid;
+  place-items:center;
+  width:36px;
+  height:36px;
+  min-width:36px;
+  min-height:36px;
+  margin:0;
+  padding:0;
+  border:1px solid #E5E7EB;
+  border-radius:50%;
+  background:#fff;
+  color:#991B1B;
+}
+.guardian-shell .portal-account { gap:8px; }
+.guardian-shell .portal-account form { display:flex; flex:none; margin:0; }
+.driver-app .compact-identity-row > .flex.flex-none { gap:8px; }
