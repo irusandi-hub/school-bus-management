@@ -25,14 +25,9 @@ export default async function ReportsPage() {
   const scope = await loadProjectAreaScope(supabase, areaContext.selectedId);
   const selectedId = areaContext.selectedId;
 
-  let assignmentIds: string[] = [];
-  if (selectedId) {
-    const { data: areaAssignments } = await supabase
-      .from("trip_assignments")
-      .select("id")
-      .in("route_id", scope.routeIds);
-    assignmentIds = ((areaAssignments ?? []) as { id: string }[]).map((row) => row.id);
-  }
+  const areaAssignmentsQuery = selectedId
+    ? supabase.from("trip_assignments").select("id").in("route_id", scope.routeIds)
+    : Promise.resolve({ data: [] as { id: string }[] });
 
   let studentsQuery = supabase.from("students").select("id", { count: "exact", head: true }).eq("service_status", "active");
   if (selectedId) studentsQuery = studentsQuery.in("school_id", scope.schoolIds);
@@ -52,18 +47,23 @@ export default async function ReportsPage() {
   let completedQuery = supabase.from("trips").select("id", { count: "exact", head: true }).eq("status", "completed");
   if (selectedId) completedQuery = completedQuery.in("assignment_id", assignmentIds);
 
-  const [activeStudents, guardians, routes, assignmentsToday, completedTrips, audits] = await Promise.all([
+  const [activeStudents, guardians, routes, assignmentsToday, areaAssignments, audits] = await Promise.all([
     studentsQuery,
     guardiansQuery,
     routesQuery,
     assignmentsQuery,
-    completedQuery,
+    areaAssignmentsQuery,
     supabase
       .from("audit_logs")
       .select("id, actor_profile_id, action, entity_type, entity_id, summary, created_at, profiles(full_name)")
       .order("created_at", { ascending: false })
       .limit(60),
   ]);
+
+  const assignmentIds = ((areaAssignments.data ?? []) as { id: string }[]).map((row) => row.id);
+  let scopedCompletedQuery = supabase.from("trips").select("id", { count: "exact", head: true }).eq("status", "completed");
+  if (selectedId) scopedCompletedQuery = scopedCompletedQuery.in("assignment_id", assignmentIds);
+  const completedTrips = await scopedCompletedQuery;
 
   const logs = (audits.data ?? []) as unknown as (AuditLogRow & { profiles: { full_name: string } | null })[];
 
