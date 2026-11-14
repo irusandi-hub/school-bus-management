@@ -10,6 +10,8 @@ import { getProjectAreaContext } from "@/lib/project-areas/context";
 import type { RouteRow } from "@/lib/types";
 import { routeDirectionLabel } from "@/lib/validation";
 import { saveRoute } from "./actions";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 export const metadata: Metadata = { title: "Rute | Operator" };
 
@@ -18,6 +20,8 @@ export default async function RoutesPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  const locale = await getRequestLocale();
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
   const params = await searchParams;
   const supabase = await adminReadContext();
   if (!supabase) return <ConfigNotice />;
@@ -89,17 +93,17 @@ export default async function RoutesPage({
   return (
     <>
       <PageHeader
-        title="Rute & titik jemput"
-        description="Kelola urutan titik jemput dan siswa per rute. Nonaktifkan rute yang tidak digunakan."
+        title={c("Rute & titik jemput")}
+        description={c("Kelola urutan titik jemput dan siswa per rute. Nonaktifkan rute yang tidak digunakan.")}
       />
 
       <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath="/admin/rute" compact />
 
-      {error && <Notice kind="error">Daftar rute belum dapat dimuat. Coba lagi.</Notice>}
-      {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
+      {error && <Notice kind="error">{c("Daftar rute belum dapat dimuat. Coba lagi.")}</Notice>}
+      {notice && <Notice kind={notice.kind}>{c(notice.message)}</Notice>}
       {schools.length === 0 && (
         <Notice kind="warning">
-          Belum ada sekolah aktif pada konteks ini. Tambahkan sekolah terlebih dahulu agar rute dapat dibuat.
+          {c("Belum ada sekolah aktif pada konteks ini. Tambahkan sekolah terlebih dahulu agar rute dapat dibuat.")}
         </Notice>
       )}
 
@@ -108,7 +112,7 @@ export default async function RoutesPage({
           <header className="panel-head">
             <div>
               <h2 className="panel-title"><AdminCopy value="Daftar rute" /></h2>
-              <div className="panel-subtitle">{routes.length} rute tercatat</div>
+              <div className="panel-subtitle">{routes.length} {c("rute tercatat")}</div>
             </div>
           </header>
           <div className="admin-table-wrap">
@@ -127,8 +131,8 @@ export default async function RoutesPage({
                 {routes.length === 0 ? (
                   <EmptyRow
                     colSpan={6}
-                    title="Belum ada rute"
-                    detail="Tambahkan rute pertama melalui formulir di samping. Titik jemput dan siswa diatur pada halaman detail rute."
+                    title={c("Belum ada rute")}
+                    detail={c("Tambahkan rute pertama melalui formulir di samping. Titik jemput dan siswa diatur pada halaman detail rute.")}
                   />
                 ) : (
                   routes.map((route) => (
@@ -137,19 +141,19 @@ export default async function RoutesPage({
                         <strong>{route.route_name}</strong>
                         <small>{route.schools?.name ?? route.school_name}</small>
                       </td>
-                      <td>{route.project_areas?.name ?? "Belum ditetapkan"}</td>
+                      <td>{route.project_areas?.name ?? c("Belum ditetapkan")}</td>
                       <td><AdminCopy value={routeDirectionLabel(route.direction)} /></td>
                       <td>{route.route_stops?.length ?? 0}</td>
                       <td>
-                        <Pill tone={route.active ? "success" : "neutral"}>{route.active ? "Aktif" : "Nonaktif"}</Pill>
+                        <Pill tone={route.active ? "success" : "neutral"}>{route.active ? c("Aktif") : c("Nonaktif")}</Pill>
                       </td>
                       <td>
                         <div className="row-actions">
                           <Link className="row-link" href={`/admin/rute/${route.id}`}>
-                            Atur titik &amp; siswa
+                            {c("Atur titik & siswa")}
                           </Link>
                           <Link className="row-link" href={`/admin/rute?edit=${route.id}`}>
-                            Ubah
+                            {c("Ubah")}
                           </Link>
                         </div>
                       </td>
@@ -177,11 +181,11 @@ export default async function RoutesPage({
               submitLabel={editing ? "Simpan perubahan" : "Tambah rute"}
               disabledReason={
                 schools.length === 0
-                  ? "Rute dapat dibuat setelah ada minimal satu sekolah aktif pada area ini. Tambahkan sekolah terlebih dahulu."
+                  ? c("Rute dapat dibuat setelah ada minimal satu sekolah aktif pada area ini. Tambahkan sekolah terlebih dahulu.")
                   : undefined
               }
               secondary={editing ? { href: "/admin/rute", label: "Batalkan perubahan" } : undefined}
-              note="Rute baru belum memiliki titik jemput. Buka halaman rute untuk menambahkan urutan titik dan menempatkan siswa."
+              note={c("Rute baru belum memiliki titik jemput. Buka halaman rute untuk menambahkan urutan titik dan menempatkan siswa.")}
             />
           </div>
         </section>
