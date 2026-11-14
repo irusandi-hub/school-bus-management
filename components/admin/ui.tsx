@@ -47,7 +47,7 @@ export async function PageHeader({
       {crumbs && crumbs.length > 0 && <Breadcrumbs items={crumbs} />}
       <header className="admin-page-head">
         <div className="admin-page-head-copy">
-          {eyebrow && <div className="eyebrow">{eyebrow}</div>}
+          {eyebrow && <div className="eyebrow">{translateAdminCopy(eyebrow, locale) ?? eyebrow}</div>}
           <h1>{translateNavigationLabel(title, locale)}</h1>
           <p>{description.startsWith("Ringkasan data operasional dan jejak aktivitas platform. Konteks: ") ? `${translateAdminCopy("Ringkasan data operasional dan jejak aktivitas platform. Konteks:", locale)} ${description.slice("Ringkasan data operasional dan jejak aktivitas platform. Konteks: ".length)}` : translateAdminCopy(description, locale) ?? description}</p>
         </div>
@@ -273,8 +273,8 @@ export async function EmptyRow({
     <tr>
       <td colSpan={colSpan} data-label="">
         <div className="table-empty">
-          <strong>{translateAdminCopy(title, locale)}</strong>
-          <p>{translateAdminCopy(detail, locale)}</p>
+          <strong>{translateAdminCopy(title, locale) ?? title}</strong>
+          <p>{translateAdminCopy(detail, locale) ?? detail}</p>
         </div>
       </td>
     </tr>
