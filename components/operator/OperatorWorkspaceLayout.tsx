@@ -34,7 +34,7 @@ export async function OperatorWorkspaceLayout({ children }: { children: React.Re
           <BrandLogo
             href="/operator"
             size="sm"
-            ariaLabel="School Bus Operator"
+            ariaLabel={t("operatorWorkspace")}
             className="topbar-brand"
           />
           <div className="topbar-context">
