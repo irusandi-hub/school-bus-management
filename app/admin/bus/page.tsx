@@ -59,17 +59,17 @@ export default async function BusPage({
   if (status === "nonaktif") query = query.eq("active", false);
   if (selectedId) query = query.eq("project_area_id", selectedId);
 
-  const { data, count, error } = await query;
+  let editQuery = editId ? supabase.from("buses").select(selectColumns).eq("id", editId) : null;
+  if (editQuery && selectedId) editQuery = editQuery.eq("project_area_id", selectedId);
+
+  const [listResult, editResult] = await Promise.all([
+    query,
+    editQuery ? editQuery.maybeSingle() : Promise.resolve({ data: null }),
+  ]);
+  const { data, count, error } = listResult;
   const rows = (data ?? []) as unknown as BusRow[];
   const total = count ?? 0;
-
-  let editing: BusRow | null = null;
-  if (editId) {
-    let editQuery = supabase.from("buses").select(selectColumns).eq("id", editId);
-    if (selectedId) editQuery = editQuery.eq("project_area_id", selectedId);
-    const { data: editRow } = await editQuery.maybeSingle();
-    editing = (editRow as unknown as BusRow | null) ?? null;
-  }
+  const editing = (editResult.data as unknown as BusRow | null) ?? null;
 
   const areaOptions = areaContext.areas
     .filter((area) => area.active || area.id === editing?.project_area_id)
