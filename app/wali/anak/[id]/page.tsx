@@ -251,15 +251,15 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
                 ) : (
                   trips.map((trip) => (
                     <tr key={trip.id}>
-                      <td data-label="Tanggal">{formatLocalDate(trip.serviceDate)}</td>
-                      <td data-label="Rute">
+                      <td data-label={c("Tanggal")}>{formatLocalDate(trip.serviceDate)}</td>
+                      <td data-label={c("Rute")}>
                         <strong>{trip.routeName}</strong>
                         <small>{c(trip.direction === "morning" ? "Pagi" : "Sore")}</small>
                       </td>
-                      <td data-label="Status">
+                      <td data-label={c("Status")}>
                         <Pill tone={tripTone(trip.status)}>{c(tripStatusLabel(trip.status))}</Pill>
                       </td>
-                      <td data-label="Waktu">
+                      <td data-label={c("Waktu")}>
                         <small>{c("Mulai")} {formatLocalTime(trip.startedAt)}</small>
                         <small>{c("Tiba")} {formatLocalTime(trip.arrivedAt)}</small>
                       </td>

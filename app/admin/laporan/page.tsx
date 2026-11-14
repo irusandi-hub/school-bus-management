@@ -174,12 +174,12 @@ export default async function ReportsPage() {
               ) : (
                 logs.map((log) => (
                   <tr key={log.id}>
-                    <td data-label="Waktu">{formatLocalDateTime(log.created_at)}</td>
-                    <td data-label="Aktor">{log.profiles?.full_name ?? "Sistem"}</td>
-                    <td data-label="Operasi">
+                    <td data-label={c("Waktu")}>{formatLocalDateTime(log.created_at)}</td>
+                    <td data-label={c("Aktor")}>{log.profiles?.full_name ?? "Sistem"}</td>
+                    <td data-label={c("Operasi")}>
                       <code>{log.action}</code>
                     </td>
-                    <td data-label="Ringkasan">{log.summary}</td>
+                    <td data-label={c("Ringkasan")}>{log.summary}</td>
                   </tr>
                 ))
               )}
