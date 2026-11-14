@@ -49,3 +49,21 @@ test("unmapped operational copy remains unchanged instead of disappearing", () =
   assert.equal(translateAdminCopy("Custom user-provided label", "ar"), "Custom user-provided label");
   assert.equal(translateAdminCopy(undefined, "en"), undefined);
 });
+
+test("dynamic operator confirmations preserve names across locales", () => {
+  const message = "Nonaktifkan pengemudi Ahmad? Data dan riwayat penugasan tetap tersimpan.";
+  assert.equal(
+    translateAdminCopy(message, "en"),
+    "Deactivate driver Ahmad? Driver data and assignment history will be retained.",
+  );
+  assert.equal(
+    translateAdminCopy(message, "ar"),
+    "هل تريد تعطيل السائق Ahmad؟ ستظل بيانات السائق وسجل التكليفات محفوظين.",
+  );
+});
+
+test("language switcher navigation labels have localized self-names", () => {
+  assert.equal(translate("id", "languageName"), "Bahasa Indonesia");
+  assert.equal(translate("en", "languageName"), "English");
+  assert.equal(translate("ar", "languageName"), "العربية");
+});
