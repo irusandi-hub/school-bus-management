@@ -33,7 +33,7 @@ export default async function RouteDetailPage({
   const areaContext = await getProjectAreaContext(supabase);
   let routeQuery = supabase
     .from("routes")
-    .select("id, route_name, school_name, school_id, project_area_id, direction, active, approved_at, schools(name), project_areas(name)")
+    .select("id, route_name, school_name, school_id, project_area_id, direction, active, approved_at, schools(id, name), project_areas(name)")
     .eq("id", id);
   if (areaContext.selectedId) routeQuery = routeQuery.eq("project_area_id", areaContext.selectedId);
   const { data: routeData } = await routeQuery.maybeSingle();
@@ -44,15 +44,26 @@ export default async function RouteDetailPage({
   const editStopId = firstParam(query.editStop);
   const notice = noticeFromParams(query);
 
-  const [stopsResult, schoolResult, rosterResult] = await Promise.all([
+  const routeWithSchool = route as RouteRow & { schools?: { id?: string; name?: string } | null };
+  let schoolId = route.school_id ?? routeWithSchool.schools?.id ?? null;
+
+  // Legacy routes may have a school name but no school_id; preserve that fallback.
+  if (!schoolId && route.school_name) {
+    const { data: legacySchool } = await supabase
+      .from("schools")
+      .select("id")
+      .eq("name", route.school_name)
+      .limit(1)
+      .maybeSingle();
+    schoolId = (legacySchool?.id as string | undefined) ?? null;
+  }
+
+  const [stopsResult, rosterResult, studentResult] = await Promise.all([
     supabase
       .from("route_stops")
       .select("id, route_id, stop_order, stop_name, latitude, longitude, is_school")
       .eq("route_id", id)
       .order("stop_order", { ascending: true }),
-    route.school_id
-      ? supabase.from("schools").select("id, name").eq("id", route.school_id).maybeSingle()
-      : supabase.from("schools").select("id, name").eq("name", route.school_name).limit(1).maybeSingle(),
     supabase
       .from("student_route_stops")
       .select(
@@ -61,22 +72,19 @@ export default async function RouteDetailPage({
       .eq("route_id", id)
       .eq("active", true)
       .order("direction", { ascending: true }),
-  ]);
-
-  const stops = (stopsResult.data ?? []) as unknown as RouteStopRow[];
-  const roster = (rosterResult.data ?? []) as unknown as StudentRouteStopRow[];
-  const schoolId = (schoolResult.data?.id as string | undefined) ?? null;
-
-  const { data: studentRows } =
-    schoolId === null
-      ? { data: [] as { id: string; full_name: string; admissions_number: string }[] }
-      : await supabase
+    schoolId
+      ? supabase
           .from("students")
           .select("id, full_name, admissions_number")
           .eq("school_id", schoolId)
           .eq("service_status", "active")
-          .order("full_name", { ascending: true });
+          .order("full_name", { ascending: true })
+      : Promise.resolve({ data: [] as { id: string; full_name: string; admissions_number: string }[] }),
+  ]);
 
+  const stops = (stopsResult.data ?? []) as unknown as RouteStopRow[];
+  const roster = (rosterResult.data ?? []) as unknown as StudentRouteStopRow[];
+  const studentRows = studentResult.data;
   const students = (studentRows ?? []) as { id: string; full_name: string; admissions_number: string }[];
   const editingStop = editStopId ? stops.find((stop) => stop.id === editStopId) : undefined;
 
