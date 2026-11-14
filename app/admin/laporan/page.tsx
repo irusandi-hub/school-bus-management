@@ -70,14 +70,14 @@ export default async function ReportsPage() {
   return (
     <>
       <PageHeader
-        title="Laporan & audit"
-        description={`Ringkasan data operasional dan jejak aktivitas platform. Konteks: ${areaContext.selected?.name ?? "Semua Area"}.`}
+        title={c("Laporan & audit")}
+        description={c(`Ringkasan data operasional dan jejak aktivitas platform. Konteks: ${areaContext.selected?.name ?? "Semua Area"}.`)}
         actions={<Link className="btn btn-secondary btn-sm" href="/operator/laporan/export"><AdminCopy value="Unduh CSV" /></Link>}
       />
 
       <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath="/admin/laporan" compact />
 
-      {audits.error && <Notice kind="error">Jejak audit belum dapat dimuat. Coba lagi.</Notice>}
+      {audits.error && <Notice kind="error">{c("Jejak audit belum dapat dimuat. Coba lagi.")}</Notice>}
 
       <MetricStrip
         label="Ringkasan operasional"
@@ -168,14 +168,14 @@ export default async function ReportsPage() {
               {logs.length === 0 ? (
                 <EmptyRow
                   colSpan={4}
-                  title="Belum ada catatan audit"
-                  detail="Catatan audit akan muncul otomatis setelah data ditambahkan atau diubah."
+                  title={c("Belum ada catatan audit")}
+                  detail={c("Catatan audit akan muncul otomatis setelah data ditambahkan atau diubah.")}
                 />
               ) : (
                 logs.map((log) => (
                   <tr key={log.id}>
                     <td data-label={c("Waktu")}>{formatLocalDateTime(log.created_at)}</td>
-                    <td data-label={c("Aktor")}>{log.profiles?.full_name ?? "Sistem"}</td>
+                    <td data-label={c("Aktor")}>{log.profiles?.full_name ?? c("Sistem")}</td>
                     <td data-label={c("Operasi")}>
                       <code>{log.action}</code>
                     </td>
