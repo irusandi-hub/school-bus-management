@@ -123,7 +123,7 @@ export function ParentLiveVideo({
           )}
           {simulated && (
             <span className="live-demo" title={t("simulatedData")}>
-              Data simulasi
+              {c("Data simulasi")}
             </span>
           )}
         </div>
@@ -152,7 +152,7 @@ export function ParentLiveVideo({
           onClick={() => setExpanded(true)}
         >
           <Icon name="expand" size={14} />
-          Perbesar
+          {c("Perbesar")}
         </button>
       </footer>
 
@@ -191,7 +191,7 @@ export function ParentLiveVideo({
 
           <div className="live-fullscreen-stage">{stage}</div>
           <p className="live-fullscreen-note">
-            {copyDetail} Tekan Esc atau {t("close")} untuk kembali.
+            {copyDetail} {c("Tekan Esc atau")} {t("close")} {c("untuk kembali.")}
           </p>
         </div>
       )}
