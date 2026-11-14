@@ -122,3 +122,10 @@ test("live camera and driver action feedback are localized", () => {
     "Student status recorded for this trip.",
   );
 });
+
+test("development banner describes demo-only access accurately", () => {
+  const message = "Akses demo hanya tersedia di lingkungan pengembangan. Pada layanan normal, masuk dan hak akses mengikuti akun Anda.";
+  assert.match(translateAdminCopy(message, "en") ?? "", /only available in development environments/i);
+  assert.match(translateAdminCopy(message, "ar") ?? "", /بيئات التطوير فقط/);
+  assert.equal(translateAdminCopy(message, "id"), message);
+});
