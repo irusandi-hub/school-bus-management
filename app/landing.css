@@ -843,3 +843,83 @@ body:has(.landing) .dev-mode-tab-face {
   width: 44px;
   height: 32px;
 }
+
+
+/* Header compact: controls share one baseline and no longer reserve a second row. */
+.landing-header {
+  min-height: 0;
+  padding: 4px 0 8px;
+  align-items: center;
+}
+.landing-header .locale-menu {
+  margin-top: 0;
+}
+.landing-header .locale-menu > summary {
+  width: 36px;
+  height: 36px;
+}
+.landing-header .locale-menu > [role="group"] {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 48px;
+  min-width: 48px;
+  padding: 4px;
+  gap: 2px;
+  border-radius: 13px;
+}
+.landing-header .locale-menu > [role="group"] button {
+  width: 100%;
+  min-height: 36px;
+  padding: 2px;
+  font-size: 20px;
+  line-height: 1;
+}
+
+/* DEMO uses the same 36px control height and sits 8px beside the globe. */
+body:has(.landing) .dev-mode-banner {
+  position: absolute;
+  top: 26px;
+  right: max(60px, calc((100vw - 1180px) / 2 + 60px));
+  left: auto;
+  bottom: auto;
+  z-index: 90;
+  width: 36px;
+}
+body:has(.landing) .dev-mode-tab {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+body:has(.landing) .dev-mode-tab-face {
+  position: static;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+  border-radius: 50%;
+}
+body:has(.landing) .dev-mode-short {
+  writing-mode: horizontal-tb;
+  font-size: 7px;
+  letter-spacing: 0;
+}
+
+/* Remove the old empty header pocket so the hero rises naturally. */
+.landing-hero {
+  padding-top: 0;
+}
+@media (max-width: 767px) {
+  .landing-hero {
+    gap: 16px;
+    padding-top: 0;
+  }
+}
