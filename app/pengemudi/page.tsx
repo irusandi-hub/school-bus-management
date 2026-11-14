@@ -158,14 +158,14 @@ export default async function DriverOperationsPage({
                   <EmptyRow colSpan={5} title={t("noTripHistory")} detail={t("historyEmptyDetail")} />
                 ) : history.map((item) => (
                   <tr key={item.id} data-trip-id={item.id}>
-                    <td data-label="Tanggal">{formatDateLocalized(item.trip_assignments?.service_date ?? item.created_at)}</td>
-                    <td data-label="Rute">
+                    <td data-label={t("date")}>{formatDateLocalized(item.trip_assignments?.service_date ?? item.created_at)}</td>
+                    <td data-label={t("route")}>
                       <strong>{item.trip_assignments?.routes?.route_name ?? "Rute"}</strong>
                       <small>{item.trip_assignments?.routes?.school_name} · {directionLabel(item.trip_assignments?.routes?.direction ?? "")}</small>
                     </td>
-                    <td data-label="Bus">{item.trip_assignments?.buses?.fleet_code ?? "—"}</td>
-                    <td data-label="Status"><TripStatusPill status={item.status} /></td>
-                    <td data-label="Waktu">
+                    <td data-label={t("bus")}>{item.trip_assignments?.buses?.fleet_code ?? "—"}</td>
+                    <td data-label={t("status")}><TripStatusPill status={item.status} /></td>
+                    <td data-label={t("time")}>
                       <small>{t("start")} {formatTimeLocalized(item.started_at)}</small>
                       <small>{t("arrive")} {formatTimeLocalized(item.arrived_at)}</small>
                       <small>{t("finish")} {item.completed_at ? formatDateTimeLocalized(item.completed_at) : "—"}</small>
@@ -192,7 +192,7 @@ export default async function DriverOperationsPage({
               <strong>{access.driver.full_name || "Pengemudi"}</strong>
               <small>ID {access.driver.id.slice(0, 8).toUpperCase()} · Akun aktif</small>
             </div>
-            <nav className="portal-nav compact-driver-tabs" aria-label="Navigasi Pengemudi">
+            <nav className="portal-nav compact-driver-tabs" aria-label={t("navigationDriver")}>
               <Link href="/pengemudi" aria-current="page">{t("driverDashboard")}</Link>
               <Link href="/pengemudi?tab=riwayat">{t("history")}</Link>
             </nav>
@@ -408,7 +408,7 @@ export default async function DriverOperationsPage({
       )}
 
       {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
-      {error && <Notice kind="error">Tugas hari ini belum dapat dimuat. Coba lagi.</Notice>}
+      {error && <Notice kind="error">{t("todayTaskLoadError")}</Notice>}
       {stopsResult.error && <Notice kind="error">{t("stopsLoadError")}</Notice>}
       {rosterResult.error && <Notice kind="error">{t("rosterLoadError")}</Notice>}
       {eventsResult.error && <Notice kind="error">{t("eventsLoadError")}</Notice>}
