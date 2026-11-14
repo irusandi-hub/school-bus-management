@@ -49,7 +49,7 @@ export async function PageHeader({
         <div className="admin-page-head-copy">
           {eyebrow && <div className="eyebrow">{eyebrow}</div>}
           <h1>{translateNavigationLabel(title, locale)}</h1>
-          <p>{description.startsWith("Ringkasan data operasional dan jejak aktivitas platform. Konteks: ") ? `${translateAdminCopy("Ringkasan data operasional dan jejak aktivitas platform. Konteks:", locale)} ${description.slice("Ringkasan data operasional dan jejak aktivitas platform. Konteks: ".length)}` : translateAdminCopy(description, locale)}</p>
+          <p>{description.startsWith("Ringkasan data operasional dan jejak aktivitas platform. Konteks: ") ? `${translateAdminCopy("Ringkasan data operasional dan jejak aktivitas platform. Konteks:", locale)} ${description.slice("Ringkasan data operasional dan jejak aktivitas platform. Konteks: ".length)}` : translateAdminCopy(description, locale) ?? description}</p>
         </div>
         {actions && <div className="admin-page-actions">{actions}</div>}
       </header>
@@ -65,7 +65,7 @@ export async function Notice({
   children: ReactNode;
 }) {
   const locale = await getRequestLocale();
-  const message = typeof children === "string" && /^(Data|Daftar) belum dapat dimuat\./.test(children) ? translate(locale, "loadFailed") : typeof children === "string" ? translateAdminCopy(children, locale) : children;
+  const message = typeof children === "string" && /^(Data|Daftar) belum dapat dimuat\./.test(children) ? translate(locale, "loadFailed") : typeof children === "string" ? translateAdminCopy(children, locale) ?? children : children;
   return (
     <p className={`form-alert ${kind}`} role={kind === "error" ? "alert" : "status"}>
       {message}
@@ -142,16 +142,16 @@ export async function MetricStrip({
 }) {
   const locale = await getRequestLocale();
   return (
-    <section className="metric-strip" aria-label={translateAdminCopy(label, locale)}>
+    <section className="metric-strip" aria-label={translateAdminCopy(label, locale) ?? label}>
       {items.map((item) => (
         <div className="metric-item" key={item.label}>
           <span className="metric-icon" aria-hidden="true">
             <Icon name={item.icon} size={16} />
           </span>
           <div className="metric-copy">
-            <span className="metric-label">{translateAdminCopy(item.label, locale)}</span>
+            <span className="metric-label">{translateAdminCopy(item.label, locale) ?? item.label}</span>
             <strong className="metric-value">{item.value}</strong>
-            {item.note && <small>{translateAdminCopy(item.note, locale)}</small>}
+            {item.note && <small>{translateAdminCopy(item.note, locale) ?? item.note}</small>}
           </div>
         </div>
       ))}
@@ -178,11 +178,11 @@ export async function EmptyState({
       <span className="state-icon" aria-hidden="true">
         <Icon name={icon} size={22} />
       </span>
-      <strong>{translateAdminCopy(title, locale)}</strong>
-      {detail && <p>{translateAdminCopy(detail, locale)}</p>}
+      <strong>{translateAdminCopy(title, locale) ?? title}</strong>
+      {detail && <p>{translateAdminCopy(detail, locale) ?? detail}</p>}
       {action && (
         <Link className="btn btn-secondary btn-sm" href={action.href}>
-          {translateAdminCopy(action.label, locale)}
+          {translateAdminCopy(action.label, locale) ?? action.label}
         </Link>
       )}
     </div>
@@ -214,7 +214,7 @@ export async function ListToolbar({
     <form className="list-toolbar" method="get" action={action}>
       <div className="list-search">
         <Icon name="search" size={15} />
-        <input type="search" name="q" defaultValue={q} placeholder={translateAdminCopy(placeholder, locale)} aria-label={translateAdminCopy(placeholder, locale)} />
+        <input type="search" name="q" defaultValue={q} placeholder={translateAdminCopy(placeholder, locale) ?? placeholder} aria-label={translateAdminCopy(placeholder, locale) ?? placeholder} />
       </div>
       {filters}
       <button className="btn btn-secondary" type="submit">

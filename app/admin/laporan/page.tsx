@@ -6,7 +6,7 @@ import { ProjectAreaTabs } from "@/components/admin/ProjectAreaTabs";
 import { adminReadContext } from "@/lib/admin/read";
 import { getProjectAreaContext, loadProjectAreaScope } from "@/lib/project-areas/context";
 import type { AuditLogRow } from "@/lib/types";
-import { formatDateTime, serviceDateInTimeZone } from "@/lib/validation";
+import { serviceDateInTimeZone } from "@/lib/validation";
 import { getRequestLocale } from "@/lib/i18n/server";
 import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
@@ -15,6 +15,8 @@ export const metadata: Metadata = { title: "Laporan & Audit | Operator" };
 export default async function ReportsPage() {
   const locale = await getRequestLocale();
   const c = (value: string) => translateAdminCopy(value, locale) ?? value;
+  const dateLocale = locale === "ar" ? "ar-SA-u-ca-gregory" : locale === "en" ? "en-GB" : "id-ID";
+  const formatLocalDateTime = (value: string) => new Intl.DateTimeFormat(dateLocale, { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Riyadh" }).format(new Date(value));
   const supabase = await adminReadContext();
   if (!supabase) return <ConfigNotice />;
 
@@ -172,7 +174,7 @@ export default async function ReportsPage() {
               ) : (
                 logs.map((log) => (
                   <tr key={log.id}>
-                    <td data-label="Waktu">{formatDateTime(log.created_at)}</td>
+                    <td data-label="Waktu">{formatLocalDateTime(log.created_at)}</td>
                     <td data-label="Aktor">{log.profiles?.full_name ?? "Sistem"}</td>
                     <td data-label="Operasi">
                       <code>{log.action}</code>
