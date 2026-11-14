@@ -5,6 +5,7 @@ import { translate } from "@/lib/i18n/messages";
 import { ConfigNotice } from "@/components/admin/ui";
 import { BrandLogo } from "@/components/brand-logo";
 import { LocalizedText } from "@/components/i18n/LocaleProvider";
+import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
 import { BottomNav } from "@/components/ui/BottomNav";
 import { Icon } from "@/components/ui/Icon";
 import { PortalNav } from "@/components/ui/PortalNav";
@@ -30,7 +31,10 @@ export default async function GuardianLayout({ children }: { children: React.Rea
   return (
     <div className="portal-shell guardian-shell">
       <header className="portal-head compact-area-header">
-        <BrandLogo href="/wali" subtitle={translate(locale, "guardianPortal")} size="sm" className="brand" />
+        <div className="flex min-w-0 items-center gap-2">
+          <BrandLogo href="/wali" subtitle={translate(locale, "guardianPortal")} size="sm" className="brand" />
+          <LocaleSwitcher />
+        </div>
         <PortalNav items={portalNavItems} rootHref="/wali" />
         <div className="portal-account">
           <form action={signOutAction}>
