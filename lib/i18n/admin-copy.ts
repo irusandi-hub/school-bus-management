@@ -807,6 +807,8 @@ const copy: Record<string, Record<Locale, string>> = {
 
   "Koordinat harus berupa angka.": { id: "Koordinat harus berupa angka.", en: "Coordinates must be numeric.", ar: "يجب أن تكون الإحداثيات أرقاماً." },
   "Tuliskan alasan yang jelas, misalnya tanggal berhenti atau permintaan wali.": { id: "Tuliskan alasan yang jelas, misalnya tanggal berhenti atau permintaan wali.", en: "Provide a clear reason, such as the end date or a guardian request.", ar: "اكتب سبباً واضحاً، مثل تاريخ الإيقاف أو طلب ولي الأمر." },
+  "Status siswa tersebut sudah tercatat. Tidak ada data ganda yang dibuat.": { id: "Status siswa tersebut sudah tercatat. Tidak ada data ganda yang dibuat.", en: "This student's status is already recorded. No duplicate entry was created.", ar: "تم تسجيل حالة هذا الطالب بالفعل. لم يتم إنشاء سجل مكرر." },
+  "Status siswa tercatat pada perjalanan ini.": { id: "Status siswa tercatat pada perjalanan ini.", en: "Student status recorded for this trip.", ar: "تم تسجيل حالة الطالب لهذه الرحلة." },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
