@@ -231,7 +231,7 @@ export function StudentStatusControls({
       )}
       {state.status === "success" && (
         <p className="ops-student-success" role="status">
-          {state.message}
+          {copy(state.message)}
         </p>
       )}
       {issueNote && <p className="ops-student-issue"><Icon name="alert" size={12} /> {issueNote}</p>}
