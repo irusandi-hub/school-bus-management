@@ -121,12 +121,11 @@ export default async function DriverOperationsPage({
   if (firstParam(query.tab) === "riwayat") {
     const { data: historyData, error: historyError } = await supabase
       .from("trips")
-      .select("id, assignment_id, status, started_at, completed_at, arrived_at, created_at, trip_assignments(service_date, driver_id, routes(route_name, school_name, direction), buses(fleet_code, plate_number))")
+      .select("id, assignment_id, status, started_at, completed_at, arrived_at, created_at, trip_assignments!inner(service_date, driver_id, routes(route_name, school_name, direction), buses(fleet_code, plate_number))")
+      .eq("trip_assignments.driver_id", access.driver.id)
       .order("created_at", { ascending: false })
       .limit(50);
-    const history = ((historyData ?? []) as unknown as TripRow[]).filter(
-      (item) => (item.trip_assignments as unknown as { driver_id?: string } | null)?.driver_id === access.driver.id,
-    );
+    const history = (historyData ?? []) as unknown as TripRow[];
     return (
       <>
         <section className="ops-head">
