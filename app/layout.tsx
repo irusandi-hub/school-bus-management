@@ -3,7 +3,6 @@ import { cookies } from "next/headers";
 import { DialogProvider } from "@/components/ui/DialogProvider";
 import { DevModeBanner } from "@/components/DevModeBanner";
 import { LocaleProvider } from "@/components/i18n/LocaleProvider";
-import { GlobalNavigationControls } from "@/components/i18n/GlobalNavigationControls";
 import { defaultLocale, getDirection, isLocale } from "@/lib/i18n/config";
 import "./globals.css";
 
@@ -24,7 +23,6 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     <html lang={locale} dir={getDirection(locale)}>
       <body>
         <LocaleProvider initialLocale={locale}>
-          <GlobalNavigationControls />
           <DevModeBanner />
           <DialogProvider>{children}</DialogProvider>
         </LocaleProvider>
