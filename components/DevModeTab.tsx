@@ -31,15 +31,16 @@ const copy = {
     login: "Kode OTP Demo",
     otpHelp: "Gunakan kode sesuai profil yang ingin dicoba.",
     techTitle: "Teknologi dan integrasi",
-    maps: "Navigasi saat ini menggunakan Google Maps. Layanan peta dan routing lain dapat diintegrasikan sesuai kebutuhan.",
+    maps: "Demo navigasi saat ini memanfaatkan Google Maps untuk membuka petunjuk perjalanan. Untuk operasional, aplikasi dapat diintegrasikan dengan Google Maps Platform, HERE, Mapbox, atau TomTom. Alternatif berbasis OpenStreetMap juga dapat digunakan bersama mesin routing seperti OSRM, GraphHopper, atau Valhalla.",
     routing: "Perhitungan rute dapat dikembangkan dengan data lalu lintas terkini, urutan pemberhentian, dan kebutuhan operasional bus.",
     cameraTech: "Untuk Demo, kamera perangkat mobile dapat digunakan. Pada operasional, aplikasi dapat diintegrasikan dengan sistem kamera atau DVR yang sudah terpasang di bus.",
     gpsTech: "Lokasi dapat memanfaatkan GPS ponsel pengemudi atau perangkat GPS kendaraan yang kompatibel.",
-    flexible: "Integrasi dapat disesuaikan dengan perangkat dan penyedia layanan yang dipilih, sehingga sistem tidak bergantung pada satu jenis perangkat.",
+    flexible: "Pemilihan teknologi perlu mempertimbangkan cakupan dan kualitas peta di wilayah operasional, ketersediaan data lalu lintas, dukungan profil kendaraan dan batas lebar jalan, lisensi serta biaya API, dan kompatibilitas perangkat. Kesesuaian layanan di wilayah Dammam perlu diuji sebelum digunakan.",
     mainOperator: "Pengelola",
     parentA: "Orang Tua A",
     parentB: "Orang Tua B",
     parentC: "Orang Tua C",
+    parentOf: (count: number) => `Orang tua dengan ${count} Anak`,
     children: "Anak",
     copy: "Salin",
     copied: "Kode OTP disalin",
@@ -76,15 +77,16 @@ const copy = {
     login: "Demo OTP Codes",
     otpHelp: "Use the code for the profile you want to explore.",
     techTitle: "Technology and integration",
-    maps: "Navigation currently opens Google Maps. Other map and routing services can be integrated as needed.",
+    maps: "Demo navigation currently uses Google Maps to open directions. For production, the app can integrate with Google Maps Platform, HERE, Mapbox, or TomTom. OpenStreetMap-based options can also be paired with routing engines such as OSRM, GraphHopper, or Valhalla.",
     routing: "Routing can be enhanced with live traffic data, planned stop order, and bus operational requirements.",
     cameraTech: "For the Demo, a mobile device camera can be used. In operation, the app can integrate with camera or DVR systems already installed on the bus.",
     gpsTech: "Location can use the driver phone GPS or a compatible vehicle GPS device.",
-    flexible: "Integrations can be adapted to the selected devices and service providers, without depending on a single device type.",
+    flexible: "Technology selection depends on local map coverage, traffic-data availability, vehicle-profile and road-width support, API licensing and costs, and device compatibility. Suitability in the Dammam operating area must be tested before adoption.",
     mainOperator: "Operator",
     parentA: "Parent A",
     parentB: "Parent B",
     parentC: "Parent C",
+    parentOf: (count: number) => `Parent with ${count} ${count === 1 ? "Child" : "Children"}`,
     children: "Children",
     copy: "Copy",
     copied: "OTP code copied",
@@ -121,15 +123,16 @@ const copy = {
     login: "رموز الدخول التجريبية",
     otpHelp: "استخدم الرمز الخاص بالملف الذي تريد تجربته.",
     techTitle: "التقنيات والتكامل",
-    maps: "تستخدم الملاحة حالياً خرائط Google. ويمكن دمج خدمات خرائط وتوجيه أخرى حسب الحاجة.",
+    maps: "يستخدم العرض التجريبي حالياً خرائط Google لفتح إرشادات الطريق. ويمكن في التشغيل الفعلي دمج Google Maps Platform أو HERE أو Mapbox أو TomTom. كما يمكن استخدام خرائط OpenStreetMap مع محركات توجيه مثل OSRM أو GraphHopper أو Valhalla.",
     routing: "يمكن تطوير حساب المسارات بالاستفادة من بيانات المرور المباشرة وترتيب المحطات ومتطلبات تشغيل الحافلات.",
     cameraTech: "يمكن استخدام كاميرا الهاتف في العرض التجريبي. وفي التشغيل الفعلي، يمكن ربط التطبيق بأنظمة الكاميرات أو أجهزة DVR المثبتة في الحافلة.",
     gpsTech: "يمكن تحديد الموقع باستخدام GPS هاتف السائق أو جهاز GPS متوافق في المركبة.",
-    flexible: "يمكن تكييف التكامل مع الأجهزة ومزودي الخدمات المختارين، دون الاعتماد على نوع واحد من الأجهزة.",
+    flexible: "يعتمد اختيار التقنية على تغطية الخرائط محلياً، وتوفر بيانات المرور، ودعم خصائص المركبات وعرض الطرق، وتراخيص واجهات API وتكاليفها، وتوافق الأجهزة. ويجب اختبار ملاءمة الخدمة في منطقة الدمام قبل اعتمادها.",
     mainOperator: "المشغّل",
     parentA: "ولي الأمر أ",
     parentB: "ولي الأمر ب",
     parentC: "ولي الأمر ج",
+    parentOf: (count: number) => `ولي الأمر مع ${count} ${count === 1 ? "طفل" : "أطفال"}`,
     children: "الأطفال",
     copy: "نسخ",
     copied: "تم نسخ رمز التحقق",
@@ -147,9 +150,9 @@ const copy = {
 const demoAccounts = [
   { label: "mainOperator", code: "123456", children: [] as string[] },
   { label: "driver", code: "234567", children: [] as string[] },
-  { label: "parentA", code: "345001", children: ["Anak 1", "Anak 2", "Anak 3"] },
-  { label: "parentB", code: "345002", children: ["Anak 4"] },
-  { label: "parentC", code: "345003", children: ["Anak 5"] },
+  { label: "parentA", code: "345001", children: ["Anak 1", "Anak 2", "Anak 3"], familySize: 3 },
+  { label: "parentB", code: "345002", children: ["Anak 4"], familySize: 1 },
+  { label: "parentC", code: "345003", children: ["Anak 5"], familySize: 1 },
 ] as const;
 
 // Panel demo hanya ditampilkan di landing page.
@@ -243,7 +246,7 @@ export function DevModeTab({ environment }: { environment: string; sha?: string;
                 return <li key={account.code}>
                   <div className="dev-mode-account-main">
                     <strong>{label}</strong>
-                    {account.children.length > 0 && <span>{account.children.join(" · ")}</span>}
+                    {account.children.length > 0 && <><span>{account.children.join(" · ")}</span><small>{t.parentOf(account.familySize)}</small></>}
                   </div>
                   <div className="dev-mode-code">
                     <code>{account.code}</code>
