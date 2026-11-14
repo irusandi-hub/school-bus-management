@@ -67,3 +67,15 @@ test("language switcher navigation labels have localized self-names", () => {
   assert.equal(localeDisplayNames.en, "🇬🇧 English");
   assert.equal(localeDisplayNames.ar, "🇸🇦 العربية");
 });
+
+test("specific account reactivation prompts are translated before generic prompts", () => {
+  assert.equal(
+    translateAdminCopy("Aktifkan kembali akun wali Amina?", "en"),
+    "Reactivate guardian account Amina?",
+  );
+  assert.equal(
+    translateAdminCopy("Aktifkan kembali pengemudi Omar?", "ar"),
+    "هل تريد إعادة تفعيل السائق Omar؟",
+  );
+  assert.equal(translateAdminCopy("Aktifkan kembali Dammam?", "en"), "Reactivate Dammam?");
+});
