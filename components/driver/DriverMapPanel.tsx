@@ -1,9 +1,21 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { Icon } from "@/components/ui/Icon";
 import { useDriverLocation } from "./useDriverLocation";
 import { useDriverLocationPublisher } from "./useDriverLocationPublisher";
-import { DriverRouteMap, type DriverMapStop } from "./DriverRouteMap";
+import type { DriverMapStop } from "./DriverRouteMap";
+
+const DriverRouteMap = dynamic(
+  () => import("./DriverRouteMap").then((module) => module.DriverRouteMap),
+  {
+    loading: () => (
+      <div className="ops-map-empty" role="status">
+        <strong>Memuat peta…</strong>
+      </div>
+    ),
+  },
+);
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
