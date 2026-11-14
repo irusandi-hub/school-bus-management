@@ -88,7 +88,7 @@ export default async function ReportsPage() {
           {
             label: "Penugasan hari ini",
             value: assignmentsToday.count ?? 0,
-            note: `${completedTrips.count ?? 0} selesai`,
+            note: `${completedTrips.count ?? 0} ${c("Selesai")}`,
             icon: "assignment",
           },
         ]}
