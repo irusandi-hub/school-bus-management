@@ -56,8 +56,22 @@ export function ChildBusLocationPanel({
   const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
-    const timer = window.setInterval(() => setNow(Date.now()), 5_000);
-    return () => window.clearInterval(timer);
+    let timer: number | undefined;
+
+    const syncClock = () => {
+      window.clearInterval(timer);
+      timer = undefined;
+      if (document.visibilityState !== "visible") return;
+      setNow(Date.now());
+      timer = window.setInterval(() => setNow(Date.now()), 5_000);
+    };
+
+    syncClock();
+    document.addEventListener("visibilitychange", syncClock);
+    return () => {
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", syncClock);
+    };
   }, []);
 
   useEffect(() => {
