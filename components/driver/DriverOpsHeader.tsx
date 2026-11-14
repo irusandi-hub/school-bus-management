@@ -6,6 +6,7 @@ import Link from "next/link";
 import { BrandLogo } from "@/components/brand-logo";
 import { Icon } from "@/components/ui/Icon";
 import { LocalizedText } from "@/components/i18n/LocaleProvider";
+import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
 import { signOutAction } from "@/lib/auth-actions";
 import type { TripProgress } from "@/lib/driver/trip-progress";
 
@@ -58,16 +59,17 @@ export async function DriverOpsHeader({
     <section className="ops-head" aria-label={locale === "ar" ? "ملف السائق والمهام وتقدم الرحلة" : locale === "en" ? "Driver profile, tasks and trip progress" : "Profil pengemudi, tugas, dan progres perjalanan"}>
       {/* Baris 1: identitas brand, rute terpotong, dan profil. */}
       <div className="compact-identity-row">
-        <div className="compact-brand-route">
+        <div className="compact-brand-route min-w-0">
           <BrandLogo href="/pengemudi" size="sm" />
-          <h1 className="compact-route" title={`${routeName} • ${shortDate}`}>
-            <span>{routeName || <LocalizedText k="route" />}</span><time dateTime={serviceDate}> • {shortDate}</time>
+          <h1 className="compact-route min-w-0 flex-1" title={`${routeName} • ${shortDate}`}>
+            <span className="block min-w-0 truncate">{routeName || <LocalizedText k="route" />}</span><time dateTime={serviceDate}> • {shortDate}</time>
           </h1>
         </div>
         <div className="compact-driver-identity">
           <strong>{driverName || <LocalizedText k="driver" />}</strong>
           <span>ID {shortId} • {plateNumber || <LocalizedText k="plateNotRecorded" />}</span>
         </div>
+        <div className="flex flex-none items-center"><LocaleSwitcher /></div>
         <form action={signOutAction} className="compact-logout-form">
           <button className="compact-logout" type="submit" aria-label={translate(locale, "signOut")} title={translate(locale, "signOut")}>
             <Icon name="logout" size={17} />
