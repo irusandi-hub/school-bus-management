@@ -2982,3 +2982,13 @@ html[lang="ar"] .page-title,html[lang="ar"] .welcome h2,html[lang="ar"] .panel-t
   .portal-head{padding-right:165px}
   .driver-head{padding-right:165px}
 }
+
+
+/* Arabic layout: preserve the shared control position and mirror reading flow. */
+html[dir="rtl"] .global-locale-switcher{right:16px;left:auto}
+html[dir="rtl"] :is(input:not([type="checkbox"]):not([type="radio"]),textarea,select){direction:rtl;text-align:right}
+html[dir="rtl"] :is(.admin-table,.admin-table-compact) :is(th,td){text-align:right}
+html[dir="rtl"] :is(.record-form,.inline-form,.student-read-filters) label{text-align:right}
+html[dir="rtl"] :is(.admin-page-head,.panel-head,.form-actions,.row-actions,.crumbs,.pagination){direction:rtl}
+html[dir="rtl"] :is([data-icon="chevronRight"],[data-icon="chevronLeft"],[data-icon="arrowRight"],[data-icon="arrowLeft"]){transform:rotate(180deg)}
+@media(max-width:640px){html[dir="rtl"] .global-locale-switcher{right:10px;left:auto}}
