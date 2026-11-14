@@ -804,6 +804,7 @@ const copy: Record<string, Record<Locale, string>> = {
   "Perubahan": { id: "Perubahan", en: "Change", ar: "التغيير" },
   "Alasan": { id: "Alasan", en: "Reason", ar: "السبب" },
   "Dicatat oleh": { id: "Dicatat oleh", en: "Recorded by", ar: "سجّل بواسطة" },
+
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
