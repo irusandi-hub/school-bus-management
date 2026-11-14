@@ -137,3 +137,10 @@ test("operator student search copy is localized", () => {
   assert.equal(translateAdminCopy("Belum ada siswa yang ditemukan. Coba nama lain.", "en"), "No students found. Try another name.");
   assert.equal(translateAdminCopy("Belum ada siswa yang ditemukan. Coba nama lain.", "ar"), "لم يتم العثور على طلاب. جرّب اسماً آخر.");
 });
+
+
+test("driver camera publisher status messages are localized", () => {
+  assert.equal(translateAdminCopy("Kamera belum aktif", "en"), "Camera is not active");
+  assert.equal(translateAdminCopy("Kamera dihentikan", "ar"), "تم إيقاف الكاميرا");
+  assert.equal(translateAdminCopy("Meminta izin kamera perangkat…", "en"), "Requesting device camera permission…");
+});
