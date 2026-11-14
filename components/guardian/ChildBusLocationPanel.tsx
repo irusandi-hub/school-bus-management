@@ -1,9 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { Icon } from "@/components/ui/Icon";
 import { useLocale } from "@/components/i18n/LocaleProvider";
-import { GuardianDriverMap } from "@/components/guardian/GuardianDriverMap";
+const GuardianDriverMap = dynamic(
+  () => import("@/components/guardian/GuardianDriverMap").then((module) => module.GuardianDriverMap),
+  {
+    loading: () => (
+      <div className="guardian-live-map-wrap">
+        <div className="guardian-live-map" role="status" aria-label="Memuat peta…" />
+      </div>
+    ),
+  },
+);
 import {
   resolveGuardianLocationView,
   type GuardianLocationPayload,
