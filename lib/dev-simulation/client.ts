@@ -1,4 +1,4 @@
-import { DEV_DRIVER_RECORD, DEV_VIEWER } from "../dev-open-access.ts";
+import { DEV_DRIVER_RECORD, DEV_GUARDIAN_VIEWERS, DEV_VIEWER } from "../dev-open-access.ts";
 import { createSimulationTables, type SimRow, type SimTables } from "./data.ts";
 
 /**
@@ -458,8 +458,11 @@ export function createSimulationClient() {
         const trip = tables.trips.find((row) => row.id === tripId);
         const assignment = tables.trip_assignments.find((row) => row.id === trip?.assignment_id);
         const route = tables.routes.find((row) => row.id === assignment?.route_id);
+        const requestedGuardianId = String(args.p_guardian_id ?? "");
         const guardian = tables.guardians.find(
-          (row) => row.profile_id === DEV_VIEWER.parent.userId && row.active,
+          (row) =>
+            row.id === (requestedGuardianId || DEV_GUARDIAN_VIEWERS.one.guardianId) &&
+            row.active,
         );
         const placement = tables.student_route_stops.find((row) => {
           if (!guardian || row.route_id !== assignment?.route_id || !row.active || row.direction !== route?.direction) {
