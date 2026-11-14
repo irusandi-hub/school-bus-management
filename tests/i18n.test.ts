@@ -104,3 +104,10 @@ test("safety checklist validation translates its embedded checklist label", () =
     "The safety check is incomplete: The cabin has been checked and no passengers have been left behind on the bus.",
   );
 });
+
+test("guardian signup success feedback follows the selected locale", () => {
+  const message = "Jika email tersebut terdaftar oleh Operator Utama dan memiliki siswa dengan layanan aktif, tautan verifikasi sudah dikirim. Periksa kotak masuk dan folder spam, lalu buka tautan untuk membuat kata sandi.";
+  assert.match(translateAdminCopy(message, "en") ?? "", /verification link has been sent/i);
+  assert.match(translateAdminCopy(message, "ar") ?? "", /تم إرسال رابط التحقق/);
+  assert.equal(translateAdminCopy(message, "id"), message);
+});
