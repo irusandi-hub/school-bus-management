@@ -38,9 +38,8 @@ export default async function GuardianLayout({ children }: { children: React.Rea
         <div className="portal-account flex items-center gap-2">
           <LocaleSwitcher />
           <form action={signOutAction}>
-            <button className="btn btn-ghost btn-sm" type="submit">
-              <Icon name="logout" size={15} />
-              <LocalizedText k="signOut" />
+            <button className="compact-logout" type="submit" aria-label={translate(locale, "signOut")} title={translate(locale, "signOut")}>
+              <Icon name="logout" size={17} />
             </button>
           </form>
         </div>
