@@ -132,12 +132,14 @@ export async function loadChildren(supabase: ServerSupabase, guardianId?: string
 
   return students.map((student) => {
     const placements = placementsByStudent.get(student.id) ?? [];
-    const todayTrips = placements.flatMap((placement) =>
-      (assignmentsByRoute.get(placement.routeId) ?? []).map((trip) => ({
+    const studentRouteIds = Array.from(new Set(placements.map((placement) => placement.routeId)));
+    const todayTrips = studentRouteIds.flatMap((routeId) => {
+      const placement = placements.find((item) => item.routeId === routeId);
+      return (assignmentsByRoute.get(routeId) ?? []).map((trip) => ({
         ...trip,
-        direction: placement.direction,
-      })),
-    );
+        direction: placement?.direction ?? "morning",
+      }));
+    });
     return { student, placements, todayTrips };
   });
 }
