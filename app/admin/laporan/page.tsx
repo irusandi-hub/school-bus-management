@@ -71,7 +71,7 @@ export default async function ReportsPage() {
     <>
       <PageHeader
         title={c("Laporan & audit")}
-        description={c(`Ringkasan data operasional dan jejak aktivitas platform. Konteks: ${areaContext.selected?.name ?? "Semua Area"}.`)}
+        description={`${c("Ringkasan data operasional dan jejak aktivitas platform. Konteks:")} ${areaContext.selected?.name ?? c("Semua Area")}.`}
         actions={<Link className="btn btn-secondary btn-sm" href="/operator/laporan/export"><AdminCopy value="Unduh CSV" /></Link>}
       />
 
