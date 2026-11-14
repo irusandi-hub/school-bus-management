@@ -854,6 +854,10 @@ const copy: Record<string, Record<Locale, string>> = {
   "Detail & status": { id: "Detail & status", en: "Details & status", ar: "التفاصيل والحالة" },
   "Akun Wali": { id: "Akun Wali", en: "Guardian Accounts", ar: "حسابات أولياء الأمور" },
   "Satu siswa hanya memiliki satu wali. Satu akun wali dapat terhubung ke beberapa siswa. Aktivasi hanya berhasil bila minimal satu siswa berstatus layanan aktif.": { id: "Satu siswa hanya memiliki satu wali. Satu akun wali dapat terhubung ke beberapa siswa. Aktivasi hanya berhasil bila minimal satu siswa berstatus layanan aktif.", en: "Each student has one guardian. A guardian account can be linked to multiple students. Activation succeeds only when at least one student has active service.", ar: "لكل طالب ولي أمر واحد. يمكن ربط حساب ولي الأمر بعدة طلاب. لا ينجح التفعيل إلا إذا كانت خدمة طالب واحد على الأقل نشطة." },
+  "Roster ini menjadi daftar siswa pada perjalanan pengemudi dan dasar riwayat perjalanan wali": { id: "Roster ini menjadi daftar siswa pada perjalanan pengemudi dan dasar riwayat perjalanan wali", en: "This roster becomes the student list for the driver's trip and the basis for guardians' trip history.", ar: "تصبح هذه القائمة قائمة الطلاب في رحلة السائق والأساس لسجل الرحلات لدى أولياء الأمور." },
+  "penempatan aktif": { id: "penempatan aktif", en: "active assignments", ar: "تعيينات نشطة" },
+  "Tempatkan siswa": { id: "Tempatkan siswa", en: "Assign student", ar: "تعيين الطالب" },
+  "Perjalanan baru dibuat oleh pengemudi saat memulai tugas. Rute dan roster ini tidak membuat perjalanan atau posisi GPS secara otomatis.": { id: "Perjalanan baru dibuat oleh pengemudi saat memulai tugas. Rute dan roster ini tidak membuat perjalanan atau posisi GPS secara otomatis.", en: "A new trip is created by the driver when starting an assignment. This route and roster do not automatically create a trip or GPS position.", ar: "ينشئ السائق رحلة جديدة عند بدء المهمة. لا ينشئ هذا المسار أو سجل الطلاب رحلة أو موقع GPS تلقائياً." },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
