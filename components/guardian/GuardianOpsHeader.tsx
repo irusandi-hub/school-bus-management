@@ -2,6 +2,7 @@ import { Icon } from "@/components/ui/Icon";
 import { LocalizedText } from "@/components/i18n/LocaleProvider";
 import type { Locale } from "@/lib/i18n/config";
 import { translate } from "@/lib/i18n/messages";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 /**
  * Profil wali versi strip ringkas.
@@ -33,6 +34,7 @@ export function GuardianOpsHeader({
 }) {
   const initial = (guardianName || "W").slice(0, 1).toUpperCase();
   const t = (key: Parameters<typeof translate>[1]) => translate(locale, key);
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
   const dateLocale = locale === "ar" ? "ar-SA-u-ca-gregory" : locale === "en" ? "en-GB" : "id-ID";
   const formattedDate = new Intl.DateTimeFormat(dateLocale, { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Riyadh" }).format(new Date(`${serviceDate}T12:00:00+03:00`));
 
@@ -45,7 +47,7 @@ export function GuardianOpsHeader({
           </span>
           <div className="guardian-profile-ident">
             <div className="guardian-profile-name">
-              <strong>{guardianName || "Wali"}</strong>
+              <strong>{guardianName || c("Wali")}</strong>
               <span className="guardian-account-tag"><LocalizedText k="guardianRole" /></span>
             </div>
             <small>
