@@ -76,7 +76,7 @@ export default async function DriverTripReviewPage({
   const locale = await getRequestLocale();
   const c = (value: string) => translateAdminCopy(value, locale) ?? value;
   const dateLocale = locale === "ar" ? "ar-SA-u-ca-gregory" : locale === "en" ? "en-GB" : "id-ID";
-  const formatLocalDate = (value: string | null) => value ? new Intl.DateTimeFormat(dateLocale, { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Riyadh" }).format(new Date(`${value.slice(0, 10)}T12:00:00+03:00`)) : "—";
+  const formatLocalDate = (value: string | null) => value ? new Intl.DateTimeFormat(dateLocale, { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Riyadh" }).format(new Date(value.length <= 10 ? `${value.slice(0, 10)}T12:00:00+03:00` : value)) : "—";
   const formatLocalDateTime = (value: string | null) => value ? new Intl.DateTimeFormat(dateLocale, { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Riyadh" }).format(new Date(value)) : "—";
   const formatLocalTime = (value: string | null) => value ? new Intl.DateTimeFormat(dateLocale, { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Riyadh" }).format(new Date(value)) : "—";
   const query = await searchParams;
