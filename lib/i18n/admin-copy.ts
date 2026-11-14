@@ -846,6 +846,7 @@ const copy: Record<string, Record<Locale, string>> = {
   "Penugasan dapat dibuat setelah tersedia rute, pengemudi, dan bus aktif pada Area Operasional yang sama.": { id: "Penugasan dapat dibuat setelah tersedia rute, pengemudi, dan bus aktif pada Area Operasional yang sama.", en: "An assignment can be created once an active route, driver, and bus are available in the same operational area.", ar: "يمكن إنشاء التكليف بعد توفر مسار وسائق وحافلة نشطة ضمن منطقة التشغيل نفسها." },
   "Data dari area berbeda ditolak oleh aplikasi dan database. Penugasan tidak membuat perjalanan sebelum pengemudi menekan Mulai Perjalanan.": { id: "Data dari area berbeda ditolak oleh aplikasi dan database. Penugasan tidak membuat perjalanan sebelum pengemudi menekan Mulai Perjalanan.", en: "Data from different areas is rejected by the app and database. An assignment does not create a trip until the driver selects Start Trip.", ar: "يرفض التطبيق وقاعدة البيانات البيانات القادمة من مناطق مختلفة. لا ينشئ التكليف رحلة حتى يضغط السائق على بدء الرحلة." }
 
+  "Memperbarui": { id: "Memperbarui", en: "Updating", ar: "جارٍ التحديث" },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
