@@ -1,6 +1,7 @@
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { homeForRole } from "@/lib/access";
-import { DEV_DRIVER_RECORD, DEV_VIEWER, isDevOpenAccess } from "@/lib/dev-open-access";
+import { DEV_DRIVER_RECORD, DEV_GUARDIAN_VIEWERS, DEV_VIEWER, isDevOpenAccess } from "@/lib/dev-open-access";
 import { createServerSupabase } from "@/lib/supabase/server";
 import type { ProfileRow, UserRole } from "@/lib/types";
 
@@ -182,7 +183,7 @@ export async function requireDriver(nextPath = "/pengemudi"): Promise<DriverAcce
 
 export type GuardianAccess =
   | { status: "unconfigured" }
-  | { status: "ready"; viewer: Viewer };
+  | { status: "ready"; viewer: Viewer; guardianId?: string };
 
 /**
  * Non-redirecting guardian check for route handlers. Pages may use `redirect()`,
@@ -203,7 +204,25 @@ export async function guardianRequestAccess(): Promise<
 
 /** Server-side gate for the guardian area. */
 export async function requireGuardian(nextPath = "/wali"): Promise<GuardianAccess> {
-  if (isDevOpenAccess()) return { status: "ready", viewer: devViewerFor("parent") };
+  if (isDevOpenAccess()) {
+    const cookieStore = await cookies();
+    const selectedKey = cookieStore.get("sbm_demo_guardian")?.value;
+    const selected =
+      selectedKey === "two" || selectedKey === "three"
+        ? DEV_GUARDIAN_VIEWERS[selectedKey]
+        : DEV_GUARDIAN_VIEWERS.one;
+    const viewer: Viewer = {
+      userId: selected.userId,
+      email: selected.email,
+      profile: {
+        id: selected.userId,
+        full_name: selected.fullName,
+        role: "parent",
+        phone: null,
+      },
+    };
+    return { status: "ready", viewer, guardianId: selected.guardianId };
+  }
 
   const viewer = await requireViewer(nextPath);
   if (!viewer) return { status: "unconfigured" };
