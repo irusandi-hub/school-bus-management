@@ -1,7 +1,17 @@
 import { notFound } from "next/navigation";
+import dynamic from "next/dynamic";
 import { deploymentKind } from "@/lib/dev-open-access";
 import { cameraDemoEnabled } from "@/lib/camera/demo-policy";
-import { CameraDeviceDemo } from "@/components/camera/CameraDeviceDemo";
+const CameraDeviceDemo = dynamic(
+  () => import("@/components/camera/CameraDeviceDemo").then((module) => module.CameraDeviceDemo),
+  {
+    loading: () => (
+      <section className="panel" role="status" aria-live="polite">
+        <p>Memuat perangkat demo kamera…</p>
+      </section>
+    ),
+  },
+);
 
 export const dynamic = "force-dynamic";
 
