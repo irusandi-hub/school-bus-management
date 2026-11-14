@@ -147,12 +147,15 @@ function compareValues(left: unknown, right: unknown): number {
 }
 
 function likeMatches(value: unknown, pattern: string): boolean {
-  const text = String(value ?? "").toLowerCase();
-  const escaped = pattern
-    .toLowerCase()
-    .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-    .replace(/%/g, ".*");
-  return new RegExp(`^${escaped}$`).test(text);
+  const text = String(value ?? "");
+  // Terjemahkan wildcard SQL LIKE sebelum meng-escape karakter regex biasa.
+  // '%' cocok dengan rangkaian karakter apa pun dan '_' dengan satu karakter.
+  const escaped = [...pattern].map((character) => {
+    if (character === "%") return ".*";
+    if (character === "_") return ".";
+    return character.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }).join("");
+  return new RegExp(`^${escaped}$`, "i").test(text);
 }
 
 class SimQuery implements PromiseLike<SimResult> {
