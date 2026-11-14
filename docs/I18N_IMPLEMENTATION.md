@@ -62,7 +62,7 @@ Commands run in order, from a clean `node_modules` state where relevant:
 
 ### GitHub Actions status — blocked outside the repository
 - The workflow file is valid YAML and registers normally (`Verify PR`, workflow id 417282093, state `active`, path `.github/workflows/verify-pr.yml`, 0 runs).
-- Every run in the repository — 697 runs including pushes to `main` — is instead attached to workflow id `412371807`, an empty-named, `state: deleted` record with `path: "BuildFailed"`, concluding `startup_failure` in 0s with zero jobs and no logs.
+- Every run in the repository is instead attached to workflow id `412371807`, an empty-named, `state: deleted` record with `path: "BuildFailed"`, concluding `startup_failure` in 0s with zero jobs and no logs. That was 698 runs (all of them, including pushes to `main`) as of 2026-11-14 06:14 UTC; each additional push adds one more run with the same result.
 - This includes the verification run for the head commit containing the lockfile fix. No job, step, or runner is ever created, so no repository change can alter the outcome.
 - `GET /repos/.../actions/permissions` reports Actions enabled with `allowed_actions: all`, so the workflow is not filtered by an action allow-list.
 - Diagnosis: the failure happens at GitHub's ingress/dispatch stage before the workflow is evaluated. Known causes for this exact signature are an exhausted private-repository Actions minute quota / blocked spending limit (billing is not readable with the current integration token: HTTP 403) or an orphaned `BuildFailed` workflow registration on GitHub's side.
