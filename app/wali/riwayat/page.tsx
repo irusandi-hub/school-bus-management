@@ -56,7 +56,7 @@ export default async function GuardianHistoryPage() {
     <>
       <section className="guardian-hero">
         <div>
-          <p className="eyebrow">RIWAYAT</p>
+          <p className="eyebrow">{t("history")}</p>
           <h1><LocalizedText k="guardianHistory" /></h1>
           <p><LocalizedText k="historyIntro" /></p>
         </div>
