@@ -91,7 +91,7 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
   const statusFields: FieldDef[] = [
     {
       name: "status",
-      label: "Status layanan baru",
+      label: c("Status layanan baru"),
       type: "select",
       required: true,
       defaultValue: student.service_status,
@@ -99,27 +99,27 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
     },
     {
       name: "reason",
-      label: "Alasan perubahan",
+      label: c("Alasan perubahan"),
       type: "textarea",
       required: true,
       fullWidth: true,
       maxLength: 300,
-      placeholder: "Contoh: permintaan wali, siswa pindah sekolah, atau layanan dihentikan per tanggal tertentu.",
-      help: "Alasan disimpan pada riwayat dan tidak dapat dihapus. Jangan menuliskan data pribadi yang tidak diperlukan.",
+      placeholder: c("Contoh: permintaan wali, siswa pindah sekolah, atau layanan dihentikan per tanggal tertentu."),
+      help: c("Alasan disimpan pada riwayat dan tidak dapat dihapus. Jangan menuliskan data pribadi yang tidak diperlukan."),
     },
   ];
 
   const coordinates =
     student.home_latitude !== null && student.home_longitude !== null
       ? `${student.home_latitude}, ${student.home_longitude}`
-      : "Belum diisi";
+      : c("Belum diisi");
 
   return (
     <>
       <Breadcrumbs
         items={[
-          { href: "/admin", label: "Ringkasan" },
-          { href: "/admin/siswa", label: "Data siswa" },
+          { href: "/admin", label: c("Ringkasan") },
+          { href: "/admin/siswa", label: c("Data siswa") },
           { label: student.full_name },
         ]}
       />
@@ -129,7 +129,7 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
         description={`${c("Nomor induk siswa")} ${student.admissions_number}`}
         actions={
           <Link className="btn btn-secondary" href={`/admin/siswa?edit=${student.id}`}>
-            Ubah data siswa
+            {c("Ubah data siswa")}
           </Link>
         }
       />
@@ -145,7 +145,7 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
           <dl className="detail-list">
             <div>
               <dt><AdminCopy value="Sekolah" /></dt>
-              <dd>{student.schools?.name ?? "Belum ditetapkan"}</dd>
+              <dd>{student.schools?.name ?? c("Belum ditetapkan")}</dd>
             </div>
             <div>
               <dt><AdminCopy value="Wali" /></dt>
@@ -165,7 +165,7 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
             </div>
             <div>
               <dt><AdminCopy value="Alamat rumah" /></dt>
-              <dd>{student.home_address ?? "Belum diisi"}</dd>
+              <dd>{student.home_address ?? c("Belum diisi")}</dd>
             </div>
             <div>
               <dt><AdminCopy value="Koordinat rumah" /></dt>
@@ -205,9 +205,9 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
               action={changeStudentServiceStatus}
               fields={statusFields}
               hidden={{ student_id: student.id }}
-              submitLabel="Simpan status layanan"
-              confirmMessage="Ubah status layanan siswa ini? Perubahan akan tercatat pada riwayat dan tidak dapat dihapus."
-              note="Akses akun wali mengikuti status ini: minimal satu siswa harus aktif agar akun dapat digunakan."
+              submitLabel={c("Simpan status layanan")}
+              confirmMessage={c("Ubah status layanan siswa ini? Perubahan akan tercatat pada riwayat dan tidak dapat dihapus.")}
+              note={c("Akses akun wali mengikuti status ini: minimal satu siswa harus aktif agar akun dapat digunakan.")}
             />
           </div>
         </section>
@@ -218,11 +218,11 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
           <div>
             <h2 className="panel-title">{c("Rute & titik jemput")}</h2>
             <div className="panel-subtitle">
-              Menentukan urutan titik dan daftar siswa pada perjalanan pengemudi
+              {c("Menentukan urutan titik dan daftar siswa pada perjalanan pengemudi")}
             </div>
           </div>
           <Pill tone={placements.length > 0 ? "success" : "warning"}>
-            {placements.length > 0 ? "Sudah ditempatkan" : "Belum ditempatkan"}
+            {c(placements.length > 0 ? "Sudah ditempatkan" : "Belum ditempatkan")}
           </Pill>
         </header>
 
@@ -241,10 +241,9 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
                 <tr>
                   <td colSpan={4}>
                     <div className="table-empty">
-                      <strong><AdminCopy value="Siswa belum ditempatkan pada rute" /></strong>
+                      <strong>{c("Siswa belum ditempatkan pada rute")}</strong>
                       <p>
-                        Tanpa penempatan, siswa tidak muncul pada daftar jemput pengemudi dan riwayat perjalanan wali.
-                        Pilih titik jemput di bawah.
+                        {c("Tanpa penempatan, siswa tidak muncul pada daftar jemput pengemudi dan riwayat perjalanan wali. Pilih titik jemput di bawah.")}
                       </p>
                     </div>
                   </td>
@@ -261,8 +260,8 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
                       <form action={removeStudentFromRoute}>
                         <input type="hidden" name="id" value={placement.id} />
                         <input type="hidden" name="return_to" value={`/admin/siswa/${student.id}`} />
-                        <ConfirmSubmit message="Keluarkan siswa dari rute aktif ini? Riwayat penempatan tetap tersimpan.">
-                          Keluarkan
+                        <ConfirmSubmit message={c("Keluarkan siswa dari rute aktif ini? Riwayat penempatan tetap tersimpan.")}>
+                          {c("Keluarkan")}
                         </ConfirmSubmit>
                       </form>
                     </td>
@@ -277,37 +276,36 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
           <input type="hidden" name="student_id" value={student.id} />
           <input type="hidden" name="return_to" value={`/admin/siswa/${student.id}`} />
           <label>
-            Titik jemput
+            {c("Titik jemput")}
             <select name="stop_id" required defaultValue="">
               <option value="" disabled>
-                {allStops.length === 0 ? "Belum ada titik jemput pada rute mana pun" : "Pilih titik jemput"}
+                {c(allStops.length === 0 ? "Belum ada titik jemput pada rute mana pun" : "Pilih titik jemput")}
               </option>
               {allStops.map((stop) => (
                 <option key={stop.id} value={stop.id}>
-                  {stop.routes?.route_name ?? "Rute"} · {stop.stop_order}. {stop.stop_name}
+                  {stop.routes?.route_name ?? c("Rute")} · {stop.stop_order}. {stop.stop_name}
                 </option>
               ))}
             </select>
           </label>
           <label>
-            Arah
+            {c("Arah")}
             <select name="direction" defaultValue="morning">
-              <option value="morning">Pagi</option>
-              <option value="afternoon">Sore</option>
+              <option value="morning">{c("Pagi")}</option>
+              <option value="afternoon">{c("Sore")}</option>
             </select>
           </label>
           <button className="btn btn-primary" type="submit" disabled={allStops.length === 0}>
-            Simpan penempatan
+            {c("Simpan penempatan")}
           </button>
           {allStops.length === 0 && (
             <p className="form-note roster-form-note" role="status">
-              Penempatan dapat disimpan setelah Pengelola menambahkan titik jemput pada rute yang sesuai.
+              {c("Penempatan dapat disimpan setelah Pengelola menambahkan titik jemput pada rute yang sesuai.")}
             </p>
           )}
         </form>
         <p className="detail-footnote">
-          Satu siswa hanya memiliki satu titik aktif per arah. Memilih titik baru pada arah yang sama akan memindahkan
-          penempatan sebelumnya tanpa menghapus riwayatnya.
+          {c("Satu siswa hanya memiliki satu titik aktif per arah. Memilih titik baru pada arah yang sama akan memindahkan penempatan sebelumnya tanpa menghapus riwayatnya.")}
         </p>
       </section>
 
@@ -315,11 +313,11 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
         <header className="panel-head">
           <div>
             <h2 className="panel-title"><AdminCopy value="Riwayat status layanan" /></h2>
-            <div className="panel-subtitle">Catatan tetap, tidak dapat diubah atau dihapus</div>
+            <div className="panel-subtitle">{c("Catatan tetap, tidak dapat diubah atau dihapus")}</div>
           </div>
         </header>
 
-        {historyError && <div className="form-body"><Notice kind="error">Riwayat status belum dapat dimuat.</Notice></div>}
+        {historyError && <div className="form-body"><Notice kind="error">{c("Riwayat status belum dapat dimuat.")}</Notice></div>}
 
         <div className="admin-table-wrap">
           <table className="admin-table">
@@ -336,8 +334,8 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
                 <tr>
                   <td colSpan={4}>
                     <div className="table-empty">
-                      <strong>Belum ada riwayat status</strong>
-                      <p>Riwayat akan tercatat otomatis setelah status layanan diubah pertama kali.</p>
+                      <strong>{c("Belum ada riwayat status")}</strong>
+                      <p>{c("Riwayat akan tercatat otomatis setelah status layanan diubah pertama kali.")}</p>
                     </div>
                   </td>
                 </tr>
@@ -350,7 +348,7 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
                       {c(serviceStatusLabel(entry.new_status))}
                     </td>
                     <td>{entry.reason}</td>
-                    <td>{entry.profiles?.full_name ?? "Tidak tercatat"}</td>
+                    <td>{entry.profiles?.full_name ?? c("Tidak tercatat")}</td>
                   </tr>
                 ))
               )}
