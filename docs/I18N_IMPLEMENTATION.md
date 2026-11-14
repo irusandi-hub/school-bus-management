@@ -28,3 +28,11 @@ The locale foundation, landing page, shared navigation, workspace shell labels, 
 - [ ] Forms, dialogs, empty/error/loading states, tables, and action feedback are translated.
 - [ ] Unit tests, typecheck, and production build pass.
 - [ ] No database, RLS, migration, production deployment, or role architecture changes are introduced by i18n.
+
+
+## Source audit snapshot — 2026-11-14
+- Static source review covered the shared locale switcher/provider, Operator pages, Driver and Guardian operational components, account entry forms, and shared loading/error states.
+- Locale message dictionaries contain 347 keys in each of `id`, `en`, and `ar`; the key sets match.
+- The operational copy dictionary contains 953 entries with no duplicate keys.
+- Automated execution and visual browser review are still outstanding. The current branch's Vercel status reports a build-rate-limit failure; no GitHub Actions verification run is associated with the current head.
+- The current `package.json` declares `@tailwindcss/postcss` and `tailwindcss`, but the root `package-lock.json` dependency map does not list them. Do not claim `npm ci`, tests, typecheck, or production build pass until the lockfile is regenerated with npm and the verification workflow succeeds.
