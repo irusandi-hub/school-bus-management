@@ -137,8 +137,8 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
         <section className="panel detail-panel">
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">Informasi siswa</h2>
-              <div className="panel-subtitle">Data master dan relasi wali</div>
+              <h2 className="panel-title">{c("Informasi siswa")}</h2>
+              <div className="panel-subtitle">{c("Data master dan relasi wali")}</div>
             </div>
           </header>
           <dl className="detail-list">
@@ -176,8 +176,7 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
             </div>
           </dl>
           <p className="detail-footnote">
-            Koordinat rumah merupakan data privat. Wali hanya dapat melihat data siswa yang terhubung dan masih
-            memiliki layanan aktif.
+            {c("Koordinat rumah merupakan data privat. Wali hanya dapat melihat data siswa yang terhubung dan masih memiliki layanan aktif.")}
           </p>
         </section>
 
@@ -185,18 +184,17 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
           <header className="panel-head">
             <div>
               <h2 className="panel-title"><AdminCopy value="Status layanan" /></h2>
-              <div className="panel-subtitle">Perubahan status selalu memerlukan alasan</div>
+              <div className="panel-subtitle">{c("Perubahan status selalu memerlukan alasan")}</div>
             </div>
             <Pill tone={statusTone(student.service_status)}>{serviceStatusLabel(student.service_status)}</Pill>
           </header>
 
           <div className="status-summary">
             <span>
-              Diperbarui <strong>{formatDateTime(student.service_status_changed_at)}</strong>
+              {c("Diperbarui")} <strong>{formatDateTime(student.service_status_changed_at)}</strong>
             </span>
             <p>
-              Status layanan berbeda dari kehadiran perjalanan dan status GPS. Menonaktifkan layanan tidak menghapus data
-              siswa, relasi wali, atau riwayat.
+              {c("Status layanan berbeda dari kehadiran perjalanan dan status GPS. Menonaktifkan layanan tidak menghapus data siswa, relasi wali, atau riwayat.")}
             </p>
           </div>
 
@@ -217,7 +215,7 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
       <section className="panel route-placements">
         <header className="panel-head">
           <div>
-            <h2 className="panel-title">Rute &amp; titik jemput</h2>
+            <h2 className="panel-title">{c("Rute & titik jemput")}</h2>
             <div className="panel-subtitle">
               Menentukan urutan titik dan daftar siswa pada perjalanan pengemudi
             </div>

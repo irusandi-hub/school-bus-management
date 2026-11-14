@@ -39,7 +39,7 @@ type Props = {
 
 export function RecordForm({ action, fields, submitLabel, hidden, note, secondary, confirmMessage, disabledReason }: Props) {
   const { t, locale } = useLocale();
-  const copy = (value: string | undefined) => translateAdminCopy(value, locale);
+  const copy = (value: string | undefined) => value ? translateAdminCopy(value, locale) ?? value : value;
   const [state, formAction, pending] = useActionState<ActionState, FormData>(action, idleState);
   const confirm = useConfirm();
   const confirming = useRef(false);

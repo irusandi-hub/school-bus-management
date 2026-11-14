@@ -142,8 +142,8 @@ export default async function RouteDetailPage({
         <section className="panel">
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">Urutan titik jemput</h2>
-              <div className="panel-subtitle">Titik tidak dapat dihapus agar riwayat tetap utuh; ubah bila perlu</div>
+              <h2 className="panel-title">{c("Urutan titik jemput")}</h2>
+              <div className="panel-subtitle">{c("Titik tidak dapat dihapus agar riwayat tetap utuh; ubah bila perlu")}</div>
             </div>
           </header>
           <div className="admin-table-wrap">
@@ -152,7 +152,7 @@ export default async function RouteDetailPage({
                 <tr>
                   <th scope="col"><AdminCopy value="Urutan" /></th>
                   <th scope="col"><AdminCopy value="Titik" /></th>
-                  <th scope="col">Koordinat</th>
+                  <th scope="col">{c("Koordinat")}</th>
                   <th scope="col"><AdminCopy value="Tindakan" /></th>
                 </tr>
               </thead>
@@ -180,7 +180,7 @@ export default async function RouteDetailPage({
                       </td>
                       <td>
                         <Link className="row-link" href={`/admin/rute/${id}?editStop=${stop.id}`}>
-                          Ubah
+                          {c("Ubah")}
                         </Link>
                       </td>
                     </tr>
@@ -195,7 +195,7 @@ export default async function RouteDetailPage({
           <header className="panel-head">
             <div>
               <h2 className="panel-title">{editingStop ? "Ubah titik jemput" : "Tambah titik jemput"}</h2>
-              <div className="panel-subtitle">Koordinat titik hanya dipakai untuk operasional rute</div>
+              <div className="panel-subtitle">{c("Koordinat titik hanya dipakai untuk operasional rute")}</div>
             </div>
           </header>
           <div className="form-body">
@@ -214,7 +214,7 @@ export default async function RouteDetailPage({
       <section className="panel">
         <header className="panel-head">
           <div>
-            <h2 className="panel-title">Siswa pada rute ini</h2>
+            <h2 className="panel-title">{c("Siswa pada rute ini")}</h2>
             <div className="panel-subtitle">
               Roster ini menjadi daftar siswa pada perjalanan pengemudi dan dasar riwayat perjalanan wali
             </div>

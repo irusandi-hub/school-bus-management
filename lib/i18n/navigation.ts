@@ -29,6 +29,8 @@ const labels: Record<string, Record<Locale, string>> = {
   "Tugas": { id: "Tugas", en: "Tasks", ar: "المهام" },
   "Riwayat": { id: "Riwayat", en: "History", ar: "السجل" },
   "Anak saya": { id: "Anak saya", en: "My children", ar: "أبنائي" },
+  "Menu pengelola": { id: "Menu pengelola", en: "Operator menu", ar: "قائمة المشغّل" },
+  "Operator Utama": { id: "Operator Utama", en: "Main Operator", ar: "المشغّل الرئيسي" },
   "Menu": { id: "Menu", en: "Menu", ar: "القائمة" },
   "Semua menu": { id: "Semua menu", en: "All menus", ar: "كل القوائم" },
   "Tutup menu": { id: "Tutup menu", en: "Close menu", ar: "إغلاق القائمة" },
