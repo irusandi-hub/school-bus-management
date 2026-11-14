@@ -42,14 +42,15 @@ export function todayDate(date: Date = new Date()) {
   return serviceDateInTimeZone(date);
 }
 
-export async function loadChildren(supabase: ServerSupabase): Promise<ChildOverview[]> {
-  const { data } = await supabase
+export async function loadChildren(supabase: ServerSupabase, guardianId?: string): Promise<ChildOverview[]> {
+  const studentQuery = supabase
     .from("students")
     .select(
       "id, admissions_number, full_name, date_of_birth, school_id, guardian_id, home_address, home_latitude, home_longitude, pickup_notes, service_status, service_status_changed_at, schools(name, city), guardians(full_name, email, phone)",
     )
-    .eq("service_status", "active")
-    .order("full_name", { ascending: true });
+    .eq("service_status", "active");
+  const scopedQuery = guardianId ? studentQuery.eq("guardian_id", guardianId) : studentQuery;
+  const { data } = await scopedQuery.order("full_name", { ascending: true });
 
   const students = (data ?? []) as unknown as StudentRow[];
   const today = todayDate();
