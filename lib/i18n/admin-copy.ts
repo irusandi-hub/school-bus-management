@@ -852,6 +852,8 @@ const copy: Record<string, Record<Locale, string>> = {
   "Email akun untuk": { id: "Email akun untuk", en: "Account email for", ar: "البريد الإلكتروني للحساب الخاص بـ" },
   "Data Siswa": { id: "Data Siswa", en: "Student Records", ar: "سجلات الطلاب" },
   "Detail & status": { id: "Detail & status", en: "Details & status", ar: "التفاصيل والحالة" },
+  "Akun Wali": { id: "Akun Wali", en: "Guardian Accounts", ar: "حسابات أولياء الأمور" },
+  "Satu siswa hanya memiliki satu wali. Satu akun wali dapat terhubung ke beberapa siswa. Aktivasi hanya berhasil bila minimal satu siswa berstatus layanan aktif.": { id: "Satu siswa hanya memiliki satu wali. Satu akun wali dapat terhubung ke beberapa siswa. Aktivasi hanya berhasil bila minimal satu siswa berstatus layanan aktif.", en: "Each student has one guardian. A guardian account can be linked to multiple students. Activation succeeds only when at least one student has active service.", ar: "لكل طالب ولي أمر واحد. يمكن ربط حساب ولي الأمر بعدة طلاب. لا ينجح التفعيل إلا إذا كانت خدمة طالب واحد على الأقل نشطة." },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
