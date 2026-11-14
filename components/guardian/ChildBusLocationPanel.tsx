@@ -70,17 +70,18 @@ export function ChildBusLocationPanel({
     let inFlight = false;
     let timer: number | undefined;
     let controller: AbortController | undefined;
+    let retryDelayMs = POLL_INTERVAL_MS;
 
-    function schedule() {
-      if (stopped) return;
+    function schedule(delay = retryDelayMs) {
+      if (stopped || document.visibilityState === "hidden" || !navigator.onLine) return;
       window.clearTimeout(timer);
-      timer = window.setTimeout(load, POLL_INTERVAL_MS);
+      timer = window.setTimeout(load, delay);
     }
 
     async function load() {
       if (stopped || inFlight) return;
-      if (document.visibilityState === "hidden") {
-        schedule();
+      if (document.visibilityState === "hidden" || !navigator.onLine) {
+        if (!navigator.onLine) setConnectionError(true);
         return;
       }
 
@@ -105,12 +106,16 @@ export function ChildBusLocationPanel({
         if (stopped) return;
         setPayload(data);
         setConnectionError(false);
+        retryDelayMs = POLL_INTERVAL_MS;
         if (data.tripStatus === "completed" || data.tripStatus === "cancelled") {
           stopped = true;
           return;
         }
       } catch (error) {
-        if (!stopped && (error as Error).name !== "AbortError") setConnectionError(true);
+        if (!stopped && (error as Error).name !== "AbortError") {
+          setConnectionError(true);
+          retryDelayMs = Math.min(Math.max(retryDelayMs * 2, POLL_INTERVAL_MS), 15_000);
+        }
       } finally {
         inFlight = false;
         if (!stopped) {
@@ -126,14 +131,20 @@ export function ChildBusLocationPanel({
       if (document.visibilityState === "visible") {
         window.clearTimeout(timer);
         void load();
+      } else {
+        window.clearTimeout(timer);
       }
     };
     const onOnline = () => {
       setConnectionError(false);
+      retryDelayMs = POLL_INTERVAL_MS;
       window.clearTimeout(timer);
       void load();
     };
-    const onOffline = () => setConnectionError(true);
+    const onOffline = () => {
+      window.clearTimeout(timer);
+      setConnectionError(true);
+    };
 
     void load();
     document.addEventListener("visibilitychange", onVisibility);
