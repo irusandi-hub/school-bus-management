@@ -60,9 +60,17 @@ export default async function WaliPage({
   if (status === "nonaktif") query = query.eq("active", false);
   if (selectedId) query = query.in("id", scope.guardianIds);
 
-  const { data, count, error } = await query;
+  let editQuery = editId ? supabase.from("guardians").select(selectColumns).eq("id", editId) : null;
+  if (editQuery && selectedId) editQuery = editQuery.in("id", scope.guardianIds);
+
+  const [listResult, editResult] = await Promise.all([
+    query,
+    editQuery ? editQuery.maybeSingle() : Promise.resolve({ data: null }),
+  ]);
+  const { data, count, error } = listResult;
   const rows = (data ?? []) as GuardianRow[];
   const total = count ?? 0;
+  const editing = (editResult.data as GuardianRow | null) ?? null;
 
   const guardianIds = rows.map((row) => row.id);
   const linkedCounts = new Map<string, number>();
@@ -73,14 +81,6 @@ export default async function WaliPage({
       const key = link.guardian_id as string;
       linkedCounts.set(key, (linkedCounts.get(key) ?? 0) + 1);
     }
-  }
-
-  let editing: GuardianRow | null = null;
-  if (editId) {
-    let editQuery = supabase.from("guardians").select(selectColumns).eq("id", editId);
-    if (selectedId) editQuery = editQuery.in("id", scope.guardianIds);
-    const { data: editRow } = await editQuery.maybeSingle();
-    editing = (editRow as GuardianRow | null) ?? null;
   }
 
   const notice = noticeFromParams(params);
