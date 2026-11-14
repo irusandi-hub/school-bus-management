@@ -5,6 +5,8 @@ import { Icon } from "@/components/ui/Icon";
 import { useDriverLocation } from "./useDriverLocation";
 import { useDriverLocationPublisher } from "./useDriverLocationPublisher";
 import type { DriverMapStop } from "./DriverRouteMap";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 const DriverRouteMap = dynamic(
   () => import("./DriverRouteMap").then((module) => module.DriverRouteMap),
@@ -16,8 +18,6 @@ const DriverRouteMap = dynamic(
     ),
   },
 );
-import { useLocale } from "@/components/i18n/LocaleProvider";
-import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 /**
  * Kartu peta di bawah dua panel operasional.
