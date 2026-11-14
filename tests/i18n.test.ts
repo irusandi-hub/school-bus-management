@@ -111,3 +111,14 @@ test("guardian signup success feedback follows the selected locale", () => {
   assert.match(translateAdminCopy(message, "ar") ?? "", /تم إرسال رابط التحقق/);
   assert.equal(translateAdminCopy(message, "id"), message);
 });
+
+test("live camera and driver action feedback are localized", () => {
+  assert.equal(translateAdminCopy("Data simulasi", "en"), "Demo data");
+  assert.equal(translateAdminCopy("Perbesar", "ar"), "تكبير");
+  assert.equal(translateAdminCopy("Tekan Esc atau", "en"), "Press Esc or");
+  assert.equal(translateAdminCopy("untuk kembali.", "ar"), "للعودة.");
+  assert.equal(
+    translateAdminCopy("Status siswa tercatat pada perjalanan ini.", "en"),
+    "Student status was recorded on this trip.",
+  );
+});
