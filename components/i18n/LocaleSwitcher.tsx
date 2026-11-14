@@ -63,7 +63,7 @@ export function LocaleSwitcher({ compact: _compact = false }: { compact?: boolea
       <div
         role="group"
         aria-label={locale === "ar" ? "اللغات" : locale === "en" ? "Languages" : "Pilihan bahasa"}
-        className="absolute right-0 top-[calc(100%+6px)] z-[101] flex min-w-0 items-center gap-1 rounded-xl border border-slate-200 bg-white p-1.5 text-slate-800 shadow-xl"
+        className="absolute right-0 top-[calc(100%+6px)] z-[101] flex w-[48px] min-w-[48px] flex-col items-stretch gap-0.5 rounded-xl border border-slate-200 bg-white p-1 text-slate-800 shadow-xl"
       >
         {languageOptions.map((option) => (
           <button
@@ -73,7 +73,7 @@ export function LocaleSwitcher({ compact: _compact = false }: { compact?: boolea
             aria-label={localeDisplayNames[option]}
             aria-current={locale === option ? "true" : undefined}
             title={localeDisplayNames[option]}
-            className="relative grid h-9 w-10 place-items-center rounded-lg text-[21px] leading-none hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 aria-[current=true]:bg-emerald-50"
+            className="relative grid h-9 w-full place-items-center rounded-lg text-[20px] leading-none hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 aria-[current=true]:bg-emerald-50"
           >
             <span aria-hidden="true">{localeFlags[option]}</span>
             {locale === option && <span aria-hidden="true" className="absolute -right-0.5 -top-0.5 grid h-3.5 w-3.5 place-items-center rounded-full bg-emerald-700 text-[9px] font-bold text-white">✓</span>}
