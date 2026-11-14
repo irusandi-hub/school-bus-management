@@ -353,7 +353,7 @@ export default function LandingPage() {
                   width={HERO_IMAGE.width}
                   height={HERO_IMAGE.height}
                   priority
-                  sizes="(min-width: 768px) 60vw, 55vw"
+                  sizes="(min-width: 768px) 50vw, 100vw"
                 />
               </div>
             </div>

@@ -39,13 +39,13 @@ export function LandingDownloads() {
   const { t } = useLocale();
   return <div className="landing-actions">
     {/* Tautan toko belum tersedia. Ganti dengan URL App Store/Google Play saat aplikasi dirilis. */}
-    <NoticeButton tooltip={false} id="store-apple" message={t("downloadUnavailable")} className="landing-btn landing-btn-primary">
+    <NoticeButton tooltip={false} id="store-apple" message={t("downloadUnavailable")} className="landing-btn landing-store-badge">
       <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.5 2c.1 1.6-.7 3.1-1.7 4-1 .9-2.3 1.3-3.4 1.2-.1-1.5.7-3 1.7-3.9C14.1 2.4 15.5 2 16.5 2ZM20 17.3c-.5 1.2-.8 1.8-1.5 2.9-1 1.4-2.3 3.1-3.9 3.1-1.4 0-1.8-.9-3.7-.9s-2.3.9-3.7.9c-1.6 0-2.8-1.6-3.8-3C.7 16.4.2 11.7 1.9 9.2c1.2-1.8 3.2-2.8 5-2.8 1.5 0 2.5.9 3.8.9 1.2 0 2-.9 3.8-.9 1.5 0 3 .8 4.2 2.1-3.7 2-3.1 7.1 1.3 8.8Z" transform="translate(2 0) scale(.85 1)" /></svg>
-      <span>{t("storeApp")}</span>
+      <span className="landing-store-copy"><small>{t("storeComingSoon")}</small><strong>App Store</strong></span>
     </NoticeButton>
-    <NoticeButton tooltip={false} id="store-google" message={t("downloadUnavailable")} className="landing-btn landing-btn-outline">
+    <NoticeButton tooltip={false} id="store-google" message={t("downloadUnavailable")} className="landing-btn landing-store-badge">
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 2l12 10L3 22V2Z" fill="#4285f4"/><path d="m3 2 15 8-3 2L3 2Z" fill="#34a853"/><path d="m3 22 15-8-3-2L3 22Z" fill="#ea4335"/><path d="m15 12 3-2 4 2-4 2-3-2Z" fill="#fbbc04"/></svg>
-      <span>{t("googlePlay")}</span>
+      <span className="landing-store-copy"><small>{t("storeComingSoon")}</small><strong>Google Play</strong></span>
     </NoticeButton>
     <span className="landing-tooltip landing-download-tooltip" role="status" aria-live="polite" aria-atomic="true">{active?.id.startsWith("store-") ? active.message : ""}</span>
   </div>;

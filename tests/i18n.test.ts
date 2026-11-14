@@ -154,3 +154,9 @@ test("language menu keeps physical right anchoring and dismisses without adding 
   assert.match(source, /removeEventListener/);
   assert.match(source, /localeDisplayNames\[option\]/);
 });
+
+test("unreleased store badges state coming soon in every locale", () => {
+  assert.equal(translate("id", "storeComingSoon"), "Segera hadir");
+  assert.equal(translate("en", "storeComingSoon"), "Coming soon");
+  assert.equal(translate("ar", "storeComingSoon"), "قريبًا");
+});
