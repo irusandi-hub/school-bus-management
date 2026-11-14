@@ -20,7 +20,7 @@ const copy = {
     simulated: "Simulasi",
     open: "Terbuka untuk dicoba",
     profiles: "Kenali aplikasi melalui profil berikut:",
-    operator: "Pengelola / Operator",
+    operator: "Pengelola",
     operatorDesc: "Mengenal pengelolaan armada dan operasional layanan.",
     driver: "Pengemudi",
     driverDesc: "Mengenal tugas, daftar penumpang, dan alur perjalanan.",
@@ -221,7 +221,6 @@ export function DevModeTab({ environment }: { environment: string; sha?: string;
             <li><strong>{t.operator}</strong><span>{t.operatorDesc}</span></li>
             <li><strong>{t.driver}</strong><span>{t.driverDesc}</span></li>
             <li><strong>{t.parent}</strong><span>{t.parentDesc}</span></li>
-            <li><strong>{t.school}</strong><span>{t.schoolDesc}</span></li>
           </ul>
           <div className="dev-mode-login">
             <h3>{t.login}</h3>
