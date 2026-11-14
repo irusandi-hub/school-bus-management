@@ -5,11 +5,17 @@ import { useRouter } from "next/navigation";
 import { useLocale } from "./LocaleProvider";
 import type { Locale } from "@/lib/i18n/config";
 
-const languageOptions: { locale: Locale; flag: string; label: string }[] = [
-  { locale: "en", flag: "🇬🇧", label: "English" },
-  { locale: "ar", flag: "🇸🇦", label: "العربية" },
-  { locale: "id", flag: "🇮🇩", label: "Bahasa Indonesia" },
-];
+const languageOptions: Locale[] = ["en", "ar", "id"];
+const localeDisplayNames: Record<Locale, string> = {
+  en: "English",
+  ar: "العربية",
+  id: "Bahasa Indonesia",
+};
+const localeFlags: Record<Locale, string> = {
+  en: "🇬🇧",
+  ar: "🇸🇦",
+  id: "🇮🇩",
+};
 
 export function LocaleSwitcher({ compact: _compact = false }: { compact?: boolean } = {}) {
   const { locale, setLocale } = useLocale();
@@ -61,16 +67,16 @@ export function LocaleSwitcher({ compact: _compact = false }: { compact?: boolea
       >
         {languageOptions.map((option) => (
           <button
-            key={option.locale}
+            key={option}
             type="button"
-            onClick={() => choose(option.locale)}
-            aria-label={option.label}
-            aria-current={locale === option.locale ? "true" : undefined}
-            title={option.label}
+            onClick={() => choose(option)}
+            aria-label={localeDisplayNames[option]}
+            aria-current={locale === option ? "true" : undefined}
+            title={localeDisplayNames[option]}
             className="relative grid h-9 w-10 place-items-center rounded-lg text-[21px] leading-none hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 aria-[current=true]:bg-emerald-50"
           >
-            <span aria-hidden="true">{option.flag}</span>
-            {locale === option.locale && <span aria-hidden="true" className="absolute -right-0.5 -top-0.5 grid h-3.5 w-3.5 place-items-center rounded-full bg-emerald-700 text-[9px] font-bold text-white">✓</span>}
+            <span aria-hidden="true">{localeFlags[option]}</span>
+            {locale === option && <span aria-hidden="true" className="absolute -right-0.5 -top-0.5 grid h-3.5 w-3.5 place-items-center rounded-full bg-emerald-700 text-[9px] font-bold text-white">✓</span>}
           </button>
         ))}
       </div>
