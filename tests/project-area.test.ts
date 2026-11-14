@@ -34,7 +34,11 @@ describe("Project Area", () => {
     assert.equal(dammam.routeIds.length, 2);
     assert.equal(dammam.busIds.length, 4);
     assert.equal(dammam.driverIds.length, 3);
-    assert.deepEqual(dammam.guardianIds, ["51111111-0000-4000-8000-0000000005f1"]);
+    assert.deepEqual(dammam.guardianIds, [
+      "51111111-0000-4000-8000-0000000005f1",
+      "51111111-0000-4000-8000-0000000005f2",
+      "51111111-0000-4000-8000-0000000005f3",
+    ]);
 
     assert.deepEqual(riyadh.schoolIds, ["51111111-0000-4000-8000-0000000002c2"]);
     assert.deepEqual(riyadh.routeIds, []);
