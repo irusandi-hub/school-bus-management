@@ -11,8 +11,6 @@ import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 import { getProjectAreaContext, loadProjectAreaScope } from "@/lib/project-areas/context";
 import type { StatusHistoryRow, StudentRow } from "@/lib/types";
 import {
-  formatDate,
-  formatDateTime,
   routeDirectionLabel,
   serviceStatusLabel,
   serviceStatusOptions,
@@ -35,6 +33,9 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
   const { id } = await params;
   const locale = await getRequestLocale();
   const c = (value: string) => translateAdminCopy(value, locale) ?? value;
+  const dateLocale = locale === "ar" ? "ar-SA-u-ca-gregory" : locale === "en" ? "en-GB" : "id-ID";
+  const formatLocalDate = (value: string | null) => value ? new Intl.DateTimeFormat(dateLocale, { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Riyadh" }).format(new Date(`${value.slice(0, 10)}T12:00:00+03:00`)) : "—";
+  const formatLocalDateTime = (value: string | null) => value ? new Intl.DateTimeFormat(dateLocale, { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Riyadh" }).format(new Date(value)) : "—";
   const supabase = await adminReadContext();
   if (!supabase) return <ConfigNotice />;
 
@@ -160,7 +161,7 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
             </div>
             <div>
               <dt><AdminCopy value="Tanggal lahir" /></dt>
-              <dd>{formatDate(student.date_of_birth)}</dd>
+              <dd>{formatLocalDate(student.date_of_birth)}</dd>
             </div>
             <div>
               <dt><AdminCopy value="Alamat rumah" /></dt>
@@ -186,12 +187,12 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
               <h2 className="panel-title"><AdminCopy value="Status layanan" /></h2>
               <div className="panel-subtitle">{c("Perubahan status selalu memerlukan alasan")}</div>
             </div>
-            <Pill tone={statusTone(student.service_status)}>{serviceStatusLabel(student.service_status)}</Pill>
+            <Pill tone={statusTone(student.service_status)}>{c(serviceStatusLabel(student.service_status))}</Pill>
           </header>
 
           <div className="status-summary">
             <span>
-              {c("Diperbarui")} <strong>{formatDateTime(student.service_status_changed_at)}</strong>
+              {c("Diperbarui")} <strong>{formatLocalDateTime(student.service_status_changed_at)}</strong>
             </span>
             <p>
               {c("Status layanan berbeda dari kehadiran perjalanan dan status GPS. Menonaktifkan layanan tidak menghapus data siswa, relasi wali, atau riwayat.")}
@@ -343,7 +344,7 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
               ) : (
                 history.map((entry) => (
                   <tr key={entry.id}>
-                    <td>{formatDateTime(entry.changed_at)}</td>
+                    <td>{formatLocalDateTime(entry.changed_at)}</td>
                     <td>
                       {entry.previous_status ? `${serviceStatusLabel(entry.previous_status)} → ` : "Awal → "}
                       {serviceStatusLabel(entry.new_status)}

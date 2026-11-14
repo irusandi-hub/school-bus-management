@@ -194,7 +194,7 @@ export default async function RouteDetailPage({
         <section className="panel admin-form-panel">
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">{editingStop ? "Ubah titik jemput" : "Tambah titik jemput"}</h2>
+              <h2 className="panel-title">{editingStop ? c("Ubah titik jemput") : c("Tambah titik jemput")}</h2>
               <div className="panel-subtitle">{c("Koordinat titik hanya dipakai untuk operasional rute")}</div>
             </div>
           </header>

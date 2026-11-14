@@ -206,7 +206,7 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
                   <small>{trip.busCode ? `${c("Bus")} ${trip.busCode}` : c("Bus belum ditetapkan")}</small>
                 </div>
                 <Pill tone={trip.status === "in_progress" ? "info" : tripTone(trip.status)}>
-                  {trip.status === "scheduled" ? c("Belum dimulai") : c(c(tripStatusLabel(trip.status)))}
+                  {trip.status === "scheduled" ? c("Belum dimulai") : c(tripStatusLabel(trip.status))}
                 </Pill>
                 <small>
                   {c("Mulai")} {formatLocalTime(trip.startedAt)} · {c("Tiba")} {formatLocalTime(trip.arrivedAt)}
