@@ -2,7 +2,7 @@ name: Verify PR
 
 on:
   push:
-    branches: [feat/unified-operator-global-workspace]
+    branches: [feat/i18n-id-en-ar, feat/unified-operator-global-workspace]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -30,7 +30,7 @@ jobs:
           node-version: 22
           cache: npm
       - name: Install dependencies
-        run: npm ci
+        run: npm install --no-audit --no-fund
       - name: Unit tests
         run: npm test
       - name: TypeScript
