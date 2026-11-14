@@ -858,6 +858,9 @@ const copy: Record<string, Record<Locale, string>> = {
   "penempatan aktif": { id: "penempatan aktif", en: "active assignments", ar: "تعيينات نشطة" },
   "Tempatkan siswa": { id: "Tempatkan siswa", en: "Assign student", ar: "تعيين الطالب" },
   "Perjalanan baru dibuat oleh pengemudi saat memulai tugas. Rute dan roster ini tidak membuat perjalanan atau posisi GPS secara otomatis.": { id: "Perjalanan baru dibuat oleh pengemudi saat memulai tugas. Rute dan roster ini tidak membuat perjalanan atau posisi GPS secara otomatis.", en: "A new trip is created by the driver when starting an assignment. This route and roster do not automatically create a trip or GPS position.", ar: "ينشئ السائق رحلة جديدة عند بدء المهمة. لا ينشئ هذا المسار أو سجل الطلاب رحلة أو موقع GPS تلقائياً." },
+  "Laporan & audit": { id: "Laporan & audit", en: "Reports & Audit", ar: "التقارير والتدقيق" },
+  "Sistem": { id: "Sistem", en: "System", ar: "النظام" },
+  "Ringkasan data operasional dan jejak aktivitas platform. Konteks:": { id: "Ringkasan data operasional dan jejak aktivitas platform. Konteks:", en: "Operational data summary and platform activity log. Context:", ar: "ملخص البيانات التشغيلية وسجل نشاط المنصة. السياق:" },
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
