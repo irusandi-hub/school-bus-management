@@ -32,7 +32,7 @@ export default async function KataSandiPage({
   if (state.status === "unconfigured") {
     return (
       <main className="auth-page relative">
-      <div className="absolute end-5 top-5 z-50"><LocaleSwitcher /></div>
+      <div className="absolute right-5 top-5 z-50"><LocaleSwitcher /></div>
         <section className="auth-card">
           <BrandLogo className="auth-logo" />
           <h1>{t("databaseNotConfigured")}</h1>
@@ -55,7 +55,8 @@ export default async function KataSandiPage({
   const notice = rawReason ? notices[rawReason] : undefined;
 
   return (
-    <main className="auth-page">
+    <main className="auth-page relative">
+      <div className="absolute right-5 top-5 z-50"><LocaleSwitcher /></div>
       <section className="auth-card">
         <BrandLogo className="auth-logo" />
         <p className="eyebrow">{t("activationEyebrow")}</p>

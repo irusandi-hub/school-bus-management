@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { localeDisplayNames, locales, type Locale } from "@/lib/i18n/config";
 import { useRouter } from "next/navigation";
 import { useLocale } from "./LocaleProvider";
@@ -16,6 +16,23 @@ export function LocaleSwitcher({ compact: _compact = false }: { compact?: boolea
   const router = useRouter();
   const detailsRef = useRef<HTMLDetailsElement>(null);
 
+  useEffect(() => {
+    function dismiss(event: PointerEvent | KeyboardEvent) {
+      const menu = detailsRef.current;
+      if (!menu?.open) return;
+      if (event instanceof KeyboardEvent) {
+        if (event.key !== "Escape") return;
+        menu.removeAttribute("open");
+        menu.querySelector("summary")?.focus();
+      } else if (event.target instanceof Node && !menu.contains(event.target)) {
+        menu.removeAttribute("open");
+      }
+    }
+    document.addEventListener("pointerdown", dismiss);
+    document.addEventListener("keydown", dismiss);
+    return () => { document.removeEventListener("pointerdown", dismiss); document.removeEventListener("keydown", dismiss); };
+  }, []);
+
   function choose(next: Locale) {
     setLocale(next);
     detailsRef.current?.removeAttribute("open");
@@ -23,7 +40,7 @@ export function LocaleSwitcher({ compact: _compact = false }: { compact?: boolea
   }
 
   return (
-    <details ref={detailsRef} className="relative z-[100]">
+    <details ref={detailsRef} className="locale-menu relative z-[100]">
       <summary
         aria-label={locale === "ar" ? "اختيار اللغة" : locale === "en" ? "Choose language" : "Pilih bahasa"}
         title={locale === "ar" ? "اختيار اللغة" : locale === "en" ? "Choose language" : "Pilih bahasa"}
@@ -35,7 +52,7 @@ export function LocaleSwitcher({ compact: _compact = false }: { compact?: boolea
       <div
         role="group"
         aria-label={locale === "ar" ? "اللغات" : locale === "en" ? "Languages" : "Pilihan bahasa"}
-        className="absolute end-0 top-[calc(100%+6px)] z-[101] min-w-40 overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 text-slate-800 shadow-xl"
+        className="absolute right-0 top-[calc(100%+6px)] z-[101] min-w-40 overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 text-slate-800 shadow-xl"
       >
         {locales.map((option) => (
           <button

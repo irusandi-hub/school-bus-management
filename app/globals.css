@@ -2954,3 +2954,9 @@ html[lang="ar"] .page-title,html[lang="ar"] .welcome h2,html[lang="ar"] .panel-t
 .otp-form button{min-height:48px;margin-top:0}
 .otp-form .form-alert{margin:0}
 @media(max-width:380px){.otp-card{padding:26px 20px}.otp-code-grid{gap:6px}.otp-code-input{height:52px;font-size:21px}}
+
+/* Keep action groups physically right-aligned, including Arabic; copy remains RTL. */
+html[dir="rtl"] :is(.landing-header,.portal-head,.compact-identity-row,.operator-shell .main > .topbar){direction:ltr}
+html[dir="rtl"] :is(.landing-header,.portal-head,.compact-identity-row,.operator-shell .main > .topbar) > *{direction:rtl}
+.locale-menu{flex:none}
+.locale-menu > [role="group"]{max-width:calc(100vw - 32px)}

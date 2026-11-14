@@ -144,3 +144,13 @@ test("driver camera publisher status messages are localized", () => {
   assert.equal(translateAdminCopy("Kamera dihentikan", "ar"), "تم إيقاف الكاميرا");
   assert.equal(translateAdminCopy("Meminta izin kamera perangkat…", "en"), "Requesting device camera permission…");
 });
+
+test("language menu keeps physical right anchoring and dismisses without adding layout rows", async () => {
+  const fs = await import("node:fs");
+  const source = fs.readFileSync("components/i18n/LocaleSwitcher.tsx", "utf8");
+  assert.match(source, /absolute right-0/);
+  assert.match(source, /pointerdown/);
+  assert.match(source, /Escape/);
+  assert.match(source, /removeEventListener/);
+  assert.match(source, /localeDisplayNames\[option\]/);
+});

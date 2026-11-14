@@ -18,7 +18,7 @@ export default async function ChooseRolePage() {
   const copy = (value: string) => translateAdminCopy(value, locale) ?? value;
   return (
     <main className="sbm-role-explore relative">
-      <div className="absolute end-5 top-5 z-50"><LocaleSwitcher /></div>
+      <div className="absolute right-5 top-5 z-50"><LocaleSwitcher /></div>
       <section className="sbm-role-explore-card" aria-labelledby="explore-title">
         <BrandLogo href="/" ariaLabel="Kembali ke beranda" className="sbm-role-explore-brand" />
         <h1 id="explore-title">{copy("Pilih tampilan pengguna")}</h1>

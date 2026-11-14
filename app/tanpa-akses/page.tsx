@@ -41,7 +41,7 @@ export default async function NoAccessPage({
 
   return (
     <main className="auth-page relative">
-      <div className="absolute end-5 top-5 z-50"><LocaleSwitcher /></div>
+      <div className="absolute right-5 top-5 z-50"><LocaleSwitcher /></div>
       <section className="auth-card access-denied">
         <span className="gate-icon gate-icon-neutral" aria-hidden="true">!</span>
         <p className="eyebrow">{copy("AKSES TERBATAS")}</p>

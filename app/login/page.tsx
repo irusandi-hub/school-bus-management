@@ -47,7 +47,7 @@ export default async function LoginPage({
 
   return (
     <main className="auth-page otp-page relative">
-      <div className="absolute end-5 top-5 z-50"><LocaleSwitcher /></div>
+      <div className="absolute right-5 top-5 z-50"><LocaleSwitcher /></div>
       <section className="auth-card otp-card">
         <BrandLogo href="/" ariaLabel="Kembali ke beranda" className="auth-logo" />
         <h1><LocalizedText k="otpTitle" /></h1>

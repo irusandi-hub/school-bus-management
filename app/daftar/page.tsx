@@ -7,7 +7,7 @@ import { SignupForm } from "./signup-form";
 export default function DaftarPage() {
   return (
     <main className="auth-page relative">
-      <div className="absolute end-5 top-5 z-50"><LocaleSwitcher /></div>
+      <div className="absolute right-5 top-5 z-50"><LocaleSwitcher /></div>
       <section className="auth-card">
         <BrandLogo className="auth-logo" />
         <p className="eyebrow"><LocalizedText k="activateGuardian" /></p>
