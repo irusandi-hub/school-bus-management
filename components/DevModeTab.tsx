@@ -41,7 +41,7 @@ export function DevModeTab({ environment, sha, branch }: { environment: string; 
         {(sha || branch) && <div><dt>{c("Versi")}</dt><dd>{[sha?.slice(0, 7), branch].filter(Boolean).join(" · ")}</dd></div>}
       </dl>
       <nav aria-label={c("Pintasan area demo")}>{areas.map(([href, label]) => <Link key={href} href={href} onClick={() => setOpen(false)}>{c(label)}</Link>)}</nav>
-      <p>{c("Login dan hak akses akan diaktifkan di tahap berikutnya.")}</p>
+      <p>{c("Akses demo hanya tersedia di lingkungan pengembangan. Pada layanan normal, masuk dan hak akses mengikuti akun Anda.")}</p>
     </section>}
   </div>;
 }
