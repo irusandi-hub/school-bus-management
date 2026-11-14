@@ -49,15 +49,12 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
 
   if (!student) notFound();
 
-  const { data: historyData, error: historyError } = await supabase
-    .from("student_service_status_history")
-    .select("id, student_id, previous_status, new_status, reason, changed_at, profiles(full_name)")
-    .eq("student_id", id)
-    .order("changed_at", { ascending: false });
-
-  const history = (historyData ?? []) as unknown as StatusHistoryRow[];
-
-  const [placementsResult, allStopsResult] = await Promise.all([
+  const [historyResult, placementsResult, allStopsResult] = await Promise.all([
+    supabase
+      .from("student_service_status_history")
+      .select("id, student_id, previous_status, new_status, reason, changed_at, profiles(full_name)")
+      .eq("student_id", id)
+      .order("changed_at", { ascending: false }),
     supabase
       .from("student_route_stops")
       .select("id, student_id, route_id, stop_id, direction, active, route_stops(stop_name, stop_order), routes(route_name)")
@@ -74,6 +71,9 @@ export default async function StudentDetailPage({ params }: { params: Promise<{ 
           .select("id, stop_name, stop_order, route_id, routes(route_name)")
           .order("stop_order", { ascending: true }),
   ]);
+
+  const historyError = historyResult.error;
+  const history = (historyResult.data ?? []) as unknown as StatusHistoryRow[];
 
   const placements = (placementsResult.data ?? []) as unknown as {
     id: string;
