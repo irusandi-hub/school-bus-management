@@ -859,6 +859,9 @@ const copy: Record<string, Record<Locale, string>> = {
   "Siswa tersebut tidak terdaftar pada rute perjalanan ini.": { id: "Siswa tersebut tidak terdaftar pada rute perjalanan ini.", en: "This student is not registered on this trip route.", ar: "هذا الطالب غير مسجل في مسار هذه الرحلة." },
   "Status siswa belum tersimpan. Coba lagi.": { id: "Status siswa belum tersimpan. Coba lagi.", en: "Student status was not saved. Try again.", ar: "لم يتم حفظ حالة الطالب. حاول مرة أخرى." },
   "Status Turun berhasil dicatat untuk {count} siswa. Status Tidak Ikut tetap dipertahankan.": { id: "Status Turun berhasil dicatat untuk {count} siswa. Status Tidak Ikut tetap dipertahankan.", en: "Drop-off was recorded for {count} students. Absent statuses were preserved.", ar: "تم تسجيل النزول لـ {count} طالباً. وتم الاحتفاظ بحالات الغياب." },
+  "Posisi HP pengemudi, akurasi sekitar": {"id":"Posisi HP pengemudi, akurasi sekitar","en":"Driver phone location, accuracy about","ar":"موقع هاتف السائق، دقة نحو"},
+  "meter": {"id":"meter","en":"meters","ar":"متر"},
+  "Memuat peta…": {"id":"Memuat peta…","en":"Loading map…","ar":"جارٍ تحميل الخريطة…"},
 };
 
 export function translateAdminCopy(value: string | undefined, locale: Locale): string | undefined {
