@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { Globe } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "./LocaleProvider";
 import type { Locale } from "@/lib/i18n/config";
@@ -65,14 +66,14 @@ export function LocaleSwitcher({ compact: _compact = false }: { compact?: boolea
       <summary
         aria-label={locale === "ar" ? "اختيار اللغة" : locale === "en" ? "Choose language" : "Pilih bahasa"}
         title={locale === "ar" ? "اختيار اللغة" : locale === "en" ? "Choose language" : "Pilih bahasa"}
-        className="flex h-9 w-9 cursor-pointer list-none items-center justify-center rounded-full border border-slate-200 bg-white text-slate-800 shadow-sm outline-none transition hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-emerald-700 [&::-webkit-details-marker]:hidden"
+        className="flex h-9 w-9 cursor-pointer list-none items-center justify-center rounded-full border-0 bg-transparent text-slate-700 shadow-none outline-none transition hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-emerald-700 [&::-webkit-details-marker]:hidden"
       >
-        <LocaleFlag locale={locale} />
+        <Globe aria-hidden="true" className="h-[19px] w-[19px] stroke-[1.7]" />
       </summary>
       <div
         role="group"
         aria-label={locale === "ar" ? "اللغات" : locale === "en" ? "Languages" : "Pilihan bahasa"}
-        className="absolute right-0 top-[calc(100%+8px)] z-[101] flex w-[52px] min-w-[52px] flex-col gap-1 rounded-xl border border-slate-200/80 bg-white/95 p-1.5 text-slate-800 shadow-lg shadow-slate-900/8 backdrop-blur-sm"
+        className="absolute right-0 top-[calc(100%+5px)] z-[101] flex w-[48px] min-w-[48px] flex-col gap-0.5 rounded-lg border-0 bg-white p-1 text-slate-800 shadow-md shadow-slate-900/10"
       >
         {languageOptions.map((option) => (
           <button
@@ -82,7 +83,7 @@ export function LocaleSwitcher({ compact: _compact = false }: { compact?: boolea
             aria-label={option === "ar" ? "العربية" : option === "en" ? "English" : "Bahasa"}
             aria-current={locale === option ? "true" : undefined}
             title={option === "ar" ? "العربية" : option === "en" ? "English" : "Bahasa"}
-            className="flex h-9 w-full items-center justify-center rounded-lg p-1 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 aria-[current=true]:bg-emerald-50"
+            className="flex h-9 w-full items-center justify-center rounded-md border-0 bg-transparent p-1 transition-colors hover:bg-slate-100/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 aria-[current=true]:bg-slate-100"
           >
             <LocaleFlag locale={option} />
           </button>
