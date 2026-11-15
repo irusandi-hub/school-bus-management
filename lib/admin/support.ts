@@ -3,6 +3,7 @@ import { createServerSupabase } from "@/lib/supabase/server";
 import { supabaseNotConfiguredMessage } from "@/lib/supabase/env";
 import { failure, type ActionState } from "@/lib/validation";
 import { getDemoSession } from "@/lib/demo-session";
+import { demoIdentity } from "@/lib/demo-session-token";
 import { demoReadOnlyMessage } from "@/lib/demo-read-only";
 
 export type ServerSupabase = NonNullable<Awaited<ReturnType<typeof createServerSupabase>>>;
@@ -21,12 +22,17 @@ export type AdminActionContext =
  * same global Operator authority independently.
  */
 export async function adminActionContext(): Promise<AdminActionContext> {
-  if (await getDemoSession()) return { ok: false, state: failure(await demoReadOnlyMessage()) };
+  const demoSession = await getDemoSession();
+  if (demoSession && !isDevOpenAccess()) return { ok: false, state: failure(await demoReadOnlyMessage()) };
+  if (demoSession && isDevOpenAccess() && demoIdentity(demoSession).profileRole !== "operator") {
+    return { ok: false, state: failure("Akun simulasi ini tidak memiliki izin Operator untuk tindakan ini.") };
+  }
   const supabase = await createServerSupabase();
   if (!supabase) return { ok: false, state: failure(supabaseNotConfiguredMessage) };
 
   // Mode akses terbuka pengembangan memakai identitas Operator simulasi.
-  if (isDevOpenAccess()) return { ok: true, supabase, userId: DEV_VIEWER.operator.userId };
+  if (isDevOpenAccess() && !demoSession) return { ok: true, supabase, userId: DEV_VIEWER.operator.userId };
+  if (demoSession) return { ok: true, supabase, userId: demoIdentity(demoSession).userId };
 
   const {
     data: { user },
@@ -81,12 +87,17 @@ export type OperatorActionContext =
  * rows remain optional data attribution and are not authorization boundaries.
  */
 export async function operatorActionContext(): Promise<OperatorActionContext> {
-  if (await getDemoSession()) return { ok: false, state: failure(await demoReadOnlyMessage()) };
+  const demoSession = await getDemoSession();
+  if (demoSession && !isDevOpenAccess()) return { ok: false, state: failure(await demoReadOnlyMessage()) };
+  if (demoSession && isDevOpenAccess() && demoIdentity(demoSession).profileRole !== "operator") {
+    return { ok: false, state: failure("Akun simulasi ini tidak memiliki izin Operator untuk tindakan ini.") };
+  }
   const supabase = await createServerSupabase();
   if (!supabase) return { ok: false, state: failure(supabaseNotConfiguredMessage) };
 
   // Development preview uses the dedicated simulated Operator identity.
-  if (isDevOpenAccess()) return { ok: true, supabase, userId: DEV_VIEWER.operator.userId };
+  if (isDevOpenAccess() && !demoSession) return { ok: true, supabase, userId: DEV_VIEWER.operator.userId };
+  if (demoSession) return { ok: true, supabase, userId: demoIdentity(demoSession).userId };
 
   const {
     data: { user },
