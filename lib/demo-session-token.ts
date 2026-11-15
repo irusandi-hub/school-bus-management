@@ -4,6 +4,10 @@ import type { DemoGuardianKey, DemoOtpRole } from "@/lib/demo-otp";
 export const DEMO_SESSION_COOKIE = "sbm_demo_session";
 const SESSION_TTL_SECONDS = 4 * 60 * 60;
 
+export function isDemoOtpAvailable(): boolean {
+  return Boolean(process.env.DEMO_OTP_SESSION_SECRET && process.env.DEMO_OTP_SESSION_SECRET.length >= 32);
+}
+
 export type DemoSession = {
   role: DemoOtpRole;
   guardianKey?: DemoGuardianKey;
