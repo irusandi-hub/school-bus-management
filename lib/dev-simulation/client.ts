@@ -1,4 +1,5 @@
 import { DEV_DRIVER_RECORD, DEV_GUARDIAN_VIEWERS, DEV_VIEWER } from "../dev-open-access.ts";
+import type { DemoIdentity } from "@/lib/demo-session-token";
 import { createSimulationTables, type SimRow, type SimTables } from "./data.ts";
 
 /**
@@ -166,6 +167,7 @@ function likeMatches(value: unknown, pattern: string, insensitive: boolean): boo
 class SimQuery implements PromiseLike<SimResult> {
   private readonly tables: SimTables;
   private readonly tableName: string;
+  private readonly readOnly: boolean;
   private readonly predicates: Array<(row: SimRow) => boolean> = [];
   private readonly orders: Array<{ column: string; ascending: boolean }> = [];
   private kind: "select" | "insert" | "update" | "delete" | "upsert" = "select";
@@ -177,9 +179,10 @@ class SimQuery implements PromiseLike<SimResult> {
   private rangeTo: number | null = null;
   private limitTo: number | null = null;
 
-  constructor(tables: SimTables, tableName: string) {
+  constructor(tables: SimTables, tableName: string, readOnly = false) {
     this.tables = tables;
     this.tableName = tableName;
+    this.readOnly = readOnly;
   }
 
   select(columns = "*", options: { count?: string; head?: boolean } = {}) {
@@ -305,9 +308,9 @@ class SimQuery implements PromiseLike<SimResult> {
   }
 
   private execute(): SimResult {
-    // Preview dan sesi demo produksi bersifat read-only. Tolak semua mutasi di
-    // lapisan klien server agar Server Action/API yang dipanggil langsung pun gagal.
-    if (this.kind !== "select") {
+    // Hanya sesi demo produksi yang read-only. Preview/local tetap dapat menulis
+    // ke dataset simulasi terisolasi untuk pengujian end-to-end.
+    if (this.readOnly && this.kind !== "select") {
       return {
         data: null,
         error: {
@@ -416,10 +419,11 @@ export function resetSimulationData() {
   return sharedSimulation.__schoolBusSimulationTables;
 }
 
-export function createSimulationClient() {
+export function createSimulationClient(identity?: DemoIdentity, readOnly = false) {
   const tables = simulationTables();
+  const viewer = identity ?? { ...DEV_VIEWER.operator, profileRole: "operator" as const };
 
-  const query = (tableName: string) => new SimQuery(tables, tableName);
+  const query = (tableName: string) => new SimQuery(tables, tableName, readOnly);
 
   const authMessage =
     "Mode pengembangan aktif: proses masuk, pendaftaran, dan aktivasi akun dinonaktifkan karena ketiga ekosistem dibuka tanpa login.";
@@ -433,9 +437,8 @@ export function createSimulationClient() {
      * Fungsi lain mengembalikan galat eksplisit, bukan sukses palsu.
      */
     async rpc(name: string, args: Record<string, unknown> = {}): Promise<{ data: unknown; error: SimError }> {
-      // Semua RPC yang mengubah status, perjalanan, atau lokasi ditolak.
-      // guardian_trip_location tetap tersedia karena hanya membaca data.
-      if (name !== "guardian_trip_location") {
+      // RPC mutasi hanya ditolak pada sesi demo produksi; Preview/local tetap writable.
+      if (readOnly && name !== "guardian_trip_location") {
         return {
           data: null,
           error: {
@@ -566,7 +569,7 @@ export function createSimulationClient() {
           new_status: status,
           reason: String(args.p_reason ?? ""),
           changed_at: changedAt,
-          actor_profile_id: DEV_VIEWER.operator.userId,
+          actor_profile_id: viewer.userId,
         });
 
         return { data: null, error: null };
@@ -578,7 +581,7 @@ export function createSimulationClient() {
       async getUser() {
         return {
           data: {
-            user: { id: DEV_VIEWER.operator.userId, email: DEV_VIEWER.operator.email, aud: "authenticated" },
+            user: { id: viewer.userId, email: viewer.email, aud: "authenticated" },
           },
           error: null,
         };
