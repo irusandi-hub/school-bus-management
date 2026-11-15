@@ -249,17 +249,15 @@ export async function guardianRequestAccess(): Promise<
 
 /** Server-side gate for the guardian area. */
 export async function requireGuardian(nextPath = "/wali"): Promise<GuardianAccess> {
-  if (isDevOpenAccess()) {
-    const demoSession = await getDemoSession();
-    if (demoSession) {
-      const identity = demoIdentity(demoSession);
-      if (identity.profileRole !== "parent") redirectToOwnArea(identity.profileRole);
-      return {
-        status: "ready",
-        viewer: { userId: identity.userId, email: identity.email, profile: { id: identity.userId, full_name: identity.fullName, role: "parent", phone: null } },
-        guardianId: identity.guardianId,
-      };
-    }
+  const demoSession = await getDemoSession();
+  if (demoSession) {
+    const identity = demoIdentity(demoSession);
+    if (identity.profileRole !== "parent") redirectToOwnArea(identity.profileRole);
+    return {
+      status: "ready",
+      viewer: { userId: identity.userId, email: identity.email, profile: { id: identity.userId, full_name: identity.fullName, role: "parent", phone: null } },
+      guardianId: identity.guardianId,
+    };
   }
 
   if (isDevOpenAccess()) {
