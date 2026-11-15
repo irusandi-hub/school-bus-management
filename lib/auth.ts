@@ -4,6 +4,8 @@ import { homeForRole } from "@/lib/access";
 import { DEV_DRIVER_RECORD, DEV_GUARDIAN_VIEWERS, DEV_VIEWER, isDevOpenAccess } from "@/lib/dev-open-access";
 import { createServerSupabase } from "@/lib/supabase/server";
 import type { ProfileRow, UserRole } from "@/lib/types";
+import { getDemoSession } from "@/lib/demo-session";
+import { demoIdentity } from "@/lib/demo-session-token";
 
 const knownRoles: UserRole[] = ["admin", "operator", "driver", "parent"];
 
@@ -24,6 +26,26 @@ export type ViewerState =
  * values, and every area below re-checks the role it needs.
  */
 export async function getViewerState(): Promise<ViewerState> {
+  if (!isDevOpenAccess()) {
+    const demoSession = await getDemoSession();
+    if (demoSession) {
+      const identity = demoIdentity(demoSession);
+      return {
+        status: "authenticated",
+        viewer: {
+          userId: identity.userId,
+          email: identity.email,
+          profile: {
+            id: identity.userId,
+            full_name: identity.fullName,
+            role: identity.profileRole,
+            phone: null,
+          },
+        },
+      };
+    }
+  }
+
   const supabase = await createServerSupabase();
   if (!supabase) return { status: "unconfigured" };
 
@@ -204,6 +226,14 @@ export async function guardianRequestAccess(): Promise<
 
 /** Server-side gate for the guardian area. */
 export async function requireGuardian(nextPath = "/wali"): Promise<GuardianAccess> {
+  if (!isDevOpenAccess()) {
+    const demoSession = await getDemoSession();
+    if (demoSession?.role === "wali") {
+      const identity = demoIdentity(demoSession);
+      return { status: "ready", viewer: { userId: identity.userId, email: identity.email, profile: { id: identity.userId, full_name: identity.fullName, role: "parent", phone: null } }, guardianId: identity.guardianId };
+    }
+  }
+
   if (isDevOpenAccess()) {
     const cookieStore = await cookies();
     const selectedKey = cookieStore.get("sbm_demo_guardian")?.value;
