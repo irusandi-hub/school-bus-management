@@ -6,11 +6,6 @@ import { useLocale } from "./LocaleProvider";
 import type { Locale } from "@/lib/i18n/config";
 
 const languageOptions: Locale[] = ["en", "ar", "id"];
-const localeDisplayNames: Record<Locale, string> = {
-  en: "English",
-  ar: "العربية",
-  id: "Bahasa",
-};
 function LocaleFlag({ locale }: { locale: Locale }) {
   if (locale === "id") {
     return <svg viewBox="0 0 24 16" aria-hidden="true" className="h-4 w-6 overflow-hidden rounded-[3px]">
@@ -72,29 +67,24 @@ export function LocaleSwitcher({ compact: _compact = false }: { compact?: boolea
         title={locale === "ar" ? "اختيار اللغة" : locale === "en" ? "Choose language" : "Pilih bahasa"}
         className="flex h-9 w-9 cursor-pointer list-none items-center justify-center rounded-full border border-slate-200 bg-white text-slate-800 shadow-sm outline-none transition hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-emerald-700 [&::-webkit-details-marker]:hidden"
       >
-        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" aria-hidden="true">
-          <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.7" />
-          <path d="M3.5 12h17M12 3c2.2 2.4 3.2 5.4 3.2 9s-1 6.6-3.2 9c-2.2-2.4-3.2-5.4-3.2-9S9.8 5.4 12 3Z" stroke="currentColor" strokeWidth="1.5" />
-        </svg>
+        <LocaleFlag locale={locale} />
       </summary>
       <div
         role="group"
         aria-label={locale === "ar" ? "اللغات" : locale === "en" ? "Languages" : "Pilihan bahasa"}
-        className="absolute right-0 top-[calc(100%+8px)] z-[101] flex w-[156px] min-w-[156px] flex-col gap-0.5 rounded-xl border border-slate-200/80 bg-white/95 p-1.5 text-slate-800 shadow-lg shadow-slate-900/8 backdrop-blur-sm"
+        className="absolute right-0 top-[calc(100%+8px)] z-[101] flex w-[52px] min-w-[52px] flex-col gap-1 rounded-xl border border-slate-200/80 bg-white/95 p-1.5 text-slate-800 shadow-lg shadow-slate-900/8 backdrop-blur-sm"
       >
         {languageOptions.map((option) => (
           <button
             key={option}
             type="button"
             onClick={() => choose(option)}
-            aria-label={localeDisplayNames[option]}
+            aria-label={option === "ar" ? "العربية" : option === "en" ? "English" : "Bahasa"}
             aria-current={locale === option ? "true" : undefined}
-            title={localeDisplayNames[option]}
-            className="flex h-9 w-full items-center gap-2.5 rounded-lg px-2 text-left text-[13px] font-medium leading-none text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 aria-[current=true]:bg-emerald-50 aria-[current=true]:text-emerald-800"
+            title={option === "ar" ? "العربية" : option === "en" ? "English" : "Bahasa"}
+            className="flex h-9 w-full items-center justify-center rounded-lg p-1 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 aria-[current=true]:bg-emerald-50"
           >
             <LocaleFlag locale={option} />
-            <span className="min-w-0 flex-1">{localeDisplayNames[option]}</span>
-            {locale === option && <span aria-hidden="true" className="text-[11px] font-semibold text-emerald-700">✓</span>}
           </button>
         ))}
       </div>
