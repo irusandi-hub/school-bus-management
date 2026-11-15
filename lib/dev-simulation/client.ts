@@ -168,7 +168,7 @@ class SimQuery implements PromiseLike<SimResult> {
   private readonly tableName: string;
   private readonly predicates: Array<(row: SimRow) => boolean> = [];
   private readonly orders: Array<{ column: string; ascending: boolean }> = [];
-  private kind: "select" | "insert" | "update" = "select";
+  private kind: "select" | "insert" | "update" | "delete" | "upsert" = "select";
   private payload: SimRow | SimRow[] | null = null;
   private columnSpec = "*";
   private withCount = false;
@@ -197,6 +197,17 @@ class SimQuery implements PromiseLike<SimResult> {
 
   update(values: SimRow) {
     this.kind = "update";
+    this.payload = values;
+    return this;
+  }
+
+  delete() {
+    this.kind = "delete";
+    return this;
+  }
+
+  upsert(values: SimRow | SimRow[]) {
+    this.kind = "upsert";
     this.payload = values;
     return this;
   }
@@ -294,6 +305,19 @@ class SimQuery implements PromiseLike<SimResult> {
   }
 
   private execute(): SimResult {
+    // Preview dan sesi demo produksi bersifat read-only. Tolak semua mutasi di
+    // lapisan klien server agar Server Action/API yang dipanggil langsung pun gagal.
+    if (this.kind !== "select") {
+      return {
+        data: null,
+        error: {
+          code: "42501",
+          message: "Untuk simulasi, developer tidak mengizinkan pengguna melakukan perubahan data.",
+        },
+        count: null,
+      };
+    }
+
     if (this.kind === "insert") {
       const values = Array.isArray(this.payload) ? this.payload : [this.payload ?? {}];
       const clash = this.uniqueViolation(values);
@@ -409,6 +433,18 @@ export function createSimulationClient() {
      * Fungsi lain mengembalikan galat eksplisit, bukan sukses palsu.
      */
     async rpc(name: string, args: Record<string, unknown> = {}): Promise<{ data: unknown; error: SimError }> {
+      // Semua RPC yang mengubah status, perjalanan, atau lokasi ditolak.
+      // guardian_trip_location tetap tersedia karena hanya membaca data.
+      if (name !== "guardian_trip_location") {
+        return {
+          data: null,
+          error: {
+            code: "42501",
+            message: "Untuk simulasi, developer tidak mengizinkan pengguna melakukan perubahan data.",
+          },
+        };
+      }
+
       if (name === "driver_publish_trip_location") {
         const tripId = String(args.p_trip_id ?? "");
         const trip = tables.trips.find((row) => row.id === tripId);
