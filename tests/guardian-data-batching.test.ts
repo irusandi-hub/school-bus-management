@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { loadChildren } from "../lib/guardian/data.ts";
+import { loadChildren, todayDate } from "../lib/guardian/data.ts";
+
+const serviceDate = todayDate();
 
 type Filter = { kind: "eq" | "in"; column: string; value: unknown };
 
@@ -62,18 +64,21 @@ const students = [
     id: "student-1",
     admissions_number: "ADM-001",
     full_name: "Anak Satu",
+    service_status: "active",
     guardian_id: "guardian-1",
   },
   {
     id: "student-2",
     admissions_number: "ADM-002",
     full_name: "Anak Dua",
+    service_status: "active",
     guardian_id: "guardian-1",
   },
   {
     id: "student-other",
     admissions_number: "ADM-003",
     full_name: "Anak Lain",
+    service_status: "active",
     guardian_id: "guardian-2",
   },
 ];
@@ -108,12 +113,14 @@ const placements = [
 const assignments = [
   {
     route_id: "route-morning",
+    service_date: serviceDate,
     driver_id: "driver-1",
     buses: { fleet_code: "BUS-01", plate_number: "ABC-123", capacity: 20 },
     trips: [{ id: "trip-morning", status: "in_progress", started_at: "2026-11-15T03:00:00Z", arrived_at: null, completed_at: null }],
   },
   {
     route_id: "route-afternoon",
+    service_date: serviceDate,
     driver_id: null,
     buses: { fleet_code: "BUS-02", plate_number: "XYZ-789", capacity: 16 },
     trips: [],
