@@ -1,6 +1,6 @@
 "use server";
 
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { supabaseNotConfiguredMessage } from "@/lib/supabase/env";
@@ -215,5 +215,8 @@ export async function completeAccountAction(_prev: ActionState, formData: FormDa
 export async function signOutAction() {
   const supabase = await createServerSupabase();
   await supabase?.auth.signOut();
+  const cookieStore = await cookies();
+  cookieStore.delete("sbm_demo_session");
+  cookieStore.delete("sbm_demo_guardian");
   redirect("/");
 }
