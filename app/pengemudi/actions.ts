@@ -11,6 +11,8 @@ import { resolveStudentTripStates } from "@/lib/driver/trip-progress";
 import { isDuplicateStudentEvent } from "@/lib/driver/student-events";
 import { evaluateTripEnd, SAFETY_CHECKS, studentsStillOnBus, type SafetyFieldName } from "@/lib/driver/trip-end";
 import { failure, readText, success, type ActionState } from "@/lib/validation";
+import { getDemoSession } from "@/lib/demo-session";
+import { demoReadOnlyMessage } from "@/lib/demo-read-only";
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -19,6 +21,7 @@ type DriverContext =
   | { ok: false; state: ActionState };
 
 async function driverActionContext(): Promise<DriverContext> {
+  if (await getDemoSession()) return { ok: false, state: failure(await demoReadOnlyMessage()) };
   const supabase = await createServerSupabase();
   if (!supabase) return { ok: false, state: failure(supabaseNotConfiguredMessage) };
 
