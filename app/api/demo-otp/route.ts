@@ -5,7 +5,7 @@ import { createDemoSessionToken, DEMO_SESSION_COOKIE, DEMO_SESSION_MAX_AGE, isDe
 
 export async function POST(request: Request) {
   const previewSimulation = isDevOpenAccess();
-  if (!isDemoOtpAvailable()) {
+  if (!previewSimulation && !isDemoOtpAvailable()) {
     return NextResponse.json({ message: "OTP simulasi belum dikonfigurasi." }, { status: 503 });
   }
 
@@ -20,6 +20,25 @@ export async function POST(request: Request) {
   const guardianKey = role === "wali" ? demoGuardianKeyForOtp(code) : undefined;
   if (role === "wali" && !guardianKey) {
     return NextResponse.json({ message: "Akun wali simulasi tidak ditemukan." }, { status: 400 });
+  }
+
+  // Local development can keep using the legacy role-specific preview cookie
+  // when no signing secret is configured. Vercel PR Preview uses signed sessions.
+  if (previewSimulation && !isDemoOtpAvailable()) {
+    const response = NextResponse.json({ destination: DEMO_OTP_DESTINATIONS[role] });
+    response.cookies.delete(DEMO_SESSION_COOKIE);
+    if (role === "wali" && guardianKey) {
+      response.cookies.set("sbm_demo_guardian", guardianKey, {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+        maxAge: DEMO_SESSION_MAX_AGE,
+      });
+    } else {
+      response.cookies.delete("sbm_demo_guardian");
+    }
+    return response;
   }
 
   const token = await createDemoSessionToken(role, guardianKey ?? undefined);
