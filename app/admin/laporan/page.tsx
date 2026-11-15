@@ -44,9 +44,6 @@ export default async function ReportsPage() {
     .eq("service_date", today);
   if (selectedId) assignmentsQuery = assignmentsQuery.in("route_id", scope.routeIds);
 
-  let completedQuery = supabase.from("trips").select("id", { count: "exact", head: true }).eq("status", "completed");
-  if (selectedId) completedQuery = completedQuery.in("assignment_id", assignmentIds);
-
   const [activeStudents, guardians, routes, assignmentsToday, areaAssignments, audits] = await Promise.all([
     studentsQuery,
     guardiansQuery,
