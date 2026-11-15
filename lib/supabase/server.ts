@@ -2,6 +2,8 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { isDevOpenAccess } from "@/lib/dev-open-access";
 import { supabaseConfig } from "@/lib/supabase/env";
+import { getDemoSession } from "@/lib/demo-session";
+import { demoIdentity } from "@/lib/demo-session-token";
 
 type RealServerClient = NonNullable<Awaited<ReturnType<typeof createRealServerSupabase>>>;
 
@@ -42,6 +44,12 @@ export async function createServerSupabase(): Promise<RealServerClient | null> {
   if (isDevOpenAccess()) {
     const { createSimulationClient } = await import("@/lib/dev-simulation/client");
     return createSimulationClient() as unknown as RealServerClient;
+  }
+
+  const demoSession = await getDemoSession();
+  if (demoSession) {
+    const { createSimulationClient } = await import("@/lib/dev-simulation/client");
+    return createSimulationClient(demoIdentity(demoSession), true) as unknown as RealServerClient;
   }
 
   return createRealServerSupabase();
