@@ -2,7 +2,6 @@ import { DEV_VIEWER, isDevOpenAccess } from "@/lib/dev-open-access";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { supabaseNotConfiguredMessage } from "@/lib/supabase/env";
 import { failure, type ActionState } from "@/lib/validation";
-import { demoReadOnlyMessage } from "@/lib/demo-read-only";
 
 export type ServerSupabase = NonNullable<Awaited<ReturnType<typeof createServerSupabase>>>;
 
@@ -20,8 +19,6 @@ export type AdminActionContext =
  * same global Operator authority independently.
  */
 export async function adminActionContext(): Promise<AdminActionContext> {
-  if (isDevOpenAccess()) return { ok: false, state: failure(await demoReadOnlyMessage()) };
-
   const supabase = await createServerSupabase();
   if (!supabase) return { ok: false, state: failure(supabaseNotConfiguredMessage) };
 
@@ -66,7 +63,7 @@ export function writeFailure(
     case "23514":
       return failure("Data belum memenuhi ketentuan. Periksa kembali rentang nilai dan isian wajib.");
     case "42501":
-      return failure("Untuk simulasi, developer tidak mengizinkan pengguna melakukan perubahan data.");
+      return failure("Akun Anda tidak memiliki izin untuk perubahan ini.");
     default:
       return failure(messages.fallback ?? "Perubahan belum tersimpan. Periksa koneksi Anda lalu coba lagi.");
   }
@@ -81,8 +78,6 @@ export type OperatorActionContext =
  * rows remain optional data attribution and are not authorization boundaries.
  */
 export async function operatorActionContext(): Promise<OperatorActionContext> {
-  if (isDevOpenAccess()) return { ok: false, state: failure(await demoReadOnlyMessage()) };
-
   const supabase = await createServerSupabase();
   if (!supabase) return { ok: false, state: failure(supabaseNotConfiguredMessage) };
 
