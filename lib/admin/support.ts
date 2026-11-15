@@ -66,7 +66,7 @@ export function writeFailure(
     case "23514":
       return failure("Data belum memenuhi ketentuan. Periksa kembali rentang nilai dan isian wajib.");
     case "42501":
-      return failure("Untuk simulasi, developer tidak mengizinkan pengguna melakukan perubahan data.");
+      return failure("Akun Anda tidak memiliki izin untuk perubahan ini.");
     default:
       return failure(messages.fallback ?? "Perubahan belum tersimpan. Periksa koneksi Anda lalu coba lagi.");
   }
