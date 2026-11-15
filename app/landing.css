@@ -1014,3 +1014,31 @@ body:has(.landing) .dev-mode-panel {
     padding-top: 0;
   }
 }
+
+
+/* CTA kartu peran: label tindakan jelas, ringkas, dan konsisten lintas bahasa. */
+.landing-role-arrow {
+  display: inline-flex;
+  width: auto;
+  min-width: 118px;
+  height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 0 13px;
+  border: 1px solid rgba(15, 27, 61, 0.08);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--lp-navy);
+  box-shadow: 0 5px 16px rgba(16, 27, 59, 0.10);
+  font-size: 12px;
+  font-weight: 750;
+  line-height: 1;
+  white-space: nowrap;
+}
+.landing-role-arrow svg { width: 16px; height: 16px; flex: none; }
+html[dir="rtl"] .landing-role-arrow { flex-direction: row-reverse; }
+html[dir="rtl"] .landing-role-arrow svg { transform: rotate(180deg); }
+@media (max-width: 767px) {
+  .landing-role-arrow { min-width: 112px; height: 38px; padding-inline: 11px; font-size: 11px; }
+}
