@@ -153,7 +153,8 @@ test("language menu keeps physical right anchoring and dismisses without adding 
   assert.match(source, /Escape/);
   assert.match(source, /removeEventListener/);
   assert.match(source, /aria-label=\{locale === "ar"/);
-  assert.match(source, /title=\{option === "ar"/);\n  assert.doesNotMatch(source, /localeDisplayNames\[option\]/);
+  assert.match(source, /title=\{option === "ar"/);
+  assert.doesNotMatch(source, /localeDisplayNames\[option\]/);
 });
 
 test("unreleased store badges state coming soon in every locale", () => {
