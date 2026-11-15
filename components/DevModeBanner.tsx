@@ -3,13 +3,14 @@ import {
   devAccessEnvironmentLabel,
   isDevOpenAccess,
 } from "@/lib/dev-open-access";
+import { isDemoOtpAvailable } from "@/lib/demo-session-token";
 
 /**
  * Informasi demo tetap tersedia di landing page produksi.
- * Akses simulasi dan kode OTP hanya aktif di Preview/lokal.
+ * Kode OTP demo ditampilkan bila sesi demo bertanda tangan sudah dikonfigurasi.
  */
 export function DevModeBanner() {
-  const demoAccessEnabled = isDevOpenAccess();
+  const demoAccessEnabled = isDevOpenAccess() || isDemoOtpAvailable();
 
   return (
     <DevModeTab
