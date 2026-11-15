@@ -148,6 +148,9 @@ test("driver camera publisher status messages are localized", () => {
 test("language menu keeps physical right anchoring and dismisses without adding layout rows", async () => {
   const fs = await import("node:fs");
   const source = fs.readFileSync("components/i18n/LocaleSwitcher.tsx", "utf8");
+  assert.match(source, /import \{ Globe \} from "lucide-react"/);
+  assert.match(source, /<Globe aria-hidden="true"/);
+  assert.match(source, /<LocaleFlag locale=\{option\}/);
   assert.match(source, /absolute right-0/);
   assert.match(source, /pointerdown/);
   assert.match(source, /Escape/);
