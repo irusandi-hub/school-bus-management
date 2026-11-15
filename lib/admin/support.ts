@@ -2,6 +2,7 @@ import { DEV_VIEWER, isDevOpenAccess } from "@/lib/dev-open-access";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { supabaseNotConfiguredMessage } from "@/lib/supabase/env";
 import { failure, type ActionState } from "@/lib/validation";
+import { demoReadOnlyMessage } from "@/lib/demo-read-only";
 
 export type ServerSupabase = NonNullable<Awaited<ReturnType<typeof createServerSupabase>>>;
 
@@ -19,6 +20,8 @@ export type AdminActionContext =
  * same global Operator authority independently.
  */
 export async function adminActionContext(): Promise<AdminActionContext> {
+  if (isDevOpenAccess()) return { ok: false, state: failure(await demoReadOnlyMessage()) };
+
   const supabase = await createServerSupabase();
   if (!supabase) return { ok: false, state: failure(supabaseNotConfiguredMessage) };
 
@@ -78,6 +81,8 @@ export type OperatorActionContext =
  * rows remain optional data attribution and are not authorization boundaries.
  */
 export async function operatorActionContext(): Promise<OperatorActionContext> {
+  if (isDevOpenAccess()) return { ok: false, state: failure(await demoReadOnlyMessage()) };
+
   const supabase = await createServerSupabase();
   if (!supabase) return { ok: false, state: failure(supabaseNotConfiguredMessage) };
 
