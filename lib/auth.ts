@@ -26,7 +26,7 @@ export type ViewerState =
  * values, and every area below re-checks the role it needs.
  */
 export async function getViewerState(): Promise<ViewerState> {
-  if (!isDevOpenAccess()) {
+  {
     const demoSession = await getDemoSession();
     if (demoSession) {
       const identity = demoIdentity(demoSession);
@@ -145,6 +145,16 @@ export type OperatorAccess =
  */
 export async function requireOperator(nextPath = "/operator"): Promise<OperatorAccess> {
   if (isDevOpenAccess()) {
+    const demoSession = await getDemoSession();
+    if (demoSession) {
+      const identity = demoIdentity(demoSession);
+      if (identity.profileRole !== "operator") redirectToOwnArea(identity.profileRole);
+      return {
+        status: "ready",
+        viewer: { userId: identity.userId, email: identity.email, profile: { id: identity.userId, full_name: identity.fullName, role: "operator", phone: null } },
+        operator: { id: "global", name: "Operator Utama" },
+      };
+    }
     return {
       status: "ready",
       viewer: devViewerFor("operator"),
@@ -171,6 +181,16 @@ export type DriverAccess =
 /** Driver access requires the database role AND an active driver row for the account. */
 export async function requireDriver(nextPath = "/pengemudi"): Promise<DriverAccess> {
   if (isDevOpenAccess()) {
+    const demoSession = await getDemoSession();
+    if (demoSession) {
+      const identity = demoIdentity(demoSession);
+      if (identity.profileRole !== "driver") redirectToOwnArea(identity.profileRole);
+      return {
+        status: "ready",
+        viewer: { userId: identity.userId, email: identity.email, profile: { id: identity.userId, full_name: identity.fullName, role: "driver", phone: null } },
+        driver: { id: DEV_DRIVER_RECORD.id, full_name: DEV_DRIVER_RECORD.fullName },
+      };
+    }
     return {
       status: "ready",
       viewer: devViewerFor("driver"),
@@ -215,7 +235,10 @@ export type GuardianAccess =
 export async function guardianRequestAccess(): Promise<
   "unconfigured" | "anonymous" | "forbidden" | "ready"
 > {
-  if (isDevOpenAccess()) return "ready";
+  if (isDevOpenAccess()) {
+    const demoSession = await getDemoSession();
+    return demoSession ? (demoSession.role === "wali" ? "ready" : "forbidden") : "ready";
+  }
 
   const state = await getViewerState();
   if (state.status === "unconfigured") return "unconfigured";
@@ -226,11 +249,16 @@ export async function guardianRequestAccess(): Promise<
 
 /** Server-side gate for the guardian area. */
 export async function requireGuardian(nextPath = "/wali"): Promise<GuardianAccess> {
-  if (!isDevOpenAccess()) {
+  if (isDevOpenAccess()) {
     const demoSession = await getDemoSession();
-    if (demoSession?.role === "wali") {
+    if (demoSession) {
       const identity = demoIdentity(demoSession);
-      return { status: "ready", viewer: { userId: identity.userId, email: identity.email, profile: { id: identity.userId, full_name: identity.fullName, role: "parent", phone: null } }, guardianId: identity.guardianId };
+      if (identity.profileRole !== "parent") redirectToOwnArea(identity.profileRole);
+      return {
+        status: "ready",
+        viewer: { userId: identity.userId, email: identity.email, profile: { id: identity.userId, full_name: identity.fullName, role: "parent", phone: null } },
+        guardianId: identity.guardianId,
+      };
     }
   }
 
