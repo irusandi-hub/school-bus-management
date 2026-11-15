@@ -10,6 +10,8 @@ const copy = {
   id: {
     title: "Informasi Demo",
     active: "Mode Demo Aktif",
+    infoOnly: "Informasi Demo — akses simulasi tidak tersedia di produksi.",
+    previewOnly: "Kode OTP dan akses simulasi hanya tersedia di lingkungan Preview.",
     intro: "Kenali School Bus Management melalui lingkungan simulasi. Tidak diperlukan akun operasional.",
     about: "Tentang Demo",
     try: "Apa yang Bisa Dicoba",
@@ -56,6 +58,8 @@ const copy = {
   en: {
     title: "Demo Information",
     active: "Demo Mode Active",
+    infoOnly: "Demo information — simulated access is unavailable in production.",
+    previewOnly: "Demo OTP codes and simulated access are available only in Preview.",
     intro: "Explore School Bus Management in a simulated environment. No operational account is required.",
     about: "About the Demo",
     try: "What You Can Explore",
@@ -102,6 +106,8 @@ const copy = {
   ar: {
     title: "معلومات العرض التجريبي",
     active: "العرض التجريبي نشط",
+    infoOnly: "معلومات العرض التجريبي — الوصول التجريبي غير متاح في بيئة الإنتاج.",
+    previewOnly: "رموز الدخول التجريبية والوصول التجريبي متاحان في بيئة Preview فقط.",
     intro: "تعرّف على School Bus Management في بيئة تجريبية. لا يلزم حساب تشغيلي.",
     about: "حول العرض التجريبي",
     try: "ما الذي يمكنك تجربته",
@@ -156,7 +162,7 @@ const demoAccounts = [
 ] as const;
 
 // Panel demo hanya ditampilkan di landing page.
-export function DevModeTab({ environment }: { environment: string; sha?: string; branch?: string }) {
+export function DevModeTab({ environment, demoAccessEnabled }: { environment: string; demoAccessEnabled: boolean }) {
   const { locale } = useLocale();
   const t = copy[locale];
   const [open, setOpen] = useState(false);
@@ -210,8 +216,8 @@ export function DevModeTab({ environment }: { environment: string; sha?: string;
         <h2 id="dev-mode-title">{t.title}</h2>
         <button ref={close} className="dev-mode-close" type="button" aria-label={t.close} onClick={() => { setOpen(false); trigger.current?.focus({ preventScroll: true }); }}>×</button>
       </header>
-      <div className="dev-mode-status"><span className="dev-mode-status-dot" />{t.active}</div>
-      <p>{t.intro}</p>
+      <div className="dev-mode-status"><span className="dev-mode-status-dot" />{demoAccessEnabled ? t.active : t.infoOnly}</div>
+      <p>{demoAccessEnabled ? t.intro : t.previewOnly}</p>
 
       <section className="dev-mode-section">
         <button className="dev-mode-section-toggle" type="button" aria-expanded={section === "about"} onClick={() => toggleSection("about")}>
@@ -220,7 +226,7 @@ export function DevModeTab({ environment }: { environment: string; sha?: string;
         {section === "about" && <div className="dev-mode-section-content">
           <dl>
             <div><dt>{t.environment}</dt><dd>{t.simulated}</dd></div>
-            <div><dt>{t.access}</dt><dd>{t.open}</dd></div>
+            <div><dt>{t.access}</dt><dd>{demoAccessEnabled ? t.open : t.previewOnly}</dd></div>
             <div><dt>{t.data}</dt><dd>{t.simulated}</dd></div>
           </dl>
         </div>}
@@ -237,26 +243,30 @@ export function DevModeTab({ environment }: { environment: string; sha?: string;
             <li><strong>{t.driver}</strong><span>{t.driverDesc}</span></li>
             <li><strong>{t.parent}</strong><span>{t.parentDesc}</span></li>
           </ul>
-          <div className="dev-mode-login">
-            <h3>{t.login}</h3>
-            <p className="dev-mode-muted">{t.otpHelp}</p>
-            <ul className="dev-mode-account-list">
-              {demoAccounts.map((account) => {
-                const label = t[account.label as keyof typeof t] as string;
-                return <li key={account.code}>
-                  <div className="dev-mode-account-main">
-                    <strong>{label}</strong>
-                    {account.children.length > 0 && <><span>{account.children.join(" · ")}</span><small>{t.parentOf(account.familySize)}</small></>}
-                  </div>
-                  <div className="dev-mode-code">
-                    <code>{account.code}</code>
-                    <button type="button" className="dev-mode-copy" aria-label={t.copy + " " + label} onClick={() => void copyCode(account.code)}>{copied === account.code ? "✓" : "⧉"}</button>
-                  </div>
-                </li>;
-              })}
-            </ul>
-            {copied && <p className="dev-mode-copy-feedback" role="status">{t.copied}</p>}
-          </div>
+          {demoAccessEnabled ? (
+            <div className="dev-mode-login">
+              <h3>{t.login}</h3>
+              <p className="dev-mode-muted">{t.otpHelp}</p>
+              <ul className="dev-mode-account-list">
+                {demoAccounts.map((account) => {
+                  const label = t[account.label as keyof typeof t] as string;
+                  return <li key={account.code}>
+                    <div className="dev-mode-account-main">
+                      <strong>{label}</strong>
+                      {account.children.length > 0 && <><span>{account.children.join(" · ")}</span><small>{t.parentOf(account.familySize)}</small></>}
+                    </div>
+                    <div className="dev-mode-code">
+                      <code>{account.code}</code>
+                      <button type="button" className="dev-mode-copy" aria-label={t.copy + " " + label} onClick={() => void copyCode(account.code)}>{copied === account.code ? "✓" : "⧉"}</button>
+                    </div>
+                  </li>;
+                })}
+              </ul>
+              {copied && <p className="dev-mode-copy-feedback" role="status">{t.copied}</p>}
+            </div>
+          ) : (
+            <p className="dev-mode-muted">{t.previewOnly}</p>
+          )}
           <div className="dev-mode-tech">
             <h3>{t.techTitle}</h3>
             <ul className="dev-mode-notes">
