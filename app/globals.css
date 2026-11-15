@@ -3082,3 +3082,71 @@ html[dir="rtl"] :is(.landing-header,.portal-head,.compact-identity-row,.operator
 .dev-mode-tech{margin-top:12px;padding-top:10px;border-top:1px solid #eee4c9}
 .dev-mode-tech h3{margin:0 0 7px;font-size:12px;font-weight:800}
 .dev-mode-tech .dev-mode-notes{gap:7px}
+
+
+/* Demo panel readability: high-contrast neutral surface and clearer text hierarchy. */
+.dev-mode-panel {
+  background: #ffffff;
+  color: #17243b;
+  border-color: #d7deea;
+  box-shadow: 0 16px 42px rgba(12, 25, 48, .22);
+}
+.dev-mode-panel h2,
+.dev-mode-panel h3,
+.dev-mode-panel strong,
+.dev-mode-panel dt {
+  color: #17243b;
+}
+.dev-mode-panel p,
+.dev-mode-panel dd,
+.dev-mode-section-content,
+.dev-mode-profile-list li,
+.dev-mode-notes li,
+.dev-mode-account-main span,
+.dev-mode-account-main small,
+.dev-mode-muted {
+  color: #34445d;
+}
+.dev-mode-panel .dev-mode-section {
+  background: #ffffff;
+  border-color: #dbe2ec;
+}
+.dev-mode-panel .dev-mode-section-toggle {
+  background: #f1f4f8;
+  color: #17243b;
+}
+.dev-mode-panel .dev-mode-section-toggle:hover {
+  background: #e8edf4;
+}
+.dev-mode-section-content {
+  background: #ffffff;
+}
+.dev-mode-status {
+  color: #245b36;
+}
+.dev-mode-login,
+.dev-mode-tech {
+  border-color: #dbe2ec;
+}
+.dev-mode-account-list li {
+  border-color: #e2e7ef;
+}
+.dev-mode-privacy {
+  background: #f3f7fb;
+  border-color: #cbd7e6;
+}
+.dev-mode-privacy p {
+  color: #263850;
+}
+.dev-mode-code code {
+  color: #17243b;
+}
+.dev-mode-panel .dev-mode-copy,
+.dev-mode-panel .dev-mode-close {
+  background: #f1f4f8;
+  border-color: #d3dce8;
+  color: #17243b;
+}
+.dev-mode-panel .dev-mode-copy-feedback {
+  color: #245b36;
+}
