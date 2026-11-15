@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "Akun wali simulasi tidak ditemukan." }, { status: 400 });
   }
 
-  const token = await createDemoSessionToken(role, guardianKey);
+  const token = await createDemoSessionToken(role, guardianKey ?? undefined);
   if (!token) return NextResponse.json({ message: "Sesi demo belum dapat dibuat." }, { status: 503 });
 
   const response = NextResponse.json({ destination: DEMO_OTP_DESTINATIONS[role] });
