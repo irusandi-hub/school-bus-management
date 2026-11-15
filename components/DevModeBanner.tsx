@@ -5,11 +5,16 @@ import {
 } from "@/lib/dev-open-access";
 
 /**
- * Penanda kecil untuk pengembang. Tidak mengambil ruang layout dan dapat
- * dibuka bila detail mode simulasi perlu dibaca.
+ * Informasi demo tetap tersedia di landing page produksi.
+ * Akses simulasi dan kode OTP hanya aktif di Preview/lokal.
  */
 export function DevModeBanner() {
-  if (!isDevOpenAccess()) return null;
+  const demoAccessEnabled = isDevOpenAccess();
 
-  return <DevModeTab environment={devAccessEnvironmentLabel()} sha={process.env.VERCEL_GIT_COMMIT_SHA} branch={process.env.VERCEL_GIT_COMMIT_REF} />;
+  return (
+    <DevModeTab
+      environment={devAccessEnvironmentLabel()}
+      demoAccessEnabled={demoAccessEnabled}
+    />
+  );
 }
