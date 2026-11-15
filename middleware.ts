@@ -3,6 +3,7 @@ import { createServerClient } from "@supabase/ssr";
 import { isDevOpenAccess } from "@/lib/dev-open-access";
 import { supabaseConfig } from "@/lib/supabase/env";
 import { DEMO_SESSION_COOKIE, verifyDemoSessionToken } from "@/lib/demo-session-token";
+import { DEMO_SESSION_COOKIE, verifyDemoSessionToken } from "@/lib/demo-session-token";
 
 const protectedPrefixes = ["/admin", "/operator", "/pengemudi", "/wali", "/akun", "/tanpa-akses"];
 
@@ -15,6 +16,7 @@ export async function middleware(request: NextRequest) {
   // gerbang di setiap layout dan Server Action tetap berjalan. Mode ini tidak pernah
   // aktif di produksi dan tidak memakai klien Supabase sama sekali.
   if (isDevOpenAccess()) return NextResponse.next();
+  if (await verifyDemoSessionToken(request.cookies.get(DEMO_SESSION_COOKIE)?.value)) return NextResponse.next();
   const demoToken = request.cookies.get(DEMO_SESSION_COOKIE)?.value;
   if (await verifyDemoSessionToken(demoToken)) return NextResponse.next();
 
