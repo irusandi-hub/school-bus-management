@@ -4,6 +4,7 @@ import { isDevOpenAccess } from "@/lib/dev-open-access";
 import { supabaseConfig } from "@/lib/supabase/env";
 import { getDemoSession } from "@/lib/demo-session";
 import { demoIdentity } from "@/lib/demo-session-token";
+import { demoReadOnlyMessage } from "@/lib/demo-read-only";
 
 type RealServerClient = NonNullable<Awaited<ReturnType<typeof createRealServerSupabase>>>;
 
@@ -41,15 +42,19 @@ async function createRealServerSupabase() {
  * produksi dan tidak memengaruhi RLS sama sekali.
  */
 export async function createServerSupabase(): Promise<RealServerClient | null> {
-  if (isDevOpenAccess()) {
-    const { createSimulationClient } = await import("@/lib/dev-simulation/client");
-    return createSimulationClient() as unknown as RealServerClient;
-  }
-
+  // A signed demo session always uses the isolated simulation dataset. Preview
+  // sessions may write; production demo sessions are strictly read-only.
   const demoSession = await getDemoSession();
   if (demoSession) {
     const { createSimulationClient } = await import("@/lib/dev-simulation/client");
-    return createSimulationClient(demoIdentity(demoSession), true) as unknown as RealServerClient;
+    const readOnly = !isDevOpenAccess();
+    const message = readOnly ? await demoReadOnlyMessage() : undefined;
+    return createSimulationClient(demoIdentity(demoSession), readOnly, message) as unknown as RealServerClient;
+  }
+
+  if (isDevOpenAccess()) {
+    const { createSimulationClient } = await import("@/lib/dev-simulation/client");
+    return createSimulationClient() as unknown as RealServerClient;
   }
 
   return createRealServerSupabase();
