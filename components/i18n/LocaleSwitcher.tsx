@@ -9,13 +9,30 @@ const languageOptions: Locale[] = ["en", "ar", "id"];
 const localeDisplayNames: Record<Locale, string> = {
   en: "English",
   ar: "العربية",
-  id: "Bahasa Indonesia",
+  id: "Bahasa",
 };
-const localeFlags: Record<Locale, string> = {
-  en: "🇬🇧",
-  ar: "🇸🇦",
-  id: "🇮🇩",
-};
+function LocaleFlag({ locale }: { locale: Locale }) {
+  if (locale === "id") {
+    return <svg viewBox="0 0 24 16" aria-hidden="true" className="h-4 w-6 overflow-hidden rounded-[3px]">
+      <path fill="#e11d48" d="M0 0h24v8H0z" />
+      <path fill="#fff" d="M0 8h24v8H0z" />
+    </svg>;
+  }
+  if (locale === "ar") {
+    return <svg viewBox="0 0 24 16" aria-hidden="true" className="h-4 w-6 overflow-hidden rounded-[3px]">
+      <path fill="#166534" d="M0 0h24v16H0z" />
+      <path d="M5 10.2h13" stroke="#fff" strokeWidth="1.1" strokeLinecap="round" />
+      <path d="M7 11.8h10" stroke="#fff" strokeWidth=".8" strokeLinecap="round" />
+    </svg>;
+  }
+  return <svg viewBox="0 0 24 16" aria-hidden="true" className="h-4 w-6 overflow-hidden rounded-[3px]">
+    <path fill="#1e3a8a" d="M0 0h24v16H0z" />
+    <path d="M0 0l24 16M24 0L0 16" stroke="#fff" strokeWidth="3.2" />
+    <path d="M0 0l24 16M24 0L0 16" stroke="#dc2626" strokeWidth="1.1" />
+    <path d="M12 0v16M0 8h24" stroke="#fff" strokeWidth="5" />
+    <path d="M12 0v16M0 8h24" stroke="#dc2626" strokeWidth="2" />
+  </svg>;
+}
 
 export function LocaleSwitcher({ compact: _compact = false }: { compact?: boolean } = {}) {
   const { locale, setLocale } = useLocale();
@@ -63,7 +80,7 @@ export function LocaleSwitcher({ compact: _compact = false }: { compact?: boolea
       <div
         role="group"
         aria-label={locale === "ar" ? "اللغات" : locale === "en" ? "Languages" : "Pilihan bahasa"}
-        className="absolute right-0 top-[calc(100%+6px)] z-[101] flex w-[48px] min-w-[48px] flex-col items-stretch gap-0.5 rounded-xl border border-slate-200 bg-white p-1 text-slate-800 shadow-xl"
+        className="absolute right-0 top-[calc(100%+8px)] z-[101] flex w-[156px] min-w-[156px] flex-col gap-0.5 rounded-xl border border-slate-200/80 bg-white/95 p-1.5 text-slate-800 shadow-lg shadow-slate-900/8 backdrop-blur-sm"
       >
         {languageOptions.map((option) => (
           <button
@@ -73,10 +90,11 @@ export function LocaleSwitcher({ compact: _compact = false }: { compact?: boolea
             aria-label={localeDisplayNames[option]}
             aria-current={locale === option ? "true" : undefined}
             title={localeDisplayNames[option]}
-            className="relative grid h-9 w-full place-items-center rounded-lg text-[20px] leading-none hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 aria-[current=true]:bg-emerald-50"
+            className="flex h-9 w-full items-center gap-2.5 rounded-lg px-2 text-left text-[13px] font-medium leading-none text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 aria-[current=true]:bg-emerald-50 aria-[current=true]:text-emerald-800"
           >
-            <span aria-hidden="true">{localeFlags[option]}</span>
-            {locale === option && <span aria-hidden="true" className="absolute -right-0.5 -top-0.5 grid h-3.5 w-3.5 place-items-center rounded-full bg-emerald-700 text-[9px] font-bold text-white">✓</span>}
+            <LocaleFlag locale={option} />
+            <span className="min-w-0 flex-1">{localeDisplayNames[option]}</span>
+            {locale === option && <span aria-hidden="true" className="text-[11px] font-semibold text-emerald-700">✓</span>}
           </button>
         ))}
       </div>
