@@ -168,6 +168,7 @@ class SimQuery implements PromiseLike<SimResult> {
   private readonly tables: SimTables;
   private readonly tableName: string;
   private readonly readOnly: boolean;
+  private readonly readOnlyMessage: string;
   private readonly predicates: Array<(row: SimRow) => boolean> = [];
   private readonly orders: Array<{ column: string; ascending: boolean }> = [];
   private kind: "select" | "insert" | "update" | "delete" | "upsert" = "select";
@@ -179,10 +180,11 @@ class SimQuery implements PromiseLike<SimResult> {
   private rangeTo: number | null = null;
   private limitTo: number | null = null;
 
-  constructor(tables: SimTables, tableName: string, readOnly = false) {
+  constructor(tables: SimTables, tableName: string, readOnly = false, readOnlyMessage = "Untuk simulasi, developer tidak mengizinkan pengguna melakukan perubahan data.") {
     this.tables = tables;
     this.tableName = tableName;
     this.readOnly = readOnly;
+    this.readOnlyMessage = readOnlyMessage;
   }
 
   select(columns = "*", options: { count?: string; head?: boolean } = {}) {
@@ -315,7 +317,7 @@ class SimQuery implements PromiseLike<SimResult> {
         data: null,
         error: {
           code: "42501",
-          message: "Untuk simulasi, developer tidak mengizinkan pengguna melakukan perubahan data.",
+          message: this.readOnlyMessage,
         },
         count: null,
       };
@@ -344,6 +346,36 @@ class SimQuery implements PromiseLike<SimResult> {
       const matched = this.rows().filter((row) => this.predicates.every((predicate) => predicate(row)));
       matched.forEach((row) => Object.assign(row, payload));
       return { data: matched, error: null, count: matched.length };
+    }
+
+    if (this.kind === "delete") {
+      const rows = this.rows();
+      const matched = rows.filter((row) => this.predicates.every((predicate) => predicate(row)));
+      for (let index = rows.length - 1; index >= 0; index--) {
+        if (this.predicates.every((predicate) => predicate(rows[index]))) rows.splice(index, 1);
+      }
+      return { data: matched, error: null, count: matched.length };
+    }
+
+    if (this.kind === "upsert") {
+      const values = Array.isArray(this.payload) ? this.payload : [this.payload ?? {}];
+      const rows = this.rows();
+      const now = new Date().toISOString();
+      const saved = values.map((value) => {
+        const uniqueColumns = UNIQUE_COLUMNS[this.tableName] ?? [];
+        const existing = rows.find((row) =>
+          (value.id !== undefined && row.id === value.id) ||
+          uniqueColumns.some((column) => value[column] !== undefined && value[column] !== null && row[column] === value[column]),
+        );
+        if (existing) {
+          Object.assign(existing, value, { updated_at: now });
+          return existing;
+        }
+        const created = { id: nextSimId(), created_at: now, ...value };
+        rows.push(created);
+        return created;
+      });
+      return { data: saved, error: null, count: saved.length };
     }
 
     let matched = this.rows().filter((row) => this.predicates.every((predicate) => predicate(row)));
@@ -419,11 +451,11 @@ export function resetSimulationData() {
   return sharedSimulation.__schoolBusSimulationTables;
 }
 
-export function createSimulationClient(identity?: DemoIdentity, readOnly = false) {
+export function createSimulationClient(identity?: DemoIdentity, readOnly = false, readOnlyMessage?: string) {
   const tables = simulationTables();
   const viewer = identity ?? { ...DEV_VIEWER.operator, profileRole: "operator" as const };
 
-  const query = (tableName: string) => new SimQuery(tables, tableName, readOnly);
+  const query = (tableName: string) => new SimQuery(tables, tableName, readOnly, readOnlyMessage);
 
   const authMessage =
     "Mode pengembangan aktif: proses masuk, pendaftaran, dan aktivasi akun dinonaktifkan karena ketiga ekosistem dibuka tanpa login.";
@@ -443,7 +475,7 @@ export function createSimulationClient(identity?: DemoIdentity, readOnly = false
           data: null,
           error: {
             code: "42501",
-            message: "Untuk simulasi, developer tidak mengizinkan pengguna melakukan perubahan data.",
+            message: readOnlyMessage ?? "Untuk simulasi, developer tidak mengizinkan pengguna melakukan perubahan data.",
           },
         };
       }
