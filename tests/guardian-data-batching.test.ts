@@ -6,12 +6,18 @@ type Filter = { kind: "eq" | "in"; column: string; value: unknown };
 
 class MockQuery implements PromiseLike<{ data: unknown[]; error: null }> {
   private filters: Filter[] = [];
+  private readonly table: string;
+  private readonly datasets: Record<string, unknown[]>;
+  private readonly calls: { table: string; filters: Filter[] }[];
 
   constructor(
-    private readonly table: string,
-    private readonly datasets: Record<string, unknown[]>,
-    private readonly calls: { table: string; filters: Filter[] }[],
+    table: string,
+    datasets: Record<string, unknown[]>,
+    calls: { table: string; filters: Filter[] }[],
   ) {
+    this.table = table;
+    this.datasets = datasets;
+    this.calls = calls;
     calls.push({ table, filters: this.filters });
   }
 
