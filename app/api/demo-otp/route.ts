@@ -5,7 +5,7 @@ import { createDemoSessionToken, DEMO_SESSION_COOKIE, DEMO_SESSION_MAX_AGE, isDe
 
 export async function POST(request: Request) {
   const previewSimulation = isDevOpenAccess();
-  if (!previewSimulation && !isDemoOtpAvailable()) {
+  if (!isDemoOtpAvailable()) {
     return NextResponse.json({ message: "OTP simulasi belum dikonfigurasi." }, { status: 503 });
   }
 
@@ -22,34 +22,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "Akun wali simulasi tidak ditemukan." }, { status: 400 });
   }
 
+  const token = await createDemoSessionToken(role, guardianKey);
+  if (!token) return NextResponse.json({ message: "Sesi demo belum dapat dibuat." }, { status: 503 });
+
   const response = NextResponse.json({ destination: DEMO_OTP_DESTINATIONS[role] });
-
-  if (!previewSimulation) {
-    const token = await createDemoSessionToken(role, guardianKey);
-    if (!token) return NextResponse.json({ message: "Sesi demo belum dapat dibuat." }, { status: 503 });
-    response.cookies.set(DEMO_SESSION_COOKIE, token, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: true,
-      path: "/",
-      maxAge: DEMO_SESSION_MAX_AGE,
-    });
-    response.cookies.delete("sbm_demo_guardian");
-    return response;
-  }
-
-  response.cookies.delete(DEMO_SESSION_COOKIE);
-  if (role === "wali") {
-    response.cookies.set("sbm_demo_guardian", guardianKey!, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      maxAge: 60 * 60,
-    });
-  } else {
-    response.cookies.delete("sbm_demo_guardian");
-  }
-
+  response.cookies.set(DEMO_SESSION_COOKIE, token, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: !previewSimulation || process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: DEMO_SESSION_MAX_AGE,
+  });
+  response.cookies.delete("sbm_demo_guardian");
   return response;
 }
