@@ -54,8 +54,8 @@ export function LandingDownloads() {
 export function LandingRoleArrow({ href, label }: { href: string; label: string }) {
   const { t } = useLocale();
   const roleLabel = href.includes("peran=wali") ? t("parentEntry") : href.includes("peran=pengemudi") ? t("driverEntry") : t("managerEntry");
-  const getStarted = t("getStarted");
-  const icon = <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 12h14M13 6.2l5.8 5.8L13 17.8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
+  const getStarted = t("goAccess");
+  const icon = <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
   return <Link href={href} className="landing-role-arrow" aria-label={`${getStarted} — ${roleLabel || label}`}>
     <span>{getStarted}</span>
     {icon}
