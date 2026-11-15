@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 import { cookies } from "next/headers";
 import { defaultLocale, isLocale } from "@/lib/i18n/config";
 import { translate } from "@/lib/i18n/messages";
-import Link from "next/link";
 import { BrandLogo } from "@/components/brand-logo";
 import { Icon } from "@/components/ui/Icon";
 import { LocalizedText } from "@/components/i18n/LocaleProvider";
@@ -27,7 +26,6 @@ export async function DriverOpsHeader({
   capacity,
   progress,
   children,
-  activeTab = "dashboard",
 }: {
   driverName: string;
   driverId: string;
@@ -44,7 +42,6 @@ export async function DriverOpsHeader({
   capacity: number;
   progress: TripProgress;
   children?: ReactNode;
-  activeTab?: "dashboard" | "riwayat";
 }) {
   const cookieStore = await cookies();
   const savedLocale = cookieStore.get("sbm_locale")?.value;
@@ -79,10 +76,6 @@ export async function DriverOpsHeader({
         </div>
       </div>
 
-      <nav className="portal-nav compact-driver-tabs" aria-label={locale === "ar" ? "قائمة السائق" : locale === "en" ? "Driver navigation" : "Navigasi Pengemudi"}>
-        <Link href="/pengemudi" aria-current={activeTab === "dashboard" ? "page" : undefined}><LocalizedText k="driverData" /></Link>
-        <Link href="/pengemudi?tab=riwayat" aria-current={activeTab === "riwayat" ? "page" : undefined}><LocalizedText k="history" /></Link>
-      </nav>
       {/* Baris 2: angka tetap berasal dari TripProgress; handler CTA tetap children. */}
       <div className="compact-action-row">
         <div className="compact-counters" aria-live="polite" aria-label={`Progres ${progress.kindLabel.toLowerCase()}`}>
