@@ -12,11 +12,13 @@ import {
 } from "@/components/admin/ui";
 import { Icon } from "@/components/ui/Icon";
 import { noticeFromParams } from "@/lib/admin/query";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 import { requireDriver } from "@/lib/auth";
 import { SAFETY_CHECKS } from "@/lib/driver/trip-end";
 import { resolveStudentTripStates } from "@/lib/driver/trip-progress";
 import { createServerSupabase } from "@/lib/supabase/server";
-import { formatDate, formatDateTime, formatTime, routeDirectionLabel } from "@/lib/validation";
+import { routeDirectionLabel } from "@/lib/validation";
 
 export const metadata: Metadata = { title: "Ringkasan Perjalanan | Pengemudi" };
 
@@ -71,6 +73,12 @@ export default async function DriverTripReviewPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { tripId } = await params;
+  const locale = await getRequestLocale();
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
+  const dateLocale = locale === "ar" ? "ar-SA-u-ca-gregory" : locale === "en" ? "en-GB" : "id-ID";
+  const formatLocalDate = (value: string | null) => value ? new Intl.DateTimeFormat(dateLocale, { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Riyadh" }).format(new Date(value.length <= 10 ? `${value.slice(0, 10)}T12:00:00+03:00` : value)) : "—";
+  const formatLocalDateTime = (value: string | null) => value ? new Intl.DateTimeFormat(dateLocale, { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Riyadh" }).format(new Date(value)) : "—";
+  const formatLocalTime = (value: string | null) => value ? new Intl.DateTimeFormat(dateLocale, { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Riyadh" }).format(new Date(value)) : "—";
   const query = await searchParams;
   const access = await requireDriver(`/pengemudi/review/${encodeURIComponent(tripId)}`);
   if (access.status === "unconfigured") return <ConfigNotice />;
@@ -94,10 +102,10 @@ export default async function DriverTripReviewPage({
         <DriverOperationsPage searchParams={Promise.resolve({})} />
         <TripReviewModal>
         <PageHeader
-          title="Ringkasan perjalanan"
-          description="Ringkasan tugas yang sudah selesai dan tersimpan."
+          title={c("Ringkasan perjalanan")}
+          description={c("Ringkasan tugas yang sudah selesai dan tersimpan.")}
         />
-        <Notice kind="error">Ringkasan perjalanan belum dapat dimuat. Coba lagi.</Notice>
+        <Notice kind="error">{c("Ringkasan perjalanan belum dapat dimuat. Coba lagi.")}</Notice>
         </TripReviewModal>
       </>
     );
@@ -154,19 +162,19 @@ export default async function DriverTripReviewPage({
       <DriverOperationsPage searchParams={Promise.resolve({})} />
       <TripReviewModal>
       <PageHeader
-        title="Ringkasan perjalanan"
-        description="Ringkasan tugas yang sudah selesai. Data diambil dari perjalanan dan catatan yang tersimpan."
+        title={c("Ringkasan perjalanan")}
+        description={c("Ringkasan tugas yang sudah selesai. Data diambil dari perjalanan dan catatan yang tersimpan.")}
       />
 
-      {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
+      {notice && <Notice kind={notice.kind}>{c(notice.message)}</Notice>}
 
       <section className="panel">
         <header className="panel-head">
           <div>
             <h2 className="panel-title">{assignment?.routes?.route_name ?? "Rute"}</h2>
             <div className="panel-subtitle">
-              {routeDirectionLabel(direction)} · {formatDate(assignment?.service_date ?? trip.completed_at)} ·{" "}
-              {assignment?.routes?.school_name ?? "Sekolah belum tercatat"}
+              {c(routeDirectionLabel(direction))} · {formatLocalDate(assignment?.service_date ?? trip.completed_at)} ·{" "}
+              {assignment?.routes?.school_name ?? c("Sekolah belum tercatat")}
             </div>
           </div>
           <TripStatusPill status={trip.status} />
@@ -174,73 +182,73 @@ export default async function DriverTripReviewPage({
         <div className="ops-review-body">
           <dl className="task-times">
             <div>
-              <dt>Mulai</dt>
-              <dd>{formatTime(trip.started_at)}</dd>
+              <dt>{c("Mulai")}</dt>
+              <dd>{formatLocalTime(trip.started_at)}</dd>
             </div>
             <div>
-              <dt>Tiba di sekolah</dt>
-              <dd>{formatTime(trip.arrived_at)}</dd>
+              <dt>{c("Tiba di sekolah")}</dt>
+              <dd>{formatLocalTime(trip.arrived_at)}</dd>
             </div>
             <div>
-              <dt>Selesai</dt>
-              <dd>{formatTime(trip.completed_at)}</dd>
+              <dt>{c("Selesai")}</dt>
+              <dd>{formatLocalTime(trip.completed_at)}</dd>
             </div>
           </dl>
           <p className="ops-review-meta">
-            Bus {assignment?.buses?.fleet_code ?? "—"}
+            {c("Bus")} {assignment?.buses?.fleet_code ?? "—"}
             {assignment?.buses?.plate_number ? ` · ${assignment.buses.plate_number}` : ""}
-            {trip.completed_at ? ` · Ditutup ${formatDateTime(trip.completed_at)}` : ""}
+            {trip.completed_at ? ` · ${c("Ditutup")} ${formatLocalDateTime(trip.completed_at)}` : ""}
           </p>
         </div>
       </section>
 
       <div className="content-grid">
-        <section className="panel" aria-label="Status siswa pada perjalanan ini">
+        <section className="panel" aria-label={c("Status siswa pada perjalanan ini")}>
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">Status siswa</h2>
-              <div className="panel-subtitle">Status terakhir yang tercatat pada perjalanan ini</div>
+              <h2 className="panel-title">{c("Status siswa")}</h2>
+              <div className="panel-subtitle">{c("Status terakhir yang tercatat pada perjalanan ini")}</div>
             </div>
-            <Pill tone={students.length > 0 ? "info" : "warning"}>{students.length} siswa</Pill>
+            <Pill tone={students.length > 0 ? "info" : "warning"}>{students.length} {c("Siswa").toLocaleLowerCase(locale)}</Pill>
           </header>
 
           {eventsError ? (
             <div className="table-empty">
-              <strong>Status siswa belum dapat dimuat</strong>
-              <p>Coba lagi.</p>
+              <strong>{c("Status siswa belum dapat dimuat")}</strong>
+              <p>{c("Coba lagi")}</p>
             </div>
           ) : (
             <div className="admin-table-wrap">
               <table className="admin-table table-stack">
                 <thead>
                   <tr>
-                    <th scope="col">Siswa</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Waktu</th>
-                    <th scope="col">Catatan</th>
+                    <th scope="col">{c("Siswa")}</th>
+                    <th scope="col">{c("Status")}</th>
+                    <th scope="col">{c("Waktu")}</th>
+                    <th scope="col">{c("Catatan")}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {students.length === 0 ? (
                     <EmptyRow
                       colSpan={4}
-                      title="Belum ada catatan siswa"
-                      detail="Tidak ada status siswa yang tersimpan pada perjalanan ini."
+                      title={c("Tidak ada catatan siswa")}
+                      detail={c("Tidak ada status siswa yang tersimpan pada perjalanan ini.")}
                     />
                   ) : (
                     students.map((student) => (
                       <tr key={student.id}>
-                        <td data-label="Siswa">
-                          <strong>{student.name ?? "Siswa"}</strong>
-                          <small>{student.admissionsNumber ? `No. ${student.admissionsNumber}` : "Tanpa nomor siswa"}</small>
+                        <td data-label={c("Siswa")}>
+                          <strong>{student.name ?? c("Siswa")}</strong>
+                          <small>{student.admissionsNumber ? `No. ${student.admissionsNumber}` : c("Tanpa nomor siswa")}</small>
                         </td>
-                        <td data-label="Status">
+                        <td data-label={c("Status")}>
                           <Pill tone={statusTone(student.status)}>
-                            {student.status ? (EVENT_LABELS[student.status] ?? student.status) : "Belum tercatat"}
+                            {student.status ? (c(EVENT_LABELS[student.status] ?? student.status)) : c("Belum tercatat")}
                           </Pill>
                         </td>
-                        <td data-label="Waktu">{student.statusAt ? formatTime(student.statusAt) : "—"}</td>
-                        <td data-label="Catatan">
+                        <td data-label={c("Waktu")}>{student.statusAt ? formatLocalTime(student.statusAt) : "—"}</td>
+                        <td data-label={c("Catatan")}>
                           {student.issueNote ?? student.statusNotes ?? <span className="ops-review-meta">—</span>}
                         </td>
                       </tr>
@@ -252,14 +260,14 @@ export default async function DriverTripReviewPage({
           )}
         </section>
 
-        <section className="panel" aria-label="Pemeriksaan keselamatan">
+        <section className="panel" aria-label={c("Pemeriksaan keselamatan")}>
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">Pemeriksaan keselamatan</h2>
-              <div className="panel-subtitle">Dicatat saat perjalanan ditutup</div>
+              <h2 className="panel-title">{c("Pemeriksaan keselamatan")}</h2>
+              <div className="panel-subtitle">{c("Dicatat saat perjalanan ditutup")}</div>
             </div>
             <Pill tone={safetyRecorded ? "success" : "warning"}>
-              {safetyRecorded ? "Tercatat" : "Tidak tercatat"}
+              {safetyRecorded ? c("Tercatat") : c("Tidak tercatat")}
             </Pill>
           </header>
           <div className="ops-review-body">
@@ -269,22 +277,22 @@ export default async function DriverTripReviewPage({
                 return (
                   <li className="safety-check" key={check.name}>
                     <Icon name={confirmed ? "check" : "clock"} size={16} />
-                    <span>{check.label} <small>{check.required ? "Wajib" : "Opsional"}</small></span>
+                    <span>{c(check.label)} <small>{check.required ? c("Wajib") : c("Opsional")}</small></span>
                   </li>
                 );
               })}
             </ul>
             <p className="ops-review-meta">
               {safetyRecorded
-                ? `Checklist dikonfirmasi sebelum penutupan pukul ${formatTime(trip.safety_checked_at)}.`
-                : "Perjalanan ini tidak memiliki waktu pencatatan pemeriksaan keselamatan."}
+                ? `${c("Checklist dikonfirmasi sebelum penutupan pukul")} ${formatLocalTime(trip.safety_checked_at)}.`
+                : c("Perjalanan ini tidak memiliki waktu pencatatan pemeriksaan keselamatan.")}
               {typeof trip.student_count_confirmed === "number"
-                ? ` Jumlah siswa dikonfirmasi: ${trip.student_count_confirmed}.`
+                ? ` ${c("Jumlah siswa dikonfirmasi:")} ${trip.student_count_confirmed}.`
                 : ""}
             </p>
             {trip.safety_check_notes && (
               <p>
-                <strong>Catatan pemeriksaan:</strong> {trip.safety_check_notes}
+                <strong>{c("Catatan pemeriksaan:")}</strong> {trip.safety_check_notes}
               </p>
             )}
           </div>

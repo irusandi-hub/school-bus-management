@@ -1,4 +1,4 @@
-import { DEV_DRIVER_RECORD, DEV_PROJECT_AREA, DEV_VIEWER } from "../dev-open-access.ts";
+import { DEV_DRIVER_RECORD, DEV_GUARDIAN_VIEWERS, DEV_PROJECT_AREA, DEV_VIEWER } from "../dev-open-access.ts";
 import { serviceDateInTimeZone } from "../validation.ts";
 
 /**
@@ -28,6 +28,7 @@ function yesterday() {
 }
 
 const { operator, driver, parent } = DEV_VIEWER;
+const { one: parentOne, two: parentTwo, three: parentThree } = DEV_GUARDIAN_VIEWERS;
 
 export const DEV_IDS = {
   projectArea: DEV_PROJECT_AREA.id,
@@ -61,6 +62,22 @@ export function createSimulationTables(): SimTables {
         phone: "+966 50 000 0004",
         created_at: iso(60),
         updated_at: iso(60),
+      },
+      {
+        id: parentTwo.userId,
+        full_name: parentTwo.fullName,
+        role: "parent",
+        phone: "+966 50 000 0008",
+        created_at: iso(40),
+        updated_at: iso(40),
+      },
+      {
+        id: parentThree.userId,
+        full_name: parentThree.fullName,
+        role: "parent",
+        phone: "+966 50 000 0009",
+        created_at: iso(35),
+        updated_at: iso(35),
       },
     ],
 
@@ -224,22 +241,31 @@ export function createSimulationTables(): SimTables {
 
     guardians: [
       {
-        id: DEV_IDS.guardian,
-        profile_id: parent.userId,
-        email: parent.email,
-        full_name: parent.fullName,
+        id: parentOne.guardianId,
+        profile_id: parentOne.userId,
+        email: parentOne.email,
+        full_name: parentOne.fullName,
         phone: "+966 50 000 0004",
         active: true,
         created_at: iso(60),
       },
       {
-        id: "51111111-0000-4000-8000-0000000005f2",
-        profile_id: null,
-        email: "wali.contoh.dua@example.test",
-        full_name: "Wali Contoh Dua",
-        phone: null,
+        id: parentTwo.guardianId,
+        profile_id: parentTwo.userId,
+        email: parentTwo.email,
+        full_name: parentTwo.fullName,
+        phone: "+966 50 000 0008",
         active: true,
-        created_at: iso(20),
+        created_at: iso(40),
+      },
+      {
+        id: parentThree.guardianId,
+        profile_id: parentThree.userId,
+        email: parentThree.email,
+        full_name: parentThree.fullName,
+        phone: "+966 50 000 0009",
+        active: true,
+        created_at: iso(35),
       },
     ],
 
@@ -295,7 +321,7 @@ export function createSimulationTables(): SimTables {
         full_name: "Siswa Contoh Empat",
         date_of_birth: "2015-02-18",
         school_id: "51111111-0000-4000-8000-0000000002c2",
-        guardian_id: "51111111-0000-4000-8000-0000000005f2",
+        guardian_id: parentTwo.guardianId,
         home_address: "Alamat Contoh Empat, Riyadh",
         home_latitude: 24.7136,
         home_longitude: 46.6753,
@@ -325,7 +351,7 @@ export function createSimulationTables(): SimTables {
         full_name: "Siswa Contoh Baru Enam",
         date_of_birth: "2016-01-23",
         school_id: "51111111-0000-4000-8000-0000000002c1",
-        guardian_id: DEV_IDS.guardian,
+        guardian_id: parentTwo.guardianId,
         home_address: "Alamat Contoh Enam, Dammam",
         home_latitude: 26.3978,
         home_longitude: 50.0874,
@@ -340,7 +366,7 @@ export function createSimulationTables(): SimTables {
         full_name: "Siswa Contoh Baru Tujuh",
         date_of_birth: "2014-11-09",
         school_id: "51111111-0000-4000-8000-0000000002c1",
-        guardian_id: DEV_IDS.guardian,
+        guardian_id: parentThree.guardianId,
         home_address: "Alamat Contoh Tujuh, Dammam",
         home_latitude: 26.3894,
         home_longitude: 50.0946,

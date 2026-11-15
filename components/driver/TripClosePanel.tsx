@@ -6,6 +6,8 @@ import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
 import { SAFETY_CHECKS } from "@/lib/driver/trip-end";
 import { confirmArrival, endTrip } from "@/app/pengemudi/actions";
 import { Icon } from "@/components/ui/Icon";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 type TripView = { id: string; status: string; arrived_at: string | null };
 
@@ -21,6 +23,8 @@ export function TripClosePanel({
   unclearStudents: number;
 }) {
   const router = useRouter();
+  const { locale, t } = useLocale();
+  const copy = (value: string) => translateAdminCopy(value, locale) ?? value;
   const [isOpen, setIsOpen] = useState(false);
   const [confirmedChecks, setConfirmedChecks] = useState<Record<string, boolean>>({});
   const allRequiredChecksConfirmed = SAFETY_CHECKS.every(
@@ -74,13 +78,13 @@ export function TripClosePanel({
 
   let blockingReason = "";
   if (!trip.arrived_at) {
-    blockingReason = "Belum bisa diakhiri: gunakan tombol di atas untuk menuntaskan status seluruh penumpang.";
+    blockingReason = copy("Belum bisa diakhiri: gunakan tombol di atas untuk menuntaskan status seluruh penumpang.");
   } else if (unrecordedNames.length > 0) {
-    blockingReason = `Belum bisa diakhiri: catat status ${unrecordedNames.length} siswa yang belum tercatat.`;
+    blockingReason = locale === "en" ? `Cannot end yet: record the status of ${unrecordedNames.length} unrecorded students.` : locale === "ar" ? `لا يمكن الإنهاء بعد: سجّل حالة ${unrecordedNames.length} طالباً لم تُسجل حالتهم.` : `Belum bisa diakhiri: catat status ${unrecordedNames.length} siswa yang belum tercatat.`;
   } else if (unclearStudents > 0) {
-    blockingReason = `Belum bisa diakhiri: ${unclearStudents} penumpang belum dipastikan turun dari bus.`;
+    blockingReason = locale === "en" ? `Cannot end yet: ${unclearStudents} passengers have not been confirmed off the bus.` : locale === "ar" ? `لا يمكن الإنهاء بعد: لم يتم التأكد من نزول ${unclearStudents} من الركاب.` : `Belum bisa diakhiri: ${unclearStudents} penumpang belum dipastikan turun dari bus.`;
   } else if (!allRequiredChecksConfirmed) {
-    blockingReason = "Belum bisa diakhiri: checklist pemeriksaan kabin wajib dicentang.";
+    blockingReason = copy("Belum bisa diakhiri: checklist pemeriksaan kabin wajib dicentang.");
   }
 
   return (
@@ -95,8 +99,8 @@ export function TripClosePanel({
         aria-labelledby="perjalanan-keselamatan-title"
       >
         <header className="ops-safety-dialog-head">
-          <h2 id="perjalanan-keselamatan-title">Akhiri Perjalanan</h2>
-          <button type="button" className="ops-safety-close" aria-label="Tutup pemeriksaan" onClick={closePanel}>
+          <h2 id="perjalanan-keselamatan-title">{copy("Akhiri Perjalanan")}</h2>
+          <button type="button" className="ops-safety-close" aria-label={t("close")} onClick={closePanel}>
             <Icon name="x" size={20} />
           </button>
         </header>
@@ -106,35 +110,35 @@ export function TripClosePanel({
           <input type="hidden" name="assignment_id" value={assignmentId} />
           <ConfirmSubmit
             className="btn btn-secondary"
-            message="Pastikan seluruh penumpang sudah turun dan tidak ada yang tertinggal di dalam bus."
-            pendingLabel="Memeriksa…"
+            message={copy("Pastikan seluruh penumpang sudah turun dan tidak ada yang tertinggal di dalam bus.")}
+            pendingLabel={copy("Memeriksa…")}
             disabled={unclearStudents === 0 && Boolean(trip.arrived_at)}
           >
-            Semua penumpang sudah turun
+            {copy("Semua penumpang sudah turun")}
           </ConfirmSubmit>
-          <small>{trip.arrived_at ? "Status seluruh penumpang sudah dituntaskan." : "Satu kali tekan akan mencatat Turun untuk semua siswa, kecuali yang berstatus Tidak Ikut."}</small>
+          <small>{trip.arrived_at ? copy("Status seluruh penumpang sudah dituntaskan.") : copy("Satu kali tekan akan mencatat Turun untuk semua siswa, kecuali yang berstatus Tidak Ikut.")}</small>
         </form>
 
         <form className="task-end-form ops-end-compact" action={endTrip} onChange={syncConfirmations}>
           <input type="hidden" name="trip_id" value={trip.id} />
           <input type="hidden" name="assignment_id" value={assignmentId} />
           <fieldset className="safety-checks">
-            <legend>Pemeriksaan keselamatan</legend>
+            <legend>{copy("Pemeriksaan keselamatan")}</legend>
             {SAFETY_CHECKS.map((check) => (
               <label key={check.name} className="safety-check">
                 <input type="checkbox" name={check.name} required={check.required} />
-                <span>{check.label}</span>
+                <span>{copy(check.label)}</span>
               </label>
             ))}
           </fieldset>
           {blockingReason && <p className="safety-blocked" role="status">{blockingReason}</p>}
           <ConfirmSubmit
             className="btn btn-primary btn-lg ops-end-action"
-            message="Akhiri perjalanan setelah memastikan seluruh penumpang sudah turun dan kabin kosong?"
-            pendingLabel="Mengakhiri…"
+            message={copy("Akhiri perjalanan setelah memastikan seluruh penumpang sudah turun dan kabin kosong?")}
+            pendingLabel={copy("Mengakhiri…")}
             disabled={!requirementsMet}
           >
-            <Icon name="bus" size={16} style={{ color: "#F5C542" }} /> Akhiri
+            <Icon name="bus" size={16} style={{ color: "#F5C542" }} /> {copy("Akhiri")}
           </ConfirmSubmit>
         </form>
       </section>

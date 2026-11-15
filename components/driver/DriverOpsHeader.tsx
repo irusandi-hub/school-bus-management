@@ -1,12 +1,16 @@
 import type { ReactNode } from "react";
-import Link from "next/link";
+import { cookies } from "next/headers";
+import { defaultLocale, isLocale } from "@/lib/i18n/config";
+import { translate } from "@/lib/i18n/messages";
 import { BrandLogo } from "@/components/brand-logo";
 import { Icon } from "@/components/ui/Icon";
+import { LocalizedText } from "@/components/i18n/LocaleProvider";
+import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
 import { signOutAction } from "@/lib/auth-actions";
 import type { TripProgress } from "@/lib/driver/trip-progress";
 
 /** Dua baris operasional; detail sekunder di profil, sumber progres dan CTA tetap. */
-export function DriverOpsHeader({
+export async function DriverOpsHeader({
   driverName,
   driverId,
   routeName,
@@ -22,7 +26,6 @@ export function DriverOpsHeader({
   capacity,
   progress,
   children,
-  activeTab = "dashboard",
 }: {
   driverName: string;
   driverId: string;
@@ -39,48 +42,49 @@ export function DriverOpsHeader({
   capacity: number;
   progress: TripProgress;
   children?: ReactNode;
-  activeTab?: "dashboard" | "riwayat";
 }) {
+  const cookieStore = await cookies();
+  const savedLocale = cookieStore.get("sbm_locale")?.value;
+  const locale = isLocale(savedLocale) ? savedLocale : defaultLocale;
   const shortId = driverId.slice(0, 8).toUpperCase();
   const date = new Date(`${serviceDate}T12:00:00Z`);
-  const shortDate = Number.isNaN(date.getTime()) ? serviceDate : new Intl.DateTimeFormat("id-ID", {
+  const shortDate = Number.isNaN(date.getTime()) ? serviceDate : new Intl.DateTimeFormat(locale === "ar" ? "ar-SA-u-ca-gregory" : locale === "en" ? "en-GB" : "id-ID", {
     day: "numeric", month: "short", timeZone: "UTC",
   }).format(date);
 
   return (
-    <section className="ops-head" aria-label="Profil pengemudi, tugas, dan progres perjalanan">
+    <section className="ops-head" aria-label={locale === "ar" ? "ملف السائق والمهام وتقدم الرحلة" : locale === "en" ? "Driver profile, tasks and trip progress" : "Profil pengemudi, tugas, dan progres perjalanan"}>
       {/* Baris 1: identitas brand, rute terpotong, dan profil. */}
       <div className="compact-identity-row">
-        <div className="compact-brand-route">
+        <div className="compact-brand-route min-w-0">
           <BrandLogo href="/pengemudi" size="sm" />
-          <h1 className="compact-route" title={`${routeName} • ${shortDate}`}>
-            <span>{routeName || "Rute"}</span><time dateTime={serviceDate}> • {shortDate}</time>
+          <h1 className="compact-route min-w-0 flex-1" title={`${routeName} • ${shortDate}`}>
+            <span className="block min-w-0 truncate">{routeName || <LocalizedText k="route" />}</span><time dateTime={serviceDate}> • {shortDate}</time>
           </h1>
         </div>
         <div className="compact-driver-identity">
-          <strong>{driverName || "Pengemudi"}</strong>
-          <span>ID {shortId} • {plateNumber || "Plat belum tercatat"}</span>
+          <strong>{driverName || <LocalizedText k="driver" />}</strong>
+          <span>ID {shortId} • {plateNumber || <LocalizedText k="plateNotRecorded" />}</span>
         </div>
-        <form action={signOutAction} className="compact-logout-form">
-          <button className="compact-logout" type="submit" aria-label="Keluar" title="Keluar">
-            <Icon name="logout" size={17} />
-          </button>
-        </form>
+        <div className="flex flex-none items-center gap-2">
+          <LocaleSwitcher />
+          <form action={signOutAction} className="compact-logout-form">
+            <button className="compact-logout" type="submit" aria-label={translate(locale, "signOut")} title={translate(locale, "signOut")}>
+              <Icon name="logout" size={17} />
+            </button>
+          </form>
+        </div>
       </div>
 
-      <nav className="portal-nav compact-driver-tabs" aria-label="Navigasi Pengemudi">
-        <Link href="/pengemudi" aria-current={activeTab === "dashboard" ? "page" : undefined}>Data Pengemudi</Link>
-        <Link href="/pengemudi?tab=riwayat" aria-current={activeTab === "riwayat" ? "page" : undefined}>Riwayat</Link>
-      </nav>
       {/* Baris 2: angka tetap berasal dari TripProgress; handler CTA tetap children. */}
       <div className="compact-action-row">
         <div className="compact-counters" aria-live="polite" aria-label={`Progres ${progress.kindLabel.toLowerCase()}`}>
-          <span className="compact-counter">Total: <b>{progress.total}</b></span>
+          <span className="compact-counter"><LocalizedText k="total" />: <b>{progress.total}</b></span>
           <span className="compact-counter" aria-label={`${progress.doneLabel}: ${progress.done}`}>
-            {progress.kind === "dropoff" ? "Diantar" : "Dijemput"}: <b>{progress.done}</b>
+            {progress.kind === "dropoff" ? <LocalizedText k="droppedOff" /> : <LocalizedText k="pickedUp" />}: <b>{progress.done}</b>
           </span>
-          <span className="compact-counter" aria-label={`${progress.waitingLabel}: ${progress.waiting}`}>Sisa: <b>{progress.waiting}</b></span>
-          <span className="compact-counter compact-onboard">Di Bus: <b>{progress.onboard}</b></span>
+          <span className="compact-counter" aria-label={`${progress.waitingLabel}: ${progress.waiting}`}><LocalizedText k="remaining" />: <b>{progress.waiting}</b></span>
+          <span className="compact-counter compact-onboard"><LocalizedText k="onBus" />: <b>{progress.onboard}</b></span>
         </div>
         {children && <div className="ops-head-action">{children}</div>}
       </div>

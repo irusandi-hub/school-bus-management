@@ -1,10 +1,14 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { BrandLogo } from "@/components/brand-logo";
+import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
 import { PasswordForm } from "./password-form";
 import { getViewerState } from "@/lib/auth";
 import { homeForRole } from "@/lib/access";
 import { signOutAction } from "@/lib/auth-actions";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translate } from "@/lib/i18n/messages";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 const notices: Record<string, string> = {
   "belum-aktivasi": "Akun Anda belum terhubung ke data wali. Selesaikan proses di bawah ini.",
@@ -19,20 +23,24 @@ export default async function KataSandiPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  const locale = await getRequestLocale();
+  const t = (key: Parameters<typeof translate>[1]) => translate(locale, key);
+  const copy = (value: string) => translateAdminCopy(value, locale) ?? value;
   const state = await getViewerState();
 
   if (state.status === "anonymous") redirect("/login?alasan=sesi-berakhir");
   if (state.status === "unconfigured") {
     return (
-      <main className="auth-page">
+      <main className="auth-page relative">
+      <div className="absolute right-5 top-5 z-50"><LocaleSwitcher /></div>
         <section className="auth-card">
           <BrandLogo className="auth-logo" />
-          <h1>Database belum dikonfigurasi</h1>
+          <h1>{t("databaseNotConfigured")}</h1>
           <p className="auth-copy">
-            Aktivasi akun belum dapat dilakukan karena koneksi database belum diatur. Hubungi Operator Utama.
+            {copy("Aktivasi akun belum dapat dilakukan karena koneksi database belum diatur. Hubungi Operator Utama.")}
           </p>
           <Link className="auth-back" href="/">
-            Kembali ke beranda
+            {t("backHome")}
           </Link>
         </section>
       </main>
@@ -47,31 +55,30 @@ export default async function KataSandiPage({
   const notice = rawReason ? notices[rawReason] : undefined;
 
   return (
-    <main className="auth-page">
+    <main className="auth-page relative">
+      <div className="absolute right-5 top-5 z-50"><LocaleSwitcher /></div>
       <section className="auth-card">
         <BrandLogo className="auth-logo" />
-        <p className="eyebrow">AKTIVASI AKUN WALI</p>
-        <h1>Buat kata sandi</h1>
+        <p className="eyebrow">{t("activationEyebrow")}</p>
+        <h1>{t("activationTitle")}</h1>
         <p className="auth-copy">
-          Email <strong>{viewer.email ?? "Anda"}</strong> sudah diverifikasi. Buat kata sandi untuk menyelesaikan
-          aktivasi. Akses hanya dibuka jika email terdaftar oleh Operator Utama dan memiliki siswa dengan layanan aktif.
+          <strong>{viewer.email ?? copy("Email Anda")}</strong> · {t("passwordActivationIntro")}
         </p>
 
         {notice && (
           <p className="form-alert info" role="status">
-            {notice}
+            {notice ? copy(notice) : null}
           </p>
         )}
 
         <PasswordForm />
 
         <form action={signOutAction} className="auth-secondary">
-          <button type="submit">Keluar dari akun ini</button>
+          <button type="submit">{t("signOutAccount")}</button>
         </form>
 
         <p className="auth-footnote">
-          Jika aktivasi ditolak, akses tidak akan dibuka. Pesan penolakan akan menjelaskan langkah berikutnya tanpa
-          menampilkan data siswa atau akun lain.
+          {t("activationDeniedNote")}
         </p>
       </section>
     </main>

@@ -696,3 +696,349 @@
 .landing-btn > *,.landing-role-arrow > * { pointer-events: none; }
 .landing-btn:active { transform: scale(.98); filter: brightness(.96); }
 .landing-role-arrow:active { transform: translateY(-50%) scale(.98); filter: brightness(.96); }
+
+
+/* Retouch Nov 2026: copy ringkas, hierarki tipografi lebih tegas. */
+.landing-title {
+  max-width: 680px;
+  font-size: clamp(32px, 4.8vw, 58px);
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
+.landing-title-accent {
+  white-space: normal;
+}
+
+.landing-role-title {
+  letter-spacing: -0.025em;
+}
+
+.landing-role-desc {
+  max-width: 470px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.landing-cta {
+  padding-bottom: clamp(34px, 4.5vw, 50px);
+}
+
+.landing-entry-copy {
+  position: relative;
+  z-index: 1;
+  max-width: 570px;
+  margin: 16px auto 0;
+  color: #e1e6f0;
+  font-size: clamp(13px, 1.4vw, 16px);
+  line-height: 1.65;
+  font-weight: 500;
+}
+
+@media (max-width: 767px) {
+  .landing-title {
+    font-size: clamp(21px, 5.2vw, 29px);
+    line-height: 1.12;
+    letter-spacing: -0.035em;
+  }
+
+  .landing-entry-copy {
+    max-width: 330px;
+    margin-top: 12px;
+    font-size: 12px;
+    line-height: 1.55;
+  }
+
+  .landing-cta-title {
+    font-size: clamp(18px, 4.8vw, 24px);
+    line-height: 1.3;
+  }
+}
+
+/* Focused refinement: original imagery/sections retained, room for every locale. */
+.landing-header{min-height:116px;align-items:flex-start;padding-top:6px;padding-bottom:62px}
+.landing-header .locale-menu{margin-top:5px}
+.landing-header .locale-menu > [role="group"]{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:min(320px,calc(100vw - 32px));min-width:0;padding:4px;gap:2px}
+.landing-header .locale-menu > [role="group"] button{padding:6px;gap:3px;font-size:12px;white-space:nowrap;min-height:36px}
+.landing-hero{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:32px;margin:0;overflow:visible;align-items:center;padding-top:12px}
+.landing-title{font-size:clamp(32px,4.2vw,55px);line-height:1.13}
+.landing-hero-visual{align-self:center;aspect-ratio:11/7;isolation:isolate;border-radius:38% 12% 30% 14% / 26% 18% 28% 20%;overflow:hidden;background:#eef3fa}
+.landing-hero-visual::before{inset:0;background:linear-gradient(145deg,#eef5ff,#fff8e6);z-index:-1}
+.landing-hero-bus{position:relative;inset:auto;width:100%;height:100%;mask-image:none;-webkit-mask-image:none}
+.landing-hero-bus-fade{position:relative;height:100%;mask-image:none;-webkit-mask-image:none}
+.landing-hero-bus img{height:100%;width:100%;object-fit:contain;object-position:center}
+.landing-actions{flex-direction:row;flex-wrap:wrap;gap:10px;margin:22px 0 30px;align-items:center}
+.landing-store-badge{direction:ltr;background:#080a10;color:#fff;border:1px solid #8c919c;border-radius:9px;min-height:50px;padding:6px 13px;gap:9px;box-shadow:none;white-space:nowrap}
+.landing-store-badge:hover{background:#1a2030}
+.landing-store-badge svg{width:25px;height:29px}
+.landing-store-copy{display:flex;flex-direction:column;text-align:left;line-height:1.15;gap:2px}
+.landing-store-copy small{font-size:10px;font-weight:500}
+.landing-store-copy strong{font-size:18px;font-weight:600;letter-spacing:-.4px}
+html[lang="ar"] .landing-store-copy small{direction:rtl;text-align:left}
+.landing-download-tooltip{font-size:12px;text-align:start}
+.landing-strip{padding:18px 8px;box-shadow:0 8px 26px #101b3b0a}
+.landing-strip-item{gap:12px;padding:8px 14px}
+.landing-strip-text{font-size:clamp(12px,1.3vw,15px);line-height:1.5}
+.landing-role{grid-template-columns:40% minmax(0,1fr);min-height:210px}
+.landing-role-body{padding:22px 72px 22px 0}
+.landing-role-desc{line-height:1.6;font-size:clamp(12px,1.2vw,15px)}
+.landing-role-arrow{right:18px;width:42px;height:42px}
+html[dir="rtl"] .landing-hero{direction:rtl}
+html[dir="rtl"] .landing-hero-visual{border-radius:12% 38% 14% 30% / 18% 26% 20% 28%}
+html[dir="rtl"] .landing-role-body{padding:22px 0 22px 72px}
+html[dir="rtl"] .landing-role-arrow{right:auto;left:18px}
+html[dir="rtl"] .landing-role-arrow svg{transform:rotate(180deg)}
+html[dir="rtl"] .landing-role-media img{mask-image:linear-gradient(to left,#000 0%,#000 62%,transparent 100%);-webkit-mask-image:linear-gradient(to left,#000 0%,#000 62%,transparent 100%);object-position:center}
+html[dir="rtl"] .landing-strip-item{border-right:0;border-left:1px solid #e9e6dd}
+html[dir="rtl"] .landing-strip-item:last-child{border-left:0}
+@media(max-width:767px){
+ .landing-hero{grid-template-columns:minmax(0,1fr);gap:22px;padding-bottom:28px}
+ .landing-title{font-size:clamp(30px,7.6vw,44px);line-height:1.16;max-width:590px}
+ .landing-lead{font-size:14px;line-height:1.7;margin-top:18px;max-width:540px}
+ .landing-hero-visual{width:100%;aspect-ratio:11/6;max-height:340px;border-radius:22% 10% 24% 12% / 28% 18% 22% 14%}
+ .landing-actions{margin:20px 0 12px;gap:8px;align-items:center}
+ .landing-store-badge{padding:6px 10px;min-height:48px;font-size:13px}
+ .landing-store-badge svg{width:23px;height:26px}
+ .landing-store-copy strong{font-size:17px}
+ .landing-strip{padding:14px 6px;border-radius:20px}
+ .landing-strip-item{flex-direction:column;gap:9px;padding:5px 7px}
+ .landing-strip-text{font-size:12px;line-height:1.45}
+ .landing-role{grid-template-columns:36% minmax(0,1fr);gap:12px;min-height:218px;border-radius:22px}
+ .landing-role-body{padding:18px 14px 62px 0}
+ .landing-role-head{gap:7px;flex-wrap:wrap}
+ .landing-role-title{font-size:18px;line-height:1.3}
+ .landing-role-badge{width:32px;height:32px}
+ .landing-role-desc{font-size:12px;line-height:1.55}
+ .landing-role-arrow{top:auto;bottom:14px;right:14px;transform:none}
+ .landing-role-arrow:active{transform:scale(.98)}
+ html[dir="rtl"] .landing-role-body{padding:18px 0 62px 14px}
+ html[dir="rtl"] .landing-role-arrow{left:14px}
+}
+/* Reserve the existing header pocket for demo controls rather than covering cards. */
+.landing-header .locale-menu > [role="group"]{width:min(280px,calc(100vw - 80px))}
+body:has(.landing) .dev-mode-banner{position:absolute;top:80px;bottom:auto;left:max(16px,calc((100vw - 1180px)/2 + 32px));width:44px}
+body:has(.landing) .dev-mode-tab{width:44px;height:32px;min-height:32px}
+body:has(.landing) .dev-mode-tab-face{inset:0;width:44px;height:28px;flex-direction:row;gap:3px;border-radius:7px}
+body:has(.landing) .dev-mode-short{writing-mode:horizontal-tb;font-size:8px;letter-spacing:.4px}
+body:has(.landing) .dev-mode-panel{top:122px;bottom:auto}
+
+
+/* Header landing: demo tab sejajar di sisi kiri globe, tanpa baris tambahan. */
+body:has(.landing) .dev-mode-banner {
+  position: absolute;
+  top: 44px;
+  right: max(72px, calc((100vw - 1180px) / 2 + 72px));
+  left: auto;
+  bottom: auto;
+  z-index: 90;
+  width: 44px;
+}
+body:has(.landing) .dev-mode-tab {
+  width: 44px;
+  height: 36px;
+  min-height: 36px;
+}
+body:has(.landing) .dev-mode-tab-face {
+  inset: 0;
+  width: 44px;
+  height: 32px;
+}
+
+
+/* Header compact: controls share one baseline and no longer reserve a second row. */
+.landing-header {
+  min-height: 0;
+  padding: 4px 0 8px;
+  align-items: center;
+}
+.landing-header .locale-menu {
+  margin-top: 0;
+}
+.landing-header .locale-menu > summary {
+  width: 36px;
+  height: 36px;
+}
+.landing-header .locale-menu > [role="group"] {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 48px;
+  min-width: 48px;
+  padding: 4px;
+  gap: 2px;
+  border-radius: 13px;
+}
+.landing-header .locale-menu > [role="group"] button {
+  width: 100%;
+  min-height: 36px;
+  padding: 2px;
+  font-size: 20px;
+  line-height: 1;
+}
+
+/* DEMO uses the same 36px control height and sits 8px beside the globe. */
+body:has(.landing) .dev-mode-banner {
+  position: absolute;
+  top: 26px;
+  right: max(60px, calc((100vw - 1180px) / 2 + 60px));
+  left: auto;
+  bottom: auto;
+  z-index: 90;
+  width: 36px;
+}
+body:has(.landing) .dev-mode-tab {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+body:has(.landing) .dev-mode-tab-face {
+  position: static;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+  border-radius: 50%;
+}
+body:has(.landing) .dev-mode-short {
+  writing-mode: horizontal-tb;
+  font-size: 7px;
+  letter-spacing: 0;
+}
+
+/* Remove the old empty header pocket so the hero rises naturally. */
+.landing-hero {
+  padding-top: 0;
+}
+@media (max-width: 767px) {
+  .landing-hero {
+    gap: 16px;
+    padding-top: 0;
+  }
+}
+
+
+/* Final landing header alignment: compact, equal controls and no reserved blank row. */
+.landing-header {
+  min-height: 0;
+  align-items: center;
+  padding: 4px 0 8px;
+}
+.landing-header .locale-menu {
+  margin-top: 0;
+}
+.landing-header .locale-menu > [role="group"] {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  width: 46px;
+  min-width: 46px;
+  padding: 4px;
+  gap: 2px;
+  border-radius: 12px;
+}
+.landing-header .locale-menu > [role="group"] button {
+  display: grid;
+  width: 36px;
+  min-width: 36px;
+  height: 34px;
+  min-height: 34px;
+  padding: 0;
+  place-items: center;
+  border-radius: 8px;
+  font-size: 21px;
+  line-height: 1;
+}
+.landing-hero {
+  padding-top: 0;
+}
+
+/* DEMO uses the same 36px control footprint as the globe, aligned on its centerline. */
+body:has(.landing) .dev-mode-banner {
+  position: absolute;
+  top: 25px;
+  right: max(60px, calc((100vw - 1180px) / 2 + 76px));
+  left: auto;
+  bottom: auto;
+  width: 36px;
+  height: 36px;
+  z-index: 90;
+  line-height: 1;
+}
+body:has(.landing) .dev-mode-tab {
+  display: block;
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+  padding: 0;
+}
+body:has(.landing) .dev-mode-tab-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #ead99f;
+  border-radius: 50%;
+  background: #fff7d8;
+}
+body:has(.landing) .dev-mode-indicator {
+  width: 5px;
+  height: 5px;
+}
+body:has(.landing) .dev-mode-short {
+  writing-mode: horizontal-tb;
+  font-size: 7px;
+  letter-spacing: 0;
+}
+body:has(.landing) .dev-mode-panel {
+  top: 70px;
+}
+@media (max-width: 767px) {
+  .landing-header {
+    padding-bottom: 6px;
+  }
+  .landing-hero {
+    padding-top: 0;
+  }
+}
+
+
+/* CTA kartu peran: label tindakan jelas, ringkas, dan konsisten lintas bahasa. */
+.landing-role-arrow {
+  display: inline-flex;
+  width: auto;
+  min-width: 118px;
+  height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 0 13px;
+  border: 1px solid rgba(15, 27, 61, 0.08);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--lp-navy);
+  box-shadow: 0 5px 16px rgba(16, 27, 59, 0.10);
+  font-size: 12px;
+  font-weight: 750;
+  line-height: 1;
+  white-space: nowrap;
+}
+.landing-role-arrow svg { width: 16px; height: 16px; flex: none; }
+html[dir="rtl"] .landing-role-arrow { flex-direction: row-reverse; }
+html[dir="rtl"] .landing-role-arrow svg { transform: rotate(180deg); }
+@media (max-width: 767px) {
+  .landing-role-arrow { min-width: 112px; height: 38px; padding-inline: 11px; font-size: 11px; }
+}

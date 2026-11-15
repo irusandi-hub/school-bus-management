@@ -1,14 +1,18 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import { describe, it } from "node:test";
+import { messages } from "../lib/i18n/messages.ts";
 
 describe("tombol tindakan siswa", () => {
   it("menampilkan label selesai yang tepat untuk Naik, Turun, dan Tidak Ikut", () => {
     const controls = fs.readFileSync("components/driver/StudentStatusControls.tsx", "utf8");
 
-    assert.match(controls, /boarded: "Naik — selesai"/);
-    assert.match(controls, /dropped_off: "Turun — selesai"/);
-    assert.match(controls, /absent: "Tidak Ikut — selesai"/);
+    assert.match(controls, /doneLabel=\{t\("boardDone"\)\}/);
+    assert.match(controls, /doneLabel=\{t\("dropDone"\)\}/);
+    assert.match(controls, /doneLabel=\{t\("absentDone"\)\}/);
+    assert.equal(messages.id.boardDone, "Naik — selesai");
+    assert.equal(messages.id.dropDone, "Turun — selesai");
+    assert.equal(messages.id.absentDone, "Tidak Ikut — selesai");
     assert.match(controls, /done=\{status === "boarded"\}/);
     assert.match(controls, /done=\{status === "dropped_off"\}/);
     assert.match(controls, /done=\{status === "absent"\}/);
@@ -21,7 +25,8 @@ describe("tombol tindakan siswa", () => {
     const controls = fs.readFileSync("components/driver/StudentStatusControls.tsx", "utf8");
 
     assert.match(controls, /useFormStatus/);
-    assert.match(controls, /pending \? "Menyimpan…"/);
+    assert.match(controls, /pending \? t\("saving"\) : done \? doneLabel : label/);
+    assert.equal(messages.id.saving, "Menyimpan…");
     assert.match(controls, /disabled=\{pending\}/);
     assert.match(controls, /aria-busy=\{pending\}/);
     assert.doesNotMatch(controls, /window\.location|location\.reload|router\.refresh/);
@@ -30,7 +35,7 @@ describe("tombol tindakan siswa", () => {
   it("memakai status tersimpan saat halaman dimuat dan hanya mengubahnya setelah sukses", () => {
     const controls = fs.readFileSync("components/driver/StudentStatusControls.tsx", "utf8");
     const page = fs.readFileSync("app/pengemudi/page.tsx", "utf8");
-    const effect = controls.match(/useEffect\(\(\) => \{([\s\S]*?)\}, \[state\]\)/)?.[1] ?? "";
+    const effect = controls.match(/useEffect\(\(\) => \{([\s\S]*?)\}, \[state, t\]\)/)?.[1] ?? "";
 
     assert.match(controls, /useState<string \| null>\(initialStatus\)/);
     assert.match(page, /status: state\?\.status \?\? null/);

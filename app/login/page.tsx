@@ -1,33 +1,27 @@
-import Link from "next/link";
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { BrandLogo } from "@/components/brand-logo";
+import { LocalizedText } from "@/components/i18n/LocaleProvider";
+import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
 import { LoginForm } from "./login-form";
 import { homeForRole } from "@/lib/access";
 import { getViewerState } from "@/lib/auth";
-import { safeNextPath } from "@/lib/paths";
+import { isDevOpenAccess } from "@/lib/dev-open-access";
+import { isDemoOtpRole, type DemoOtpRole } from "@/lib/demo-otp";
 
-const reasons: Record<string, string> = {
-  "sesi-berakhir": "Sesi Anda sudah berakhir. Silakan masuk kembali untuk melanjutkan.",
-  "belum-aktivasi": "Akun Anda belum diaktifkan. Selesaikan verifikasi email dan pembuatan kata sandi terlebih dahulu.",
-  auth_callback: "Tautan verifikasi tidak dapat diproses. Minta tautan baru dari halaman Aktivasi Akun.",
+export const metadata: Metadata = {
+  title: "Verifikasi OTP | School Bus Management",
 };
 
-const doors: Record<string, { label: string; detail: string }> = {
-  operator: {
-    label: "Operator Utama",
-    detail: "Gunakan akun Operator Utama untuk mengelola seluruh data dan operasional platform.",
-  },
-  pengemudi: {
-    label: "Pengemudi",
-    detail:
-      "Gunakan akun pengemudi yang sudah ditautkan Operator. Setelah masuk, Anda diarahkan ke tugas hari ini.",
-  },
-  wali: {
-    label: "Orang Tua/Wali",
-    detail:
-      "Gunakan email dan kata sandi akun wali. Akun harus didaftarkan Operator dan memiliki siswa dengan layanan aktif.",
-  },
-};
+function resolveRole(peran: string | null, next: string | null): DemoOtpRole {
+  if (peran === "admin") return "operator";
+  if (isDemoOtpRole(peran)) return peran;
+  if (next?.startsWith("/operator") || next?.startsWith("/admin")) return "operator";
+  if (next?.startsWith("/pengemudi")) return "pengemudi";
+  if (next?.startsWith("/wali")) return "wali";
+  // Jalur lama /login dipertahankan untuk tautan aktivasi wali.
+  return "wali";
+}
 
 export const dynamic = "force-dynamic";
 
@@ -38,48 +32,26 @@ export default async function LoginPage({
 }) {
   const params = await searchParams;
   const rawNext = typeof params.next === "string" ? params.next : null;
-  const rawReason = typeof params.alasan === "string" ? params.alasan : null;
-  const peran = typeof params.peran === "string" ? params.peran : null;
-  const reason = rawReason ? reasons[rawReason] : undefined;
-  const door = peran ? doors[peran === "admin" ? "operator" : peran] : undefined;
+  const rawRole = typeof params.peran === "string" ? params.peran : null;
+  const role = resolveRole(rawRole, rawNext);
+  const simulationEnabled = isDevOpenAccess();
 
-  // A signed-in user is never shown the login form again; they are sent to the area of
-  // their database role instead of the area whose card they clicked earlier.
-  const state = await getViewerState();
-  if (state.status === "authenticated" && state.viewer.profile) {
-    redirect(homeForRole(state.viewer.profile.role));
+  // OTP demo never replaces an existing authenticated account in production.
+  // Preview/local simulation skips Supabase entirely and uses the isolated demo data.
+  if (!simulationEnabled) {
+    const state = await getViewerState();
+    if (state.status === "authenticated" && state.viewer.profile) {
+      redirect(homeForRole(state.viewer.profile.role));
+    }
   }
 
   return (
-    <main className="auth-page">
-      <section className="auth-card">
-        <BrandLogo href="/" ariaLabel="Kembali ke gerbang akses" className="auth-logo" />
-        <p className="eyebrow">SCHOOL BUS MANAGEMENT</p>
-        <h1>Masuk ke akun</h1>
-        {door ? (
-          <p className="auth-door">
-            <strong>{door.label}</strong>
-            <span>{door.detail}</span>
-          </p>
-        ) : (
-          <p className="auth-copy">
-            Gunakan email dan kata sandi akun Anda. Hak akses dibaca dari peran akun di database, bukan dari
-            halaman ini.
-          </p>
-        )}
-
-        <LoginForm next={safeNextPath(rawNext, "")} reason={reason} />
-
-        <p className="auth-footnote">
-          Peran akun ditentukan dari data pengguna di server. Lupa kata sandi? Hubungi Operator untuk pemulihan
-          akses.
-        </p>
-
-        <div className="auth-links">
-          <Link className="auth-back" href="/daftar">
-            Aktivasi akun wali
-          </Link>
-        </div>
+    <main className="auth-page otp-page relative">
+      <div className="absolute right-5 top-5 z-50"><LocaleSwitcher /></div>
+      <section className="auth-card otp-card">
+        <BrandLogo href="/" ariaLabel="Kembali ke beranda" className="auth-logo" />
+        <h1><LocalizedText k="otpTitle" /></h1>
+        <LoginForm role={role} simulationEnabled={simulationEnabled} />
       </section>
     </main>
   );

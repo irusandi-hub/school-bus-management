@@ -1,6 +1,9 @@
 import { EmptyState, Pill } from "@/components/admin/ui";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translate } from "@/lib/i18n/messages";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 import { Icon } from "@/components/ui/Icon";
-import { STOP_STATUS_LABEL, STOP_STATUS_TONE, type NavigationPlan } from "@/lib/driver/navigation";
+import { STOP_STATUS_TONE, type NavigationPlan } from "@/lib/driver/navigation";
 import { buildDirectionsUrl, formatCoordinates } from "@/lib/navigation/external";
 
 /**
@@ -11,7 +14,7 @@ import { buildDirectionsUrl, formatCoordinates } from "@/lib/navigation/external
  * Navigasi rute utama tetap satu tombol besar di atas daftar. Tautan per titik
  * hanya pelengkap sekunder agar pengemudi dapat membuka satu alamat bila perlu.
  */
-export function NavigationStopList({
+export async function NavigationStopList({
   plan,
   skipReasons,
 }: {
@@ -19,12 +22,15 @@ export function NavigationStopList({
   /** Alasan titik tidak lagi dikunjungi (tanpa mengubah urutannya). */
   skipReasons?: Record<string, string>;
 }) {
+  const locale = await getRequestLocale();
+  const t = (key: Parameters<typeof translate>[1]) => translate(locale, key);
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
   if (plan.stops.length === 0) {
     return (
       <EmptyState
         icon="route"
-        title="Belum ada titik jemput"
-        detail="Operator Utama belum menambahkan titik pada rute ini. Navigasi tidak dapat dibuka tanpa titik yang tersimpan."
+        title={c("Belum ada titik jemput")}
+        detail={c("Operator Utama belum menambahkan titik pada rute ini. Navigasi tidak dapat dibuka tanpa titik yang tersimpan.")}
       />
     );
   }
@@ -48,11 +54,11 @@ export function NavigationStopList({
             <div className="nav-stop-body">
               <div className="nav-stop-head">
                 <strong>{stop.name}</strong>
-                <Pill tone={STOP_STATUS_TONE[stop.status]}>{STOP_STATUS_LABEL[stop.status]}</Pill>
+                <Pill tone={STOP_STATUS_TONE[stop.status]}>{stop.status === "waiting" ? t("waiting") : stop.status === "heading" ? c("Menuju lokasi") : stop.status === "arrived" ? t("arrive") : t("completed")}</Pill>
               </div>
               <small className="nav-stop-meta">
-                {stop.isSchool ? "Gerbang sekolah" : "Titik jemput"} · {stop.order} dari {plan.stops.length}
-                {stop.students.length > 0 ? ` · ${stop.students.length} siswa` : " · belum ada siswa"}
+                {c(stop.isSchool ? "Gerbang sekolah" : "Titik jemput")} · {stop.order} {t("of")} {plan.stops.length}
+                {stop.students.length > 0 ? ` · ${stop.students.length} ${t("studentCountLabel")}` : ` · ${locale === "en" ? "no students" : locale === "ar" ? "لا يوجد طلاب" : "belum ada siswa"}`}
               </small>
 
               {stop.students.length > 0 && (
@@ -62,7 +68,7 @@ export function NavigationStopList({
               {skipReason && <p className="nav-stop-skip">{skipReason}</p>}
 
               <details className="nav-stop-more">
-                <summary>Alamat &amp; peta</summary>
+                <summary>{c("Alamat & peta")}</summary>
                 <div className="nav-stop-address">
                   {stop.addresses.map((address) => (
                     <p className="nav-stop-addr" key={address}>
@@ -72,7 +78,7 @@ export function NavigationStopList({
                   ))}
                   <p className={`nav-stop-coord${coordinates ? "" : " is-missing"}`}>
                     <Icon name={coordinates ? "pin" : "gpsOff"} size={12} />
-                    {coordinates ?? "Koordinat belum tersedia"}
+                    {coordinates ?? c("Koordinat belum tersedia")}
                   </p>
                   {mapUrl ? (
                     <a
@@ -80,13 +86,13 @@ export function NavigationStopList({
                       href={mapUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label={`Buka titik ${stop.order}, ${stop.name}, di aplikasi peta`}
+                      aria-label={locale === "en" ? `Open stop ${stop.order}, ${stop.name}, in the map app` : locale === "ar" ? `افتح النقطة ${stop.order}، ${stop.name} في تطبيق الخرائط` : `Buka titik ${stop.order}, ${stop.name}, di aplikasi peta`}
                     >
-                      <Icon name="navigation" size={12} /> Buka di aplikasi peta
+                      <Icon name="navigation" size={12} /> {c("Buka di aplikasi peta")}
                     </a>
                   ) : (
                     <span className="nav-stop-map is-unavailable">
-                      <Icon name="gpsOff" size={12} /> Peta titik ini belum tersedia
+                      <Icon name="gpsOff" size={12} /> {c("Peta titik ini belum tersedia")}
                     </span>
                   )}
                 </div>

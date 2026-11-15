@@ -1,9 +1,24 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { Icon } from "@/components/ui/Icon";
 import { useDriverLocation } from "./useDriverLocation";
 import { useDriverLocationPublisher } from "./useDriverLocationPublisher";
-import { DriverRouteMap, type DriverMapStop } from "./DriverRouteMap";
+import type { DriverMapStop } from "./DriverRouteMap";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
+
+const DriverRouteMap = dynamic(
+  () => import("./DriverRouteMap").then((module) => module.DriverRouteMap),
+  {
+    loading: () => (
+      <div className="ops-map-empty" role="status">
+        <strong>Memuat peta…</strong>
+      </div>
+    ),
+  },
+);
 
 /**
  * Kartu peta di bawah dua panel operasional.
@@ -21,24 +36,49 @@ export function DriverMapPanel({
   active: boolean;
   tripId: string | null;
 }) {
+  const { locale } = useLocale();
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
+  const panelRef = useRef<HTMLElement>(null);
+  const [mapVisible, setMapVisible] = useState(false);
+
+  useEffect(() => {
+    const node = panelRef.current;
+    if (!node || mapVisible) return;
+    if (typeof IntersectionObserver === "undefined") {
+      setMapVisible(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setMapVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "240px 0px" },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [mapVisible]);
   const gps = useDriverLocation(active);
   const publisher = useDriverLocationPublisher({ active, tripId, location: gps.location });
   const gpsLabel =
     gps.status === "active" && gps.location
-      ? `GPS HP · ±${Math.round(gps.location.accuracy)} m`
+      ? `${c("GPS HP")} · ±${Math.round(gps.location.accuracy)} m`
       : gps.status === "locating"
-        ? "Mencari GPS HP"
+        ? c("Mencari GPS HP")
         : gps.status === "denied"
-          ? "GPS HP ditolak"
+          ? c("GPS HP ditolak")
           : gps.status === "unsupported"
-            ? "GPS HP tidak didukung"
+            ? c("GPS HP tidak didukung")
             : gps.status === "invalid"
-              ? "Sinyal GPS lemah"
+              ? c("Sinyal GPS lemah")
               : gps.status === "stale"
-                ? "GPS HP menunggu"
+                ? c("GPS HP menunggu")
                 : gps.status === "unavailable"
-                  ? "GPS HP belum tersedia"
-                  : "GPS HP belum aktif";
+                  ? c("GPS HP belum tersedia")
+                  : c("GPS HP belum aktif");
   const mappedStops = stops.filter(
     (stop) =>
       typeof stop.latitude === "number" &&
@@ -50,31 +90,37 @@ export function DriverMapPanel({
   ).length;
 
   return (
-    <section className="panel ops-map" aria-labelledby="ops-map-title">
+    <section ref={panelRef} className="panel ops-map" aria-labelledby="ops-map-title">
       <header className="ops-map-head">
         <div className="ops-map-heading">
           <span className="ops-map-icon" aria-hidden="true">
             <Icon name="pin" size={15} />
           </span>
           <div>
-            <h2 id="ops-map-title">Peta rute</h2>
+            <h2 id="ops-map-title">{c("Peta rute")}</h2>
             <small>
-              Geser/cubit peta · {mappedStops} titik · S = sekolah
+              {c("Geser/cubit peta")} · {mappedStops} {c("titik")} · S = {c("Sekolah")}
             </small>
           </div>
         </div>
-        <span className="ops-map-gps" role="status" title={`${gps.message} ${publisher.message}`}>
+        <span className="ops-map-gps" role="status" title={`${c(gps.message)} ${c(publisher.message)}`}>
           <Icon name={gps.status === "active" ? "pin" : "gpsOff"} size={12} />
           {gpsLabel}
         </span>
       </header>
 
-      <DriverRouteMap
-        stops={stops}
-        driverLocation={gps.location}
-        locationStatus={gps.status}
-        locationMessage={gps.message}
-      />
+      {mapVisible ? (
+        <DriverRouteMap
+          stops={stops}
+          driverLocation={gps.location}
+          locationStatus={gps.status}
+          locationMessage={gps.message}
+        />
+      ) : (
+        <div className="ops-map-empty" role="status">
+          <strong>{c("Peta akan dimuat saat bagian ini terlihat.")}</strong>
+        </div>
+      )}
     </section>
   );
 }

@@ -1,4 +1,5 @@
 import type { LiveVideoState } from "@/lib/guardian/live";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 
 /**
  * Label status kamera yang ringkas untuk header panel.
@@ -8,13 +9,14 @@ import type { LiveVideoState } from "@/lib/guardian/live";
  * stream benar-benar tersedia.
  */
 export function CameraStatus({ state }: { state: LiveVideoState }) {
+  const { t } = useLocale();
   const tone = state === "ended" ? "off" : state === "live" ? "on" : "pending";
   const label =
     state === "ended"
-      ? "Akses berakhir"
+      ? t("cameraEnded")
       : state === "live"
-        ? "Kamera terhubung"
-        : "Akses belum tersedia";
+        ? t("cameraConnected")
+        : t("cameraNotConnected");
 
   return (
     <span className={`camera-status ${tone}`}>

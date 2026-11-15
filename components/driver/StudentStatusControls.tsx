@@ -1,8 +1,10 @@
 "use client";
 
-import { useActionState, useEffect, useState, type ButtonHTMLAttributes } from "react";
+import { useActionState, useEffect, useState, type ButtonHTMLAttributes, type ReactNode } from "react";
 import { useFormStatus } from "react-dom";
-import { Pill } from "@/components/admin/ui";
+
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 import { Icon } from "@/components/ui/Icon";
 import { recordStudentEventState } from "@/app/pengemudi/actions";
 import { studentActionSet } from "@/lib/driver/student-actions";
@@ -12,12 +14,6 @@ type StudentEventState = ActionState & {
   eventType?: string;
   notes?: string | null;
 };
-
-const DONE_LABEL = {
-  boarded: "Naik — selesai",
-  dropped_off: "Turun — selesai",
-  absent: "Tidak Ikut — selesai",
-} as const;
 
 type ActionKind = "board" | "drop" | "absent";
 
@@ -32,6 +28,8 @@ type ActionButtonProps = {
 
 /** Tombol tindakan yang sama, dengan penanda selesai tanpa mengubah ukurannya. */
 function ActionButton({ kind, label, doneLabel, done, icon, pending = false, className, ...rest }: ActionButtonProps) {
+  const { t, locale } = useLocale();
+  const copy = (value: string) => translateAdminCopy(value, locale) ?? value;
   return (
     <button
       {...rest}
@@ -40,7 +38,7 @@ function ActionButton({ kind, label, doneLabel, done, icon, pending = false, cla
       data-done={done ? "true" : undefined}
     >
       {done ? <Icon name="check" size={15} /> : icon ? <Icon name={icon} size={15} /> : null}
-      {pending ? "Menyimpan…" : done ? doneLabel : label}
+      {pending ? t("saving") : done ? doneLabel : label}
     </button>
   );
 }
@@ -49,6 +47,11 @@ function ActionButton({ kind, label, doneLabel, done, icon, pending = false, cla
 function SubmitAction(props: ActionButtonProps) {
   const { pending } = useFormStatus();
   return <ActionButton {...props} pending={pending} />;
+}
+
+/** Penanda status sinkron: komponen klien tidak boleh memakai Pill server (async + next/headers). */
+function StatusPill({ tone, children }: { tone: "neutral" | "success" | "warning" | "danger" | "info"; children: ReactNode }) {
+  return <span className={`pill ${tone}`}>{children}</span>;
 }
 
 function statusTone(status: string | null) {
@@ -84,6 +87,8 @@ export function StudentStatusControls({
   initialStatus: string | null;
   initialIssueNote: string | null;
 }) {
+  const { t, locale } = useLocale();
+  const copy = (value: string) => translateAdminCopy(value, locale) ?? value;
   const [status, setStatus] = useState<string | null>(initialStatus);
   const [issueNote, setIssueNote] = useState<string | null>(initialIssueNote);
   const [state, formAction, pending] = useActionState<StudentEventState, FormData>(
@@ -95,20 +100,22 @@ export function StudentStatusControls({
     if (state.status !== "success" || !state.eventType) return;
     window.dispatchEvent(new Event("schoolbus:student-saved"));
     if (state.eventType === "issue") {
-      setIssueNote(state.notes ?? "Kendala tercatat.");
+      setIssueNote(state.notes ?? t("issueRecorded"));
       return;
     }
     setStatus(state.eventType);
-  }, [state]);
+  }, [state, t]);
 
   const actions = studentActionSet({ direction, status, tripStatus, arrived });
-  const actionHint =
-    actions.hint ??
-    (!actions.canDrop
-      ? direction === "afternoon"
-        ? "Turun setelah siswa tercatat naik."
-        : "Turun setelah siswa tercatat naik."
-      : null);
+  const rawActionHint = actions.hint ?? (!actions.canDrop ? "Turun setelah siswa tercatat naik." : null);
+  const actionHint = rawActionHint ? ({
+    "Perjalanan sudah selesai; status akhir tidak dapat diubah.": t("completedTrip"),
+    "Mulai perjalanan untuk mencatat status siswa.": t("startTripFirst"),
+    "Tekan Naik jika siswa ikut kembali.": t("boardIfReturned"),
+    "Siswa sudah turun.": t("alreadyDropped"),
+    "Catat naik saat siswa masuk bus di sekolah.": t("boardAtSchool"),
+    "Turun setelah siswa tercatat naik.": t("boardIfReturned"),
+  } as Record<string, string>)[rawActionHint] ?? rawActionHint : null;
 
   const hidden = (
     <>
@@ -125,8 +132,8 @@ export function StudentStatusControls({
           {hidden}
           <SubmitAction
             kind="board"
-            label="Naik"
-            doneLabel={DONE_LABEL.boarded}
+            label={t("board")}
+            doneLabel={t("boardDone")}
             done={status === "boarded"}
             type="submit"
             name="event_type"
@@ -137,8 +144,8 @@ export function StudentStatusControls({
       ) : (
         <ActionButton
           kind="board"
-          label="Naik"
-          doneLabel={DONE_LABEL.boarded}
+          label={t("board")}
+          doneLabel={t("boardDone")}
           done={status === "boarded"}
           type="button"
           disabled
@@ -149,14 +156,14 @@ export function StudentStatusControls({
       {actions.canAbsent && tripId ? (
         <form action={formAction}>
           {hidden}
-          <SubmitAction kind="absent" label="Tidak Ikut" doneLabel={DONE_LABEL.absent}
+          <SubmitAction kind="absent" label={t("absent")} doneLabel={t("absentDone")}
             done={false} type="submit" name="event_type" value="absent" disabled={pending} />
         </form>
       ) : (
         <ActionButton
           kind="absent"
-          label="Tidak Ikut"
-          doneLabel={DONE_LABEL.absent}
+          label={t("absent")}
+          doneLabel={t("absentDone")}
           done={status === "absent"}
           type="button"
           disabled
@@ -165,8 +172,8 @@ export function StudentStatusControls({
       )}
 
       <div className="ops-student-state" aria-live="polite">
-        <Pill tone={statusTone(status)}>{status ? tripEventLabel(status) : "Belum dicatat"}</Pill>
-        {pending && <span className="ops-action-pending">Menyimpan…</span>}
+        <StatusPill tone={statusTone(status)}>{status === "boarded" ? t("board") : status === "dropped_off" ? t("droppedOff") : status === "absent" ? t("absent") : status ? copy(tripEventLabel(status)) : t("unrecorded")}</StatusPill>
+        {pending && <span className="ops-action-pending">{t("saving")}</span>}
       </div>
 
       {actions.canDrop && tripId ? (
@@ -174,8 +181,8 @@ export function StudentStatusControls({
           {hidden}
           <SubmitAction
             kind="drop"
-            label={actions.dropLabel}
-            doneLabel={DONE_LABEL.dropped_off}
+            label={t("drop")}
+            doneLabel={t("dropDone")}
             done={status === "dropped_off"}
             icon="arrowRight"
             type="submit"
@@ -187,8 +194,8 @@ export function StudentStatusControls({
       ) : (
         <ActionButton
           kind="drop"
-          label={actions.dropLabel}
-          doneLabel={DONE_LABEL.dropped_off}
+          label={t("drop")}
+          doneLabel={t("dropDone")}
           done={status === "dropped_off"}
           icon="arrowRight"
           type="button"
@@ -199,7 +206,7 @@ export function StudentStatusControls({
 
       {tripStatus === "in_progress" && tripId ? (
         <details className="ops-issue">
-          <summary>Catat kendala</summary>
+          <summary>{t("recordIssue")}</summary>
           <form className="ops-issue-form" action={formAction}>
             {hidden}
             <input type="hidden" name="event_type" value="issue" />
@@ -210,34 +217,34 @@ export function StudentStatusControls({
               maxLength={300}
               required
               defaultValue={issueNote ?? ""}
-              placeholder="Contoh: siswa tidak ada di titik jemput, orang tua memberi kabar."
+              placeholder={t("issuePlaceholder")}
             />
             <button className="btn btn-secondary btn-sm" type="submit" disabled={pending}>
-              {pending ? "Menyimpan…" : "Simpan kendala"}
+              {pending ? t("saving") : t("saveIssue")}
             </button>
           </form>
         </details>
       ) : (
         <span className="ops-issue-disabled" aria-disabled="true" title={actionHint ?? undefined}>
-          Catat kendala
+          {t("issueDisabled")}
         </span>
       )}
 
       {state.status === "error" && (
         <p className="ops-student-error" role="alert">
-          {state.message}
+          {copy(state.message)}
         </p>
       )}
       {state.status === "success" && (
         <p className="ops-student-success" role="status">
-          {state.message}
+          {copy(state.message)}
         </p>
       )}
       {issueNote && <p className="ops-student-issue"><Icon name="alert" size={12} /> {issueNote}</p>}
 
       {(actionHint || !actions.canBoard || !actions.canDrop || !actions.canAbsent) && (
         <p className="ops-student-hint">
-          {actionHint ?? "Tombol yang tidak aktif belum sesuai dengan status atau tahap siswa saat ini."}
+          {actionHint ?? t("issueHint")}
         </p>
       )}
     </div>

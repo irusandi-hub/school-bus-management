@@ -6,6 +6,9 @@ import { useEffect, useRef, useState } from "react";
 import { BrandLogo } from "@/components/brand-logo";
 import { Icon } from "./Icon";
 import { isNavItemActive, type NavItem, type NavGroup } from "./nav-config";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { translateNavigationLabel } from "@/lib/i18n/navigation";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 /**
  * Navigasi bawah bersama untuk keempat area, dengan penanda halaman aktif.
@@ -29,6 +32,7 @@ export function BottomNav({
   areaLabel?: string;
 }) {
   const pathname = usePathname();
+  const { locale, t } = useLocale();
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -61,7 +65,7 @@ export function BottomNav({
 
   return (
     <>
-      <nav className="mobile-nav" aria-label={ariaLabel}>
+      <nav className="mobile-nav" aria-label={translateNavigationLabel(ariaLabel, locale)}>
         {items.map((item) => {
           const active = isNavItemActive(pathname, item.href, rootHref);
           return (
@@ -72,7 +76,7 @@ export function BottomNav({
               aria-current={active ? "page" : undefined}
             >
               <Icon name={item.icon} />
-              {item.label}
+              {translateNavigationLabel(item.label, locale)}
             </Link>
           );
         })}
@@ -87,7 +91,7 @@ export function BottomNav({
             onClick={() => setOpen(true)}
           >
             <Icon name="apps" />
-            Menu
+            {translateNavigationLabel("Menu", locale)}
           </button>
         ) : null}
       </nav>
@@ -97,7 +101,7 @@ export function BottomNav({
           <button
             type="button"
             className="menu-backdrop"
-            aria-label="Tutup menu"
+            aria-label={t("closeMenu")}
             onClick={closeMenu}
           />
           <div
@@ -108,13 +112,13 @@ export function BottomNav({
             aria-labelledby="operator-menu-title"
           >
             <div className="menu-sheet-head">
-              <BrandLogo size="sm" subtitle={areaLabel} className="menu-sheet-brand" />
+              <BrandLogo size="sm" subtitle={translateNavigationLabel(areaLabel, locale)} className="menu-sheet-brand" />
               <button
                 ref={closeRef}
                 type="button"
                 className="menu-close"
                 onClick={closeMenu}
-                aria-label="Tutup menu"
+                aria-label={t("closeMenu")}
               >
                 <Icon name="close" />
               </button>
@@ -122,11 +126,11 @@ export function BottomNav({
 
             <div className="menu-sheet-body">
               <h2 id="operator-menu-title" className="menu-sheet-title">
-                Semua menu
+                {t("allMenus")}
               </h2>
               {groups.map((group) => (
                 <div key={group.label}>
-                  <div className="menu-section-label">{group.label}</div>
+                  <div className="menu-section-label">{translateNavigationLabel(group.label, locale)}</div>
                   {group.items.map((item) => {
                     const active = isNavItemActive(pathname, item.href, rootHref);
                     return (
@@ -137,7 +141,7 @@ export function BottomNav({
                         aria-current={active ? "page" : undefined}
                       >
                         <Icon name={item.icon} />
-                        <span>{item.label}</span>
+                        <span>{translateNavigationLabel(item.label, locale)}</span>
                       </Link>
                     );
                   })}
@@ -146,7 +150,7 @@ export function BottomNav({
             </div>
 
             <div className="menu-sheet-foot">
-              Sidik jari &amp; wilayah kerja: {areaLabel}. Semua tujuan sidebar tersedia di sini.
+              {translateNavigationLabel(areaLabel, locale)}. {translateAdminCopy("Semua tujuan sidebar tersedia di sini.", locale) ?? "Semua tujuan sidebar tersedia di sini."}
             </div>
           </div>
         </>

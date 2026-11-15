@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 
 type Notice = { id: string; message: string } | null;
 const NoticeContext = createContext<{ active: Notice; show: (notice: Notice) => void }>({ active: null, show: () => {} });
@@ -35,21 +36,28 @@ function NoticeButton({ id, message, className, label, children, tooltip = true 
 
 export function LandingDownloads() {
   const { active } = useContext(NoticeContext);
+  const { t } = useLocale();
   return <div className="landing-actions">
     {/* Tautan toko belum tersedia. Ganti dengan URL App Store/Google Play saat aplikasi dirilis. */}
-    <NoticeButton tooltip={false} id="store-apple" message="Unduh aplikasi belum tersedia" className="landing-btn landing-btn-primary">
+    <NoticeButton tooltip={false} id="store-apple" message={t("downloadUnavailable")} label="App Store — belum tersedia" className="landing-btn landing-store-badge">
       <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.5 2c.1 1.6-.7 3.1-1.7 4-1 .9-2.3 1.3-3.4 1.2-.1-1.5.7-3 1.7-3.9C14.1 2.4 15.5 2 16.5 2ZM20 17.3c-.5 1.2-.8 1.8-1.5 2.9-1 1.4-2.3 3.1-3.9 3.1-1.4 0-1.8-.9-3.7-.9s-2.3.9-3.7.9c-1.6 0-2.8-1.6-3.8-3C.7 16.4.2 11.7 1.9 9.2c1.2-1.8 3.2-2.8 5-2.8 1.5 0 2.5.9 3.8.9 1.2 0 2-.9 3.8-.9 1.5 0 3 .8 4.2 2.1-3.7 2-3.1 7.1 1.3 8.8Z" transform="translate(2 0) scale(.85 1)" /></svg>
-      <span>Unduh di App Store</span>
+      <span className="landing-store-copy"><strong>App Store</strong></span>
     </NoticeButton>
-    <NoticeButton tooltip={false} id="store-google" message="Unduh aplikasi belum tersedia" className="landing-btn landing-btn-outline">
+    <NoticeButton tooltip={false} id="store-google" message={t("downloadUnavailable")} label="Google Play — belum tersedia" className="landing-btn landing-store-badge">
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 2l12 10L3 22V2Z" fill="#4285f4"/><path d="m3 2 15 8-3 2L3 2Z" fill="#34a853"/><path d="m3 22 15-8-3-2L3 22Z" fill="#ea4335"/><path d="m15 12 3-2 4 2-4 2-3-2Z" fill="#fbbc04"/></svg>
-      <span>Dapatkan di Google Play</span>
+      <span className="landing-store-copy"><strong>Google Play</strong></span>
     </NoticeButton>
     <span className="landing-tooltip landing-download-tooltip" role="status" aria-live="polite" aria-atomic="true">{active?.id.startsWith("store-") ? active.message : ""}</span>
   </div>;
 }
 
-export function LandingRoleArrow({ enabled, href, label }: { enabled: boolean; href: string; label: string }) {
-  const icon = <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 12h14M13 6.2l5.8 5.8L13 17.8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
-  return enabled ? <Link href={href} className="landing-role-arrow" aria-label={label}>{icon}</Link> : <NoticeButton id={`role-${href.slice(1)}`} message="Daftar atau masuk dulu untuk mengakses" className="landing-role-arrow landing-role-arrow-muted" label={label}>{icon}</NoticeButton>;
+export function LandingRoleArrow({ href, label }: { href: string; label: string }) {
+  const { t } = useLocale();
+  const roleLabel = href.includes("peran=wali") ? t("parentEntry") : href.includes("peran=pengemudi") ? t("driverEntry") : t("managerEntry");
+  const getStarted = t("goAccess");
+  const icon = <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
+  return <Link href={href} className="landing-role-arrow" aria-label={`${getStarted} — ${roleLabel || label}`}>
+    <span>{getStarted}</span>
+    {icon}
+  </Link>;
 }

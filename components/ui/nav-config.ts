@@ -68,7 +68,7 @@ export const operatorBottomNav: NavItem[] = [
 
 export const driverBottomNav: NavItem[] = [
   { href: "/pengemudi", label: "Tugas", icon: "dashboard" },
-  { href: "/pengemudi/riwayat", label: "Riwayat", icon: "trip" },
+  { href: "/pengemudi?tab=riwayat", label: "Riwayat", icon: "trip" },
 ];
 
 export const guardianBottomNav: NavItem[] = [

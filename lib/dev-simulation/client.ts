@@ -1,4 +1,4 @@
-import { DEV_DRIVER_RECORD, DEV_VIEWER } from "../dev-open-access.ts";
+import { DEV_DRIVER_RECORD, DEV_GUARDIAN_VIEWERS, DEV_VIEWER } from "../dev-open-access.ts";
 import { createSimulationTables, type SimRow, type SimTables } from "./data.ts";
 
 /**
@@ -146,13 +146,21 @@ function compareValues(left: unknown, right: unknown): number {
   return String(left ?? "").localeCompare(String(right ?? ""), "id");
 }
 
-function likeMatches(value: unknown, pattern: string): boolean {
-  const text = String(value ?? "").toLowerCase();
-  const escaped = pattern
-    .toLowerCase()
-    .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-    .replace(/%/g, ".*");
-  return new RegExp(`^${escaped}$`).test(text);
+function likeMatches(value: unknown, pattern: string, insensitive: boolean): boolean {
+  // SQL NULL never matches LIKE, even an all-wildcard pattern.
+  if (value === null || value === undefined) return false;
+  let expression = "";
+  const literal = (character: string) => character.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  for (let index = 0; index < pattern.length; index++) {
+    const character = pattern[index];
+    if (character === "\\") {
+      if (++index === pattern.length) return false;
+      expression += literal(pattern[index]);
+    } else if (character === "%") expression += "[\\s\\S]*";
+    else if (character === "_") expression += "[\\s\\S]";
+    else expression += literal(character);
+  }
+  return new RegExp(`^(?:${expression})$(?![\\s\\S])`, insensitive ? "iu" : "u").test(String(value));
 }
 
 class SimQuery implements PromiseLike<SimResult> {
@@ -223,7 +231,7 @@ class SimQuery implements PromiseLike<SimResult> {
 
     this.predicates.push((row) =>
       clauses.some(({ column, operator, value }) => {
-        if (operator === "ilike" || operator === "like") return likeMatches(row[column], value);
+        if (operator === "ilike" || operator === "like") return likeMatches(row[column], value, operator === "ilike");
         if (operator === "eq") return String(row[column] ?? "") === value;
         if (operator === "neq") return String(row[column] ?? "") !== value;
         return false;
@@ -458,8 +466,11 @@ export function createSimulationClient() {
         const trip = tables.trips.find((row) => row.id === tripId);
         const assignment = tables.trip_assignments.find((row) => row.id === trip?.assignment_id);
         const route = tables.routes.find((row) => row.id === assignment?.route_id);
+        const requestedGuardianId = String(args.p_guardian_id ?? "");
         const guardian = tables.guardians.find(
-          (row) => row.profile_id === DEV_VIEWER.parent.userId && row.active,
+          (row) =>
+            row.id === (requestedGuardianId || DEV_GUARDIAN_VIEWERS.one.guardianId) &&
+            row.active,
         );
         const placement = tables.student_route_stops.find((row) => {
           if (!guardian || row.route_id !== assignment?.route_id || !row.active || row.direction !== route?.direction) {

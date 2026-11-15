@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
-import { LIVE_STATE_COPY, resolveLivePlayback, type LiveVideoState } from "@/lib/guardian/live";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { resolveLivePlayback, type LiveVideoState } from "@/lib/guardian/live";
 import { tripCamera } from "@/lib/camera/trip-connection";
 import { CameraStatus } from "./CameraStatus";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 export type ParentLiveVideoProps = {
   tripId?: string | null;
@@ -45,6 +47,8 @@ export function ParentLiveVideo({
   compact = false,
   presentation = "default",
 }: ParentLiveVideoProps) {
+  const { t, locale } = useLocale();
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
   const [expanded, setExpanded] = useState(false);
   const [media, setMedia] = useState<MediaStream | null>(null);
   const [connection, setConnection] = useState("");
@@ -56,7 +60,8 @@ export function ParentLiveVideo({
   const playback = resolveLivePlayback({ state, streamUrl, simulated });
   const displayState = media ? "live" : connection.includes("berakhir") ? "ended" : playback.state;
   const isLive = Boolean(media) || playback.canPlay;
-  const copy = LIVE_STATE_COPY[displayState];
+  const copyTitle = t(({ "awaiting-boarding": "awaitingChildOnBus", "on-board-camera-off": "cameraNotConnected", ended: "cameraEnded", live: "liveStream" } as const)[displayState]);
+  const copyDetail = t(({ "awaiting-boarding": "cameraAccessAfterBoarding", "on-board-camera-off": "cameraBoardedNoStream", ended: "cameraNoRecording", live: "cameraNoRecording" } as const)[displayState]);
   const isGuardianCard = presentation === "guardian-card";
   const placeholderIcon =
     displayState === "ended" ? "check" : displayState === "awaiting-boarding" ? "bus" : "cameraOff";
@@ -80,22 +85,22 @@ export function ParentLiveVideo({
   const stage = isLive ? (
     <video ref={node => { if (node) node.srcObject = media; }} className="live-player" controls autoPlay muted playsInline preload="metadata">
       <source src={media ? undefined : streamUrl ?? undefined} type={streamMimeType ?? undefined} />
-      Peramban Anda tidak mendukung pemutaran video.
+      {t("videoUnsupported")}
     </video>
   ) : (
     <div className={`live-placeholder state-${displayState}`}>
       <span className="live-placeholder-icon" aria-hidden="true">
         <Icon name={placeholderIcon} size={26} />
       </span>
-      <strong>{copy.title}</strong>
-      <p>{copy.detail}</p>
+      <strong>{copyTitle}</strong>
+      <p>{copyDetail}</p>
     </div>
   );
 
   return (
     <section
       className={`live-video${compact ? " is-compact" : ""}${isGuardianCard ? " guardian-camera-panel" : ""}`}
-      aria-label={`Kamera perjalanan ${childName}`}
+      aria-label={`${t("cameraTitle")} ${childName}`}
     >
       <header className="live-head">
         <div className="live-title">
@@ -103,7 +108,7 @@ export function ParentLiveVideo({
             <Icon name={isLive ? "camera" : "cameraOff"} size={16} />
           </span>
           <div>
-            <strong>{isGuardianCard ? (busLabel ? `Kamera perjalanan · ${busLabel}` : "Kamera perjalanan") : "Live video"}</strong>
+            <strong>{isGuardianCard ? (busLabel ? `${t("cameraTitle")} · ${busLabel}` : t("cameraTitle"))  : t("liveVideo")}</strong>
             <span>{isGuardianCard ? tripLabel : `${childName} · ${tripLabel}`}</span>
           </div>
         </div>
@@ -117,14 +122,14 @@ export function ParentLiveVideo({
             <CameraStatus state={displayState} />
           )}
           {simulated && (
-            <span className="live-demo" title="Data simulasi pengembangan, bukan siaran nyata">
-              Data simulasi
+            <span className="live-demo" title={t("simulatedData")}>
+              {c("Data simulasi")}
             </span>
           )}
         </div>
       </header>
 
-      {connection && <p role="status">{connection}</p>}
+      {connection && <p role="status">{c(connection)}</p>}
       <div className="live-stage">{stage}</div>
 
       <footer className="live-foot">
@@ -132,22 +137,22 @@ export function ParentLiveVideo({
           <>
             <span className="live-meta">
               <Icon name="clock" size={12} />
-              {updatedAt ? `Diperbarui ${updatedAt}` : "Belum ada pembaruan"}
+              {updatedAt ? `${t("updated")} ${updatedAt}` : t("noUpdate")}
             </span>
-            <span className="live-meta">{busLabel ?? "Bus belum ditetapkan"}</span>
+            <span className="live-meta">{busLabel ?? t("busNotAssigned")}</span>
           </>
         ) : (
-          !isLive && <span className="live-meta">Pembesaran aktif saat siaran tersedia</span>
+          !isLive && <span className="live-meta">{t("zoomWhenLive")}</span>
         )}
         <button
           className="btn btn-secondary btn-sm live-expand"
           type="button"
           disabled={!isLive}
-          title={isLive ? undefined : copy.detail}
+          title={isLive ? undefined : copyDetail}
           onClick={() => setExpanded(true)}
         >
           <Icon name="expand" size={14} />
-          Perbesar
+          {c("Perbesar")}
         </button>
       </footer>
 
@@ -156,7 +161,7 @@ export function ParentLiveVideo({
           className="live-fullscreen"
           role="dialog"
           aria-modal="true"
-          aria-label={`Live video ${childName} diperbesar`}
+          aria-label={`${t("liveVideo")} ${childName}`}
         >
           <header className="live-fullscreen-head">
             <div>
@@ -179,14 +184,14 @@ export function ParentLiveVideo({
                 autoFocus
               >
                 <Icon name="shrink" size={14} />
-                Tutup
+                {t("close")}
               </button>
             </div>
           </header>
 
           <div className="live-fullscreen-stage">{stage}</div>
           <p className="live-fullscreen-note">
-            {copy.detail} Tekan Esc atau Tutup untuk kembali.
+            {copyDetail} {c("Tekan Esc atau")} {t("close")} {c("untuk kembali.")}
           </p>
         </div>
       )}

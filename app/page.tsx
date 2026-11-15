@@ -1,11 +1,11 @@
 import Image from "next/image";
-import Link from "next/link";
 import type { Metadata } from "next";
 import { BrandLogo } from "@/components/brand-logo";
 import "./landing.css";
 import { LandingControls, LandingDownloads, LandingRoleArrow } from "@/components/landing-controls";
+import { LocalizedText } from "@/components/i18n/LocaleProvider";
+import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
 
-import { isDevOpenAccess } from "@/lib/dev-open-access";
 
 const HERO_IMAGE = {
   src: "/assets/landing/hero-bus.webp",
@@ -22,11 +22,7 @@ export const metadata: Metadata = {
 const STRIP_ITEMS = [
   {
     label: (
-      <>
-        Perjalanan{" "}
-        <br />
-        Lebih Aman
-      </>
+<LocalizedText k="tripMonitored" />
     ),
     icon: (
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -48,11 +44,7 @@ const STRIP_ITEMS = [
   },
   {
     label: (
-      <>
-        Lokasi Bus{" "}
-        <br />
-        Real-Time
-      </>
+<LocalizedText k="busPosition" />
     ),
     icon: (
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -68,11 +60,7 @@ const STRIP_ITEMS = [
   },
   {
     label: (
-      <>
-        Notifikasi{" "}
-        <br />
-        Instan
-      </>
+<LocalizedText k="arrivalUpdates" />
     ),
     icon: (
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -96,10 +84,10 @@ const STRIP_ITEMS = [
 const ROLE_CARDS = [
   {
     id: "parent",
-    href: "/wali",
+    href: "/login?peran=wali",
     entryLabel: "Masuk sebagai Orang Tua",
-    title: "Untuk Orang Tua",
-    description: "Pantau perjalanan anak secara langsung, kapan saja.",
+    title: "Orang Tua / Wali",
+    description: "Anak Dijemput. Perjalanan Terpantau. Kedatangan Terinformasikan.",
     image: { src: "/assets/landing/role-orang-tua.webp", width: 1376, height: 768 },
     badge: (
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -170,10 +158,10 @@ const ROLE_CARDS = [
   },
   {
     id: "driver",
-    href: "/pengemudi",
+    href: "/login?peran=pengemudi",
     entryLabel: "Masuk sebagai Pengemudi",
-    title: "Untuk Pengemudi",
-    description: "Dapatkan tugas dan navigasi rute dengan mudah.",
+    title: "Pengemudi",
+    description: "Rute Adaptif. Urutan Tetap Terjaga.",
     image: { src: "/assets/landing/role-pengemudi.webp", width: 1408, height: 768 },
     badge: (
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -248,10 +236,10 @@ const ROLE_CARDS = [
   },
   {
     id: "operator",
-    href: "/operator",
+    href: "/login?peran=operator",
     entryLabel: "Masuk sebagai Pengelola",
-    title: "Untuk Pengelola",
-    description: "Kelola armada, pengemudi, dan jadwal perjalanan.",
+    title: "Pengelola",
+    description: "Proyek Terkendali. Operasional Terukur.",
     image: { src: "/assets/landing/role-operator.webp", width: 1408, height: 768 },
     badge: (
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -318,27 +306,22 @@ const ROLE_CARDS = [
 ];
 
 export default function LandingPage() {
-  // Masa depan: panah aktif setelah pengguna registrasi/masuk. Saat ini akses dibuka untuk pengembangan.
-  const ROLE_ENTRY_ENABLED = isDevOpenAccess();
   return (
     <div className="landing">
       <LandingControls>
       <div className="landing-shell">
         <header className="landing-header">
           <BrandLogo size="lg" />
+          <LocaleSwitcher />
         </header>
 
         <section className="landing-hero" aria-labelledby="landing-title">
           <div className="landing-hero-copy">
             <h1 id="landing-title" className="landing-title">
-              Your Child’s
-              <br />
-              Safety,
-              <br />
-              Tracked in
+              <LocalizedText k="landingTitle" />
               <br />
               <span className="landing-title-accent">
-                Real-Time.
+                <LocalizedText k="landingTitleAccent" />
                 <svg
                   className="landing-title-underline"
                   viewBox="0 0 240 14"
@@ -356,8 +339,7 @@ export default function LandingPage() {
               </span>
             </h1>
             <p className="landing-lead">
-              Perjalanan sekolah lebih aman dengan pantauan langsung dan
-              informasi yang akurat.
+              <LocalizedText k="landingLead" />
             </p>
             <LandingDownloads />
           </div>
@@ -371,7 +353,7 @@ export default function LandingPage() {
                   width={HERO_IMAGE.width}
                   height={HERO_IMAGE.height}
                   priority
-                  sizes="(min-width: 768px) 60vw, 55vw"
+                  sizes="(min-width: 768px) 50vw, 100vw"
                 />
               </div>
             </div>
@@ -405,9 +387,9 @@ export default function LandingPage() {
                   <span className="landing-role-badge" aria-hidden="true">
                     {role.badge}
                   </span>
-                  <h2 className="landing-role-title">{role.title}</h2>
+                  <h2 className="landing-role-title">{role.id === "parent" ? <LocalizedText k="parent" /> : role.id === "driver" ? <LocalizedText k="driver" /> : <LocalizedText k="manager" />}</h2>
                 </div>
-                <p className="landing-role-desc">{role.description}</p>
+                <p className="landing-role-desc">{role.id === "parent" ? <LocalizedText k="parentBenefit" /> : role.id === "driver" ? <LocalizedText k="driverBenefit" /> : <LocalizedText k="managerBenefit" />}</p>
                 <div className="landing-chips" aria-hidden="true">
                   {role.chips.map((chip, index) => (
                     <span className="landing-chip" key={index}>
@@ -416,7 +398,7 @@ export default function LandingPage() {
                   ))}
                 </div>
               </div>
-              <LandingRoleArrow enabled={ROLE_ENTRY_ENABLED} href={role.href} label={role.entryLabel} />
+              <LandingRoleArrow href={role.href} label={role.entryLabel} />
             </article>
           ))}
         </section>
@@ -443,53 +425,13 @@ export default function LandingPage() {
           </div>
 
           <h2 id="landing-cta-title" className="landing-cta-title">
-            Bring Safety and Peace of Mind
+            <LocalizedText k="oneDoor" />
             <br />
-            to <span>Your School.</span>
+            <span><LocalizedText k="oneService" /></span>
           </h2>
 
-          <div className="landing-cta-row">
-            <label className="landing-email-field">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <rect
-                  x="2.6"
-                  y="5.4"
-                  width="18.8"
-                  height="13.2"
-                  rx="3"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                />
-                <path
-                  d="M3.6 7.2l8.4 5.6 8.4-5.6"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              {/* UI saja. Disiapkan untuk integrasi sign-in sesuai peran akun (profiles.role). Saat ini akses dibuka untuk keperluan pengembangan. */}
-              <input
-                type="email"
-                name="email"
-                className="landing-email-input"
-                placeholder="Masukkan email Anda"
-                aria-label="Email"
-              />
-            </label>
-            {/* Masa depan: CTA ini dapat berubah menjadi registrasi. */}
-            <Link href="/pilih-peran" className="landing-btn landing-btn-primary landing-btn-cta">
-              Masuk Akun
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path
-                  d="M4.5 12h14M13 6.2l5.8 5.8L13 17.8"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </Link>
+          <div className="landing-entry-copy">
+            <LocalizedText k="chooseRole" />
           </div>
         </section>
 

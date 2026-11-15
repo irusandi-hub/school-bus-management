@@ -1,4 +1,8 @@
 import Link from "next/link";
+import { cookies } from "next/headers";
+import { defaultLocale, isLocale } from "@/lib/i18n/config";
+import { translate, type MessageKey } from "@/lib/i18n/messages";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 import { orderDriverSessions } from "@/lib/driver/session-selection";
 import type { Metadata } from "next";
 import { ConfigNotice, EmptyRow, EmptyState, Notice, Pill, TripStatusPill } from "@/components/admin/ui";
@@ -30,7 +34,7 @@ import {
 import { DEFAULT_NAVIGATION_PROVIDER, buildRouteDirectionsUrl } from "@/lib/navigation/external";
 import { createServerSupabase } from "@/lib/supabase/server";
 import type { RouteStopRow, TripEventRow, TripRow } from "@/lib/types";
-import { formatDate, formatDateTime, formatTime, routeDirectionLabel, serviceDateInTimeZone } from "@/lib/validation";
+import { serviceDateInTimeZone } from "@/lib/validation";
 import { startTrip } from "./actions";
 
 export const metadata: Metadata = { title: "Operasional Hari Ini | Pengemudi" };
@@ -73,6 +77,16 @@ export default async function DriverOperationsPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const query = await searchParams;
+  const cookieStore = await cookies();
+  const savedLocale = cookieStore.get("sbm_locale")?.value;
+  const locale = isLocale(savedLocale) ? savedLocale : defaultLocale;
+  const t = (key: MessageKey) => translate(locale, key);
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
+  const directionLabel = (value: string) => value === "morning" ? t("morningDirection") : value === "afternoon" ? t("afternoonDirection") : t("directionNotRecorded");
+  const dateLocale = locale === "ar" ? "ar-SA-u-ca-gregory" : locale === "en" ? "en-GB" : "id-ID";
+  const formatDateLocalized = (value: string) => new Intl.DateTimeFormat(dateLocale, { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Riyadh" }).format(new Date(value.length <= 10 ? `${value.slice(0, 10)}T12:00:00+03:00` : value));
+  const formatDateTimeLocalized = (value: string | null) => value ? new Intl.DateTimeFormat(dateLocale, { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Riyadh" }).format(new Date(value)) : "—";
+  const formatTimeLocalized = (value: string | null) => value ? new Intl.DateTimeFormat(dateLocale, { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Riyadh" }).format(new Date(value)) : "—";
   const access = await requireDriver();
   if (access.status === "unconfigured") return <ConfigNotice />;
 
@@ -107,54 +121,53 @@ export default async function DriverOperationsPage({
   if (firstParam(query.tab) === "riwayat") {
     const { data: historyData, error: historyError } = await supabase
       .from("trips")
-      .select("id, assignment_id, status, started_at, completed_at, arrived_at, created_at, trip_assignments(service_date, driver_id, routes(route_name, school_name, direction), buses(fleet_code, plate_number))")
+      .select("id, assignment_id, status, started_at, completed_at, arrived_at, created_at, trip_assignments!inner(service_date, driver_id, routes(route_name, school_name, direction), buses(fleet_code, plate_number))")
+      .eq("trip_assignments.driver_id", access.driver.id)
       .order("created_at", { ascending: false })
       .limit(50);
-    const history = ((historyData ?? []) as unknown as TripRow[]).filter(
-      (item) => (item.trip_assignments as unknown as { driver_id?: string } | null)?.driver_id === access.driver.id,
-    );
+    const history = (historyData ?? []) as unknown as TripRow[];
     return (
       <>
         <section className="ops-head">
           <div className="ops-head-top">
             <span className="ops-avatar" aria-hidden="true">{(access.driver.full_name || "P").slice(0, 1).toUpperCase()}</span>
             <div className="ops-ident">
-              <strong>{access.driver.full_name || "Pengemudi"}</strong>
-              <small>ID {access.driver.id.slice(0, 8).toUpperCase()} · Akun aktif</small>
+              <strong>{access.driver.full_name || c("Pengemudi")}</strong>
+              <small>ID {access.driver.id.slice(0, 8).toUpperCase()} · {t("activeAccount")}</small>
             </div>
-            <nav className="portal-nav compact-driver-tabs" aria-label="Navigasi Pengemudi">
-              <Link href="/pengemudi">Data Pengemudi</Link>
-              <Link href="/pengemudi?tab=riwayat" aria-current="page">Riwayat</Link>
+            <nav className="portal-nav compact-driver-tabs" aria-label={t("navigationDriver")}>
+              <Link href="/pengemudi">{t("driverDashboard")}</Link>
+              <Link href="/pengemudi?tab=riwayat" aria-current="page">{t("history")}</Link>
             </nav>
           </div>
         </section>
-        {historyError && <Notice kind="error">Riwayat belum dapat dimuat. Coba lagi.</Notice>}
+        {historyError && <Notice kind="error">{t("historyLoadError")}</Notice>}
         <section className="panel">
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">Riwayat perjalanan</h2>
-              <div className="panel-subtitle">50 perjalanan terbaru yang Anda jalankan</div>
+              <h2 className="panel-title">{t("driverHistoryTitle")}</h2>
+              <div className="panel-subtitle">{t("driverHistorySubtitle")}</div>
             </div>
           </header>
           <div className="admin-table-wrap">
             <table className="admin-table table-stack">
-              <thead><tr><th scope="col">Tanggal</th><th scope="col">Rute</th><th scope="col">Bus</th><th scope="col">Status</th><th scope="col">Waktu</th></tr></thead>
+              <thead><tr><th scope="col">{t("date")}</th><th scope="col">{t("route")}</th><th scope="col">{t("bus")}</th><th scope="col">{t("status")}</th><th scope="col">{t("time")}</th></tr></thead>
               <tbody>
                 {history.length === 0 ? (
-                  <EmptyRow colSpan={5} title="Belum ada riwayat perjalanan" detail="Riwayat muncul setelah perjalanan dijalankan dan diselesaikan." />
+                  <EmptyRow colSpan={5} title={t("noTripHistory")} detail={t("historyEmptyDetail")} />
                 ) : history.map((item) => (
                   <tr key={item.id} data-trip-id={item.id}>
-                    <td data-label="Tanggal">{formatDate(item.trip_assignments?.service_date ?? item.created_at)}</td>
-                    <td data-label="Rute">
-                      <strong>{item.trip_assignments?.routes?.route_name ?? "Rute"}</strong>
-                      <small>{item.trip_assignments?.routes?.school_name} · {routeDirectionLabel(item.trip_assignments?.routes?.direction ?? "")}</small>
+                    <td data-label={t("date")}>{formatDateLocalized(item.trip_assignments?.service_date ?? item.created_at)}</td>
+                    <td data-label={t("route")}>
+                      <strong>{item.trip_assignments?.routes?.route_name ?? c("Rute")}</strong>
+                      <small>{item.trip_assignments?.routes?.school_name} · {directionLabel(item.trip_assignments?.routes?.direction ?? "")}</small>
                     </td>
-                    <td data-label="Bus">{item.trip_assignments?.buses?.fleet_code ?? "—"}</td>
-                    <td data-label="Status"><TripStatusPill status={item.status} /></td>
-                    <td data-label="Waktu">
-                      <small>Mulai {formatTime(item.started_at)}</small>
-                      <small>Tiba {formatTime(item.arrived_at)}</small>
-                      <small>Selesai {item.completed_at ? formatDateTime(item.completed_at) : "—"}</small>
+                    <td data-label={t("bus")}>{item.trip_assignments?.buses?.fleet_code ?? "—"}</td>
+                    <td data-label={t("status")}><TripStatusPill status={item.status} /></td>
+                    <td data-label={t("time")}>
+                      <small>{t("start")} {formatTimeLocalized(item.started_at)}</small>
+                      <small>{t("arrive")} {formatTimeLocalized(item.arrived_at)}</small>
+                      <small>{t("finish")} {item.completed_at ? formatDateTimeLocalized(item.completed_at) : "—"}</small>
                     </td>
                   </tr>
                 ))}
@@ -175,36 +188,36 @@ export default async function DriverOperationsPage({
               {(access.driver.full_name || "P").slice(0, 1).toUpperCase()}
             </span>
             <div className="ops-ident">
-              <strong>{access.driver.full_name || "Pengemudi"}</strong>
+              <strong>{access.driver.full_name || c("Pengemudi")}</strong>
               <small>ID {access.driver.id.slice(0, 8).toUpperCase()} · Akun aktif</small>
             </div>
-            <nav className="portal-nav compact-driver-tabs" aria-label="Navigasi Pengemudi">
-              <Link href="/pengemudi" aria-current="page">Data Pengemudi</Link>
-              <Link href="/pengemudi?tab=riwayat">Riwayat</Link>
+            <nav className="portal-nav compact-driver-tabs" aria-label={t("navigationDriver")}>
+              <Link href="/pengemudi" aria-current="page">{t("driverDashboard")}</Link>
+              <Link href="/pengemudi?tab=riwayat">{t("history")}</Link>
             </nav>
           </div>
           <p className="ops-empty-copy">
             {completedToday
-              ? `Perjalanan untuk ${formatDate(date)} sudah selesai. Riwayat tetap tersimpan dan tidak ada perjalanan baru yang dibuat otomatis.`
-              : `Tidak ada penugasan untuk ${formatDate(date)}. Hubungi operator bila Anda seharusnya bertugas.`}
+              ? t("completedTripForDate").replace("{date}", formatDateLocalized(date))
+              : t("noAssignmentForDate").replace("{date}", formatDateLocalized(date))}
           </p>
         </section>
-        {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
-        {error && <Notice kind="error">Tugas hari ini belum dapat dimuat. Coba lagi.</Notice>}
+        {notice && <Notice kind={notice.kind}>{c(notice.message)}</Notice>}
+        {error && <Notice kind="error">{t("todayTaskLoadError")}</Notice>}
         <section className="panel">
           <EmptyState
             icon={completedToday ? "check" : "inbox"}
-            title={completedToday ? "Perjalanan hari ini selesai" : "Belum ada tugas hari ini"}
+            title={completedToday ? t("tripTodayDone") : t("noTasksToday")}
             detail={
               completedToday
-                ? "Tidak ada perjalanan aktif. Catatan kehadiran dan pemeriksaan keselamatan tersimpan di riwayat."
-                : "Tugas dibuat oleh Operator Utama. Tidak ada jadwal contoh yang ditampilkan."
+                ? t("noActiveTrip")
+                : t("tasksByOperator")
             }
           />
         </section>
         <p className="ops-foot-link">
           <Link href="/pengemudi?tab=riwayat">
-            <Icon name="trip" size={14} /> Lihat riwayat perjalanan
+            <Icon name="trip" size={14} /> {t("viewTripHistory")}
           </Link>
         </p>
       </>
@@ -311,10 +324,10 @@ export default async function DriverOperationsPage({
     return {
       id: entry.student_id,
       admissionsNumber: entry.students?.admissions_number ?? null,
-      name: entry.students?.full_name ?? "Siswa",
+      name: entry.students?.full_name ?? c("Siswa"),
       stopId: entry.stop_id,
       stopOrder: entry.route_stops?.stop_order ?? 0,
-      stopName: entry.route_stops?.stop_name ?? "Titik jemput",
+      stopName: entry.route_stops?.stop_name ?? c("Titik jemput"),
       address: entry.students?.home_address ?? null,
       status: state?.status ?? null,
       statusNotes: state?.statusNotes ?? null,
@@ -326,10 +339,10 @@ export default async function DriverOperationsPage({
     return {
       key: entry.id,
       studentId: entry.student_id,
-      name: entry.students?.full_name ?? "Siswa",
+      name: entry.students?.full_name ?? c("Siswa"),
       admissionsNumber: entry.students?.admissions_number ?? null,
       stopOrder: entry.route_stops?.stop_order ?? 0,
-      stopName: entry.route_stops?.stop_name ?? "Titik jemput",
+      stopName: entry.route_stops?.stop_name ?? c("Titik jemput"),
       address: entry.students?.home_address ?? null,
       // Status tindakan hanya milik sesi aktif; sesi selesai kembali ke tampilan awal.
       status: trip?.status === "in_progress" ? state?.status ?? null : null,
@@ -361,18 +374,18 @@ export default async function DriverOperationsPage({
   const cameraEnabled =
     cameraPublishingEnabled || cameraDemoEnabled(deploymentKind(), process.env.CAMERA_DEVICE_DEMO);
   const startReason = completed
-    ? "Perjalanan sudah selesai."
+    ? c("Perjalanan sudah selesai.")
     : inProgress
-      ? "Perjalanan sedang berlangsung."
+      ? c("Perjalanan sedang berlangsung.")
       : trip?.status === "cancelled"
-        ? "Perjalanan dibatalkan."
-        : "Mulai untuk membuka tindakan siswa dan kamera.";
+        ? c("Perjalanan dibatalkan.")
+        : c("Mulai untuk membuka tindakan siswa dan kamera.");
 
   return (
     <div className="driver-ops">
       {selectableAssignments.length > 1 && (
-        <nav className="ops-switch" aria-label="Pilih tugas hari ini">
-          <span>Pilih tugas</span>
+        <nav className="ops-switch" aria-label={c("Pilih tugas hari ini")}>
+          <span>{t("selectTask")}</span>
           {selectableAssignments.map((assignment) => {
             const assignmentTrip = assignment.trips?.[0];
             return (
@@ -381,30 +394,30 @@ export default async function DriverOperationsPage({
                 href={`/pengemudi?tugas=${assignment.id}`}
                 aria-current={assignment.id === selected.id ? "page" : undefined}
               >
-                {assignment.routes?.route_name ?? "Rute"} · {routeDirectionLabel(assignment.routes?.direction ?? "")} ·{" "}
+                {assignment.routes?.route_name ?? t("routeFallback")} · {directionLabel(assignment.routes?.direction ?? "")} ·{" "}
                 {assignmentTrip?.status === "in_progress"
-                  ? "Berlangsung"
+                  ? t("inProgress")
                   : assignmentTrip?.status === "completed"
-                    ? "Selesai"
-                    : "Dijadwalkan"}
+                    ? t("completed")
+                    : t("scheduled")}
               </Link>
             );
           })}
         </nav>
       )}
 
-      {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
-      {error && <Notice kind="error">Tugas hari ini belum dapat dimuat. Coba lagi.</Notice>}
-      {stopsResult.error && <Notice kind="error">Urutan titik jemput belum dapat dimuat.</Notice>}
-      {rosterResult.error && <Notice kind="error">Daftar siswa belum dapat dimuat.</Notice>}
-      {eventsResult.error && <Notice kind="error">Status siswa belum dapat dimuat.</Notice>}
+      {notice && <Notice kind={notice.kind}>{c(notice.message)}</Notice>}
+      {error && <Notice kind="error">{t("todayTaskLoadError")}</Notice>}
+      {stopsResult.error && <Notice kind="error">{t("stopsLoadError")}</Notice>}
+      {rosterResult.error && <Notice kind="error">{t("rosterLoadError")}</Notice>}
+      {eventsResult.error && <Notice kind="error">{t("eventsLoadError")}</Notice>}
 
       <DriverAutoRefresh active={inProgress} />
 
       <DriverOpsHeader
         driverName={access.driver.full_name}
         driverId={access.driver.id}
-        routeName={selected.routes?.route_name ?? "Rute"}
+        routeName={selected.routes?.route_name ?? c("Rute")}
         schoolName={selected.routes?.school_name ?? ""}
         direction={direction}
         serviceDate={selected.service_date}
@@ -428,18 +441,18 @@ export default async function DriverOperationsPage({
               cancelText="Batal"
               pendingLabel="Memulai…"
             >
-              <Icon name="steeringWheel" size={21} style={{ color: "#F5C542" }} /> Mulai Perjalanan
+              <Icon name="steeringWheel" size={21} style={{ color: "#F5C542" }} /> {c("Mulai Perjalanan")}
             </ConfirmSubmit>
           </form>
         ) : inProgress ? (
           <div className="ops-start">
             <OpenSafetyCheckLink />
-            <small>Lengkapi pemeriksaan keselamatan.</small>
+            <small>{c("Lengkapi pemeriksaan keselamatan.")}</small>
           </div>
         ) : (
           <div className="ops-start">
             <button className="btn ops-primary-action ops-start-action" type="button" disabled>
-              <Icon name="steeringWheel" size={21} style={{ color: "#F5C542" }} /> Mulai Perjalanan
+              <Icon name="steeringWheel" size={21} style={{ color: "#F5C542" }} /> {c("Mulai Perjalanan")}
             </button>
             <small>{startReason}</small>
           </div>
@@ -468,22 +481,22 @@ export default async function DriverOperationsPage({
           <DriverMapPanel stops={mapStops} active={inProgress} tripId={trip?.id ?? null} />
         </div>
 
-        <section className="panel ops-manifest" aria-label="Daftar siswa dan tindakan">
+        <section className="panel ops-manifest" aria-label={c("Daftar siswa dan tindakan")}>
         <header className="panel-head">
           <div>
-            <h2 className="panel-title">Siswa &amp; tindakan</h2>
+            <h2 className="panel-title">{t("studentActions")}</h2>
             <div className="panel-subtitle">
-              Urutan rute {plan.started ? "terkunci" : "tersimpan"}
+              {t(plan.started ? "routeOrderLocked" : "routeOrderSaved")}
             </div>
           </div>
-          <Pill tone={studentRows.length > 0 ? "info" : "warning"}>{studentRows.length} siswa</Pill>
+          <Pill tone={studentRows.length > 0 ? "info" : "warning"}>{studentRows.length} {t("studentCountLabel")}</Pill>
         </header>
 
         {studentRows.length === 0 ? (
           <div className="table-empty">
-            <strong>Belum ada siswa pada rute ini</strong>
+            <strong>{t("noStudentsOnRoute")}</strong>
             <p>
-              Operator Utama belum menempatkan siswa pada titik rute ini. Jangan mencatat siswa yang tidak terdaftar.
+              {t("noStudentsDetail")}
             </p>
           </div>
         ) : (
@@ -500,14 +513,14 @@ export default async function DriverOperationsPage({
           <details className="ops-review">
             <summary>
               <span>
-                <Icon name="report" size={15} /> Catatan &amp; review tugas
+                <Icon name="report" size={15} /> {t("tripNotes")}
               </span>
-              <small>{issueNotes.length > 0 ? `${issueNotes.length} kendala tercatat` : "Belum ada kendala"}</small>
+              <small>{issueNotes.length > 0 ? `${issueNotes.length} ${t("issuesRecorded")}` : t("noIssues")}</small>
             </summary>
             <div className="ops-review-body">
               {trip?.safety_check_notes && (
                 <p>
-                  <strong>Catatan pemeriksaan:</strong> {trip.safety_check_notes}
+                  <strong>{t("safetyNotes")}</strong> {trip.safety_check_notes}
                 </p>
               )}
               {issueNotes.length > 0 ? (
@@ -519,13 +532,13 @@ export default async function DriverOperationsPage({
                   ))}
                 </ul>
               ) : (
-                <p>Belum ada catatan kendala pada perjalanan ini.</p>
+                <p>{t("noTripIssues")}</p>
               )}
               <p className="ops-review-meta">
-                {formatDate(selected.service_date)} · {routeDirectionLabel(direction)} · Bus{" "}
+                {formatDateLocalized(selected.service_date)} · {directionLabel(direction)} · {c("Bus")}{" "}
                 {selected.buses?.fleet_code ?? "—"}
-                {trip?.started_at ? ` · Mulai ${formatTime(trip.started_at)}` : ""}
-                {trip?.completed_at ? ` · Selesai ${formatDateTime(trip.completed_at)}` : ""}
+                {trip?.started_at ? ` · ${c("Mulai")} ${formatTimeLocalized(trip.started_at)}` : ""}
+                {trip?.completed_at ? ` · ${t("finish")} ${formatDateTimeLocalized(trip.completed_at)}` : ""}
               </p>
             </div>
           </details>
@@ -540,9 +553,9 @@ export default async function DriverOperationsPage({
       />
 
       <details className="ops-side-notes">
-        <summary>Catatan navigasi, GPS, dan kamera</summary>
+        <summary>{t("cameraGpsNotes")}</summary>
         <p>
-          GPS HP dibagikan ke wali selama perjalanan. Kamera mengikuti status sesi. Membuka peta tidak mengubah status siswa.
+          {t("gpsShared")}
         </p>
       </details>
     </div>

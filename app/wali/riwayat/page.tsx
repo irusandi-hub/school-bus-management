@@ -1,10 +1,14 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ConfigNotice, Notice, Pill } from "@/components/admin/ui";
+import { cookies } from "next/headers";
+import { defaultLocale, isLocale } from "@/lib/i18n/config";
+import { translate } from "@/lib/i18n/messages";
+import { LocalizedText } from "@/components/i18n/LocaleProvider";
 import { requireGuardian } from "@/lib/auth";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { loadChildTrips, loadChildren } from "@/lib/guardian/data";
-import { formatDate, formatTime, routeDirectionLabel, tripStatusLabel } from "@/lib/validation";
+
 
 export const metadata: Metadata = { title: "Riwayat Perjalanan | Portal Wali" };
 
@@ -16,13 +20,22 @@ function tripTone(status: string) {
 }
 
 export default async function GuardianHistoryPage() {
+  const cookieStore = await cookies();
+  const savedLocale = cookieStore.get("sbm_locale")?.value;
+  const locale = isLocale(savedLocale) ? savedLocale : defaultLocale;
+  const t = (key: Parameters<typeof translate>[1]) => translate(locale, key);
+  const dateLocale = locale === "ar" ? "ar-SA-u-ca-gregory" : locale === "en" ? "en-GB" : "id-ID";
+  const formatLocalDate = (value: string) => new Intl.DateTimeFormat(dateLocale, { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Riyadh" }).format(new Date(`${value.slice(0, 10)}T12:00:00+03:00`));
+  const formatLocalTime = (value: string | null) => value ? new Intl.DateTimeFormat(dateLocale, { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Riyadh" }).format(new Date(value)) : "—";
+  const directionLabel = (value: string) => value === "morning" ? t("morningDirection") : value === "afternoon" ? t("afternoonDirection") : t("directionNotRecorded");
+  const statusLabel = (value: string) => value === "in_progress" ? t("inProgress") : value === "completed" ? t("completed") : value === "cancelled" ? t("tripCancelledLabel") : value === "scheduled" ? t("notStarted") : t("status");
   const access = await requireGuardian();
   if (access.status === "unconfigured") return <ConfigNotice />;
 
   const supabase = await createServerSupabase();
   if (!supabase) return <ConfigNotice />;
 
-  const children = await loadChildren(supabase);
+  const children = await loadChildren(supabase, access.guardianId);
   const grouped = await Promise.all(
     children.map(async (child) => ({
       child,
@@ -43,35 +56,32 @@ export default async function GuardianHistoryPage() {
     <>
       <section className="guardian-hero">
         <div>
-          <p className="eyebrow">RIWAYAT</p>
-          <h1>Riwayat perjalanan anak</h1>
-          <p>
-            Hanya perjalanan pada rute anak Anda yang terhubung dengan akun ini. Riwayat tidak dapat diubah atau
-            dihapus dari portal.
-          </p>
+          <p className="eyebrow">{t("history")}</p>
+          <h1><LocalizedText k="guardianHistory" /></h1>
+          <p><LocalizedText k="historyIntro" /></p>
         </div>
       </section>
 
       {children.length === 0 && (
-        <Notice kind="info">Belum ada anak aktif yang terhubung dengan akun ini.</Notice>
+        <Notice kind="info"><LocalizedText k="noActiveChild" /></Notice>
       )}
 
       <section className="panel">
         <header className="panel-head">
           <div>
-            <h2 className="panel-title">Perjalanan terbaru</h2>
-            <div className="panel-subtitle">Maksimal 5 perjalanan terakhir per anak</div>
+            <h2 className="panel-title"><LocalizedText k="recentTrips" /></h2>
+            <div className="panel-subtitle"><LocalizedText k="latestFiveTrips" /></div>
           </div>
         </header>
         <div className="admin-table-wrap">
           <table className="admin-table table-stack">
             <thead>
               <tr>
-                <th scope="col">Tanggal</th>
-                <th scope="col">Anak</th>
-                <th scope="col">Rute</th>
-                <th scope="col">Status</th>
-                <th scope="col">Waktu</th>
+                <th scope="col"><LocalizedText k="date" /></th>
+                <th scope="col"><LocalizedText k="child" /></th>
+                <th scope="col"><LocalizedText k="route" /></th>
+                <th scope="col"><LocalizedText k="status" /></th>
+                <th scope="col"><LocalizedText k="time" /></th>
               </tr>
             </thead>
             <tbody>
@@ -79,35 +89,32 @@ export default async function GuardianHistoryPage() {
                 <tr>
                   <td colSpan={5}>
                     <div className="table-empty">
-                      <strong>Belum ada riwayat perjalanan</strong>
-                      <p>
-                        Riwayat muncul setelah pengemudi memulai dan menyelesaikan perjalanan pada rute anak Anda.
-                        Tidak ada data contoh yang ditampilkan.
-                      </p>
+                      <strong><LocalizedText k="noTripHistory" /></strong>
+                      <p><LocalizedText k="historyEmptyDetail" /></p>
                     </div>
                   </td>
                 </tr>
               ) : (
                 rows.map(({ child, trip }) => (
                   <tr key={`${child.student.id}-${trip.id}`}>
-                    <td data-label="Tanggal">{formatDate(trip.serviceDate)}</td>
-                    <td data-label="Anak">
+                    <td data-label={t("date")}>{formatLocalDate(trip.serviceDate)}</td>
+                    <td data-label={t("child")}>
                       <Link className="row-link" href={`/wali/anak/${child.student.id}`}>
                         {child.student.full_name}
                       </Link>
                     </td>
-                    <td data-label="Rute">
+                    <td data-label={t("route")}>
                       <strong>{trip.routeName}</strong>
                       <small>
-                        {trip.schoolName} · {routeDirectionLabel(trip.direction)}
+                        {trip.schoolName} · {directionLabel(trip.direction)}
                       </small>
                     </td>
-                    <td data-label="Status">
-                      <Pill tone={tripTone(trip.status)}>{tripStatusLabel(trip.status)}</Pill>
+                    <td data-label={t("status")}>
+                      <Pill tone={tripTone(trip.status)}>{statusLabel(trip.status)}</Pill>
                     </td>
-                    <td data-label="Waktu">
-                      <small>Mulai {formatTime(trip.startedAt)}</small>
-                      <small>Tiba {formatTime(trip.arrivedAt)}</small>
+                    <td data-label={t("time")}>
+                      <small><LocalizedText k="start" /> {formatLocalTime(trip.startedAt)}</small>
+                      <small><LocalizedText k="arrive" /> {formatLocalTime(trip.arrivedAt)}</small>
                     </td>
                   </tr>
                 ))
@@ -118,8 +125,7 @@ export default async function GuardianHistoryPage() {
       </section>
 
       <Notice kind="info">
-        Peta dan posisi bus langsung belum tersedia. Halaman riwayat hanya menampilkan waktu dan status yang benar-benar
-        dicatat sistem.
+        <LocalizedText k="historyMapUnavailable" />
       </Notice>
     </>
   );

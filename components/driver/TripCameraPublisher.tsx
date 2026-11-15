@@ -2,8 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { tripCamera } from "@/lib/camera/trip-connection";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 export function TripCameraPublisher({ tripId }: { tripId: string }) {
+  const { locale } = useLocale();
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
   const [active, setActive] = useState(false);
   const [status, setStatus] = useState("Kamera belum aktif");
   const video = useRef<HTMLVideoElement>(null);
@@ -59,10 +63,10 @@ export function TripCameraPublisher({ tripId }: { tripId: string }) {
   return (
     <div className="broadcast-publisher-inline">
       <span className="broadcast-publisher-status" role="status">
-        {status}
+        {c(status)}
       </span>
       <p className="broadcast-consent-inline">
-        Menekan Mulai siaran berarti mengizinkan kamera belakang tanpa audio selama perjalanan ini.
+        {c("Menekan Mulai siaran berarti mengizinkan kamera belakang tanpa audio selama perjalanan ini.")}
       </p>
       <button
         type="button"
@@ -77,7 +81,7 @@ export function TripCameraPublisher({ tripId }: { tripId: string }) {
           }
         }}
       >
-        {active ? "Hentikan siaran" : "Mulai siaran"}
+        {active ? c("Hentikan siaran") : c("Mulai siaran")}
       </button>
       {active && <video ref={video} autoPlay muted playsInline />}
     </div>

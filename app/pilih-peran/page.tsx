@@ -1,6 +1,9 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { BrandLogo } from "@/components/brand-logo";
+import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 export const metadata: Metadata = { title: "Eksplorasi Sementara | School Bus Management" };
 
@@ -10,16 +13,19 @@ const roles = [
   { href: "/operator", title: "Pengelola" },
 ];
 
-export default function ChooseRolePage() {
+export default async function ChooseRolePage() {
+  const locale = await getRequestLocale();
+  const copy = (value: string) => translateAdminCopy(value, locale) ?? value;
   return (
-    <main className="sbm-role-explore">
+    <main className="sbm-role-explore relative">
+      <div className="absolute right-5 top-5 z-50"><LocaleSwitcher /></div>
       <section className="sbm-role-explore-card" aria-labelledby="explore-title">
         <BrandLogo href="/" ariaLabel="Kembali ke beranda" className="sbm-role-explore-brand" />
-        <h1 id="explore-title">Pilih tampilan pengguna</h1>
-        <p className="sbm-role-explore-note">Pilih area yang ingin dibuka. Halaman ini hanya penghubung sementara selama pengembangan aplikasi.</p>
-        <nav className="sbm-role-explore-actions" aria-label="Pilih tampilan untuk dieksplorasi">
+        <h1 id="explore-title">{copy("Pilih tampilan pengguna")}</h1>
+        <p className="sbm-role-explore-note">{copy("Pilih area yang ingin dibuka. Halaman ini hanya penghubung sementara selama pengembangan aplikasi.")}</p>
+        <nav className="sbm-role-explore-actions" aria-label={copy("Pilih tampilan untuk dieksplorasi")}>
           {roles.map((role) => (
-            <Link href={role.href} key={role.href}>{role.title}<span aria-hidden="true">→</span></Link>
+            <Link href={role.href} key={role.href}>{copy(role.title)}<span aria-hidden="true">→</span></Link>
           ))}
         </nav>
       </section>

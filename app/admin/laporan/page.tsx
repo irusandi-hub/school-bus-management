@@ -1,15 +1,22 @@
 import Link from "next/link";
+import { AdminCopy } from "@/components/i18n/AdminCopy";
 import type { Metadata } from "next";
 import { ConfigNotice, EmptyRow, MetricStrip, Notice, PageHeader, Pill } from "@/components/admin/ui";
 import { ProjectAreaTabs } from "@/components/admin/ProjectAreaTabs";
 import { adminReadContext } from "@/lib/admin/read";
 import { getProjectAreaContext, loadProjectAreaScope } from "@/lib/project-areas/context";
 import type { AuditLogRow } from "@/lib/types";
-import { formatDateTime, serviceDateInTimeZone } from "@/lib/validation";
+import { serviceDateInTimeZone } from "@/lib/validation";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 export const metadata: Metadata = { title: "Laporan & Audit | Operator" };
 
 export default async function ReportsPage() {
+  const locale = await getRequestLocale();
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
+  const dateLocale = locale === "ar" ? "ar-SA-u-ca-gregory" : locale === "en" ? "en-GB" : "id-ID";
+  const formatLocalDateTime = (value: string) => new Intl.DateTimeFormat(dateLocale, { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Riyadh" }).format(new Date(value));
   const supabase = await adminReadContext();
   if (!supabase) return <ConfigNotice />;
 
@@ -18,14 +25,9 @@ export default async function ReportsPage() {
   const scope = await loadProjectAreaScope(supabase, areaContext.selectedId);
   const selectedId = areaContext.selectedId;
 
-  let assignmentIds: string[] = [];
-  if (selectedId) {
-    const { data: areaAssignments } = await supabase
-      .from("trip_assignments")
-      .select("id")
-      .in("route_id", scope.routeIds);
-    assignmentIds = ((areaAssignments ?? []) as { id: string }[]).map((row) => row.id);
-  }
+  const areaAssignmentsQuery = selectedId
+    ? supabase.from("trip_assignments").select("id").in("route_id", scope.routeIds)
+    : Promise.resolve({ data: [] as { id: string }[] });
 
   let studentsQuery = supabase.from("students").select("id", { count: "exact", head: true }).eq("service_status", "active");
   if (selectedId) studentsQuery = studentsQuery.in("school_id", scope.schoolIds);
@@ -42,15 +44,12 @@ export default async function ReportsPage() {
     .eq("service_date", today);
   if (selectedId) assignmentsQuery = assignmentsQuery.in("route_id", scope.routeIds);
 
-  let completedQuery = supabase.from("trips").select("id", { count: "exact", head: true }).eq("status", "completed");
-  if (selectedId) completedQuery = completedQuery.in("assignment_id", assignmentIds);
-
-  const [activeStudents, guardians, routes, assignmentsToday, completedTrips, audits] = await Promise.all([
+  const [activeStudents, guardians, routes, assignmentsToday, areaAssignments, audits] = await Promise.all([
     studentsQuery,
     guardiansQuery,
     routesQuery,
     assignmentsQuery,
-    completedQuery,
+    areaAssignmentsQuery,
     supabase
       .from("audit_logs")
       .select("id, actor_profile_id, action, entity_type, entity_id, summary, created_at, profiles(full_name)")
@@ -58,19 +57,24 @@ export default async function ReportsPage() {
       .limit(60),
   ]);
 
+  const assignmentIds = ((areaAssignments.data ?? []) as { id: string }[]).map((row) => row.id);
+  let scopedCompletedQuery = supabase.from("trips").select("id", { count: "exact", head: true }).eq("status", "completed");
+  if (selectedId) scopedCompletedQuery = scopedCompletedQuery.in("assignment_id", assignmentIds);
+  const completedTrips = await scopedCompletedQuery;
+
   const logs = (audits.data ?? []) as unknown as (AuditLogRow & { profiles: { full_name: string } | null })[];
 
   return (
     <>
       <PageHeader
-        title="Laporan & audit"
-        description={`Ringkasan data operasional dan jejak aktivitas platform. Konteks: ${areaContext.selected?.name ?? "Semua Area"}.`}
-        actions={<Link className="btn btn-secondary btn-sm" href="/operator/laporan/export">Unduh CSV</Link>}
+        title={c("Laporan & audit")}
+        description={`${c("Ringkasan data operasional dan jejak aktivitas platform. Konteks:")} ${areaContext.selected?.name ?? c("Semua Area")}.`}
+        actions={<Link className="btn btn-secondary btn-sm" href="/operator/laporan/export"><AdminCopy value="Unduh CSV" /></Link>}
       />
 
       <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath="/admin/laporan" compact />
 
-      {audits.error && <Notice kind="error">Jejak audit belum dapat dimuat. Coba lagi.</Notice>}
+      {audits.error && <Notice kind="error">{c("Jejak audit belum dapat dimuat. Coba lagi.")}</Notice>}
 
       <MetricStrip
         label="Ringkasan operasional"
@@ -81,7 +85,7 @@ export default async function ReportsPage() {
           {
             label: "Penugasan hari ini",
             value: assignmentsToday.count ?? 0,
-            note: `${completedTrips.count ?? 0} selesai`,
+            note: `${completedTrips.count ?? 0} ${c("Selesai")}`,
             icon: "assignment",
           },
         ]}
@@ -91,34 +95,33 @@ export default async function ReportsPage() {
         <section className="panel">
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">Status modul</h2>
-              <div className="panel-subtitle">Fitur yang belum tersedia tidak ditampilkan sebagai tombol berjalan</div>
+              <h2 className="panel-title"><AdminCopy value="Status modul" /></h2>
+              <div className="panel-subtitle"><AdminCopy value="Fitur yang belum tersedia tidak ditampilkan sebagai tombol berjalan" /></div>
             </div>
-            <Pill tone="warning">Terbatas</Pill>
+            <Pill tone="warning">{c("Terbatas")}</Pill>
           </header>
           <ul className="check-list">
             <li>
-              <strong>Data induk &amp; akun wali</strong>
+              <strong><AdminCopy value="Data induk & akun wali" /></strong>
               <span>✓</span>
-              <small>Perubahan mengikuti hak akses akun. Riwayat status tetap tersimpan.</small>
+              <small><AdminCopy value="Perubahan mengikuti hak akses akun. Riwayat status tetap tersimpan." /></small>
             </li>
             <li>
-              <strong>Rute, penugasan, perjalanan</strong>
+              <strong><AdminCopy value="Rute, penugasan, perjalanan" /></strong>
               <span>✓</span>
-              <small>Rute dan penugasan dikelola Operator Utama; perjalanan dijalankan pengemudi yang ditugaskan.</small>
+              <small><AdminCopy value="Rute dan penugasan dikelola Operator Utama; perjalanan dijalankan pengemudi yang ditugaskan." /></small>
             </li>
             <li>
-              <strong>GPS langsung &amp; kamera bus</strong>
+              <strong><AdminCopy value="GPS langsung & kamera bus" /></strong>
               <span>—</span>
               <small>
-                GPS dan kamera bus belum terintegrasi. Siaran kamera perjalanan mengikuti status dan izin pengemudi,
-                bukan laporan yang dibuat-buat.
+                {c("GPS dan kamera bus belum terintegrasi. Siaran kamera perjalanan mengikuti status dan izin pengemudi, bukan laporan yang dibuat-buat.")}
               </small>
             </li>
             <li>
-              <strong>Ekspor laporan</strong>
+              <strong><AdminCopy value="Ekspor laporan" /></strong>
               <span>✓</span>
-              <small>Tersedia dalam format CSV untuk seluruh data perjalanan yang dapat diakses Operator.</small>
+              <small><AdminCopy value="Tersedia dalam format CSV untuk seluruh data perjalanan yang dapat diakses Operator." /></small>
             </li>
           </ul>
         </section>
@@ -126,17 +129,16 @@ export default async function ReportsPage() {
         <section className="panel">
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">Prinsip audit</h2>
-              <div className="panel-subtitle">Dicatat otomatis saat ada perubahan</div>
+              <h2 className="panel-title"><AdminCopy value="Prinsip audit" /></h2>
+              <div className="panel-subtitle"><AdminCopy value="Dicatat otomatis saat ada perubahan" /></div>
             </div>
           </header>
           <div className="audit-note">
             <p>
-              Audit mencatat aktor, jenis data, operasi, dan waktu. Nilai kolom serta data pribadi tidak disalin ke
-              jejak audit agar data pribadi tidak menumpuk di luar tabel asalnya.
+              {c("Audit mencatat aktor, jenis data, operasi, dan waktu. Nilai kolom serta data pribadi tidak disalin ke jejak audit agar data pribadi tidak menumpuk di luar tabel asalnya.")}
             </p>
             <p>
-              Jejak audit platform dapat dibaca dan ditinjau oleh Operator Utama. Area Operasional hanya menjadi konteks kerja dan pengelompokan untuk pemetaan serta audit, bukan akun atau pembatas akses.
+              {c("Jejak audit platform dapat dibaca dan ditinjau oleh Operator Utama. Area Operasional hanya menjadi konteks kerja dan pengelompokan untuk pemetaan serta audit, bukan akun atau pembatas akses.")}
             </p>
           </div>
         </section>
@@ -145,36 +147,36 @@ export default async function ReportsPage() {
       <section className="panel">
         <header className="panel-head">
           <div>
-            <h2 className="panel-title">Jejak audit terbaru</h2>
-            <div className="panel-subtitle">60 catatan terakhir · audit platform tidak difilter per area</div>
+            <h2 className="panel-title"><AdminCopy value="Jejak audit terbaru" /></h2>
+            <div className="panel-subtitle"><AdminCopy value="60 catatan terakhir · audit platform tidak difilter per area" /></div>
           </div>
         </header>
         <div className="admin-table-wrap">
           <table className="admin-table table-stack">
             <thead>
               <tr>
-                <th scope="col">Waktu</th>
-                <th scope="col">Aktor</th>
-                <th scope="col">Operasi</th>
-                <th scope="col">Ringkasan</th>
+                <th scope="col"><AdminCopy value="Waktu" /></th>
+                <th scope="col"><AdminCopy value="Aktor" /></th>
+                <th scope="col"><AdminCopy value="Operasi" /></th>
+                <th scope="col"><AdminCopy value="Ringkasan" /></th>
               </tr>
             </thead>
             <tbody>
               {logs.length === 0 ? (
                 <EmptyRow
                   colSpan={4}
-                  title="Belum ada catatan audit"
-                  detail="Catatan audit akan muncul otomatis setelah data ditambahkan atau diubah."
+                  title={c("Belum ada catatan audit")}
+                  detail={c("Catatan audit akan muncul otomatis setelah data ditambahkan atau diubah.")}
                 />
               ) : (
                 logs.map((log) => (
                   <tr key={log.id}>
-                    <td data-label="Waktu">{formatDateTime(log.created_at)}</td>
-                    <td data-label="Aktor">{log.profiles?.full_name ?? "Sistem"}</td>
-                    <td data-label="Operasi">
+                    <td data-label={c("Waktu")}>{formatLocalDateTime(log.created_at)}</td>
+                    <td data-label={c("Aktor")}>{log.profiles?.full_name ?? c("Sistem")}</td>
+                    <td data-label={c("Operasi")}>
                       <code>{log.action}</code>
                     </td>
-                    <td data-label="Ringkasan">{log.summary}</td>
+                    <td data-label={c("Ringkasan")}>{log.summary}</td>
                   </tr>
                 ))
               )}

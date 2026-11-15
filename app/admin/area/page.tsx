@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { LocalizedOption } from "@/components/i18n/LocalizedOption";
+import { AdminCopy } from "@/components/i18n/AdminCopy";
 import type { Metadata } from "next";
 import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
 import { RecordForm, type FieldDef } from "@/components/admin/RecordForm";
@@ -17,6 +19,8 @@ import { PAGE_SIZE, pageRange, parsePage } from "@/lib/admin/support";
 import type { ProjectAreaRow } from "@/lib/types";
 import { sanitizeSearch } from "@/lib/validation";
 import { saveProjectArea, setProjectAreaActive } from "./actions";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 export const metadata: Metadata = { title: "Area Operasional | Operator" };
 
@@ -28,6 +32,8 @@ export default async function ProjectAreaPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  const locale = await getRequestLocale();
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
   const params = await searchParams;
   const supabase = await adminReadContext();
   if (!supabase) return <ConfigNotice />;
@@ -48,15 +54,15 @@ export default async function ProjectAreaPage({
   if (status === "aktif") query = query.eq("active", true);
   if (status === "nonaktif") query = query.eq("active", false);
 
-  const { data, count, error } = await query;
+  const editQuery = editId
+    ? supabase.from("project_areas").select(selectColumns).eq("id", editId).maybeSingle()
+    : Promise.resolve({ data: null });
+
+  const [listResult, editResult] = await Promise.all([query, editQuery]);
+  const { data, count, error } = listResult;
   const rows = (data ?? []) as ProjectAreaRow[];
   const total = count ?? 0;
-
-  let editing: ProjectAreaRow | null = null;
-  if (editId) {
-    const { data: editRow } = await supabase.from("project_areas").select(selectColumns).eq("id", editId).maybeSingle();
-    editing = (editRow as ProjectAreaRow | null) ?? null;
-  }
+  const editing = (editResult.data as ProjectAreaRow | null) ?? null;
 
   const notice = noticeFromParams(params);
   const baseQuery = { q, status: status || undefined };
@@ -112,12 +118,12 @@ export default async function ProjectAreaPage({
   return (
     <>
       <PageHeader
-        title="Area Operasional"
-        description="Kelola area layanan. Operator Utama mengelola seluruh area."
+        title={c("Area Operasional")}
+        description={c("Kelola area layanan. Operator Utama mengelola seluruh area.")}
       />
 
-      {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
-      {error && <Notice kind="error">Daftar Area Operasional belum dapat dimuat. Coba lagi.</Notice>}
+      {notice && <Notice kind={notice.kind}>{c(notice.message)}</Notice>}
+      {error && <Notice kind="error">{c("Daftar Area Operasional belum dapat dimuat. Coba lagi.")}</Notice>}
 
       <div className="admin-split">
         <section className="panel">
@@ -125,14 +131,14 @@ export default async function ProjectAreaPage({
             key={`${q}|${status}|${page}`}
             action={path}
             q={q}
-            placeholder="Cari nama, kode, atau kota area"
+            placeholder={c("Cari nama, kode, atau kota area")}
             total={total}
             resetHref={path}
             filters={
-              <select name="status" defaultValue={status} aria-label="Filter status Area Operasional">
-                <option value="">Semua status</option>
-                <option value="aktif">Aktif</option>
-                <option value="nonaktif">Nonaktif</option>
+              <select name="status" defaultValue={status} aria-label={c("Filter status")}>
+                <LocalizedOption value="" label="Semua status" />
+                <LocalizedOption value="aktif" label="Aktif" />
+                <LocalizedOption value="nonaktif" label="Nonaktif" />
               </select>
             }
           />
@@ -141,23 +147,23 @@ export default async function ProjectAreaPage({
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th scope="col">Nama area</th>
-                  <th scope="col">Kode</th>
-                  <th scope="col">Kota</th>
-                  <th scope="col">Kontak</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Tindakan</th>
+                  <th scope="col"><AdminCopy value="Nama area" /></th>
+                  <th scope="col"><AdminCopy value="Kode" /></th>
+                  <th scope="col"><AdminCopy value="Kota" /></th>
+                  <th scope="col"><AdminCopy value="Kontak" /></th>
+                  <th scope="col"><AdminCopy value="Status" /></th>
+                  <th scope="col"><AdminCopy value="Tindakan" /></th>
                 </tr>
               </thead>
               <tbody>
                 {rows.length === 0 ? (
                   <EmptyRow
                     colSpan={6}
-                    title={q || status ? "Tidak ada Area Operasional yang cocok" : "Belum ada Area Operasional"}
+                    title={c(q || status ? "Tidak ada Area Operasional yang cocok" : "Belum ada Area Operasional")}
                     detail={
                       q || status
-                        ? "Ubah kata kunci atau filter status, lalu terapkan kembali."
-                        : "Tambahkan area pertama melalui formulir di samping, misalnya Dammam atau Riyadh."
+                        ? c("Ubah kata kunci atau filter status, lalu terapkan kembali.")
+                         : c("Tambahkan area pertama melalui formulir di samping, misalnya Dammam atau Riyadh.")
                     }
                   />
                 ) : (
@@ -172,15 +178,15 @@ export default async function ProjectAreaPage({
                       <td>{row.city ?? "—"}</td>
                       <td>
                         {row.contact_name ?? "—"}
-                        <small>{row.contact_phone ?? row.contact_email ?? "Kontak belum diisi"}</small>
+                        <small>{row.contact_phone ?? row.contact_email ?? c("Kontak belum diisi")}</small>
                       </td>
                       <td>
-                        <Pill tone={row.active ? "success" : "neutral"}>{row.active ? "Aktif" : "Nonaktif"}</Pill>
+                        <Pill tone={row.active ? "success" : "neutral"}>{row.active ? c("Aktif") : c("Nonaktif")}</Pill>
                       </td>
                       <td>
                         <div className="row-actions">
                           <Link className="row-link" href={listHref(path, { ...baseQuery, page, edit: row.id })}>
-                            Ubah
+                            {c("Ubah")}
                           </Link>
                           <form action={setProjectAreaActive} className="row-form">
                             <input type="hidden" name="id" value={row.id} />
@@ -193,7 +199,7 @@ export default async function ProjectAreaPage({
                                   : `Aktifkan kembali ${row.name}?`
                               }
                             >
-                              {row.active ? "Nonaktifkan" : "Aktifkan"}
+                              {row.active ? c("Nonaktifkan") : c("Aktifkan")}
                             </ConfirmSubmit>
                           </form>
                         </div>
@@ -217,9 +223,9 @@ export default async function ProjectAreaPage({
         <aside className="panel admin-form-panel" id="form">
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">{editing ? "Ubah Area Operasional" : "Tambah Area Operasional"}</h2>
+              <h2 className="panel-title"><AdminCopy value={editing ? "Ubah Area Operasional" : "Tambah Area Operasional"} /></h2>
               <div className="panel-subtitle">
-                {editing ? `Memperbarui ${editing.name}` : "Area operasional baru"}
+                {editing ? `${c("Memperbarui")} ${editing.name}` : c("Area operasional baru")}
               </div>
             </div>
           </header>
@@ -230,7 +236,7 @@ export default async function ProjectAreaPage({
               fields={fields}
               hidden={{ id: editing?.id ?? "" }}
               submitLabel={editing ? "Simpan perubahan" : "Tambah area"}
-              note="Nonaktifkan area yang tidak dipakai lagi. Bus, pengemudi, rute, siswa, dan riwayat tidak dihapus."
+              note={c("Nonaktifkan area yang tidak dipakai lagi. Bus, pengemudi, rute, siswa, dan riwayat tidak dihapus.")}
               secondary={editing ? { href: listHref(path, baseQuery), label: "Batal" } : undefined}
             />
           </div>

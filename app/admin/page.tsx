@@ -1,14 +1,23 @@
 import Link from "next/link";
+import { cookies } from "next/headers";
+import { defaultLocale, isLocale } from "@/lib/i18n/config";
+import { translate } from "@/lib/i18n/messages";
 import type { Metadata } from "next";
 import { ConfigNotice, MetricStrip, PageHeader, Pill } from "@/components/admin/ui";
 import { ProjectAreaTabs } from "@/components/admin/ProjectAreaTabs";
 import { adminReadContext } from "@/lib/admin/read";
 import { getProjectAreaContext, loadProjectAreaScope } from "@/lib/project-areas/context";
-import { formatDate, serviceDateInTimeZone } from "@/lib/validation";
+import { serviceDateInTimeZone } from "@/lib/validation";
 
 export const metadata: Metadata = { title: "Ringkasan | Operator" };
 
 export default async function AdminHomePage() {
+  const cookieStore = await cookies();
+  const savedLocale = cookieStore.get("sbm_locale")?.value;
+  const locale = isLocale(savedLocale) ? savedLocale : defaultLocale;
+  const t = (key: Parameters<typeof translate>[1]) => translate(locale, key);
+  const dateLocale = locale === "ar" ? "ar-SA-u-ca-gregory" : locale === "en" ? "en-GB" : "id-ID";
+  const formatLocalDate = (value: string) => new Intl.DateTimeFormat(dateLocale, { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Riyadh" }).format(new Date(`${value.slice(0, 10)}T12:00:00+03:00`));
   const supabase = await adminReadContext();
   if (!supabase) return <ConfigNotice />;
 
@@ -51,60 +60,60 @@ export default async function AdminHomePage() {
   const running = trips.filter((trip) => trip.status === "in_progress").length;
   const completed = trips.filter((trip) => trip.status === "completed").length;
   const waiting = Math.max(assignments.length - running - completed, 0);
-  const contextLabel = areaContext.selected?.name ?? "Semua Area";
+  const contextLabel = areaContext.selected?.name ?? t("allAreas");
 
   return (
     <>
       <PageHeader
-        title="Ringkasan"
-        description={`Kendali global Operator Utama. Konteks aktif: ${contextLabel}.`}
-        actions={<Pill tone="info">{formatDate(date)}</Pill>}
+        title={t("overview")}
+        description={`${t("operatorControl")} ${contextLabel}.`}
+        actions={<Pill tone="info">{formatLocalDate(date)}</Pill>}
       />
 
       <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath="/admin" compact />
 
       <MetricStrip
-        label={`Data aktif ${contextLabel}`}
+        label={`${t("activeData")} ${contextLabel}`}
         items={[
-          { label: "Sekolah", value: schoolRows.count ?? 0, note: "Aktif", icon: "school" },
-          { label: "Siswa", value: studentRows.count ?? 0, note: "Layanan aktif", icon: "students" },
-          { label: "Bus", value: busRows.count ?? 0, note: "Armada aktif", icon: "bus" },
-          { label: "Pengemudi", value: driverRows.count ?? 0, note: "Akun aktif", icon: "driver" },
-          { label: "Area Operasional", value: areaContext.activeAreas.length, note: "Area aktif", icon: "operator" },
+          { label: t("schoolLabel"), value: schoolRows.count ?? 0, note: t("active"), icon: "school" },
+          { label: t("studentsLabel"), value: studentRows.count ?? 0, note: t("activeService"), icon: "students" },
+          { label: t("busesLabel"), value: busRows.count ?? 0, note: t("fleetActive"), icon: "bus" },
+          { label: t("driversLabel"), value: driverRows.count ?? 0, note: t("activeAccountLabel"), icon: "driver" },
+          { label: t("areaContext"), value: areaContext.activeAreas.length, note: t("activeArea"), icon: "operator" },
         ]}
       />
 
       <section className="panel admin-today">
         <header className="panel-head">
           <div>
-            <h2 className="panel-title">Operasional hari ini</h2>
+            <h2 className="panel-title">{t("todayOperations")}</h2>
             <div className="panel-subtitle">
-              {assignments.length} penugasan · {contextLabel}
+              {assignments.length} {t("assignments")} · {contextLabel}
             </div>
           </div>
           <Link className="btn btn-secondary btn-sm" href="/admin/penugasan">
-            Kelola penugasan
+            {t("manageAssignments")}
           </Link>
         </header>
         <div className="today-counts">
           <div className="today-count tone-live">
-            <span>Berlangsung</span>
+            <span>{t("inProgress")}</span>
             <strong>{running}</strong>
           </div>
           <div className="today-count tone-wait">
-            <span>Menunggu</span>
+            <span>{t("waiting")}</span>
             <strong>{waiting}</strong>
           </div>
           <div className="today-count tone-done">
-            <span>Selesai</span>
+            <span>{t("completed")}</span>
             <strong>{completed}</strong>
           </div>
           <p className="today-note">
             {assignmentRows.error
-              ? "Data penugasan belum dapat dimuat."
+              ? t("assignmentDataUnavailable")
               : assignments.length === 0
-                ? "Belum ada penugasan hari ini pada konteks ini."
-                : `${running} perjalanan berlangsung dari ${assignments.length} penugasan.`}
+                ? t("noAssignmentsToday")
+                : `${running} ${t("tripsRunningOf")} ${assignments.length} ${t("assignments")}.`}
           </p>
         </div>
       </section>

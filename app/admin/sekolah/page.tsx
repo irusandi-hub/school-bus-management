@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { LocalizedOption } from "@/components/i18n/LocalizedOption";
+import { AdminCopy } from "@/components/i18n/AdminCopy";
 import type { Metadata } from "next";
 import { ConfirmSubmit } from "@/components/admin/ConfirmSubmit";
 import { RecordForm, type FieldDef } from "@/components/admin/RecordForm";
@@ -19,6 +21,8 @@ import { getProjectAreaContext } from "@/lib/project-areas/context";
 import type { SchoolRow } from "@/lib/types";
 import { sanitizeSearch } from "@/lib/validation";
 import { saveSchool, setSchoolActive } from "./actions";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 export const metadata: Metadata = { title: "Sekolah | Operator" };
 
@@ -31,6 +35,8 @@ export default async function SekolahPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  const locale = await getRequestLocale();
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
   const params = await searchParams;
   const supabase = await adminReadContext();
   if (!supabase) return <ConfigNotice />;
@@ -54,17 +60,17 @@ export default async function SekolahPage({
   if (status === "nonaktif") query = query.eq("active", false);
   if (selectedId) query = query.eq("project_area_id", selectedId);
 
-  const { data, count, error } = await query;
+  let editQuery = editId ? supabase.from("schools").select(selectColumns).eq("id", editId) : null;
+  if (editQuery && selectedId) editQuery = editQuery.eq("project_area_id", selectedId);
+
+  const [listResult, editResult] = await Promise.all([
+    query,
+    editQuery ? editQuery.maybeSingle() : Promise.resolve({ data: null }),
+  ]);
+  const { data, count, error } = listResult;
   const rows = (data ?? []) as unknown as SchoolRow[];
   const total = count ?? 0;
-
-  let editing: SchoolRow | null = null;
-  if (editId) {
-    let editQuery = supabase.from("schools").select(selectColumns).eq("id", editId);
-    if (selectedId) editQuery = editQuery.eq("project_area_id", selectedId);
-    const { data: editRow } = await editQuery.maybeSingle();
-    editing = (editRow as unknown as SchoolRow | null) ?? null;
-  }
+  const editing = (editResult.data as unknown as SchoolRow | null) ?? null;
 
   const areaOptions = areaContext.areas
     .filter((area) => area.active || area.id === editing?.project_area_id)
@@ -163,14 +169,14 @@ export default async function SekolahPage({
   return (
     <>
       <PageHeader
-        title="Sekolah"
-        description="Data sekolah per Area Operasional. Nonaktifkan sekolah yang tidak lagi bekerja sama; data dan riwayatnya tetap tersimpan."
+        title={c("Sekolah")}
+        description={c("Data sekolah per Area Operasional. Nonaktifkan sekolah yang tidak lagi bekerja sama; data dan riwayatnya tetap tersimpan.")}
       />
 
       <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath={path} compact />
 
-      {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
-      {error && <Notice kind="error">Daftar sekolah belum dapat dimuat. Coba lagi.</Notice>}
+      {notice && <Notice kind={notice.kind}>{c(notice.message)}</Notice>}
+      {error && <Notice kind="error">{c("Daftar sekolah belum dapat dimuat. Coba lagi.")}</Notice>}
 
       <div className="admin-split">
         <section className="panel">
@@ -178,14 +184,14 @@ export default async function SekolahPage({
             key={`${q}|${status}|${page}`}
             action={path}
             q={q}
-            placeholder="Cari nama, kode, atau kota sekolah"
+            placeholder={c("Cari nama, kode, atau kota sekolah")}
             total={total}
             resetHref={path}
             filters={
-              <select name="status" defaultValue={status} aria-label="Filter status sekolah">
-                <option value="">Semua status</option>
-                <option value="aktif">Aktif</option>
-                <option value="nonaktif">Nonaktif</option>
+              <select name="status" defaultValue={status} aria-label={c("Filter status")}>
+                <LocalizedOption value="" label="Semua status" />
+                <LocalizedOption value="aktif" label="Aktif" />
+                <LocalizedOption value="nonaktif" label="Nonaktif" />
               </select>
             }
           />
@@ -194,23 +200,23 @@ export default async function SekolahPage({
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th scope="col">Nama sekolah</th>
-                  <th scope="col">Kode</th>
-                  <th scope="col">Area Operasional</th>
-                  <th scope="col">Kontak</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Tindakan</th>
+                  <th scope="col"><AdminCopy value="Nama sekolah" /></th>
+                  <th scope="col"><AdminCopy value="Kode" /></th>
+                  <th scope="col"><AdminCopy value="Area Operasional" /></th>
+                  <th scope="col"><AdminCopy value="Kontak" /></th>
+                  <th scope="col"><AdminCopy value="Status" /></th>
+                  <th scope="col"><AdminCopy value="Tindakan" /></th>
                 </tr>
               </thead>
               <tbody>
                 {rows.length === 0 ? (
                   <EmptyRow
                     colSpan={6}
-                    title={q || status ? "Tidak ada sekolah yang cocok" : "Belum ada data sekolah"}
+                    title={c(q || status ? "Tidak ada sekolah yang cocok" : "Belum ada data sekolah")}
                     detail={
                       q || status
-                        ? "Ubah kata kunci atau filter status, lalu terapkan kembali."
-                        : "Tambahkan sekolah pertama melalui formulir di samping. Data akan langsung tersimpan."
+                        ? c("Ubah kata kunci atau filter status, lalu terapkan kembali.")
+                        : c("Tambahkan sekolah pertama melalui formulir di samping. Data akan langsung tersimpan.")
                     }
                   />
                 ) : (
@@ -226,10 +232,10 @@ export default async function SekolahPage({
                       <td>{row.project_areas?.name ?? row.city}</td>
                       <td>
                         {row.contact_name ?? "—"}
-                        <small>{row.contact_phone ?? row.contact_email ?? "Kontak belum diisi"}</small>
+                        <small>{row.contact_phone ?? row.contact_email ?? c("Kontak belum diisi")}</small>
                       </td>
                       <td>
-                        <Pill tone={row.active ? "success" : "neutral"}>{row.active ? "Aktif" : "Nonaktif"}</Pill>
+                        <Pill tone={row.active ? "success" : "neutral"}>{row.active ? c("Aktif") : c("Nonaktif")}</Pill>
                       </td>
                       <td>
                         <div className="row-actions">
@@ -237,7 +243,7 @@ export default async function SekolahPage({
                             className="row-link"
                             href={listHref(path, { ...baseQuery, page, edit: row.id })}
                           >
-                            Ubah
+                            {c("Ubah")}
                           </Link>
                           <form action={setSchoolActive} className="row-form">
                             <input type="hidden" name="id" value={row.id} />
@@ -250,7 +256,7 @@ export default async function SekolahPage({
                                   : `Aktifkan kembali ${row.name}?`
                               }
                             >
-                              {row.active ? "Nonaktifkan" : "Aktifkan"}
+                              {row.active ? c("Nonaktifkan") : c("Aktifkan")}
                             </ConfirmSubmit>
                           </form>
                         </div>
@@ -274,9 +280,9 @@ export default async function SekolahPage({
         <aside className="panel admin-form-panel" id="form">
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">{editing ? "Ubah sekolah" : "Tambah sekolah"}</h2>
+              <h2 className="panel-title"><AdminCopy value={editing ? "Ubah sekolah" : "Tambah sekolah"} /></h2>
               <div className="panel-subtitle">
-                {editing ? `Memperbarui ${editing.name}` : "Data langsung tersimpan"}
+                {editing ? `${c("Memperbarui")} ${editing.name}` : c("Data langsung tersimpan")}
               </div>
             </div>
           </header>
@@ -287,7 +293,7 @@ export default async function SekolahPage({
               fields={fields}
               hidden={{ id: editing?.id ?? "" }}
               submitLabel={editing ? "Simpan perubahan" : "Tambah sekolah"}
-              note="Kode sekolah dan status aktif dipakai untuk mencegah duplikasi data. Menonaktifkan sekolah tidak menghapus data."
+              note={c("Kode sekolah dan status aktif dipakai untuk mencegah duplikasi data. Menonaktifkan sekolah tidak menghapus data.")}
               secondary={editing ? { href: listHref(path, baseQuery), label: "Batal" } : undefined}
             />
           </div>

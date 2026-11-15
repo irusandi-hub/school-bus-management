@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import "leaflet/dist/leaflet.css";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 export type GuardianDriverPoint = {
   latitude: number;
@@ -17,6 +19,9 @@ export type GuardianDriverPoint = {
  * terbaru yang lolos pemeriksaan kesegaran.
  */
 export function GuardianDriverMap({ point }: { point: GuardianDriverPoint }) {
+  const { locale } = useLocale();
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
+  const mapTitle = c("Posisi HP pengemudi");
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<import("leaflet").Map | null>(null);
   const markerRef = useRef<import("leaflet").Marker | null>(null);
@@ -70,7 +75,7 @@ export function GuardianDriverMap({ point }: { point: GuardianDriverPoint }) {
       markerRef.current = L.marker([point.latitude, point.longitude], {
         icon,
         keyboard: false,
-        title: "Posisi HP pengemudi",
+        title: mapTitle,
         zIndexOffset: 500,
       }).addTo(map);
 
@@ -88,7 +93,7 @@ export function GuardianDriverMap({ point }: { point: GuardianDriverPoint }) {
     };
     // Peta hanya dibuat sekali; perubahan koordinat ditangani effect berikutnya.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [mapTitle]);
 
   useEffect(() => {
     markerRef.current?.setLatLng([point.latitude, point.longitude]);
@@ -101,11 +106,11 @@ export function GuardianDriverMap({ point }: { point: GuardianDriverPoint }) {
         ref={container}
         className="guardian-live-map"
         role="img"
-        aria-label={`Posisi HP pengemudi, akurasi sekitar ${Math.round(point.accuracy)} meter`}
+        aria-label={`${c("Posisi HP pengemudi, akurasi sekitar")} ${Math.round(point.accuracy)} ${c("meter")}`}
       />
       {(!ready || tileState !== "ready") && (
         <span className={`guardian-live-map-status is-${tileState}`} role="status">
-          {tileState === "error" ? "Peta tidak dapat dimuat" : "Memuat peta…"}
+          {tileState === "error" ? c("Peta tidak dapat dimuat") : c("Memuat peta…")}
         </span>
       )}
     </div>

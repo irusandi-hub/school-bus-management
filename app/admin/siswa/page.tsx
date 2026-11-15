@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { LocalizedOption } from "@/components/i18n/LocalizedOption";
+import { AdminCopy } from "@/components/i18n/AdminCopy";
 import type { Metadata } from "next";
 import { RecordForm, type FieldDef } from "@/components/admin/RecordForm";
 import { ProjectAreaTabs } from "@/components/admin/ProjectAreaTabs";
@@ -18,6 +20,8 @@ import { getProjectAreaContext, loadProjectAreaScope } from "@/lib/project-areas
 import type { StudentRow } from "@/lib/types";
 import { sanitizeSearch, serviceStatusLabel } from "@/lib/validation";
 import { saveStudent } from "./actions";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 
 export const metadata: Metadata = { title: "Data Siswa | Operator" };
 
@@ -36,6 +40,8 @@ export default async function SiswaPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  const locale = await getRequestLocale();
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
   const params = await searchParams;
   const supabase = await adminReadContext();
   if (!supabase) return <ConfigNotice />;
@@ -52,8 +58,6 @@ export default async function SiswaPage({
 
   let schoolQuery = supabase.from("schools").select("id, name, active").order("name", { ascending: true });
   if (selectedId) schoolQuery = schoolQuery.eq("project_area_id", selectedId);
-  const { data: schoolRows } = await schoolQuery;
-  const schools = (schoolRows ?? []) as { id: string; name: string; active: boolean }[];
 
   let query = supabase
     .from("students")
@@ -66,24 +70,25 @@ export default async function SiswaPage({
   if (schoolFilter) query = query.eq("school_id", schoolFilter);
   if (selectedId) query = query.in("school_id", scope.schoolIds);
 
-  const { data, count, error } = await query;
+  let editQuery = editId ? supabase.from("students").select(selectColumns).eq("id", editId) : null;
+  if (editQuery && selectedId) editQuery = editQuery.in("school_id", scope.schoolIds);
+
+  const [schoolResult, studentsResult, editResult, guardiansResult, linksResult] = await Promise.all([
+    schoolQuery,
+    query,
+    editQuery ? editQuery.maybeSingle() : Promise.resolve({ data: null }),
+    supabase.from("guardians").select("id, full_name, email, active").order("full_name", { ascending: true }),
+    supabase.from("students").select("guardian_id"),
+  ]);
+
+  const schools = (schoolResult.data ?? []) as { id: string; name: string; active: boolean }[];
+  const { data, count, error } = studentsResult;
   const rows = (data ?? []) as unknown as StudentRow[];
   const total = count ?? 0;
+  const editing = (editResult.data as unknown as StudentRow | null) ?? null;
 
-  let editing: StudentRow | null = null;
-  if (editId) {
-    let editQuery = supabase.from("students").select(selectColumns).eq("id", editId);
-    if (selectedId) editQuery = editQuery.in("school_id", scope.schoolIds);
-    const { data: editRow } = await editQuery.maybeSingle();
-    editing = (editRow as unknown as StudentRow | null) ?? null;
-  }
-
-  const { data: guardianRows } = await supabase
-    .from("guardians")
-    .select("id, full_name, email, active")
-    .order("full_name", { ascending: true });
-  const allGuardians = (guardianRows ?? []) as { id: string; full_name: string; email: string; active: boolean }[];
-  const { data: allLinks } = await supabase.from("students").select("guardian_id");
+  const allGuardians = (guardiansResult.data ?? []) as { id: string; full_name: string; email: string; active: boolean }[];
+  const allLinks = linksResult.data ?? [];
   const attachedGuardians = new Set(
     ((allLinks ?? []) as { guardian_id: string | null }[]).map((row) => row.guardian_id).filter(Boolean) as string[],
   );
@@ -190,21 +195,21 @@ export default async function SiswaPage({
   return (
     <>
       <PageHeader
-        title="Data Siswa"
-        description="Kelola siswa, sekolah, wali, dan titik jemput. Ubah status layanan melalui detail siswa."
+        title={c("Data Siswa")}
+        description={c("Kelola siswa, sekolah, wali, dan titik jemput. Ubah status layanan melalui detail siswa.")}
       />
 
       <ProjectAreaTabs areas={areaContext.activeAreas} selectedId={selectedId} nextPath={path} compact />
 
-      {notice && <Notice kind={notice.kind}>{notice.message}</Notice>}
-      {error && <Notice kind="error">Daftar siswa belum dapat dimuat. Coba lagi.</Notice>}
+      {notice && <Notice kind={notice.kind}>{c(notice.message)}</Notice>}
+      {error && <Notice kind="error">{c("Daftar siswa belum dapat dimuat. Coba lagi.")}</Notice>}
       {!canCreate && (
         <Notice kind="warning">
-          Data siswa belum dapat ditambahkan karena belum ada {schoolOptions.length === 0 ? "sekolah" : "wali"} aktif.{" "}
+          {c(`Data siswa belum dapat ditambahkan karena belum ada ${schoolOptions.length === 0 ? "sekolah" : "wali"} aktif.`)}{" "}
           {schoolOptions.length === 0 ? (
-            <Link href="/admin/sekolah">Tambahkan sekolah terlebih dahulu</Link>
+            <Link href="/admin/sekolah">{c("Tambahkan sekolah terlebih dahulu")}</Link>
           ) : (
-            <Link href="/admin/wali">Daftarkan email wali terlebih dahulu</Link>
+            <Link href="/admin/wali">{c("Daftarkan email wali terlebih dahulu")}</Link>
           )}
           .
         </Notice>
@@ -216,24 +221,24 @@ export default async function SiswaPage({
             key={`${q}|${status}|${schoolFilter}|${page}`}
             action={path}
             q={q}
-            placeholder="Cari nama atau Nomor induk siswa"
+            placeholder={c("Cari nama atau Nomor induk siswa")}
             total={total}
             resetHref={path}
             filters={
               <>
-                <select name="sekolah" defaultValue={schoolFilter} aria-label="Filter sekolah">
-                  <option value="">Semua sekolah</option>
+                <select name="sekolah" defaultValue={schoolFilter} aria-label={c("Filter sekolah")}>
+                  <LocalizedOption value="" label="Semua sekolah" />
                   {schools.map((school) => (
                     <option key={school.id} value={school.id}>
                       {school.name}
                     </option>
                   ))}
                 </select>
-                <select name="status" defaultValue={status} aria-label="Filter status layanan">
-                  <option value="">Semua status</option>
-                  <option value="active">Aktif</option>
-                  <option value="paused">Sementara tidak aktif</option>
-                  <option value="ended">Dihentikan</option>
+                <select name="status" defaultValue={status} aria-label={c("Filter status layanan")}>
+                  <LocalizedOption value="" label="Semua status" />
+                  <LocalizedOption value="active" label="Aktif" />
+                  <LocalizedOption value="paused" label="Sementara tidak aktif" />
+                  <LocalizedOption value="ended" label="Dihentikan" />
                 </select>
               </>
             }
@@ -243,23 +248,23 @@ export default async function SiswaPage({
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th scope="col">Nomor induk siswa</th>
-                  <th scope="col">Nama siswa</th>
-                  <th scope="col">Sekolah</th>
-                  <th scope="col">Wali</th>
-                  <th scope="col">Status layanan</th>
-                  <th scope="col">Tindakan</th>
+                  <th scope="col"><AdminCopy value="Nomor induk siswa" /></th>
+                  <th scope="col"><AdminCopy value="Nama siswa" /></th>
+                  <th scope="col"><AdminCopy value="Sekolah" /></th>
+                  <th scope="col"><AdminCopy value="Wali" /></th>
+                  <th scope="col"><AdminCopy value="Status layanan" /></th>
+                  <th scope="col"><AdminCopy value="Tindakan" /></th>
                 </tr>
               </thead>
               <tbody>
                 {rows.length === 0 ? (
                   <EmptyRow
                     colSpan={6}
-                    title={q || status || schoolFilter ? "Tidak ada siswa yang cocok" : "Belum ada data siswa"}
+                    title={c(q || status || schoolFilter ? "Tidak ada siswa yang cocok" : "Belum ada data siswa")}
                     detail={
                       q || status || schoolFilter
-                        ? "Ubah kata kunci atau filter, lalu terapkan kembali."
-                        : "Tambahkan siswa pertama melalui formulir di samping setelah sekolah dan wali tersedia."
+                        ? c("Ubah kata kunci atau filter, lalu terapkan kembali.")
+                        : c("Tambahkan siswa pertama melalui formulir di samping setelah sekolah dan wali tersedia.")
                     }
                   />
                 ) : (
@@ -271,9 +276,9 @@ export default async function SiswaPage({
                       <td>
                         <strong>{row.full_name}</strong>
                       </td>
-                      <td>{row.schools?.name ?? "Belum ditetapkan"}</td>
+                      <td>{row.schools?.name ?? c("Belum ditetapkan")}</td>
                       <td>
-                        {row.guardians?.full_name ?? "Belum ditetapkan"}
+                        {row.guardians?.full_name ?? c("Belum ditetapkan")}
                         <small>{row.guardians?.email ?? "—"}</small>
                       </td>
                       <td>
@@ -282,10 +287,10 @@ export default async function SiswaPage({
                       <td>
                         <div className="row-actions">
                           <Link className="row-link" href={`/admin/siswa/${row.id}`}>
-                            Detail &amp; status
+                            {c("Detail & status")}
                           </Link>
                           <Link className="row-link" href={listHref(path, { ...baseQuery, page, edit: row.id })}>
-                            Ubah
+                            {c("Ubah")}
                           </Link>
                         </div>
                       </td>
@@ -308,9 +313,9 @@ export default async function SiswaPage({
         <aside className="panel admin-form-panel" id="form">
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">{editing ? "Ubah data siswa" : "Tambah siswa"}</h2>
+              <h2 className="panel-title"><AdminCopy value={editing ? "Ubah data siswa" : "Tambah siswa"} /></h2>
               <div className="panel-subtitle">
-                {editing ? `Memperbarui ${editing.full_name}` : "Data langsung tersimpan"}
+                {editing ? `${c("Memperbarui")} ${editing.full_name}` : c("Data langsung tersimpan")}
               </div>
             </div>
           </header>
@@ -324,12 +329,12 @@ export default async function SiswaPage({
               disabledReason={
                 canCreate
                   ? undefined
-                  : `Formulir aktif setelah ada ${schoolOptions.length === 0 ? "sekolah" : "wali"} aktif. Lengkapi data tersebut agar relasi siswa dan akses wali dapat ditetapkan dengan benar.`
+                  : c(`Formulir aktif setelah ada ${schoolOptions.length === 0 ? "sekolah" : "wali"} aktif. Lengkapi data tersebut agar relasi siswa dan akses wali dapat ditetapkan dengan benar.`)
               }
               note={
                 editing
-                  ? "Status layanan tidak diubah dari formulir ini agar riwayat dan alasannya tetap tercatat."
-                  : "Siswa baru dibuat dengan status layanan aktif. Perubahan status dan alasannya dicatat pada riwayat."
+                  ? c("Status layanan tidak diubah dari formulir ini agar riwayat dan alasannya tetap tercatat.")
+                  : c("Siswa baru dibuat dengan status layanan aktif. Perubahan status dan alasannya dicatat pada riwayat.")
               }
               secondary={editing ? { href: listHref(path, baseQuery), label: "Batal" } : undefined}
             />

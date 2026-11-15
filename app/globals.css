@@ -1,4 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+Arabic:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
 
 :root{--ink:#172b35;--muted:#71818a;--line:#e5eceb;--paper:#f5f8f7;--green:#176b55;--green-soft:#e7f4ee;--orange:#f2a65a;--blue:#e9f2f7}
 *{box-sizing:border-box}
@@ -2846,4 +2848,305 @@ button.route-cta:disabled{cursor:not-allowed;opacity:1}
   .driver-app .compact-counter{padding:5px 4px;font-size:9px}
   .driver-app .compact-counter b{font-size:11px}
   .driver-app .compact-action-row .ops-start-action{width:140px;min-height:46px;font-size:11.5px}
+}
+
+
+
+/* shadcn/ui semantic tokens mapped to the existing School Bus palette. */
+:root {
+  --background: 150 20% 97%;
+  --foreground: 200 38% 15%;
+  --card: 0 0% 100%;
+  --card-foreground: 200 38% 15%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 200 38% 15%;
+  --primary: 163 64% 25%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 150 30% 94%;
+  --secondary-foreground: 200 38% 15%;
+  --muted: 150 20% 94%;
+  --muted-foreground: 200 10% 48%;
+  --accent: 150 30% 94%;
+  --accent-foreground: 163 64% 25%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 150 16% 90%;
+  --input: 150 16% 90%;
+  --ring: 163 64% 25%;
+  --radius: 0.75rem;
+}
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+
+/* Internationalization: compact language control and logical RTL adjustments. */
+.locale-switcher{display:inline-flex;align-items:center;gap:7px;color:var(--muted);font-size:11px;font-weight:700;white-space:nowrap}
+.locale-switcher select{max-width:150px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);padding:7px 9px;font:600 12px 'DM Sans',Arial,sans-serif}
+.locale-switcher-compact .locale-switcher-label{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.locale-switcher-compact select{max-width:132px}
+html[dir="rtl"] body{direction:rtl}
+html[dir="rtl"] .sidebar{border-right:0;border-left:1px solid var(--line)}
+html[dir="rtl"] .nav-item{text-align:right}
+html[dir="rtl"] .nav-icon{margin-inline-start:0}
+html[dir="rtl"] .topbar-context{text-align:right}
+html[dir="rtl"] .top-actions,html[dir="rtl"] .portal-account{direction:rtl}
+html[dir="rtl"] .portal-nav{direction:rtl}
+html[dir="rtl"] .driver-head{direction:rtl}
+html[dir="rtl"] .mobile-nav{direction:rtl}
+html[dir="rtl"] .menu-sheet{direction:rtl;text-align:right}
+html[dir="rtl"] .menu-link{direction:rtl}
+html[dir="rtl"] .landing-controls{direction:rtl}
+html[dir="rtl"] .landing-hero-copy,html[dir="rtl"] .landing-cta{text-align:right}
+html[dir="rtl"] .landing-role-head{direction:rtl}
+html[dir="rtl"] .landing-footer-meta{direction:rtl}
+@media(max-width:640px){.locale-switcher-compact select{max-width:112px;padding:6px 7px;font-size:11px}}
+
+/* Keep the language selector visible without changing the approved landing composition. */
+.landing-controls{position:relative}
+.landing-locale{position:absolute;top:14px;right:clamp(16px,4vw,56px);z-index:20}
+html[dir="rtl"] .landing-locale{right:auto;left:clamp(16px,4vw,56px)}
+.landing-locale .locale-switcher{background:rgba(255,255,255,.88);backdrop-filter:blur(8px);padding:5px 7px;border:1px solid rgba(229,236,235,.8);border-radius:12px}
+@media(max-width:640px){.landing-locale{top:8px;right:12px}.landing-locale .locale-switcher{gap:4px}.landing-locale .locale-switcher select{max-width:112px}}
+
+.auth-card{position:relative}
+.auth-locale{display:flex;justify-content:flex-end;margin:-2px 0 12px}
+html[dir="rtl"] .auth-locale{justify-content:flex-start}
+
+/* Arabic typography uses a dedicated family with full Arabic-script coverage. */
+html[lang="ar"] body{font-family:'Noto Sans Arabic','DM Sans',Arial,sans-serif}
+html[lang="ar"] .page-title,html[lang="ar"] .welcome h2,html[lang="ar"] .panel-title,html[lang="ar"] .landing-title,html[lang="ar"] .landing-cta-title{font-family:'Noto Sans Arabic',Arial,sans-serif;letter-spacing:0}
+
+
+
+/* Minimal OTP-only entry screen: six clear digits, no account information panels. */
+.otp-card{width:min(100%,420px);padding:30px 28px}
+.otp-card .auth-logo{display:flex;justify-content:center;margin:0 auto 24px}
+.otp-card h1{text-align:center;margin:0 0 24px}
+.otp-form{gap:16px}
+.otp-fieldset{min-width:0;margin:0;padding:0;border:0}
+.otp-code-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px;width:100%}
+.otp-code-input{width:100%;min-width:0;height:58px;padding:0!important;border:1px solid #dce6e2;border-radius:12px;background:#fbfdfc;color:var(--ink);text-align:center;font-size:23px;font-weight:800;font-variant-numeric:tabular-nums;outline:none}
+.otp-code-input:focus{border-color:var(--green);box-shadow:0 0 0 3px #176b5520;background:#fff}
+.otp-form button{min-height:48px;margin-top:0}
+.otp-form .form-alert{margin:0}
+@media(max-width:380px){.otp-card{padding:26px 20px}.otp-code-grid{gap:6px}.otp-code-input{height:52px;font-size:21px}}
+
+/* Keep action groups physically right-aligned, including Arabic; copy remains RTL. */
+html[dir="rtl"] :is(.landing-header,.portal-head,.compact-identity-row,.operator-shell .main > .topbar){direction:ltr}
+html[dir="rtl"] :is(.landing-header,.portal-head,.compact-identity-row,.operator-shell .main > .topbar) > *{direction:rtl}
+.locale-menu{flex:none}
+.locale-menu > [role="group"]{max-width:calc(100vw - 32px)}
+
+
+/* shadcn/ui semantic tokens.
+   Map the existing SchoolBus brand system to the component primitives without
+   replacing the app's established CSS variables or changing existing screens. */
+:root {
+  --background: #fffdf8;
+  --foreground: #29261f;
+  --card: #ffffff;
+  --card-foreground: #29261f;
+  --popover: #ffffff;
+  --popover-foreground: #29261f;
+  --primary: var(--brand);
+  --primary-foreground: #29261f;
+  --secondary: #f7f1e5;
+  --secondary-foreground: #514a3d;
+  --accent: var(--brand-bg);
+  --accent-foreground: #6b4a00;
+  --destructive: var(--danger);
+  --destructive-foreground: #ffffff;
+  --border: var(--line);
+  --input: var(--line-strong);
+  --ring: #dba80f;
+  --muted-foreground: #827a6c;
+  --radius: 0.875rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+
+/* Consistent compact account controls across operator, driver and guardian areas. */
+.driver-app .compact-identity-row .locale-menu > summary,
+.guardian-shell .portal-account .locale-menu > summary,
+.operator-shell .top-actions .locale-menu > summary {
+  width:36px;
+  height:36px;
+  min-width:36px;
+  min-height:36px;
+}
+.driver-app .compact-identity-row .compact-logout,
+.guardian-shell .portal-account .compact-logout {
+  display:grid;
+  place-items:center;
+  width:36px;
+  height:36px;
+  min-width:36px;
+  min-height:36px;
+  margin:0;
+  padding:0;
+  border:1px solid #E5E7EB;
+  border-radius:50%;
+  background:#fff;
+  color:#991B1B;
+}
+.guardian-shell .portal-account { gap:8px; }
+.guardian-shell .portal-account form { display:flex; flex:none; margin:0; }
+.driver-app .compact-identity-row > .flex.flex-none { gap:8px; }
+
+
+/* Informasi DEMO: tiga bagian ringkas dengan detail yang dapat dibuka. */
+.dev-mode-panel{width:min(92vw,380px);max-height:min(78dvh,calc(100dvh - 120px));padding:16px}
+.dev-mode-panel .dev-mode-close{display:inline-flex;align-items:center;justify-content:center;min-width:36px;min-height:36px;width:36px;height:36px;font-size:22px;line-height:1}
+.dev-mode-status{display:flex;align-items:center;gap:7px;margin-top:12px;font-size:11px;font-weight:800;color:#476b38}
+.dev-mode-status-dot{width:7px;height:7px;border-radius:50%;background:#6c9b4d;flex:none}
+.dev-mode-panel .dev-mode-section{margin-top:10px;border:1px solid #eadfb9;border-radius:11px;background:#fffefa;overflow:hidden}
+.dev-mode-panel .dev-mode-section-toggle{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:42px;padding:8px 11px;border:0;border-radius:0;background:#fff8df;color:#594b2e;font-size:12px;font-weight:800;text-align:start}
+.dev-mode-panel .dev-mode-section-toggle span:last-child{font-size:18px;line-height:1}
+.dev-mode-section-content{padding:10px 11px 12px}
+.dev-mode-section-content p{margin:7px 0;font-size:11px;line-height:1.55}
+.dev-mode-section-content dl{margin:0}
+.dev-mode-section-content dl>div{grid-template-columns:minmax(78px,34%) minmax(0,1fr);padding:4px 0;font-size:11px}
+.dev-mode-profile-list,.dev-mode-notes{display:grid;gap:8px;margin:8px 0;padding-inline-start:17px}
+.dev-mode-profile-list li,.dev-mode-notes li{padding-inline-start:2px;font-size:11px;line-height:1.45}
+.dev-mode-profile-list li strong{display:block;font-size:11px}
+.dev-mode-profile-list li span{display:block;color:#766b56}
+.dev-mode-muted{color:#766b56}
+.dev-mode-login{margin-top:12px;padding-top:10px;border-top:1px solid #eee4c9}
+.dev-mode-login h3{margin:0 0 8px;font-size:12px;font-weight:800}
+.dev-mode-phone{display:grid;grid-template-columns:1fr auto;gap:4px 8px;padding:9px;border-radius:9px;background:#fff8df;font-size:11px}
+.dev-mode-phone span{font-weight:800;letter-spacing:.04em}
+.dev-mode-phone p{grid-column:1/-1;margin:2px 0 0;color:#766b56;font-size:10px}
+.dev-mode-account-list{display:grid;gap:0;margin:8px 0 0;padding:0;list-style:none}
+.dev-mode-account-list li{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid #eee8d8}
+.dev-mode-account-main{display:grid;gap:2px;min-width:0}
+.dev-mode-account-main strong{font-size:11px}
+.dev-mode-account-main span{color:#766b56;font-size:10px;overflow-wrap:anywhere}
+.dev-mode-account-main small{color:#766b56;font-size:10px;font-weight:600;line-height:1.4}
+.dev-mode-code{display:flex;align-items:center;gap:5px;flex:none}
+.dev-mode-code code{font-size:12px;font-weight:800;letter-spacing:.06em}
+.dev-mode-panel .dev-mode-copy{display:inline-flex;align-items:center;justify-content:center;min-width:32px;min-height:32px;width:32px;height:32px;padding:0;border:1px solid #ead99f;border-radius:8px;background:#fff8df;font-size:15px}
+.dev-mode-copy-feedback{color:#476b38;font-weight:700}
+.dev-mode-privacy{padding:10px;border:1px solid #e7d49a;border-radius:9px;background:#fff7d8}
+.dev-mode-privacy strong{font-size:11px}
+.dev-mode-privacy p{margin:5px 0 0;font-size:11px;line-height:1.6}
+.dev-mode-panel :is(button):focus-visible{outline:3px solid #725719;outline-offset:2px}
+@media(max-width:420px){.dev-mode-panel{width:min(92vw,360px);max-height:calc(100dvh - 104px);top:max(64px,8dvh);padding:13px}}
+
+.dev-mode-tech{margin-top:12px;padding-top:10px;border-top:1px solid #eee4c9}
+.dev-mode-tech h3{margin:0 0 7px;font-size:12px;font-weight:800}
+.dev-mode-tech .dev-mode-notes{gap:7px}
+
+
+/* Demo panel readability: high-contrast neutral surface and clearer text hierarchy. */
+.dev-mode-panel {
+  background: #ffffff;
+  color: #17243b;
+  border-color: #d7deea;
+  box-shadow: 0 16px 42px rgba(12, 25, 48, .22);
+}
+.dev-mode-panel h2,
+.dev-mode-panel h3,
+.dev-mode-panel strong,
+.dev-mode-panel dt {
+  color: #17243b;
+}
+.dev-mode-panel p,
+.dev-mode-panel dd,
+.dev-mode-section-content,
+.dev-mode-profile-list li,
+.dev-mode-notes li,
+.dev-mode-account-main span,
+.dev-mode-account-main small,
+.dev-mode-muted {
+  color: #34445d;
+}
+.dev-mode-panel .dev-mode-section {
+  background: #ffffff;
+  border-color: #dbe2ec;
+}
+.dev-mode-panel .dev-mode-section-toggle {
+  background: #f1f4f8;
+  color: #17243b;
+}
+.dev-mode-panel .dev-mode-section-toggle:hover {
+  background: #e8edf4;
+}
+.dev-mode-section-content {
+  background: #ffffff;
+}
+.dev-mode-status {
+  color: #245b36;
+}
+.dev-mode-login,
+.dev-mode-tech {
+  border-color: #dbe2ec;
+}
+.dev-mode-account-list li {
+  border-color: #e2e7ef;
+}
+.dev-mode-privacy {
+  background: #f3f7fb;
+  border-color: #cbd7e6;
+}
+.dev-mode-privacy p {
+  color: #263850;
+}
+.dev-mode-code code {
+  color: #17243b;
+}
+.dev-mode-panel .dev-mode-copy,
+.dev-mode-panel .dev-mode-close {
+  background: #f1f4f8;
+  border-color: #d3dce8;
+  color: #17243b;
+}
+.dev-mode-panel .dev-mode-copy-feedback {
+  color: #245b36;
 }

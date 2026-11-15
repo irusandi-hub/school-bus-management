@@ -1,7 +1,8 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Breadcrumbs, ConfigNotice, Notice, Pill, ServiceStatusPill } from "@/components/admin/ui";
+import { getRequestLocale } from "@/lib/i18n/server";
+import { translateAdminCopy } from "@/lib/i18n/admin-copy";
 import { ParentLiveVideo } from "@/components/guardian/ParentLiveVideo";
 import { VideoAccessNotice } from "@/components/guardian/VideoAccessNotice";
 import { requireGuardian } from "@/lib/auth";
@@ -12,9 +13,6 @@ import { resolveLivePlayback } from "@/lib/guardian/live";
 import { buildChildLiveVideo } from "@/lib/guardian/live-view";
 import type { TripEventRow } from "@/lib/types";
 import {
-  formatDate,
-  formatDateTime,
-  formatTime,
   routeDirectionLabel,
   tripEventLabel,
   tripStatusLabel,
@@ -32,6 +30,12 @@ function tripTone(status: string) {
 
 export default async function ChildDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const locale = await getRequestLocale();
+  const c = (value: string) => translateAdminCopy(value, locale) ?? value;
+  const dateLocale = locale === "ar" ? "ar-SA-u-ca-gregory" : locale === "en" ? "en-GB" : "id-ID";
+  const formatLocalDate = (value: string) => new Intl.DateTimeFormat(dateLocale, { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Riyadh" }).format(new Date(`${value.slice(0, 10)}T12:00:00+03:00`));
+  const formatLocalDateTime = (value: string | null) => value ? new Intl.DateTimeFormat(dateLocale, { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Riyadh" }).format(new Date(value)) : "—";
+  const formatLocalTime = (value: string | null) => value ? new Intl.DateTimeFormat(dateLocale, { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Riyadh" }).format(new Date(value)) : "—";
   const access = await requireGuardian();
   if (access.status === "unconfigured") return <ConfigNotice />;
 
@@ -67,27 +71,27 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
 
   return (
     <>
-      <Breadcrumbs items={[{ href: "/wali", label: "Anak saya" }, { label: student.full_name }]} />
+      <Breadcrumbs items={[{ href: "/wali", label: c("Anak saya") }, { label: student.full_name }]} />
 
       <section className="child-detail-head">
         <span className="child-avatar child-avatar-lg" aria-hidden="true">
           {student.full_name.slice(0, 1).toUpperCase()}
         </span>
         <div>
-          <p className="eyebrow">ADMISSIONS NUMBER {student.admissions_number}</p>
+          <p className="eyebrow">{c("ADMISSIONS NUMBER")} {student.admissions_number}</p>
           <h1>{student.full_name}</h1>
-          <p>{student.schools?.name ?? "Sekolah belum ditetapkan"}</p>
+          <p>{student.schools?.name ?? c("Sekolah belum ditetapkan")}</p>
         </div>
         <ServiceStatusPill status={student.service_status} />
       </section>
 
-      {eventsResult.error && <Notice kind="error">Riwayat kehadiran belum dapat dimuat.</Notice>}
+      {eventsResult.error && <Notice kind="error">{c("Riwayat kehadiran belum dapat dimuat.")}</Notice>}
 
-      <section className="panel live-panel" aria-label={`Live video ${student.full_name}`}>
+      <section className="panel live-panel" aria-label={`${c("Live video")} ${student.full_name}`}>
         <header className="panel-head">
           <div>
-            <h2 className="panel-title">Live video</h2>
-            <div className="panel-subtitle">Kamera perjalanan · akses mengikuti status anak hari ini</div>
+            <h2 className="panel-title">{c("Live video")}</h2>
+            <div className="panel-subtitle">{c("Kamera perjalanan · akses mengikuti status anak hari ini")}</div>
           </div>
         </header>
         <div className="live-panel-body">
@@ -111,29 +115,29 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
         <section className="panel">
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">Layanan &amp; sekolah</h2>
-              <div className="panel-subtitle">Data yang tercatat untuk anak Anda</div>
+              <h2 className="panel-title">{c("Layanan & sekolah")}</h2>
+              <div className="panel-subtitle">{c("Data yang tercatat untuk anak Anda")}</div>
             </div>
           </header>
           <dl className="detail-list">
             <div>
-              <dt>Sekolah</dt>
-              <dd>{student.schools?.name ?? "Belum ditetapkan"}</dd>
+              <dt>{c("Sekolah")}</dt>
+              <dd>{student.schools?.name ?? c("Belum ditetapkan")}</dd>
             </div>
             <div>
-              <dt>Kota sekolah</dt>
+              <dt>{c("Kota sekolah")}</dt>
               <dd>{student.schools?.city ?? "—"}</dd>
             </div>
             <div>
-              <dt>Status diperbarui</dt>
-              <dd>{formatDateTime(student.service_status_changed_at)}</dd>
+              <dt>{c("Status diperbarui")}</dt>
+              <dd>{formatLocalDateTime(student.service_status_changed_at)}</dd>
             </div>
             <div>
-              <dt>Wali terhubung</dt>
+              <dt>{c("Wali terhubung")}</dt>
               <dd>{student.guardians?.full_name ?? "—"}</dd>
             </div>
             <div>
-              <dt>Telepon wali</dt>
+              <dt>{c("Telepon wali")}</dt>
               <dd>{student.guardians?.phone ?? "—"}</dd>
             </div>
           </dl>
@@ -142,21 +146,20 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
         <section className="panel">
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">Penjemputan</h2>
-              <div className="panel-subtitle">Titik dan catatan yang diberikan ke operasional</div>
+              <h2 className="panel-title">{c("Penjemputan")}</h2>
+              <div className="panel-subtitle">{c("Titik dan catatan yang diberikan ke operasional")}</div>
             </div>
           </header>
           <div className="pickup-body">
             {child.placements.length === 0 ? (
               <p className="muted-hint">
-                Rute dan titik jemput belum diatur Operator Utama. Hubungi Operator Utama bila anak Anda sudah menggunakan
-                layanan.
+                {c("Rute dan titik jemput belum diatur Operator Utama. Hubungi Operator Utama bila anak Anda sudah menggunakan layanan.")}
               </p>
             ) : (
               <ul className="pickup-list">
                 {child.placements.map((placement) => (
                   <li key={placement.id}>
-                    <span>{routeDirectionLabel(placement.direction)}</span>
+                    <span>{c(routeDirectionLabel(placement.direction))}</span>
                     <div>
                       <strong>
                         {placement.stopOrder}. {placement.stopName}
@@ -170,12 +173,12 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
 
             <dl className="detail-list pickup-details">
               <div>
-                <dt>Alamat rumah</dt>
-                <dd>{student.home_address ?? "Belum diisi"}</dd>
+                <dt>{c("Alamat rumah")}</dt>
+                <dd>{student.home_address ?? c("Belum diisi")}</dd>
               </div>
               <div>
-                <dt>Catatan titik jemput</dt>
-                <dd>{student.pickup_notes ?? "Belum diisi"}</dd>
+                <dt>{c("Catatan titik jemput")}</dt>
+                <dd>{student.pickup_notes ?? c("Belum diisi")}</dd>
               </div>
             </dl>
           </div>
@@ -185,36 +188,35 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
       <section className="panel">
         <header className="panel-head">
           <div>
-            <h2 className="panel-title">Perjalanan hari ini</h2>
-            <div className="panel-subtitle">{formatDate(todayDate())}</div>
+            <h2 className="panel-title">{c("Perjalanan hari ini")}</h2>
+            <div className="panel-subtitle">{formatLocalDate(todayDate())}</div>
           </div>
         </header>
         {child.todayTrips.length === 0 ? (
           <div className="table-empty">
-            <strong>Belum ada perjalanan hari ini</strong>
-            <p>Perjalanan muncul setelah penugasan dibuat dan pengemudi memulai tugas.</p>
+            <strong>{c("Belum ada perjalanan hari ini")}</strong>
+            <p>{c("Perjalanan muncul setelah penugasan dibuat dan pengemudi memulai tugas.")}</p>
           </div>
         ) : (
           <ul className="today-trip-list">
             {child.todayTrips.map((trip) => (
               <li key={`${trip.routeId}-${trip.direction}`}>
                 <div>
-                  <strong>{routeDirectionLabel(trip.direction)}</strong>
-                  <small>{trip.busCode ? `Bus ${trip.busCode}` : "Bus belum ditetapkan"}</small>
+                  <strong>{c(routeDirectionLabel(trip.direction))}</strong>
+                  <small>{trip.busCode ? `${c("Bus")} ${trip.busCode}` : c("Bus belum ditetapkan")}</small>
                 </div>
                 <Pill tone={trip.status === "in_progress" ? "info" : tripTone(trip.status)}>
-                  {trip.status === "scheduled" ? "Belum dimulai" : tripStatusLabel(trip.status)}
+                  {trip.status === "scheduled" ? c("Belum dimulai") : c(tripStatusLabel(trip.status))}
                 </Pill>
                 <small>
-                  Mulai {formatTime(trip.startedAt)} · Tiba {formatTime(trip.arrivedAt)}
+                  {c("Mulai")} {formatLocalTime(trip.startedAt)} · {c("Tiba")} {formatLocalTime(trip.arrivedAt)}
                 </small>
               </li>
             ))}
           </ul>
         )}
         <p className="detail-footnote">
-          Lokasi perjalanan aktif mengikuti GPS HP pengemudi dan tersedia di kartu anak. Status perjalanan berasal dari
-          catatan pengemudi, dan akses Live Video mengikuti status anak di bus — bukan posisi yang dilacak.
+          {c("Lokasi perjalanan aktif mengikuti GPS HP pengemudi dan tersedia di kartu anak. Status perjalanan berasal dari catatan pengemudi, dan akses Live Video mengikuti status anak di bus — bukan posisi yang dilacak.")}
         </p>
       </section>
 
@@ -222,18 +224,18 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
         <section className="panel">
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">Riwayat perjalanan</h2>
-              <div className="panel-subtitle">15 perjalanan terbaru pada rute anak Anda</div>
+              <h2 className="panel-title">{c("Riwayat perjalanan")}</h2>
+              <div className="panel-subtitle">{c("15 perjalanan terbaru pada rute anak Anda")}</div>
             </div>
           </header>
           <div className="admin-table-wrap">
             <table className="admin-table admin-table-compact table-stack">
               <thead>
                 <tr>
-                  <th scope="col">Tanggal</th>
-                  <th scope="col">Rute</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Waktu</th>
+                  <th scope="col">{c("Tanggal")}</th>
+                  <th scope="col">{c("Rute")}</th>
+                  <th scope="col">{c("Status")}</th>
+                  <th scope="col">{c("Waktu")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -241,25 +243,25 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
                   <tr>
                     <td colSpan={4}>
                       <div className="table-empty">
-                        <strong>Belum ada riwayat perjalanan</strong>
-                        <p>Riwayat tersimpan setelah pengemudi menyelesaikan perjalanan.</p>
+                        <strong>{c("Belum ada riwayat perjalanan")}</strong>
+                        <p>{c("Riwayat tersimpan setelah pengemudi menyelesaikan perjalanan.")}</p>
                       </div>
                     </td>
                   </tr>
                 ) : (
                   trips.map((trip) => (
                     <tr key={trip.id}>
-                      <td data-label="Tanggal">{formatDate(trip.serviceDate)}</td>
-                      <td data-label="Rute">
+                      <td data-label={c("Tanggal")}>{formatLocalDate(trip.serviceDate)}</td>
+                      <td data-label={c("Rute")}>
                         <strong>{trip.routeName}</strong>
-                        <small>{trip.direction === "morning" ? "Pagi" : "Sore"}</small>
+                        <small>{c(trip.direction === "morning" ? "Pagi" : "Sore")}</small>
                       </td>
-                      <td data-label="Status">
-                        <Pill tone={tripTone(trip.status)}>{tripStatusLabel(trip.status)}</Pill>
+                      <td data-label={c("Status")}>
+                        <Pill tone={tripTone(trip.status)}>{c(tripStatusLabel(trip.status))}</Pill>
                       </td>
-                      <td data-label="Waktu">
-                        <small>Mulai {formatTime(trip.startedAt)}</small>
-                        <small>Tiba {formatTime(trip.arrivedAt)}</small>
+                      <td data-label={c("Waktu")}>
+                        <small>{c("Mulai")} {formatLocalTime(trip.startedAt)}</small>
+                        <small>{c("Tiba")} {formatLocalTime(trip.arrivedAt)}</small>
                       </td>
                     </tr>
                   ))
@@ -272,14 +274,14 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
         <section className="panel">
           <header className="panel-head">
             <div>
-              <h2 className="panel-title">Riwayat kehadiran</h2>
-              <div className="panel-subtitle">Catatan pengemudi untuk anak Anda</div>
+              <h2 className="panel-title">{c("Riwayat kehadiran")}</h2>
+              <div className="panel-subtitle">{c("Catatan pengemudi untuk anak Anda")}</div>
             </div>
           </header>
           {events.length === 0 ? (
             <div className="table-empty">
-              <strong>Belum ada catatan kehadiran</strong>
-              <p>Catatan muncul setelah pengemudi menandai status siswa selama perjalanan.</p>
+              <strong>{c("Belum ada catatan kehadiran")}</strong>
+              <p>{c("Catatan muncul setelah pengemudi menandai status siswa selama perjalanan.")}</p>
             </div>
           ) : (
             <ul className="event-list">
@@ -296,10 +298,10 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
                             : "danger"
                     }
                   >
-                    {tripEventLabel(event.event_type)}
+                    {c(tripEventLabel(event.event_type))}
                   </Pill>
                   <div>
-                    <small>{formatDateTime(event.occurred_at)}</small>
+                    <small>{formatLocalDateTime(event.occurred_at)}</small>
                     {event.notes && <p>{event.notes}</p>}
                   </div>
                 </li>
@@ -310,8 +312,7 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
       </div>
 
       <Notice kind="info">
-        Akses ini hanya mencakup anak yang terhubung dengan akun Anda dan berstatus layanan aktif. Mengubah alamat
-        halaman tidak membuka data anak lain.
+        {c("Akses ini hanya mencakup anak yang terhubung dengan akun Anda dan berstatus layanan aktif. Mengubah alamat halaman tidak membuka data anak lain.")}
       </Notice>
     </>
   );
