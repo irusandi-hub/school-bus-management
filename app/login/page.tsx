@@ -8,6 +8,7 @@ import { homeForRole } from "@/lib/access";
 import { getViewerState } from "@/lib/auth";
 import { isDevOpenAccess } from "@/lib/dev-open-access";
 import { isDemoOtpRole, type DemoOtpRole } from "@/lib/demo-otp";
+import { isDemoOtpAvailable } from "@/lib/demo-session-token";
 
 export const metadata: Metadata = {
   title: "Verifikasi OTP | School Bus Management",
@@ -34,7 +35,7 @@ export default async function LoginPage({
   const rawNext = typeof params.next === "string" ? params.next : null;
   const rawRole = typeof params.peran === "string" ? params.peran : null;
   const role = resolveRole(rawRole, rawNext);
-  const simulationEnabled = isDevOpenAccess();
+  const simulationEnabled = isDevOpenAccess() || isDemoOtpAvailable();
 
   // OTP demo never replaces an existing authenticated account in production.
   // Preview/local simulation skips Supabase entirely and uses the isolated demo data.

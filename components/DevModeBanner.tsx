@@ -3,13 +3,19 @@ import {
   devAccessEnvironmentLabel,
   isDevOpenAccess,
 } from "@/lib/dev-open-access";
+import { isDemoOtpAvailable } from "@/lib/demo-session-token";
 
 /**
- * Penanda kecil untuk pengembang. Tidak mengambil ruang layout dan dapat
- * dibuka bila detail mode simulasi perlu dibaca.
+ * Informasi demo tetap tersedia di landing page produksi.
+ * Kode OTP demo ditampilkan bila sesi demo bertanda tangan sudah dikonfigurasi.
  */
 export function DevModeBanner() {
-  if (!isDevOpenAccess()) return null;
+  const demoAccessEnabled = isDevOpenAccess() || isDemoOtpAvailable();
 
-  return <DevModeTab environment={devAccessEnvironmentLabel()} sha={process.env.VERCEL_GIT_COMMIT_SHA} branch={process.env.VERCEL_GIT_COMMIT_REF} />;
+  return (
+    <DevModeTab
+      environment={devAccessEnvironmentLabel()}
+      demoAccessEnabled={demoAccessEnabled}
+    />
+  );
 }

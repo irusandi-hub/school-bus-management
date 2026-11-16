@@ -1,4 +1,5 @@
 import { DEV_DRIVER_RECORD, DEV_GUARDIAN_VIEWERS, DEV_VIEWER } from "../dev-open-access.ts";
+import type { DemoIdentity } from "@/lib/demo-session-token";
 import { createSimulationTables, type SimRow, type SimTables } from "./data.ts";
 
 /**
@@ -166,9 +167,11 @@ function likeMatches(value: unknown, pattern: string, insensitive: boolean): boo
 class SimQuery implements PromiseLike<SimResult> {
   private readonly tables: SimTables;
   private readonly tableName: string;
+  private readonly readOnly: boolean;
+  private readonly readOnlyMessage: string;
   private readonly predicates: Array<(row: SimRow) => boolean> = [];
   private readonly orders: Array<{ column: string; ascending: boolean }> = [];
-  private kind: "select" | "insert" | "update" = "select";
+  private kind: "select" | "insert" | "update" | "delete" | "upsert" = "select";
   private payload: SimRow | SimRow[] | null = null;
   private columnSpec = "*";
   private withCount = false;
@@ -177,9 +180,11 @@ class SimQuery implements PromiseLike<SimResult> {
   private rangeTo: number | null = null;
   private limitTo: number | null = null;
 
-  constructor(tables: SimTables, tableName: string) {
+  constructor(tables: SimTables, tableName: string, readOnly = false, readOnlyMessage = "Untuk simulasi, developer tidak mengizinkan pengguna melakukan perubahan data.") {
     this.tables = tables;
     this.tableName = tableName;
+    this.readOnly = readOnly;
+    this.readOnlyMessage = readOnlyMessage;
   }
 
   select(columns = "*", options: { count?: string; head?: boolean } = {}) {
@@ -197,6 +202,17 @@ class SimQuery implements PromiseLike<SimResult> {
 
   update(values: SimRow) {
     this.kind = "update";
+    this.payload = values;
+    return this;
+  }
+
+  delete() {
+    this.kind = "delete";
+    return this;
+  }
+
+  upsert(values: SimRow | SimRow[]) {
+    this.kind = "upsert";
     this.payload = values;
     return this;
   }
@@ -294,6 +310,19 @@ class SimQuery implements PromiseLike<SimResult> {
   }
 
   private execute(): SimResult {
+    // Hanya sesi demo produksi yang read-only. Preview/local tetap dapat menulis
+    // ke dataset simulasi terisolasi untuk pengujian end-to-end.
+    if (this.readOnly && this.kind !== "select") {
+      return {
+        data: null,
+        error: {
+          code: "42501",
+          message: this.readOnlyMessage,
+        },
+        count: null,
+      };
+    }
+
     if (this.kind === "insert") {
       const values = Array.isArray(this.payload) ? this.payload : [this.payload ?? {}];
       const clash = this.uniqueViolation(values);
@@ -317,6 +346,36 @@ class SimQuery implements PromiseLike<SimResult> {
       const matched = this.rows().filter((row) => this.predicates.every((predicate) => predicate(row)));
       matched.forEach((row) => Object.assign(row, payload));
       return { data: matched, error: null, count: matched.length };
+    }
+
+    if (this.kind === "delete") {
+      const rows = this.rows();
+      const matched = rows.filter((row) => this.predicates.every((predicate) => predicate(row)));
+      for (let index = rows.length - 1; index >= 0; index--) {
+        if (this.predicates.every((predicate) => predicate(rows[index]))) rows.splice(index, 1);
+      }
+      return { data: matched, error: null, count: matched.length };
+    }
+
+    if (this.kind === "upsert") {
+      const values = Array.isArray(this.payload) ? this.payload : [this.payload ?? {}];
+      const rows = this.rows();
+      const now = new Date().toISOString();
+      const saved = values.map((value) => {
+        const uniqueColumns = UNIQUE_COLUMNS[this.tableName] ?? [];
+        const existing = rows.find((row) =>
+          (value.id !== undefined && row.id === value.id) ||
+          uniqueColumns.some((column) => value[column] !== undefined && value[column] !== null && row[column] === value[column]),
+        );
+        if (existing) {
+          Object.assign(existing, value, { updated_at: now });
+          return existing;
+        }
+        const created = { id: nextSimId(), created_at: now, ...value };
+        rows.push(created);
+        return created;
+      });
+      return { data: saved, error: null, count: saved.length };
     }
 
     let matched = this.rows().filter((row) => this.predicates.every((predicate) => predicate(row)));
@@ -392,10 +451,11 @@ export function resetSimulationData() {
   return sharedSimulation.__schoolBusSimulationTables;
 }
 
-export function createSimulationClient() {
+export function createSimulationClient(identity?: DemoIdentity, readOnly = false, readOnlyMessage?: string) {
   const tables = simulationTables();
+  const viewer = identity ?? { ...DEV_VIEWER.operator, profileRole: "operator" as const };
 
-  const query = (tableName: string) => new SimQuery(tables, tableName);
+  const query = (tableName: string) => new SimQuery(tables, tableName, readOnly, readOnlyMessage);
 
   const authMessage =
     "Mode pengembangan aktif: proses masuk, pendaftaran, dan aktivasi akun dinonaktifkan karena ketiga ekosistem dibuka tanpa login.";
@@ -409,6 +469,17 @@ export function createSimulationClient() {
      * Fungsi lain mengembalikan galat eksplisit, bukan sukses palsu.
      */
     async rpc(name: string, args: Record<string, unknown> = {}): Promise<{ data: unknown; error: SimError }> {
+      // RPC mutasi hanya ditolak pada sesi demo produksi; Preview/local tetap writable.
+      if (readOnly && name !== "guardian_trip_location") {
+        return {
+          data: null,
+          error: {
+            code: "42501",
+            message: readOnlyMessage ?? "Untuk simulasi, developer tidak mengizinkan pengguna melakukan perubahan data.",
+          },
+        };
+      }
+
       if (name === "driver_publish_trip_location") {
         const tripId = String(args.p_trip_id ?? "");
         const trip = tables.trips.find((row) => row.id === tripId);
@@ -530,7 +601,7 @@ export function createSimulationClient() {
           new_status: status,
           reason: String(args.p_reason ?? ""),
           changed_at: changedAt,
-          actor_profile_id: DEV_VIEWER.operator.userId,
+          actor_profile_id: viewer.userId,
         });
 
         return { data: null, error: null };
@@ -542,7 +613,7 @@ export function createSimulationClient() {
       async getUser() {
         return {
           data: {
-            user: { id: DEV_VIEWER.operator.userId, email: DEV_VIEWER.operator.email, aud: "authenticated" },
+            user: { id: viewer.userId, email: viewer.email, aud: "authenticated" },
           },
           error: null,
         };

@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 import { DEMO_OTP_DESTINATIONS, demoGuardianKeyForOtp, isDemoOtpRole, isDemoOtpValid } from "@/lib/demo-otp";
 import { isDevOpenAccess } from "@/lib/dev-open-access";
+import { createDemoSessionToken, DEMO_SESSION_COOKIE, DEMO_SESSION_MAX_AGE, isDemoOtpAvailable } from "@/lib/demo-session-token";
 
 export async function POST(request: Request) {
-  if (!isDevOpenAccess()) {
-    return NextResponse.json({ message: "OTP simulasi tidak tersedia." }, { status: 404 });
+  const previewSimulation = isDevOpenAccess();
+  if (!previewSimulation && !isDemoOtpAvailable()) {
+    return NextResponse.json({ message: "OTP simulasi belum dikonfigurasi." }, { status: 503 });
   }
 
   const body = await request.json().catch(() => null);
@@ -15,23 +17,41 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "Kode OTP tidak sesuai." }, { status: 400 });
   }
 
-  const response = NextResponse.json({ destination: DEMO_OTP_DESTINATIONS[role] });
-
-  if (role === "wali") {
-    const guardianKey = demoGuardianKeyForOtp(code);
-    if (!guardianKey) {
-      return NextResponse.json({ message: "Akun wali simulasi tidak ditemukan." }, { status: 400 });
-    }
-    response.cookies.set("sbm_demo_guardian", guardianKey, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      maxAge: 60 * 60,
-    });
-  } else {
-    response.cookies.delete("sbm_demo_guardian");
+  const guardianKey = role === "wali" ? demoGuardianKeyForOtp(code) : undefined;
+  if (role === "wali" && !guardianKey) {
+    return NextResponse.json({ message: "Akun wali simulasi tidak ditemukan." }, { status: 400 });
   }
 
+  // Local development can keep using the legacy role-specific preview cookie
+  // when no signing secret is configured. Vercel PR Preview uses signed sessions.
+  if (previewSimulation && !isDemoOtpAvailable()) {
+    const response = NextResponse.json({ destination: DEMO_OTP_DESTINATIONS[role] });
+    response.cookies.delete(DEMO_SESSION_COOKIE);
+    if (role === "wali" && guardianKey) {
+      response.cookies.set("sbm_demo_guardian", guardianKey, {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+        maxAge: DEMO_SESSION_MAX_AGE,
+      });
+    } else {
+      response.cookies.delete("sbm_demo_guardian");
+    }
+    return response;
+  }
+
+  const token = await createDemoSessionToken(role, guardianKey ?? undefined);
+  if (!token) return NextResponse.json({ message: "Sesi demo belum dapat dibuat." }, { status: 503 });
+
+  const response = NextResponse.json({ destination: DEMO_OTP_DESTINATIONS[role] });
+  response.cookies.set(DEMO_SESSION_COOKIE, token, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: !previewSimulation || process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: DEMO_SESSION_MAX_AGE,
+  });
+  response.cookies.delete("sbm_demo_guardian");
   return response;
 }
