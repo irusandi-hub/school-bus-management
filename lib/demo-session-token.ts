@@ -73,10 +73,13 @@ export async function verifyDemoSessionToken(token: string | undefined | null): 
   if (!key) return null;
 
   try {
+    const signatureBytes = fromBase64Url(signature);
+    const signatureBuffer = new ArrayBuffer(signatureBytes.byteLength);
+    new Uint8Array(signatureBuffer).set(signatureBytes);
     const valid = await crypto.subtle.verify(
       "HMAC",
       key,
-      fromBase64Url(signature),
+      signatureBuffer,
       new TextEncoder().encode(payload),
     );
     if (!valid) return null;
